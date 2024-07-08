@@ -44,6 +44,7 @@ create table [dbo].[sma_inventory]
 	[sql_instance] varchar(125) not null,
 	[sql_instance_port] varchar(10) null,
 	[host_name] varchar(125) not null,
+	[host_ip] varchar(15) null,
 	[friendly_name] varchar(125) null,
 	[stability] varchar(20) not null default 'dev',
 	[priority] tinyint not null default '2',

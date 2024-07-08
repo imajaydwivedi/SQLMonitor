@@ -33,6 +33,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-197-33.232-Query-Perfo
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-ANAND1-Performance-Optimization", "Work-ANAND1-Performance-Optimization\Work-ANAND1-Performance-Optimization.ssmssqlproj", "{A9B34DA5-0EF8-4564-BF37-8F9B8C28763A}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-VAPT-Login-Expiry", "Work-VAPT-Login-Expiry\Work-VAPT-Login-Expiry.ssmssqlproj", "{7A265B02-D3F6-42C3-86D4-C1BD8BA2111B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -53,7 +55,8 @@ Global
 		{BB731120-D924-4882-BF4A-54C0DA7FF385}.Default|Default.ActiveCfg = Default
 		{A16605EA-D232-40F8-B38D-CE93A4881DC1}.Default|Default.ActiveCfg = Default
 		{A9B34DA5-0EF8-4564-BF37-8F9B8C28763A}.Default|Default.ActiveCfg = Default
-		{5A26664D-331D-4C5E-AC76-9AA6ED3F0EB1}.Default|Default.ActiveCfg = Default
+		{CBE4422D-569A-4A29-9571-C8DD986A9DAC}.Default|Default.ActiveCfg = Default
+		{7A265B02-D3F6-42C3-86D4-C1BD8BA2111B}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

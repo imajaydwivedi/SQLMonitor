@@ -66,10 +66,12 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
-              }
+              },
+              "unitScale": true
             },
             "overrides": [
               {
@@ -232,7 +234,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -284,7 +287,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -383,7 +387,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 9
+            "y": 1
           },
           "id": 219,
           "options": {
@@ -398,7 +402,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "10.3.1",
           "targets": [
             {
               "alias": "",
@@ -430,7 +434,7 @@
               }
             }
           ],
-          "title": "All Servers - Basic Details",
+          "title": "All Servers - Basic Details @ ${all_server_stable_info__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "type": "table"
         }
       ],
@@ -443,7 +447,7 @@
           "refId": "A"
         }
       ],
-      "title": "All Servers - Basic Info - \"${basic_info_servers_count}\" Total - \"${unsupported_servers_count}\" Non Supported",
+      "title": "All Servers - Basic Info - \"${basic_info_servers_count}\" Total - \"${unsupported_servers_count}\" Non Supported @ ${all_server_stable_info__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -478,11 +482,13 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
-              "unit": "string"
+              "unit": "string",
+              "unitScale": true
             },
             "overrides": [
               {
@@ -513,7 +519,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -550,7 +557,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -594,7 +602,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -675,7 +684,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -780,7 +790,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 2
           },
           "id": 850,
           "options": {
@@ -797,7 +807,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "10.3.1",
           "targets": [
             {
               "datasource": {
@@ -808,7 +818,7 @@
               "format": "table",
               "hide": false,
               "rawQuery": true,
-              "rawSql": "declare @_latency_minutes_threshold int = 20;\r\ndeclare @_latency_days_threshold int = 3;\r\ndeclare @t_servers_exception table (srv_name varchar(125));\r\n\r\ninsert @t_servers_exception -- list of servers that have permanent issues\r\nvalues ('196.1.115.169'),('196.1.115.212');\r\n\r\nselect\tcli.srv_name, id.jobs_server,\r\n\t\tcli.performance_counters__latency_minutes,\r\n\t\txevent_metrics__latency_minutes = case when (cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11) then cli.xevent_metrics__latency_minutes \r\n\t\t\t\t\t\t\t\t\t\t\t\t\twhen cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold then @_latency_minutes_threshold-1\r\n\t\t\t\t\t\t\t\t\t\t\t\t\telse cli.xevent_metrics__latency_minutes end,\r\n\t\tWhoIsActive__latency_minutes = case when cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 then cli.WhoIsActive__latency_minutes \r\n\t\t\t\t\t\t\t\t\t\t\t\t\twhen cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold then @_latency_minutes_threshold-1\r\n\t\t\t\t\t\t\t\t\t\t\t\t\telse cli.WhoIsActive__latency_minutes end,\r\n\t\tcli.os_task_list__latency_minutes,\r\n\t\tcli.disk_space__latency_minutes, \r\n\t\tcli.file_io_stats__latency_minutes,\r\n\t\tcli.sql_agent_job_stats__latency_minutes,\r\n\t\tcli.memory_clerks__latency_minutes,\r\n\t\tcli.wait_stats__latency_minutes,\r\n\t\tcli.BlitzIndex__latency_days,\r\n\t\tcli.BlitzIndex_Mode0__latency_days,\r\n\t\t--cli.BlitzIndex_Mode1__latency_days,\r\n\t\t--cli.BlitzIndex_Mode4__latency_days,\r\n\t\t--collection_time = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), cli.collection_time)\r\n\t\t[Issues] = (case when cli.performance_counters__latency_minutes > @_latency_minutes_threshold then 'performance_counters,' else '' end)+\r\n\t\t\t\t\t(case when cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11 then 'xevent_metrics' else '' end)+\r\n\t\t\t\t\t(case when cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 then 'WhoIsActive,' else '' end)+\r\n\t\t\t\t\t(case when cli.os_task_list__latency_minutes > @_latency_minutes_threshold then 'os_task_list,' else '' end)+\r\n\t\t\t\t\t(case when cli.disk_space__latency_minutes > @_latency_minutes_threshold*3 then 'disk_space,' else '' end)+\r\n\t\t\t\t\t(case when cli.file_io_stats__latency_minutes > @_latency_minutes_threshold*3 then 'file_io_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.wait_stats__latency_minutes > @_latency_minutes_threshold*2 then 'wait_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.sql_agent_job_stats__latency_minutes > @_latency_minutes_threshold*1.5 then 'sql_agent_job_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.memory_clerks__latency_minutes > @_latency_minutes_threshold then 'memory_clerks,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex__latency_days > @_latency_days_threshold then 'BlitzIndex,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode0__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode0,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode1__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode1,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode4__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode4,' else '' end)\r\n\t\t--,cli.host_name ,si.major_version_number ,si.product_version ,si.edition, vi.os_cpu, vi.sql_cpu\r\nfrom dbo.all_server_collection_latency_info cli\r\njoin dbo.all_server_stable_info si on si.srv_name = cli.srv_name\r\njoin dbo.all_server_volatile_info vi on vi.srv_name = cli.srv_name\r\nouter apply (select STUFF((select ', '+id.collector_powershell_jobs_server from (select distinct id.collector_powershell_jobs_server from dbo.instance_details id where id.sql_instance = cli.srv_name and id.host_name = cli.host_name) id for xml path('')), 1, 1, '') as jobs_server ) id\r\nwhere 1=1\r\nand (\tcli.performance_counters__latency_minutes > @_latency_minutes_threshold\r\n\t\tor (cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11)\r\n\t\tor (cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20)\r\n\t\tor cli.os_task_list__latency_minutes > @_latency_minutes_threshold\r\n\t\tor cli.disk_space__latency_minutes > @_latency_minutes_threshold*3\r\n\t\tor cli.file_io_stats__latency_minutes > @_latency_minutes_threshold*3\r\n\t\tor cli.wait_stats__latency_minutes > @_latency_minutes_threshold*2\r\n\t\tor cli.BlitzIndex__latency_days > @_latency_days_threshold\r\n\t\tor cli.BlitzIndex_Mode0__latency_days > @_latency_days_threshold*4\r\n\t\t--or cli.BlitzIndex_Mode1__latency_days > @_latency_days_threshold*4\r\n\t\t--or cli.BlitzIndex_Mode4__latency_days > @_latency_days_threshold*4\r\n\t\tor cli.sql_agent_job_stats__latency_minutes > @_latency_minutes_threshold*1.5\r\n\t\tor cli.memory_clerks__latency_minutes > @_latency_minutes_threshold\r\n\t)\r\nand cli.srv_name not in (select e.srv_name from @t_servers_exception e)\r\n\r\n",
+              "rawSql": "declare @_latency_minutes_threshold int = 20;\r\ndeclare @_latency_days_threshold int = 3;\r\ndeclare @t_servers_exception table (srv_name varchar(125));\r\n\r\ninsert @t_servers_exception -- list of servers that have permanent issues\r\nvalues ('192.168.1.21'),('192.168.1.22');\r\n\r\nselect\tcli.srv_name, id.jobs_server,\r\n\t\tcli.performance_counters__latency_minutes,\r\n\t\txevent_metrics__latency_minutes = case when (cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11) then cli.xevent_metrics__latency_minutes \r\n\t\t\t\t\t\t\t\t\t\t\t\t\twhen cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold then @_latency_minutes_threshold-1\r\n\t\t\t\t\t\t\t\t\t\t\t\t\telse cli.xevent_metrics__latency_minutes end,\r\n\t\tWhoIsActive__latency_minutes = case when cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 then cli.WhoIsActive__latency_minutes \r\n\t\t\t\t\t\t\t\t\t\t\t\t\twhen cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold then @_latency_minutes_threshold-1\r\n\t\t\t\t\t\t\t\t\t\t\t\t\telse cli.WhoIsActive__latency_minutes end,\r\n\t\tcli.os_task_list__latency_minutes,\r\n\t\tcli.disk_space__latency_minutes, \r\n\t\tcli.file_io_stats__latency_minutes,\r\n\t\tcli.sql_agent_job_stats__latency_minutes,\r\n\t\tcli.memory_clerks__latency_minutes,\r\n\t\tcli.wait_stats__latency_minutes,\r\n\t\tcli.BlitzIndex__latency_days,\r\n\t\tcli.BlitzIndex_Mode0__latency_days,\r\n\t\t--cli.BlitzIndex_Mode1__latency_days,\r\n\t\t--cli.BlitzIndex_Mode4__latency_days,\r\n\t\t--collection_time = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), cli.collection_time)\r\n\t\t[Issues] = (case when cli.performance_counters__latency_minutes > @_latency_minutes_threshold then 'performance_counters,' else '' end)+\r\n\t\t\t\t\t(case when cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11 then 'xevent_metrics' else '' end)+\r\n\t\t\t\t\t(case when cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 then 'WhoIsActive,' else '' end)+\r\n\t\t\t\t\t(case when cli.os_task_list__latency_minutes > @_latency_minutes_threshold then 'os_task_list,' else '' end)+\r\n\t\t\t\t\t(case when cli.disk_space__latency_minutes > @_latency_minutes_threshold*3 then 'disk_space,' else '' end)+\r\n\t\t\t\t\t(case when cli.file_io_stats__latency_minutes > @_latency_minutes_threshold*3 then 'file_io_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.wait_stats__latency_minutes > @_latency_minutes_threshold*2 then 'wait_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.sql_agent_job_stats__latency_minutes > @_latency_minutes_threshold*1.5 then 'sql_agent_job_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.memory_clerks__latency_minutes > @_latency_minutes_threshold then 'memory_clerks,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex__latency_days > @_latency_days_threshold then 'BlitzIndex,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode0__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode0,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode1__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode1,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode4__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode4,' else '' end)\r\n\t\t--,cli.host_name ,si.major_version_number ,si.product_version ,si.edition, vi.os_cpu, vi.sql_cpu\r\nfrom dbo.all_server_collection_latency_info cli\r\njoin dbo.all_server_stable_info si on si.srv_name = cli.srv_name\r\njoin dbo.all_server_volatile_info vi on vi.srv_name = cli.srv_name\r\nouter apply (select STUFF((select ', '+id.collector_powershell_jobs_server from (select distinct id.collector_powershell_jobs_server from dbo.instance_details id where id.sql_instance = cli.srv_name and id.host_name = cli.host_name) id for xml path('')), 1, 1, '') as jobs_server ) id\r\nwhere 1=1\r\nand (\tcli.performance_counters__latency_minutes > @_latency_minutes_threshold\r\n\t\tor (cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11)\r\n\t\tor (cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20)\r\n\t\tor cli.os_task_list__latency_minutes > @_latency_minutes_threshold\r\n\t\tor cli.disk_space__latency_minutes > @_latency_minutes_threshold*3\r\n\t\tor cli.file_io_stats__latency_minutes > @_latency_minutes_threshold*3\r\n\t\tor cli.wait_stats__latency_minutes > @_latency_minutes_threshold*2\r\n\t\tor cli.BlitzIndex__latency_days > @_latency_days_threshold\r\n\t\tor cli.BlitzIndex_Mode0__latency_days > @_latency_days_threshold*4\r\n\t\t--or cli.BlitzIndex_Mode1__latency_days > @_latency_days_threshold*4\r\n\t\t--or cli.BlitzIndex_Mode4__latency_days > @_latency_days_threshold*4\r\n\t\tor cli.sql_agent_job_stats__latency_minutes > @_latency_minutes_threshold*1.5\r\n\t\tor cli.memory_clerks__latency_minutes > @_latency_minutes_threshold\r\n\t)\r\nand cli.srv_name not in (select e.srv_name from @t_servers_exception e)\r\n\r\n",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -829,11 +839,11 @@
               }
             }
           ],
-          "title": "Servers with Data Collection Issues",
+          "title": "Servers with Data Collection Issues @ ${collection_latency_info__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "type": "table"
         }
       ],
-      "title": "Servers with Data Collection Issues - \"${servers_with_data_issue_count}\" Total",
+      "title": "Servers with Data Collection Issues - \"${servers_with_data_issue_count}\" Total @ ${collection_latency_info__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -870,7 +880,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "blue"
+                    "color": "blue",
+                    "value": null
                   }
                 ]
               },
@@ -900,7 +911,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -930,7 +942,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -1064,7 +1077,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 3
           },
           "id": 844,
           "options": {
@@ -1155,7 +1168,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "blue"
+                    "color": "blue",
+                    "value": null
                   }
                 ]
               },
@@ -1185,7 +1199,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -1308,7 +1323,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 12
+            "y": 4
           },
           "id": 871,
           "options": {
@@ -1356,11 +1371,11 @@
               }
             }
           ],
-          "title": "SQLAgent Service is OFFLINE",
+          "title": "SQLAgent Service is OFFLINE @ ${services_all_servers__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "type": "table"
         }
       ],
-      "title": "CRITICAL - SQLAgent Service - \"${offline_agent_count}\" OFFLINE",
+      "title": "CRITICAL - SQLAgent Service - \"${offline_agent_count}\" OFFLINE @ ${services_all_servers__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -1396,10 +1411,12 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
-              }
+              },
+              "unitScale": true
             },
             "overrides": [
               {
@@ -1425,7 +1442,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "purple"
+                          "color": "purple",
+                          "value": null
                         }
                       ]
                     }
@@ -1455,7 +1473,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -1508,7 +1527,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "dark-blue"
+                          "color": "dark-blue",
+                          "value": null
                         }
                       ]
                     }
@@ -1671,7 +1691,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "orange",
@@ -1718,7 +1739,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "yellow",
@@ -1763,7 +1785,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -1820,7 +1843,7 @@
             "h": 19,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 5
           },
           "id": 869,
           "options": {
@@ -1835,7 +1858,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "10.3.1",
           "targets": [
             {
               "alias": "",
@@ -1868,12 +1891,12 @@
               }
             }
           ],
-          "title": "All Servers - Backup History - Require ATTENTION",
+          "title": "All Servers - Backup History - Require ATTENTION @ ${backups_all_servers__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "transformations": [],
           "type": "table"
         }
       ],
-      "title": "All Servers - Backup History - Require ATTENTION - \"${database_counts_with_backup_issue}\" Databases",
+      "title": "All Servers - Backup History - Require ATTENTION - \"${database_counts_with_backup_issue}\" Databases @ ${backups_all_servers__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -1908,7 +1931,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1942,7 +1966,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -1972,7 +1997,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -2012,7 +2038,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         }
                       ]
                     }
@@ -2054,7 +2081,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-yellow"
+                          "color": "super-light-yellow",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -2178,7 +2206,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -2211,7 +2240,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -2256,7 +2286,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 6
           },
           "id": 864,
           "options": {
@@ -2302,11 +2332,11 @@
               }
             }
           ],
-          "title": "All Servers - SQLMonitor Jobs - Require ATTENTION",
+          "title": "All Servers - SQLMonitor Jobs - Require ATTENTION @ ${sql_agent_jobs__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "type": "table"
         }
       ],
-      "title": "All Servers - SQLMonitor Jobs - \"${dba_jobs_with_issue_counts}\" Require ATTENTION ",
+      "title": "All Servers - SQLMonitor Jobs - \"${dba_jobs_with_issue_counts}\" Require ATTENTION  @ ${sql_agent_jobs__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -2342,14 +2372,16 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unitScale": true
             },
             "overrides": [
               {
@@ -2379,7 +2411,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -2419,7 +2452,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-blue"
+                          "color": "super-light-blue",
+                          "value": null
                         }
                       ]
                     }
@@ -2586,7 +2620,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -2638,7 +2673,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -2651,7 +2687,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 21
+            "y": 7
           },
           "id": 852,
           "options": {
@@ -2667,7 +2703,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "10.3.1",
           "targets": [
             {
               "datasource": {
@@ -2698,11 +2734,11 @@
               }
             }
           ],
-          "title": "Disk Space - All Servers",
+          "title": "Disk Space - All Servers @ ${disk_space__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "type": "table"
         }
       ],
-      "title": "All Servers - Disk Utilization - Require ATTENTION - \"${critical_disks_counts}\" CRITICAL - \"${warning_disks_counts}\" WARNING",
+      "title": "All Servers - Disk Utilization - Require ATTENTION - \"${critical_disks_counts}\" CRITICAL - \"${warning_disks_counts}\" WARNING @ ${disk_space__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -2739,7 +2775,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -2769,7 +2806,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -2857,7 +2895,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -2896,7 +2935,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -2930,7 +2970,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-blue"
+                          "color": "super-light-blue",
+                          "value": null
                         }
                       ]
                     }
@@ -3099,7 +3140,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "super-light-yellow",
@@ -3160,7 +3202,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "super-light-yellow",
@@ -3206,7 +3249,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "super-light-yellow",
@@ -3432,7 +3476,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "dark-blue"
+                          "color": "dark-blue",
+                          "value": null
                         }
                       ]
                     }
@@ -3468,7 +3513,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -3497,7 +3543,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -3510,7 +3557,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 16
+            "y": 8
           },
           "id": 867,
           "options": {
@@ -3558,11 +3605,11 @@
               }
             }
           ],
-          "title": "All Servers - AlwaysOn Latency - dbo.ag_health_state_all_servers",
+          "title": "All Servers - AlwaysOn Latency - dbo.ag_health_state_all_servers @ ${ag_health_state__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "type": "table"
         }
       ],
-      "title": "All Servers - AlwaysOn Latency - \"${ag_issue_counts}\" Require ATTENTION",
+      "title": "All Servers - AlwaysOn Latency - \"${ag_issue_counts}\" Require ATTENTION @ ${ag_health_state__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -3598,14 +3645,16 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unitScale": true
             },
             "overrides": [
               {
@@ -3635,7 +3684,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -3675,7 +3725,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-blue"
+                          "color": "super-light-blue",
+                          "value": null
                         }
                       ]
                     }
@@ -3837,7 +3888,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -3881,7 +3933,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -3970,7 +4023,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -4107,7 +4161,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 23
+            "y": 9
           },
           "id": 856,
           "options": {
@@ -4123,7 +4177,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "10.3.1",
           "targets": [
             {
               "datasource": {
@@ -4154,11 +4208,11 @@
               }
             }
           ],
-          "title": "Log Space Consumers",
+          "title": "Log Space Consumers @ ${log_space_consumers__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "type": "table"
         }
       ],
-      "title": "All Servers - Log Space Utilization - \"${log_space_issue_counts}\" Require ATTENTION",
+      "title": "All Servers - Log Space Utilization - \"${log_space_issue_counts}\" Require ATTENTION @ ${log_space_consumers__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -4195,14 +4249,16 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unitScale": true
             },
             "overrides": [
               {
@@ -4228,7 +4284,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -4328,7 +4385,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "yellow",
@@ -4440,7 +4498,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -4522,7 +4581,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -4582,7 +4642,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -4599,7 +4660,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 24
+            "y": 10
           },
           "id": 860,
           "options": {
@@ -4615,7 +4676,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "10.3.1",
           "targets": [
             {
               "datasource": {
@@ -4646,11 +4707,11 @@
               }
             }
           ],
-          "title": "TempDb Usage",
+          "title": "TempDb Usage @ ${tempdb_space_usage__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "type": "table"
         }
       ],
-      "title": "All Servers - Tempdb Utilization - \"${tempdb_space_issue_counts}\" Require ATTENTION",
+      "title": "All Servers - Tempdb Utilization - \"${tempdb_space_issue_counts}\" Require ATTENTION @ ${tempdb_space_usage__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -4686,7 +4747,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4779,7 +4841,7 @@
           "refId": "A"
         }
       ],
-      "title": "All Servers - Health Metrics - \"${core_metrics_issue_counts}\" Require ATTENTION",
+      "title": "All Servers - Health Metrics - \"${core_metrics_issue_counts}\" Require ATTENTION @ ${all_server_volatile_info__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -5653,8 +5715,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717642021417",
-          "value": "1717642021417"
+          "text": "1720417360482",
+          "value": "1720417360482"
         },
         "datasource": {
           "type": "mssql",
@@ -6453,8 +6515,8 @@
       {
         "current": {
           "selected": false,
-          "text": "0",
-          "value": "0"
+          "text": "1",
+          "value": "1"
         },
         "datasource": {
           "type": "mssql",
@@ -6501,8 +6563,8 @@
       {
         "current": {
           "selected": false,
-          "text": "0",
-          "value": "0"
+          "text": "3",
+          "value": "3"
         },
         "datasource": {
           "type": "mssql",
@@ -6621,8 +6683,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -6690,6 +6752,246 @@
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1720415760511",
+          "value": "1720415760511"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select all_server_stable_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_stable_info",
+        "hide": 2,
+        "includeAll": false,
+        "label": "StableInfo Collection Time",
+        "multi": false,
+        "name": "all_server_stable_info__collection_time_utc",
+        "options": [],
+        "query": "select all_server_stable_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_stable_info",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1720417360482",
+          "value": "1720417360482"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select all_server_volatile_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_volatile_info",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Volatile Info Collection Time",
+        "multi": false,
+        "name": "all_server_volatile_info__collection_time_utc",
+        "options": [],
+        "query": "select all_server_volatile_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_volatile_info",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1720416720845",
+          "value": "1720416720845"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select all_server_collection_latency_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_collection_latency_info cli",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Collection Latency Time",
+        "multi": false,
+        "name": "collection_latency_info__collection_time_utc",
+        "options": [],
+        "query": "select all_server_collection_latency_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_collection_latency_info cli",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1720417201650",
+          "value": "1720417201650"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select services_all_servers__collection_time_utc = max(collection_time_utc)\nfrom dbo.services_all_servers sas",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Services Collection Time",
+        "multi": false,
+        "name": "services_all_servers__collection_time_utc",
+        "options": [],
+        "query": "select services_all_servers__collection_time_utc = max(collection_time_utc)\nfrom dbo.services_all_servers sas",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1720416301316",
+          "value": "1720416301316"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select backups_all_servers__collection_time_utc = max(bas.collection_time_utc)\nfrom dbo.backups_all_servers bas",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Backups Collection Time",
+        "multi": false,
+        "name": "backups_all_servers__collection_time_utc",
+        "options": [],
+        "query": "select backups_all_servers__collection_time_utc = max(bas.collection_time_utc)\nfrom dbo.backups_all_servers bas",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1720416600513",
+          "value": "1720416600513"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select sql_agent_jobs__collection_time_utc = max(sj.CollectionTimeUTC)\nfrom dbo.sql_agent_jobs_all_servers sj",
+        "hide": 2,
+        "includeAll": false,
+        "label": "SQLAgent Jobs collection Time",
+        "multi": false,
+        "name": "sql_agent_jobs__collection_time_utc",
+        "options": [],
+        "query": "select sql_agent_jobs__collection_time_utc = max(sj.CollectionTimeUTC)\nfrom dbo.sql_agent_jobs_all_servers sj",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1720416601500",
+          "value": "1720416601500"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select disk_space__collection_time_utc = max(ds.collection_time_utc)\nfrom dbo.disk_space_all_servers ds",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Disk Space Collection Time",
+        "multi": false,
+        "name": "disk_space__collection_time_utc",
+        "options": [],
+        "query": "select disk_space__collection_time_utc = max(ds.collection_time_utc)\nfrom dbo.disk_space_all_servers ds",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select ag_health_state__collection_time_utc = max(ahs.collection_time_utc)\nfrom dbo.ag_health_state_all_servers ahs",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Ag Health State Collection Time",
+        "multi": false,
+        "name": "ag_health_state__collection_time_utc",
+        "options": [],
+        "query": "select ag_health_state__collection_time_utc = max(ahs.collection_time_utc)\nfrom dbo.ag_health_state_all_servers ahs",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1720417201163",
+          "value": "1720417201163"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select log_space_consumers__collection_time_utc = max(ls.collection_time_utc)\nfrom dbo.log_space_consumers_all_servers ls",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Log Space Consumers Collection Time",
+        "multi": false,
+        "name": "log_space_consumers__collection_time_utc",
+        "options": [],
+        "query": "select log_space_consumers__collection_time_utc = max(ls.collection_time_utc)\nfrom dbo.log_space_consumers_all_servers ls",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1720417201320",
+          "value": "1720417201320"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select tempdb_space_usage__collection_time_utc = max(su.collection_time_utc)\nfrom dbo.tempdb_space_usage_all_servers su",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Tempdb Space Usage Collection Time",
+        "multi": false,
+        "name": "tempdb_space_usage__collection_time_utc",
+        "options": [],
+        "query": "select tempdb_space_usage__collection_time_utc = max(su.collection_time_utc)\nfrom dbo.tempdb_space_usage_all_servers su",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
@@ -6709,6 +7011,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - All Servers",
   "uid": "distributed_live_dashboard_all_servers",
-  "version": 127,
+  "version": 154,
   "weekStart": ""
 }
