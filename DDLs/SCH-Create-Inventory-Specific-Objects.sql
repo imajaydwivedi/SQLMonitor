@@ -1,6 +1,7 @@
 /*
-	Version:		2024-06-05
-	Date:			2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
+	Version:		2024-08-07
+	Date:			2024-08-07 - Enhancement#45 - Add Preventive Triggers on dbo.instance_details to avoid mistakes
+					2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
 					2024-04-26 - Enhancement#40 - Change Retention of dbo.all_server_volatile_info_history to 15 Days
 					2024-02-21 - Enhancement#30 - Add flag for choice of MemoryOptimized Tables 
 					2023-10-16 - Enhancement#5 - Dashboard for AlwaysOn Latency
@@ -622,6 +623,244 @@ go
 if not exists (select * from sys.columns c where c.object_id = OBJECT_ID('dbo.instance_details') and c.name = 'is_linked_server_working')
     alter table dbo.instance_details add [is_linked_server_working] bit NOT NULL default 1;
 go
+
+if OBJECT_ID('dbo.instance_details_history') is null
+begin
+	CREATE TABLE dbo.instance_details_history
+	(
+		[sql_instance] [nvarchar](255) NOT NULL,
+		[sql_instance_port] [varchar](10) NULL,
+		[host_name] [nvarchar](255) NOT NULL,
+		[database] [varchar](255) NOT NULL,
+		[collector_tsql_jobs_server] [varchar](255) NOT NULL,
+		[collector_powershell_jobs_server] [varchar](255) NOT NULL,
+		[data_destination_sql_instance] [varchar](255) NOT NULL,
+		[is_available] [bit] NOT NULL,
+		[created_date_utc] [datetime2](7) NOT NULL,
+		[last_unavailability_time_utc] [datetime2](7) NULL,
+		[dba_group_mail_id] [varchar](2000) NOT NULL,
+		[sqlmonitor_script_path] [varchar](2000) NOT NULL,
+		[sqlmonitor_version] [varchar](20) NOT NULL,
+		[is_alias] [bit] NOT NULL,
+		[source_sql_instance] [varchar](255) NULL,
+		[is_enabled] [bit] NOT NULL,
+		[is_linked_server_working] [bit] NOT NULL,
+		[more_info] [varchar](2000) NULL,
+
+		action_type varchar(50) not null,
+		action_time datetime2 not null default sysdatetime(),
+		acted_by_login varchar(125) not null default suser_name(),
+		acted_by_program varchar(500) null default app_name(),
+		acted_by_client_host varchar(125) null default host_name(),
+		remarks varchar(500) null,
+
+		index CI_instance_details_history clustered (action_time)
+	);
+end
+go
+
+-- drop trigger [dbo].[tgr_dml__instance_details] on dbo.instance_details
+create or alter trigger dbo.tgr_dml__instance_details
+	on dbo.instance_details
+	after insert, update, delete
+as 
+begin
+	declare @action_type varchar(20);
+	declare @remarks nvarchar(255);
+	declare @identity_min bigint;
+	declare @identity_max bigint;
+	declare @current_time datetime2 = sysdatetime();
+	declare @subject varchar(2000);
+	declare @table_html nvarchar(max);
+	declare @body_html nvarchar(max);
+	declare @footer_html nvarchar(max);
+	declare @dba_team_email_id varchar(125) = 'some_dba_mail_id@gmail.com';
+
+	if LEFT(@dba_team_email_id,CHARINDEX('@',@dba_team_email_id)-1) = 'some_dba_mail_id'
+		select top 1 @dba_team_email_id = dba_group_mail_id from dbo.instance_details where is_enabled = 1 and is_alias = 0;
+
+	if exists (select * from deleted) and exists (select * from inserted)
+	begin
+		set @action_type = 'update'
+		select @remarks = convert(nvarchar, count(*)) + ' row(s) affected.'  from inserted;
+	end
+	if exists (select * from deleted) and not exists (select * from inserted)
+	begin
+		set @action_type = 'delete'
+		select @remarks = convert(nvarchar, count(*)) + ' row(s) affected.'  from deleted;
+	end
+	if not exists (select * from deleted) and exists (select * from inserted)
+	begin
+		set @action_type = 'insert'
+		select @remarks = convert(nvarchar, count(*)) + ' row(s) affected.'  from inserted;
+	end
+
+	if exists (select * from deleted)
+	begin
+		insert dbo.instance_details_history
+		(sql_instance, sql_instance_port, [host_name], [database], collector_tsql_jobs_server, collector_powershell_jobs_server, data_destination_sql_instance, is_available, created_date_utc, last_unavailability_time_utc, dba_group_mail_id, sqlmonitor_script_path, sqlmonitor_version, is_alias, source_sql_instance, is_enabled, is_linked_server_working, more_info, action_type, action_time, acted_by_login, acted_by_program, acted_by_client_host, remarks)
+		select	sql_instance, sql_instance_port, [host_name], [database], collector_tsql_jobs_server, collector_powershell_jobs_server, data_destination_sql_instance, is_available, created_date_utc, last_unavailability_time_utc, dba_group_mail_id, sqlmonitor_script_path, sqlmonitor_version, is_alias, source_sql_instance, is_enabled, is_linked_server_working, more_info, 
+			action_type = @action_type + (case when @action_type = 'update' then '-old-data' else '' end), 
+			action_time = @current_time, 
+			acted_by_login = SUSER_NAME(), 
+			acted_by_program = APP_NAME(), 
+			acted_by_client_host = HOST_NAME(), 
+			remarks = @remarks
+		from deleted d;
+	end
+
+	if exists (select * from inserted)
+	begin
+		insert dbo.instance_details_history
+		(sql_instance, sql_instance_port, [host_name], [database], collector_tsql_jobs_server, collector_powershell_jobs_server, data_destination_sql_instance, is_available, created_date_utc, last_unavailability_time_utc, dba_group_mail_id, sqlmonitor_script_path, sqlmonitor_version, is_alias, source_sql_instance, is_enabled, is_linked_server_working, more_info, action_type, action_time, acted_by_login, acted_by_program, acted_by_client_host, remarks)
+		select	sql_instance, sql_instance_port, [host_name], [database], collector_tsql_jobs_server, collector_powershell_jobs_server, data_destination_sql_instance, is_available, created_date_utc, last_unavailability_time_utc, dba_group_mail_id, sqlmonitor_script_path, sqlmonitor_version, is_alias, source_sql_instance, is_enabled, is_linked_server_working, more_info, 
+			action_type = @action_type + (case when @action_type = 'update' then '-new-data' else '' end), 
+			action_time = @current_time, 
+			acted_by_login = SUSER_NAME(), 
+			acted_by_program = APP_NAME(), 
+			acted_by_client_host = HOST_NAME(), 
+			remarks = @remarks
+		from inserted i;
+	end
+
+	-- Check if sql_instance has been 'Disabled'
+	if @action_type = 'update' 
+		and exists (select * from deleted d join inserted i on i.sql_instance = d.sql_instance and i.host_name = d.host_name 
+					where i.is_enabled = 0 and d.is_enabled = 1 and i.is_alias = 0)
+	begin
+		set @subject = 'SQLMonitor Monitoring Disabled - '+convert(varchar,@current_time,120);
+		set @body_html = N'<H1>SQLMonitor Monitoring Disabled - '+convert(varchar,@current_time,120)+'</H1>'
+		set @table_html = N'<table border="1">'
+			+ N'<tr>'+
+				N'<th>SQL Instance</th> <th>SQL Port</th> <th>Host Name</th> <th>Updated By</th> <th>Updated Time</th> <th>More Info</th>'
+			+ N'</tr>'
+			+ CAST((
+					SELECT td = i.sql_instance, '',
+						td = coalesce(i.sql_instance_port,' '), '',
+						td = i.[host_name], '',
+						td = convert(varchar,SUSER_NAME()), '',
+						td = convert(varchar,@current_time,121), '',
+						td = coalesce(i.more_info,' ')
+					from deleted d join inserted i 
+						on i.sql_instance = d.sql_instance and i.host_name = d.host_name 
+					where i.is_enabled = 0 and d.is_enabled = 1 and i.is_alias = 0
+					FOR XML PATH('tr'),
+						TYPE
+					) AS NVARCHAR(MAX))
+			+ N'</table>';	
+		
+		set @footer_html = N'<div><p>Kindly update other inventory tables also.</p></div>';
+
+		set @body_html = @body_html+@table_html+@footer_html
+
+		exec msdb.dbo.sp_send_dbmail
+					@recipients = @dba_team_email_id,
+					@subject = @subject,
+					@body = @body_html,
+					@body_format = 'HTML';
+	end
+
+
+	-- Check if sql_instance is deleted
+	if @action_type = 'delete'
+		and exists (select * from deleted d	where d.is_alias = 0)
+	begin
+		set @subject = 'SQLMonitor Monitoring - Record Removed - '+convert(varchar,@current_time,120);
+		set @body_html = N'<H1>Server Removed from SQLMonitor Table - '+convert(varchar,@current_time,120)+'</H1>'
+		set @table_html = N'<table border="1">'
+			+ N'<tr>'+
+				N'<th>SQL Instance</th> <th>SQL Port</th> <th>Host Name</th> <th>Removed By</th> <th>Removal Time</th> <th>More Info</th>'
+			+ N'</tr>'
+			+ CAST((
+					SELECT td = d.sql_instance, '',
+						td = coalesce(d.sql_instance_port,' '), '',
+						td = d.[host_name], '',
+						td = convert(varchar,SUSER_NAME()), '',
+						td = convert(varchar,@current_time,121), '',
+						td = coalesce(d.more_info,' ')
+					from deleted d
+					where d.is_alias = 0
+					FOR XML PATH('tr'),
+						TYPE
+					) AS NVARCHAR(MAX))
+			+ N'</table>';	
+		
+		set @footer_html = N'<div><p>In general, removal of server record from <code>dbo.instance_details</code> table is not permitted. <br><br>Kindly ensure this is done only in exceptional case.</p></div>';
+
+		set @body_html = @body_html+@table_html+@footer_html
+
+		exec msdb.dbo.sp_send_dbmail
+					@recipients = @dba_team_email_id,
+					@subject = @subject,
+					@body = @body_html,
+					@body_format = 'HTML';
+	end
+end
+go
+
+-- drop trigger [dbo].[tgr_dml__instance_details__prevent_bulk_udpate] on dbo.instance_details
+create or alter trigger dbo.tgr_dml__instance_details__prevent_bulk_udpate
+	on dbo.instance_details
+	for update, delete, insert
+as 
+begin
+	declare @action_type varchar(20);
+
+	if exists (select * from deleted) and exists (select * from inserted)
+	begin
+		set @action_type = 'update'
+	end
+	if exists (select * from deleted) and not exists (select * from inserted)
+	begin
+		set @action_type = 'delete'
+	end
+	if not exists (select * from deleted) and exists (select * from inserted)
+	begin
+		set @action_type = 'insert'
+	end
+
+	-- Check if sql_instance has been 'Disabled'
+	if @action_type in ('update','delete')
+		and (select count(*) from deleted) > 5
+	begin
+		RAISERROR ('More than 5 rows cannot be updated in a single transaction in table [dbo].[instance_details].', 16, 1);  
+		ROLLBACK TRANSACTION; 
+	end
+
+	-- Check if host entry already present for another instance
+	if @action_type = 'insert'
+	begin
+		if exists (select * from inserted)
+		begin
+			if exists (
+						select * 
+						from inserted i
+						where i.is_alias = 0
+						and exists (select * from dbo.instance_details id 
+									where id.is_enabled = 1 and id.is_alias = 0
+									and id.sql_instance <> i.sql_instance
+									and id.host_name = i.host_name
+									and id.data_destination_sql_instance <> i.data_destination_sql_instance
+									)
+					)
+			begin
+				RAISERROR ('[data_destination_sql_instance] cannot be more than 1 for a single host_name in table [dbo].[instance_details].', 16, 1);  
+				ROLLBACK TRANSACTION; 
+			end
+		end
+	end
+end
+go
+
+insert dbo.purge_table (table_name, date_key, retention_days, purge_row_size, reference)
+select	table_name, date_key, retention_days, purge_row_size = 100000, reference = 'Login Expiry Infra'
+from ( values 
+			('dbo.instance_details_history', 'action_time', 365)
+	) login_expiry_infra_tables (table_name, date_key, retention_days)
+where 1=1
+and not exists (select * from dbo.purge_table pt where pt.table_name = login_expiry_infra_tables.table_name)
+go
+
 
 CREATE TABLE [dbo].[backups_all_servers]
 (
