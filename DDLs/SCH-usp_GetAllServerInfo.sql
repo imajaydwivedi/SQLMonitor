@@ -32,13 +32,15 @@ AS
 BEGIN
 
 	/*
-		Version:		1.6.0
-		Date:			2023-07-14 - Enhancement#268 - Add tables sql_agent_job_stats & memory_clerks in Collection Latency Dashboard
+		Version:		2024-06-05
+		Date:			2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
+						2023-08-17 - Enhancement#274 - Populate [is_linked_server_working]
+						2023-07-14 - Enhancement#268 - Add tables sql_agent_job_stats & memory_clerks in Collection Latency Dashboard
 						2023-06-19 - Enhancement#262 - Add is_enabled field
 						2023-03-04 - Enhancement#245 - Add SQL Port Support
 						2022-03-31 - Enhancement#227 - Add CollectionTime of Each Table Data
 						2022-10-16 - Bug/Fix - Inventory server not appearing when Named Instance
-						2023-08-17 - Enhancement#274 - Populate [is_linked_server_working]
+						
 		Help:			https://www.sommarskog.se/grantperm.html
 						https://stackoverflow.com/questions/10191193/how-to-test-linkedservers-connectivity-in-tsql
 
@@ -70,8 +72,9 @@ BEGIN
 			blocked_counts int, blocked_duration_max_seconds bigint, total_physical_memory_kb bigint, 
 			available_physical_memory_kb bigint, system_high_memory_signal_state varchar(20), 
 			physical_memory_in_use_kb decimal(20,2), memory_grants_pending int, connection_count int, 
-			active_requests_count int, waits_per_core_per_minute decimal(20,2), os_start_time_utc datetime2, cpu_count smallint, 
-			scheduler_count smallint, major_version_number smallint, minor_version_number smallint,
+			active_requests_count int, waits_per_core_per_minute decimal(20,2), avg_disk_wait_ms decimal(20,2), 
+			os_start_time_utc datetime2, cpu_count smallint, scheduler_count smallint, major_version_number smallint, 
+			minor_version_number smallint,
 
 			performance_counters__latency_minutes int, xevent_metrics__latency_minutes int, WhoIsActive__latency_minutes int,
 			os_task_list__latency_minutes int, disk_space__latency_minutes int, file_io_stats__latency_minutes int,
@@ -107,6 +110,7 @@ BEGIN
 	declare @_connection_count	int;
 	declare @_active_requests_count	int;
 	declare @_waits_per_core_per_minute	decimal(20,2);
+	declare @_avg_disk_wait_ms	decimal(20,2);
 	declare @_os_start_time_utc	datetime2;
 	declare @_cpu_count int;
 	declare @_scheduler_count int;
@@ -258,6 +262,7 @@ BEGIN
 		set @_connection_count = NULL;
 		set @_active_requests_count = NULL;
 		set @_waits_per_core_per_minute = NULL;
+		set @_avg_disk_wait_ms = NULL;
 		set @_os_start_time_utc	= NULL;
 		set @_cpu_count = NULL;
 		set @_scheduler_count = NULL;
@@ -1257,6 +1262,38 @@ exec usp_waits_per_core_per_minute;
 		end
 
 
+		-- [avg_disk_wait_ms] => Create SQL Statement to Execute
+		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'avg_disk_wait_ms') )
+		begin
+			delete from @_result;
+			set @_sql =  "
+SET NOCOUNT ON;
+exec usp_avg_disk_wait_ms;
+"
+			-- Decorate for remote query if LinkedServer
+			if @_isLocalHost = 0
+				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
+		
+			begin try
+				insert @_result (col_decimal)
+				exec (@_sql);
+
+				-- set @_avg_disk_wait_ms
+				select @_avg_disk_wait_ms = col_decimal from @_result;
+			end try
+			begin catch
+				-- print @_sql;
+				print char(10)+char(13)+'Error occurred while executing below query on '+quotename(@_srv_name)+char(10)+'     '+@_sql;
+				print  '	ErrorNumber => '+convert(varchar,ERROR_NUMBER());
+				print  '	ErrorSeverity => '+convert(varchar,ERROR_SEVERITY());
+				print  '	ErrorState => '+convert(varchar,ERROR_STATE());
+				--print  '	ErrorProcedure => '+ERROR_PROCEDURE();
+				print  '	ErrorLine => '+convert(varchar,ERROR_LINE());
+				print  '	ErrorMessage => '+ERROR_MESSAGE();
+			end catch
+		end
+
+
 		-- [os_start_time_utc] => Create SQL Statement to Execute
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'os_start_time_utc') )
 		begin
@@ -1927,8 +1964,8 @@ on 1=1";
 				[processor_name], [product_version], [edition], [sqlserver_start_time_utc], [os_cpu], [sql_cpu], 
 				[pcnt_kernel_mode], [page_faults_kb], [blocked_counts], [blocked_duration_max_seconds], [total_physical_memory_kb], 
 				[available_physical_memory_kb], [system_high_memory_signal_state], [physical_memory_in_use_kb], [memory_grants_pending], 
-				[connection_count], [active_requests_count], [waits_per_core_per_minute], [os_start_time_utc], [cpu_count], 
-				[scheduler_count], [major_version_number], [minor_version_number], [performance_counters__latency_minutes],
+				[connection_count], [active_requests_count], [waits_per_core_per_minute], [avg_disk_wait_ms], [os_start_time_utc],
+				[cpu_count], [scheduler_count], [major_version_number], [minor_version_number], [performance_counters__latency_minutes],
 				[xevent_metrics__latency_minutes], [WhoIsActive__latency_minutes], [os_task_list__latency_minutes], 
 				[disk_space__latency_minutes], [file_io_stats__latency_minutes], [sql_agent_job_stats__latency_minutes], 
 				[memory_clerks__latency_minutes], [wait_stats__latency_minutes], [BlitzIndex__latency_days],
@@ -1961,6 +1998,7 @@ on 1=1";
 					,[connection_count] = @_connection_count
 					,[active_requests_count] = @_active_requests_count
 					,[waits_per_core_per_minute] = @_waits_per_core_per_minute
+					,[avg_disk_wait_ms] = @_avg_disk_wait_ms
 					,[os_start_time_utc] = @_os_start_time_utc
 					,[cpu_count] = @_cpu_count
 					,[scheduler_count] = @_scheduler_count

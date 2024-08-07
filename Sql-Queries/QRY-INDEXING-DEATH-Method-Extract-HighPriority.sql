@@ -5,8 +5,8 @@ set nocount on;
 declare @sql nvarchar(max);
 declare @params nvarchar(2000);
 declare @more_info_filter varchar(2000);
-declare @run_datetime_mode0 datetime = '2024-01-26 20:13:00.000';
-declare @run_datetime_mode2 datetime = '2024-02-01 20:39:00.000';
+declare @run_datetime_mode0 datetime = '2024-03-01 20:16:00.000';
+declare @run_datetime_mode2 datetime = '2024-03-01 19:26:00.000';
 declare @heap_size_mb_threshold numeric(20,2) = '200';
 declare @heap_reads_mimimum int = 100;
 
@@ -21,7 +21,8 @@ from dbo.BlitzIndex_Mode0 bi
 where 1=1
 --and bi.priority = -1 -- Use it to find out stats for max UpTime Days
 and bi.run_datetime = @run_datetime_mode0
-and bi.finding in ('Self Loathing Indexes: Small Active heap','Self Loathing Indexes: Medium Active heap','Self Loathing Indexes: Large Active Heap');
+--and bi.finding in ('Self Loathing Indexes: Small Active heap','Self Loathing Indexes: Medium Active heap','Self Loathing Indexes: Large Active Heap');
+and bi.finding like '%Heap%'
 
 print 'Total records in #BlitzIndex_Mode0_Heaps => '+convert(varchar,@@rowcount);
 
@@ -266,7 +267,7 @@ begin
 	set quoted_identifier off;
 	set @_sql = "
 /*	*****************************************************************************************************************
-	"+@_tbl_name_full+" "+@_type+""+ @_index_size_summary+". "+@_data_compression_desc+"
+	"+@_tbl_name_full+". "+@_type+""+ @_index_size_summary+". "+@_data_compression_desc+"
 	"+@_index_usage_summary+"
 	"+@_index_op_stats+
 	(case when @_string is not null then char(13)+char(9)+@_string else '' end)+ "
@@ -285,7 +286,7 @@ begin
 
 
 */
-
+GO
 	";
 	set quoted_identifier on;
 	print @_sql;

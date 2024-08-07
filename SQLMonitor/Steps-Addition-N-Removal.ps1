@@ -5,7 +5,7 @@ Param (
     [String]$Action = "AddStep",
 
     [Parameter(Mandatory=$false)]
-    [String]$StepName = "37__CreateJobStopStuckSQLMonitorJobs",
+    [String]$StepName = "33__CreateSQLAgentAlerts",
     
     [Parameter(Mandatory=$false)]
     [String[]]$AllSteps = @( "1__sp_WhoIsActive", "2__AllDatabaseObjects", "3__XEventSession",
@@ -18,19 +18,20 @@ Param (
                 "22__CreateJobRunLogSaver", "23__CreateJobRunTempDbSaver", "24__CreateJobRunWhoIsActive",
                 "25__CreateJobRunBlitzIndex", "26__CreateJobRunBlitz", "27__CreateJobRunBlitzIndexWeekly",
                 "28__CreateJobCollectMemoryClerks", "29__CreateJobCollectPrivilegedInfo", "30__CreateJobCollectAgHealthState",
-                "31__CreateJobCheckSQLAgentJobs", "32__CreateJobUpdateSqlServerVersions", "33__CreateJobCheckInstanceAvailability",
-                "34__CreateJobGetAllServerInfo", "35__CreateJobGetAllServerCollectedData", "36__CreateJobGetAllServerDashboardMail",
-                "37__CreateJobStopStuckSQLMonitorJobs", "38__WhoIsActivePartition", "39__BlitzIndexPartition",
-                "40__BlitzPartition", "41__EnablePageCompression", "42__GrafanaLogin",
-                "43__LinkedServerOnInventory", "44__LinkedServerForDataDestinationInstance", "45__AlterViewsForDataDestinationInstance"
+                "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
+                "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
+                "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
+                "40__WhoIsActivePartition", "41__BlitzIndexPartition", "42__BlitzPartition",
+                "43__EnablePageCompression", "44__GrafanaLogin", "45__LinkedServerOnInventory",
+                "46__LinkedServerForDataDestinationInstance", "47__AlterViewsForDataDestinationInstance"
                 ),
 
     [Parameter(Mandatory=$false)]
     [Bool]$PrintUserFriendlyFormat = $true,
 
     [Parameter(Mandatory=$false)]
-    [String]$ScriptFile = #'D:\GitHub-Personal\SQLMonitor\SQLMonitor\Remove-SQLMonitor.ps1'
-                          'D:\GitHub-Personal\SQLMonitor\SQLMonitor\Install-SQLMonitor.ps1'
+    [String]$ScriptFile = #'E:\GitHub-Personal\SQLMonitor\SQLMonitor\Remove-SQLMonitor.ps1'
+                          'E:\GitHub\SQLMonitor\SQLMonitor\Install-SQLMonitor.ps1'
 )
 
 cls

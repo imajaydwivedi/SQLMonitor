@@ -10,6 +10,7 @@ EXEC sp_WhoIsActive @get_outer_command = 1, @get_task_info=2, @get_additional_in
 					--,@filter_type = 'program' ,@filter = 'facebook.py'
 					--,@filter_type = 'database' ,@filter = 'StackOverflow'
 					--,@filter_type = 'host' ,@filter = 'SQLMonitor'
+					--,@show_sleeping_spids = 1
 					--,@sort_order = '[used_memory] desc, [start_time]'
 					--,@sort_order = '[blocked_session_count] desc, [granted_memory] desc, [start_time]'
 					,@output_column_list = '[dd hh:mm:ss.mss][session_id][sql_text][query_plan][sql_command][login_name][wait_info][status][blocked_session_count][blocking_session_id][tasks][CPU][reads][used_memory][granted_memory][host_name][database_name][program_name][open_tran_count][start_time][%]'

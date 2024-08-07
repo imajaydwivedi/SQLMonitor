@@ -64,6 +64,12 @@ select *
 from sys.dm_os_cluster_nodes;
 go
 
+select RunningQuery = 'ag replicas', [at_server_name] = @@SERVERNAME, ar.replica_server_name, rs.role_desc, rs.is_local, rs.operational_state_desc, rs.connected_state_desc, rs.recovery_health_desc, rs.synchronization_health_desc
+from sys.dm_hadr_availability_replica_states rs
+	join sys.availability_replicas ar
+	on ar.group_id = rs.group_id and ar.replica_id = rs.replica_id
+go
+
 select 'instance_hosts' as QueryData, * from dbo.instance_hosts with (nolock);
 
 select 'instance_details' as QueryData, getdate() as [getdate()], * from dbo.instance_details with (nolock);

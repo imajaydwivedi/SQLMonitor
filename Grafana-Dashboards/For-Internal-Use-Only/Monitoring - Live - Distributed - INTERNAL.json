@@ -86,7 +86,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -109,6 +110,7 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 8,
           "valueSize": 18
@@ -116,7 +118,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -150,7 +152,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -202,11 +205,12 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -240,7 +244,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -261,11 +266,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -300,7 +306,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -323,6 +330,7 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 8,
           "valueSize": 18
@@ -330,7 +338,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -384,7 +392,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -407,6 +416,7 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 8,
           "valueSize": 18
@@ -414,7 +424,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -468,7 +478,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -491,6 +502,7 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 8,
           "valueSize": 18
@@ -498,7 +510,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -540,7 +552,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -648,7 +661,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -701,7 +714,8 @@
               }
             ]
           },
-          "unit": "kbytes"
+          "unit": "kbytes",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -724,10 +738,11 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -773,7 +788,8 @@
               }
             ]
           },
-          "unit": "kbytes"
+          "unit": "kbytes",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -796,10 +812,11 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -834,7 +851,8 @@
               }
             ]
           },
-          "unit": "string"
+          "unit": "string",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -855,10 +873,11 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -893,7 +912,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -916,11 +936,12 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -967,7 +988,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -988,10 +1010,11 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1025,7 +1048,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1046,10 +1070,11 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1099,7 +1124,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1120,10 +1146,11 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1198,7 +1225,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1219,10 +1247,11 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1258,13 +1287,14 @@
               }
             ]
           },
-          "unit": "kbytes"
+          "unit": "kbytes",
+          "unitScale": true
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
-        "w": 3,
+        "w": 2,
         "x": 3,
         "y": 7
       },
@@ -1281,10 +1311,11 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1292,12 +1323,31 @@
             "type": "mssql",
             "uid": "${sqlmonitor_datasource}"
           },
+          "editorMode": "code",
           "format": "table",
+          "rawQuery": true,
           "rawSql": "select $physical_memory_in_use_kb;",
-          "refId": "A"
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
-      "title": "SqlServer M/r Usage",
+      "title": "Sql Used M/r",
       "type": "stat"
     },
     {
@@ -1331,14 +1381,15 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
-        "w": 3,
-        "x": 6,
+        "w": 2,
+        "x": 5,
         "y": 7
       },
       "id": 165,
@@ -1354,9 +1405,10 @@
           "values": false
         },
         "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "showThresholdMarkers": true,
+        "sizing": "auto"
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1399,14 +1451,15 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
         "w": 2,
-        "x": 9,
+        "x": 7,
         "y": 7
       },
       "id": 122,
@@ -1420,10 +1473,11 @@
           "fields": "",
           "values": true
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1437,6 +1491,68 @@
         }
       ],
       "title": "Connections",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              }
+            ]
+          },
+          "unitScale": true
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 9,
+        "y": 7
+      },
+      "id": 23,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showPercentChange": false,
+        "text": {},
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.3.1",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "format": "table",
+          "rawSql": "select $active_requests_count as counts;",
+          "refId": "A"
+        }
+      ],
+      "title": "Active Requests",
       "type": "stat"
     },
     {
@@ -1470,7 +1586,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1491,10 +1608,11 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1528,7 +1646,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1567,11 +1686,12 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1605,7 +1725,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1644,11 +1765,12 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1683,7 +1805,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1706,13 +1829,14 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 24
         },
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1776,7 +1900,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1797,10 +1922,11 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1855,7 +1981,8 @@
                 "value": 25
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1878,10 +2005,11 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1927,7 +2055,8 @@
               }
             ]
           },
-          "unit": "kbytes"
+          "unit": "kbytes",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1950,11 +2079,12 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -1968,66 +2098,6 @@
         }
       ],
       "title": "Page Faults/Sec",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "mssql",
-        "uid": "${sqlmonitor_datasource}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#73BF69",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 2,
-        "x": 9,
-        "y": 10
-      },
-      "id": 23,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "",
-          "values": true
-        },
-        "text": {},
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "10.1.0",
-      "targets": [
-        {
-          "alias": "",
-          "datasource": {
-            "type": "mssql",
-            "uid": "${sqlmonitor_datasource}"
-          },
-          "format": "table",
-          "rawSql": "select $active_requests_count as counts;",
-          "refId": "A"
-        }
-      ],
-      "title": "Active Requests",
       "type": "stat"
     },
     {
@@ -2052,14 +2122,15 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
-        "w": 2,
-        "x": 11,
+        "w": 3,
+        "x": 9,
         "y": 10
       },
       "id": 162,
@@ -2073,11 +2144,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -2098,9 +2170,26 @@
         "type": "mssql",
         "uid": "${sqlmonitor_datasource}"
       },
-      "description": "Should be < 15%",
+      "description": "Should be < 10 ms",
       "fieldConfig": {
         "defaults": {
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "Wait Stats Dashboard",
+              "url": "d/wait_stats?var-server=$server&from=now-30m&to=now"
+            },
+            {
+              "targetBlank": true,
+              "title": "Perfmon - Disk Latency",
+              "url": "d/distributed_perfmon?var-server=$server&viewPanel=112"
+            },
+            {
+              "targetBlank": true,
+              "title": "File IO Stats",
+              "url": "d/database_file_io_stats?var-server=$server&viewPanel=18&from=now-30m&to=now"
+            }
+          ],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -2119,18 +2208,19 @@
               },
               {
                 "color": "red",
-                "value": 25
+                "value": 20
               }
             ]
           },
-          "unit": "percent"
+          "unit": "ms",
+          "unitScale": true
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
-        "w": 2,
-        "x": 13,
+        "w": 3,
+        "x": 12,
         "y": 10
       },
       "id": 163,
@@ -2144,11 +2234,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -2156,12 +2247,31 @@
             "type": "mssql",
             "uid": "${sqlmonitor_datasource}"
           },
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "select $ring_buffer_pcnt_kernel_mode as kernel_mode --$ring_buffer_pcnt_user_mode as user_mode",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "select $avg_disk_wait_ms",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
-      "title": "% Kernel Mode",
+      "title": "Avg Disk Wait",
       "type": "stat"
     },
     {
@@ -2207,7 +2317,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -2230,11 +2341,12 @@
           "fields": "",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -2287,7 +2399,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -2310,11 +2423,12 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -2348,7 +2462,8 @@
               }
             ]
           },
-          "unit": "dateTimeAsSystem"
+          "unit": "dateTimeAsSystem",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -2371,11 +2486,12 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -2434,7 +2550,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -2599,7 +2716,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
@@ -2607,9 +2724,28 @@
             "type": "mssql",
             "uid": "${sqlmonitor_datasource}"
           },
+          "editorMode": "code",
           "format": "table",
+          "rawQuery": true,
           "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @server_product_version varchar(20);\ndeclare @server_major_version_number tinyint;\ndeclare @server_minor_version_number smallint;\n\nSET @server_product_version = '$product_version';\nSET @server_major_version_number = $major_version_number;\nSET @server_minor_version_number = $minor_version_number;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@server_product_version varchar(20), @server_major_version_number tinyint, @server_minor_version_number smallint';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_current as\n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\tand [MinorVersionNumber] <= @server_minor_version_number\n\torder by [MinorVersionNumber] desc\n)\n,t_latest as \n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\torder by [MinorVersionNumber] desc\n)\nselect\t[Product Version] = @server_product_version\n\t\t,[Major Version] = @server_major_version_number\n\t\t,[Minor Version] = @server_minor_version_number\n\t\t,[Patch/Update] = c.Branch ,c.ReleaseDate ,c.MainstreamSupportEndDate --,c.ExtendedSupportEndDate\n\t\t,[Is MS Supported] = case when c.MainstreamSupportEndDate < getdate() then convert(bit,0) else convert(bit,1) end\n\t\t,[Latest_Patch] = l.Branch\n\t\t,[Patch_Gap] = datediff(day,c.ReleaseDate,l.ReleaseDate)\n\t\t,[Url-Current] = REPLACE(c.[Url],'https://support.microsoft.com/en-us/help/','')\n\t\t,[Url-Latest] = REPLACE(l.[Url],'https://support.microsoft.com/en-us/help/','')\nfrom t_current c, t_latest l;\n\"\nset quoted_identifier on;\n\nexec dbo.sp_executesql @sql, @params, @server_product_version, @server_major_version_number, @server_minor_version_number;",
-          "refId": "A"
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "SQL Server Patching Details",
@@ -3113,6 +3249,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -3148,7 +3285,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 27
+            "y": 19
           },
           "id": 16,
           "options": {
@@ -3179,7 +3316,7 @@
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nselect pc.collection_time_utc as time, \n\t\tcase when (pc.object = 'processor' and pc.counter in ('% processor time') and pc.instance = '_total') then 'OS'\n\t\t\twhen (pc.object = 'process' and pc.counter in ('% processor time') and pc.instance like 'sqlservr%') then 'Sql Server'\n\t\t\telse null\n\t\t\tend as metric,\n\t--object, counter as metric, instance\n\tcase when pc.object = 'processor' then pc.value else pc.value/$sql_schedulers end as value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand host_name = @perfmon_host_name\nand (   (pc.object = 'processor' and pc.counter in ('% processor time') and pc.instance = '_total')\n\t   or (pc.object = 'process' and pc.counter in ('% processor time') and (pc.instance = 'sqlservr' or pc.instance = 'sqlservr$$instance_name'))\n\t  )\nand pc.value > 0\n--order by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nselect pc.collection_time_utc as time, \n\t\tcase when (pc.object = 'processor' and pc.counter in ('% processor time') and pc.instance = '_total') then 'OS'\n\t\t\twhen (pc.object = 'process' and pc.counter in ('% processor time') and pc.instance like 'sqlservr%') then 'Sql Server'\n\t\t\telse null\n\t\t\tend as metric,\n\t--object, counter as metric, instance\n\tcase when pc.object = 'processor' then pc.value else pc.value/$sql_schedulers end as value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand host_name = @perfmon_host_name\nand (   (pc.object = 'processor' and pc.counter in ('% processor time') and pc.instance = '_total')\n\t   or (pc.object = 'process' and pc.counter in ('% processor time') and (pc.instance = 'sqlservr' or pc.instance = 'sqlservr$$instance_name'))\n\t  )\nand pc.value > 0\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -8428,8 +8565,7 @@
   ],
   "refresh": "1m",
   "revision": 1,
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -8440,7 +8576,7 @@
       {
         "current": {
           "selected": false,
-          "text": "SqlServer",
+          "text": "SQLMonitor",
           "value": "ygPVA4snk"
         },
         "description": "Inventory Server Name",
@@ -8744,8 +8880,8 @@
       {
         "current": {
           "selected": false,
-          "text": "15.0.4326.1",
-          "value": "15.0.4326.1"
+          "text": "15.0.4360.2",
+          "value": "15.0.4360.2"
         },
         "datasource": {
           "type": "mssql",
@@ -8824,8 +8960,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704944453744",
-          "value": "1704944453744"
+          "text": "1717588009756",
+          "value": "1717588009756"
         },
         "datasource": {
           "type": "mssql",
@@ -8856,8 +8992,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704944409562",
-          "value": "1704944409562"
+          "text": "1717587966859",
+          "value": "1717587966859"
         },
         "datasource": {
           "type": "mssql",
@@ -8888,8 +9024,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704944524633",
-          "value": "1704944524633"
+          "text": "1717588082300",
+          "value": "1717588082300"
         },
         "datasource": {
           "type": "mssql",
@@ -8959,8 +9095,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704298182597",
-          "value": "1704298182597"
+          "text": "1717147202257",
+          "value": "1717147202257"
         },
         "datasource": {
           "type": "mssql",
@@ -8983,8 +9119,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704944528863",
-          "value": "1704944528863"
+          "text": "1717588085057",
+          "value": "1717588085057"
         },
         "datasource": {
           "type": "mssql",
@@ -9007,8 +9143,8 @@
       {
         "current": {
           "selected": false,
-          "text": "19",
-          "value": "19"
+          "text": "15",
+          "value": "15"
         },
         "datasource": {
           "type": "mssql",
@@ -9031,8 +9167,8 @@
       {
         "current": {
           "selected": false,
-          "text": "7",
-          "value": "7"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -9055,8 +9191,8 @@
       {
         "current": {
           "selected": false,
-          "text": "81",
-          "value": "81"
+          "text": "85",
+          "value": "85"
         },
         "datasource": {
           "type": "mssql",
@@ -9079,8 +9215,8 @@
       {
         "current": {
           "selected": false,
-          "text": "97",
-          "value": "97"
+          "text": "81",
+          "value": "81"
         },
         "datasource": {
           "type": "mssql",
@@ -9103,8 +9239,8 @@
       {
         "current": {
           "selected": false,
-          "text": "2",
-          "value": "2"
+          "text": "18",
+          "value": "18"
         },
         "datasource": {
           "type": "mssql",
@@ -9127,8 +9263,8 @@
       {
         "current": {
           "selected": false,
-          "text": "432920",
-          "value": "432920"
+          "text": "412064",
+          "value": "412064"
         },
         "datasource": {
           "type": "mssql",
@@ -9159,8 +9295,8 @@
       {
         "current": {
           "selected": false,
-          "text": "6",
-          "value": "6"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -9183,8 +9319,8 @@
       {
         "current": {
           "selected": false,
-          "text": "601625",
-          "value": "601625"
+          "text": "",
+          "value": ""
         },
         "datasource": {
           "type": "mssql",
@@ -9231,8 +9367,8 @@
       {
         "current": {
           "selected": false,
-          "text": "4540084",
-          "value": "4540084"
+          "text": "1571320",
+          "value": "1571320"
         },
         "datasource": {
           "type": "mssql",
@@ -9255,8 +9391,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -9279,8 +9415,8 @@
       {
         "current": {
           "selected": false,
-          "text": "11665948",
-          "value": "11665948"
+          "text": "13136516",
+          "value": "13136516"
         },
         "datasource": {
           "type": "mssql",
@@ -9303,8 +9439,8 @@
       {
         "current": {
           "selected": false,
-          "text": "79",
-          "value": "79"
+          "text": "100",
+          "value": "100"
         },
         "datasource": {
           "type": "mssql",
@@ -9351,8 +9487,8 @@
       {
         "current": {
           "selected": false,
-          "text": "52820",
-          "value": "52820"
+          "text": "33829",
+          "value": "33829"
         },
         "datasource": {
           "type": "mssql",
@@ -9399,8 +9535,8 @@
       {
         "current": {
           "selected": false,
-          "text": "4326",
-          "value": "4326"
+          "text": "4360",
+          "value": "4360"
         },
         "datasource": {
           "type": "mssql",
@@ -9423,8 +9559,8 @@
       {
         "current": {
           "selected": false,
-          "text": "70",
-          "value": "70"
+          "text": "32",
+          "value": "32"
         },
         "datasource": {
           "type": "mssql",
@@ -9447,8 +9583,8 @@
       {
         "current": {
           "selected": false,
-          "text": "11",
-          "value": "11"
+          "text": "2",
+          "value": "2"
         },
         "datasource": {
           "type": "mssql",
@@ -9471,8 +9607,8 @@
       {
         "current": {
           "selected": false,
-          "text": "3",
-          "value": "3"
+          "text": "9",
+          "value": "9"
         },
         "datasource": {
           "type": "mssql",
@@ -9503,8 +9639,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704943816639",
-          "value": "1704943816639"
+          "text": "1717587020861",
+          "value": "1717587020861"
         },
         "datasource": {
           "type": "mssql",
@@ -9665,8 +9801,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704944402752",
-          "value": "1704944402752"
+          "text": "1717587903552",
+          "value": "1717587903552"
         },
         "datasource": {
           "type": "mssql",
@@ -9765,8 +9901,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704944401610",
-          "value": "1704944401610"
+          "text": "1717587902093",
+          "value": "1717587902093"
         },
         "datasource": {
           "type": "mssql",
@@ -9789,8 +9925,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704944401391",
-          "value": "1704944401391"
+          "text": "1717587902093",
+          "value": "1717587902093"
         },
         "datasource": {
           "type": "mssql",
@@ -9804,6 +9940,30 @@
         "name": "log_space_consumers_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 [collection_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time)\nfrom [dbo].[log_space_consumers] lsc\norder by collection_time desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "7",
+          "value": "7"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"declare @avg_disk_wait_ms bigint;\nexec usp_avg_disk_wait_ms @avg_disk_wait_ms = @avg_disk_wait_ms output;\nselect [avg_disk_wait_ms] = @avg_disk_wait_ms;\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Avg Disk Wait MilliSeconds",
+        "multi": false,
+        "name": "avg_disk_wait_ms",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"declare @avg_disk_wait_ms bigint;\nexec usp_avg_disk_wait_ms @avg_disk_wait_ms = @avg_disk_wait_ms output;\nselect [avg_disk_wait_ms] = @avg_disk_wait_ms;\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -9828,6 +9988,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - Distributed",
   "uid": "distributed_live_dashboard",
-  "version": 82,
+  "version": 91,
   "weekStart": ""
 }

@@ -1,6 +1,33 @@
 use DBA
 go
 
+-- https://learn.microsoft.com/en-us/sql/relational-databases/json/json-data-sql-server?view=sql-server-ver16\
+
+-- Get servers with customized job info
+select ISJSON(id.more_info), id.sql_instance, id.sql_instance_port, id.[database], id.more_info
+from dbo.instance_details id
+where id.is_enabled = 1
+and id.is_available = 1
+and id.is_alias = 0
+and id.more_info is not null
+go
+
+-- Set a sql_instance to have customized job info
+declare @json_data nvarchar(max);
+set @json_data = (select cast(1 as bit) as "HasCustomizedTsqlJobs", 
+						cast(0 as bit) as HasCustomizedPowerShellJobs, 
+						cast(0 as bit) as ForceSetupOfTaskSchedulerJobs
+						for JSON PATH
+				);
+update id
+set more_info = @json_data
+from dbo.instance_details id
+where id.is_enabled = 1
+and id.is_available = 1
+and id.is_alias = 0
+and id.sql_instance in ('192.168.1.110');
+go
+
 select	[domain] = asi.domain, id.sql_instance, id.host_name, id.[database], 
 		id.data_destination_sql_instance, id.collector_powershell_jobs_server, id.collector_tsql_jobs_server,
 		id.dba_group_mail_id, id.sqlmonitor_version,

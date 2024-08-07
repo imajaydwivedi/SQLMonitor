@@ -1,5 +1,6 @@
 /*
-	Version -> 2024-03-31
+	Version -> 2024-04-26
+	2024-04-26 - #38 - Add Infra to Track AG State Change
 	2023-12-30 - #21 - Add exception for some waits through Wait Stats table
 	-----------------
 
@@ -20,8 +21,8 @@
 
 	*** Steps in this Script ****
 	-----------------------------
-	1) Create Partition function for [datetime2] & [datetime]
-	2) Create Partition Scheme for [datetime2] & [datetime]
+	1) Create Partition function for [datetime2], [datetime] & [bigint]
+	2) Create Partition Scheme for [datetime2], [datetime] & [bigint]
 	3) Create table dbo.purge_table
 	4) Create table dbo.instance_hosts
 	5) Create table dbo.instance_details
@@ -47,16 +48,18 @@
 	25) Create table [dbo].[memory_clerks]
 	26) Create table [dbo].[server_privileged_info]
 	27) Create table [dbo].[ag_health_state] using Partition scheme
-	28) Add boundaries to partition. 1 boundary per hour
-	29) Remove boundaries with retention of 3 months
-	30) Populate [dbo].[BlitzFirst_WaitStats_Categories]
+	28) Create table [dbo].[alert_categories]
+	29) Create table [dbo].[alert_history]
+	30) Add boundaries to partition. 1 boundary per hour
+	31) Remove boundaries with retention of 3 months
+	32) Populate [dbo].[BlitzFirst_WaitStats_Categories]
 */
 
 IF DB_NAME() = 'master'
 	raiserror ('Kindly execute all queries in [DBA] database', 20, -1) with log;
 go
 
-/* ****** 1) Partition function for [datetime2] & [datetime] ******* */
+/* ****** 1) Create Partition function for [datetime2], [datetime] & [bigint] ******* */
 --drop partition function pf_dba_datetime2_hourly
 declare @is_partitioned bit = 1;
 if not exists (select * from sys.partition_functions where name = 'pf_dba_datetime2_hourly') and @is_partitioned = 1
@@ -97,8 +100,13 @@ declare @is_partitioned bit = 1;
 if not exists (select * from sys.partition_functions where name = 'pf_dba_datetime_quarterly') and @is_partitioned = 1
 	exec ('create partition function pf_dba_datetime_quarterly (datetime) as range right for values (convert(smalldatetime,cast(getdate() as date)))')
 go
+--drop partition function pf_dba_bigint_10part
+declare @is_partitioned bit = 1;
+if not exists (select * from sys.partition_functions where name = 'pf_dba_bigint_10part') and @is_partitioned = 1
+	exec ('create partition function pf_dba_bigint_10part (bigint) as range left for values (0,1,2,3,4,5,6,7,8,9)')
+go
 
-/* ****** 2) Partition Scheme for [datetime2] & [datetime] ******* */
+/* ****** 2) Create Partition Scheme for [datetime2], [datetime] & [bigint] ******* */
 --drop partition scheme ps_dba_datetime2_hourly
 declare @is_partitioned bit = 1;
 if not exists (select * from sys.partition_schemes where name = 'ps_dba_datetime2_hourly') and @is_partitioned = 1
@@ -139,6 +147,12 @@ declare @is_partitioned bit = 1;
 if not exists (select * from sys.partition_schemes where name = 'ps_dba_datetime_quarterly') and @is_partitioned = 1
 	exec ('create partition scheme ps_dba_datetime_quarterly as partition pf_dba_datetime_quarterly all to ([PRIMARY])')
 go
+--drop partition scheme ps_dba_bigint_10part
+declare @is_partitioned bit = 1;
+if not exists (select * from sys.partition_schemes where name = 'ps_dba_bigint_10part') and @is_partitioned = 1
+	exec ('create partition scheme ps_dba_bigint_10part as partition pf_dba_bigint_10part all to ([PRIMARY])')
+go
+
 
 
 /* ***** 3) Create table dbo.purge_table ***************************** */
@@ -1055,7 +1069,107 @@ end
 go
 
 
-/* ***** 28) Add boundaries to partition. 1 boundary per hour ***************** */
+/* ***** 28) Create table [dbo].[alert_categories] **************************** */
+-- drop table [dbo].[alert_categories]
+if OBJECT_ID('[dbo].[alert_categories]') is null
+begin
+	create table [dbo].[alert_categories]
+	(
+		[error_number] [int] NOT NULL,
+		[error_severity] [int] NULL,
+		[category] [varchar](128) NOT NULL,
+		[sub_category] [varchar](128) NULL,
+		[alert_name] [varchar](255) NOT NULL,
+		[remarks] [nvarchar](500) NULL,
+
+		[created_time] [datetime2](7) NOT NULL default sysdatetime(),
+		[created_by] [nvarchar](128) NOT NULL default suser_name()
+	);
+end
+go
+
+if not exists (select * from sys.indexes where [object_id] = OBJECT_ID('[dbo].[alert_categories]') and name = 'ci_alert_categories')
+begin
+	create unique clustered index ci_alert_categories on [dbo].[alert_categories] ([error_number],[error_severity]);
+end
+go
+
+--	Alerts would be created using [DDLs\SCH-usp_create_agent_alerts.sql]
+if OBJECT_ID('[dbo].[alert_categories]') is not null
+begin
+	insert dbo.alert_categories
+	([error_number], [error_severity], [category], [sub_category], [alert_name], [remarks])
+	select en.[error_number], en.[error_severity], en.[category], en.[sub_category], en.[alert_name], en.[remarks]
+	from (VALUES	('1480', 0, 'Availability Group', NULL, '(dba) AG Role Change - failover', NULL)
+				  , ('976', 0, 'Availability Group', NULL, '(dba) Database Not Accessible', NULL)
+				  , ('983', 0, 'Availability Group', NULL, '(dba) Database Role Resolving', NULL)
+				  , ('3402' , 0, 'Availability Group', NULL, '(dba) Database Restoring', NULL)
+				  , ('19406', 0, 'Availability Group', NULL, '(dba) AG Replica Changed States', NULL)
+				  , ('35206', 0, 'Availability Group', NULL, '(dba) Connection Timeout', NULL)
+				  , ('35250', 0, 'Availability Group', NULL, '(dba) Connection to Primary Inactive', NULL)
+				  , ('35264', 0, 'Availability Group', NULL, '(dba) Data Movement Suspended', NULL)
+				  , ('35273', 0, 'Availability Group', NULL, '(dba) Database Inaccessible', NULL)
+				  , ('35274', 0, 'Availability Group', NULL, '(dba) Database Recovery Pending', NULL)
+				  , ('35275', 0, 'Availability Group', NULL, '(dba) Database in Suspect State', NULL)
+				  , ('35276', 0, 'Availability Group', NULL, '(dba) Database Out of Sync', NULL)
+				  , ('41091', 0, 'Availability Group', NULL, '(dba) Replica Going Offline', NULL)
+				  , ('41131', 0, 'Availability Group', NULL, '(dba) Failed to Bring AG Online', NULL)
+				  , ('41142', 0, 'Availability Group', NULL, '(dba) Replica Cannot Become Primary', NULL)
+				  , ('41406', 0, 'Availability Group', NULL, '(dba) AG Not Ready for Auto Failover', NULL)
+				  , ('41414', 0, 'Availability Group', NULL, '(dba) Secondary Not Connected', NULL)
+				  , ('0', 19, 'Fatal Error - Sev19', NULL, '(dba) Fatal Error - Sev19', NULL)
+				  , ('0', 20, 'Fatal Error - Sev20', NULL, '(dba) Fatal Error - Sev20', NULL)
+				  , ('0', 21, 'Fatal Error - Sev21', NULL, '(dba) Fatal Error - Sev21', NULL)
+				  , ('0', 22, 'Fatal Error - Sev22', NULL, '(dba) Fatal Error - Sev22', NULL)
+				  , ('0', 23, 'Fatal Error - Sev23', NULL, '(dba) Fatal Error - Sev23', NULL)
+				  , ('0', 24, 'Fatal Error - Sev24', NULL, '(dba) Fatal Error - Sev24', NULL)
+				  , ('0', 25, 'Fatal Error - Sev25', NULL, '(dba) Fatal Error - Sev25', NULL)
+		) en ([error_number], [error_severity], [category], [sub_category], [alert_name], [remarks])
+	left join dbo.alert_categories ac
+		on exists (select ac.error_number, ac.[error_severity] intersect select en.error_number, en.[error_severity])
+	where ac.category is null;			
+end
+go
+
+
+/* ***** 29) Create table [dbo].[alert_history]		**************************** */
+-- drop table [dbo].[alert_history]
+if OBJECT_ID('[dbo].[alert_history]') is null
+begin
+	create table [dbo].[alert_history]
+	(
+		[collection_time_utc] [datetime2](7) NOT NULL default sysutcdatetime(),		
+		[server_name] [nvarchar](128) NULL,
+		[database_name] [sysname] NULL,
+		[error_number] [int] NULL,
+		[error_severity] [tinyint] NULL,
+		[error_message] [nvarchar](510) NULL,
+		[host_instance] [nvarchar](128) NULL,
+		[collection_time] [datetime2](7) NOT NULL default sysdatetime()
+	) on ps_dba_datetime2_daily ([collection_time_utc]);
+end
+go
+
+if not exists (select * from sys.indexes where [object_id] = OBJECT_ID('[dbo].[alert_history]') and name = 'ci_alert_history')
+begin
+	create clustered index ci_alert_history on [dbo].[alert_history] ([collection_time_utc]) on ps_dba_datetime2_daily ([collection_time_utc])
+end
+go
+
+if not exists (select 1 from dbo.purge_table where table_name = 'dbo.alert_history')
+begin
+	insert dbo.purge_table
+	(table_name, date_key, retention_days, purge_row_size, reference)
+	select	table_name = 'dbo.alert_history', 
+			date_key = 'collection_time_utc', 
+			retention_days = 7, 
+			purge_row_size = 100000,
+			reference = 'SQLMonitor Data Collection'
+end
+go
+
+
+/* ***** 30) Add boundaries to partition. 1 boundary per hour ***************** */
 set nocount on;
 declare @is_partitioned bit = 1;
 if @is_partitioned = 1
@@ -1094,7 +1208,7 @@ end
 go
 
 
-/* ***** 29) Remove boundaries with retention of 3 months ***************** */
+/* ***** 31) Remove boundaries with retention of 3 months ***************** */
 set nocount on;
 declare @is_partitioned bit = 1;
 if @is_partitioned = 1
@@ -1127,7 +1241,7 @@ end
 go
 
 
-/* ***** 30) Populate [dbo].[BlitzFirst_WaitStats_Categories] ***************** */
+/* ***** 32) Populate [dbo].[BlitzFirst_WaitStats_Categories] ***************** */
 IF OBJECT_ID('[dbo].[BlitzFirst_WaitStats_Categories]') IS NOT NULL
 BEGIN
 	-- Add new entries of Wait Types

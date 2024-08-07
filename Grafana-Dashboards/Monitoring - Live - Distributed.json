@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_SQLSERVER",
-      "label": "SqlServer",
+      "name": "DS_SQLMONITOR",
+      "label": "SQLMonitor",
       "description": "",
       "type": "datasource",
       "pluginId": "mssql",
@@ -62,7 +62,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.1.0"
+      "version": "10.3.1"
     },
     {
       "type": "datasource",
@@ -149,7 +149,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "Specifies the memory model used by SQL Server to allocate memory. Not nullable.\n\nCONVENTIONAL = SQL Server is using Conventional Memory model to allocate memory. This is default sql memory model when SQL Server service account does not have Lock Pages in Memory privileges during startup.\n\nLOCK_PAGES = SQL Server is using Lock Pages in Memory to allocate memory. This is the default sql memory manager when SQL Server service account possess Lock Pages in Memory privilege during SQL Server startup.\n\nLARGE_PAGES = SQL Server is using Large Pages in Memory to allocate memory. SQL Server uses Large Pages allocator to allocate memory only with Enterprise edition when SQL Server service account possess Lock Pages in Memory privilege during server startup and when Trace Flag 834 is turned ON.",
       "fieldConfig": {
@@ -176,7 +176,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -199,6 +200,7 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 8,
           "valueSize": 18
@@ -206,13 +208,13 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select sql_memory_model_desc from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
@@ -225,7 +227,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "Memory State on OS",
       "fieldConfig": {
@@ -240,7 +242,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -292,17 +295,18 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $system_high_memory_signal_state as system_has_high_memory;",
@@ -315,7 +319,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -330,7 +334,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -351,17 +356,18 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect os_uptime = Concat\n        (\n            RIGHT('000'+CAST(ISNULL((datediff(second,dateadd(SECOND,-osi.ms_ticks/1000,GETDATE()),GETDATE()) / 3600 / 24), 0) AS VARCHAR(3)),3)\n            ,' '\n            ,RIGHT('00'+CAST(ISNULL(datediff(second,dateadd(SECOND,-osi.ms_ticks/1000,GETDATE()),GETDATE()) / 3600  % 24, 0) AS VARCHAR(2)),2)\n            ,':'\n            ,RIGHT('00'+CAST(ISNULL(datediff(second,dateadd(SECOND,-osi.ms_ticks/1000,GETDATE()),GETDATE()) / 60 % 60, 0) AS VARCHAR(2)),2)\n            ,':'\n            ,RIGHT('00'+CAST(ISNULL(datediff(second,dateadd(SECOND,-osi.ms_ticks/1000,GETDATE()),GETDATE()) % 3600 % 60, 0) AS VARCHAR(2)),2)\n        )\nfrom sys.dm_os_sys_info as osi;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
@@ -374,7 +380,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -390,7 +396,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -413,6 +420,7 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 8,
           "valueSize": 18
@@ -420,13 +428,13 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "editorMode": "code",
           "format": "table",
@@ -458,7 +466,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -474,7 +482,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -497,6 +506,7 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 8,
           "valueSize": 18
@@ -504,13 +514,13 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "editorMode": "code",
           "format": "table",
@@ -542,7 +552,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -558,7 +568,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -581,6 +592,7 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 8,
           "valueSize": 18
@@ -588,13 +600,13 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect virtual_machine_type_desc\nfrom sys.dm_os_sys_info as osi\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
@@ -607,7 +619,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "fieldConfig": {
         "defaults": {
@@ -630,7 +642,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -738,13 +751,13 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "editorMode": "code",
           "format": "table",
@@ -776,7 +789,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -791,7 +804,8 @@
               }
             ]
           },
-          "unit": "kbytes"
+          "unit": "kbytes",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -814,16 +828,17 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $total_physical_memory_kb;",
@@ -836,7 +851,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "fieldConfig": {
         "defaults": {
@@ -863,7 +878,8 @@
               }
             ]
           },
-          "unit": "kbytes"
+          "unit": "kbytes",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -886,16 +902,17 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $available_physical_memory_kb;",
@@ -908,7 +925,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -924,7 +941,8 @@
               }
             ]
           },
-          "unit": "string"
+          "unit": "string",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -945,16 +963,17 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect count(*) as counts\nfrom $os_task_list_table_name otl with (nolock)\nwhere collection_time_utc = (select top 1 i.collection_time_utc from $os_task_list_table_name i with (nolock)\n                              where i.host_name = @perfmon_host_name order by i.collection_time_utc desc)\nand otl.host_name = @perfmon_host_name\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
@@ -967,7 +986,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -983,7 +1002,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1006,17 +1026,18 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect convert(varchar,osi.cpu_count)+' / '+convert(varchar,osi.scheduler_count)\nfrom sys.dm_os_sys_info as osi\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
@@ -1029,7 +1050,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -1057,7 +1078,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1078,16 +1100,17 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "SELECT $ring_buffer_os_cpu;",
@@ -1100,7 +1123,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -1115,7 +1138,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1136,16 +1160,17 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "SELECT $ring_buffer_idle_cpu;",
@@ -1158,7 +1183,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -1189,7 +1214,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1210,16 +1236,17 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $ple;",
@@ -1259,7 +1286,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "select count(*) as blocked_counts\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000)",
       "fieldConfig": {
@@ -1288,7 +1315,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1309,16 +1337,17 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $blocked_counts;",
@@ -1331,7 +1360,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "Total RAM Used by SQL Server Instance Process",
       "fieldConfig": {
@@ -1348,13 +1377,14 @@
               }
             ]
           },
-          "unit": "kbytes"
+          "unit": "kbytes",
+          "unitScale": true
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
-        "w": 3,
+        "w": 2,
         "x": 3,
         "y": 7
       },
@@ -1371,29 +1401,49 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
+          "editorMode": "code",
           "format": "table",
+          "rawQuery": true,
           "rawSql": "select $physical_memory_in_use_kb;",
-          "refId": "A"
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
-      "title": "SqlServer M/r Usage",
+      "title": "Sql Used M/r",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "% Usage of memory that is allocated to SQL Server",
       "fieldConfig": {
@@ -1421,14 +1471,15 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
-        "w": 3,
-        "x": 6,
+        "w": 2,
+        "x": 5,
         "y": 7
       },
       "id": 165,
@@ -1444,15 +1495,16 @@
           "values": false
         },
         "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "showThresholdMarkers": true,
+        "sizing": "auto"
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $sql_allocated_memory_used_percent;",
@@ -1465,7 +1517,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "select * from sys.dm_exec_connections",
       "fieldConfig": {
@@ -1489,14 +1541,15 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
         "w": 2,
-        "x": 9,
+        "x": 7,
         "y": 7
       },
       "id": 122,
@@ -1510,16 +1563,17 @@
           "fields": "",
           "values": true
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $connection_count;",
@@ -1532,7 +1586,69 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#73BF69",
+                "value": null
+              }
+            ]
+          },
+          "unitScale": true
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 9,
+        "y": 7
+      },
+      "id": 23,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showPercentChange": false,
+        "text": {},
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.3.1",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_SQLMONITOR}"
+          },
+          "format": "table",
+          "rawSql": "select $active_requests_count as counts;",
+          "refId": "A"
+        }
+      ],
+      "title": "Active Requests",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -1560,7 +1676,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1581,16 +1698,17 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $ring_buffer_sql_cpu;",
@@ -1603,7 +1721,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -1618,7 +1736,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1657,17 +1776,18 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\n--select CONVERT(varchar,SERVERPROPERTY('IsClustered'))+' / '+CONVERT(varchar,SERVERPROPERTY('IsHadrEnabled'))\nselect CONVERT(bit,SERVERPROPERTY('IsClustered')) as IsClustered --, CONVERT(bit,SERVERPROPERTY('IsHadrEnabled')) as IsHadrEnabled\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
@@ -1680,7 +1800,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -1695,7 +1815,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1734,17 +1855,18 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\n--select CONVERT(varchar,SERVERPROPERTY('IsClustered'))+' / '+CONVERT(varchar,SERVERPROPERTY('IsHadrEnabled'))\nselect CONVERT(bit,SERVERPROPERTY('IsHadrEnabled')) as IsHadrEnabled\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
@@ -1757,7 +1879,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -1773,7 +1895,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1796,19 +1919,20 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 24
         },
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect convert(varchar,SERVERPROPERTY('ProductVersion'))+' ('+convert(varchar,SERVERPROPERTY('Edition'))+')'\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
@@ -1821,7 +1945,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "select max(wait_time)/1000 as wait_time_s\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000)",
       "fieldConfig": {
@@ -1866,7 +1990,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1887,16 +2012,17 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "declare @blocked_count int;\nset @blocked_count = (case when len('$blocked_duration_max_seconds')>0 then cast('$blocked_duration_max_seconds' as int) else 0 end);\nselect @blocked_count;",
@@ -1909,7 +2035,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1945,7 +2071,8 @@
                 "value": 25
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1968,16 +2095,17 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $memory_grants_pending;",
@@ -1990,7 +2118,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "Physical Disk Operation being done for Queries",
       "fieldConfig": {
@@ -2017,7 +2145,8 @@
               }
             ]
           },
-          "unit": "kbytes"
+          "unit": "kbytes",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -2040,17 +2169,18 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $ring_buffer_page_faults_kb as page_faults_kb;",
@@ -2063,67 +2193,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#73BF69",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 2,
-        "x": 9,
-        "y": 10
-      },
-      "id": 23,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "",
-          "values": true
-        },
-        "text": {},
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "10.1.0",
-      "targets": [
-        {
-          "alias": "",
-          "datasource": {
-            "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
-          },
-          "format": "table",
-          "rawSql": "select $active_requests_count as counts;",
-          "refId": "A"
-        }
-      ],
-      "title": "Active Requests",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "Should be > 70%",
       "fieldConfig": {
@@ -2142,14 +2212,15 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
-        "w": 2,
-        "x": 11,
+        "w": 3,
+        "x": 9,
         "y": 10
       },
       "id": 162,
@@ -2163,17 +2234,18 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $ring_buffer_pcnt_user_mode as user_mode --, $ring_buffer_pcnt_kernel_mode as kernel_mode;",
@@ -2186,11 +2258,28 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
-      "description": "Should be < 15%",
+      "description": "Should be < 10 ms",
       "fieldConfig": {
         "defaults": {
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "Wait Stats Dashboard",
+              "url": "d/wait_stats?var-server=$server&from=now-30m&to=now"
+            },
+            {
+              "targetBlank": true,
+              "title": "Perfmon - Disk Latency",
+              "url": "d/distributed_perfmon?var-server=$server&viewPanel=112"
+            },
+            {
+              "targetBlank": true,
+              "title": "File IO Stats",
+              "url": "d/database_file_io_stats?var-server=$server&viewPanel=18&from=now-30m&to=now"
+            }
+          ],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -2209,18 +2298,19 @@
               },
               {
                 "color": "red",
-                "value": 25
+                "value": 20
               }
             ]
           },
-          "unit": "percent"
+          "unit": "ms",
+          "unitScale": true
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
-        "w": 2,
-        "x": 13,
+        "w": 3,
+        "x": 12,
         "y": 10
       },
       "id": 163,
@@ -2234,30 +2324,50 @@
           "fields": "/.*/",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "select $ring_buffer_pcnt_kernel_mode as kernel_mode --$ring_buffer_pcnt_user_mode as user_mode",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "select $avg_disk_wait_ms",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
-      "title": "% Kernel Mode",
+      "title": "Avg Disk Wait",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -2297,7 +2407,8 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "s",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -2320,17 +2431,18 @@
           "fields": "",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "editorMode": "code",
           "format": "table",
@@ -2362,7 +2474,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -2377,7 +2489,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -2400,17 +2513,18 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select os_uptime =\r\n        Concat\r\n        (\r\n            RIGHT('000'+CAST(ISNULL((datediff(second,'${sqlserver_start_time_utc:date}',GETUTCDATE()) / 3600 / 24), 0) AS VARCHAR(3)),3)\r\n            ,' '\r\n            ,RIGHT('00'+CAST(ISNULL(datediff(second,'${sqlserver_start_time_utc:date}',GETUTCDATE()) / 3600  % 24, 0) AS VARCHAR(2)),2)\r\n            ,':'\r\n            ,RIGHT('00'+CAST(ISNULL(datediff(second,'${sqlserver_start_time_utc:date}',GETUTCDATE()) / 60 % 60, 0) AS VARCHAR(2)),2)\r\n            ,':'\r\n            ,RIGHT('00'+CAST(ISNULL(datediff(second,'${sqlserver_start_time_utc:date}',GETUTCDATE()) % 3600 % 60, 0) AS VARCHAR(2)),2)\r\n        );\r\n        ",
@@ -2423,7 +2537,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "description": "",
       "fieldConfig": {
@@ -2438,7 +2552,8 @@
               }
             ]
           },
-          "unit": "dateTimeAsSystem"
+          "unit": "dateTimeAsSystem",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -2461,17 +2576,18 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "format": "table",
           "rawSql": "select $sqlserver_start_time_utc",
@@ -2484,7 +2600,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${DS_SQLMONITOR}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2524,7 +2640,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": [
           {
@@ -2689,17 +2806,36 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
+          "editorMode": "code",
           "format": "table",
+          "rawQuery": true,
           "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @server_product_version varchar(20);\ndeclare @server_major_version_number tinyint;\ndeclare @server_minor_version_number smallint;\n\nSET @server_product_version = '$product_version';\nSET @server_major_version_number = $major_version_number;\nSET @server_minor_version_number = $minor_version_number;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@server_product_version varchar(20), @server_major_version_number tinyint, @server_minor_version_number smallint';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_current as\n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\tand [MinorVersionNumber] <= @server_minor_version_number\n\torder by [MinorVersionNumber] desc\n)\n,t_latest as \n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\torder by [MinorVersionNumber] desc\n)\nselect\t[Product Version] = @server_product_version\n\t\t,[Major Version] = @server_major_version_number\n\t\t,[Minor Version] = @server_minor_version_number\n\t\t,[Patch/Update] = c.Branch ,c.ReleaseDate ,c.MainstreamSupportEndDate --,c.ExtendedSupportEndDate\n\t\t,[Is MS Supported] = case when c.MainstreamSupportEndDate < getdate() then convert(bit,0) else convert(bit,1) end\n\t\t,[Latest_Patch] = l.Branch\n\t\t,[Patch_Gap] = datediff(day,c.ReleaseDate,l.ReleaseDate)\n\t\t,[Url-Current] = REPLACE(c.[Url],'https://support.microsoft.com/en-us/help/','')\n\t\t,[Url-Latest] = REPLACE(l.[Url],'https://support.microsoft.com/en-us/help/','')\nfrom t_current c, t_latest l;\n\"\nset quoted_identifier on;\n\nexec dbo.sp_executesql @sql, @params, @server_product_version, @server_major_version_number, @server_minor_version_number;",
-          "refId": "A"
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "SQL Server Patching Details",
@@ -2718,7 +2854,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "fieldConfig": {
             "defaults": {
@@ -3131,7 +3267,7 @@
             {
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -3181,7 +3317,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "https://sqlperformance.com/2014/10/sql-performance/knee-jerk-page-life-expectancy",
           "fieldConfig": {
@@ -3203,6 +3339,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -3238,7 +3375,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 27
+            "y": 19
           },
           "id": 16,
           "options": {
@@ -3264,12 +3401,12 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nselect pc.collection_time_utc as time, \n\t\tcase when (pc.object = 'processor' and pc.counter in ('% processor time') and pc.instance = '_total') then 'OS'\n\t\t\twhen (pc.object = 'process' and pc.counter in ('% processor time') and pc.instance like 'sqlservr%') then 'Sql Server'\n\t\t\telse null\n\t\t\tend as metric,\n\t--object, counter as metric, instance\n\tcase when pc.object = 'processor' then pc.value else pc.value/$sql_schedulers end as value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand host_name = @perfmon_host_name\nand (   (pc.object = 'processor' and pc.counter in ('% processor time') and pc.instance = '_total')\n\t   or (pc.object = 'process' and pc.counter in ('% processor time') and (pc.instance = 'sqlservr' or pc.instance = 'sqlservr$$instance_name'))\n\t  )\nand pc.value > 0\n--order by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nselect pc.collection_time_utc as time, \n\t\tcase when (pc.object = 'processor' and pc.counter in ('% processor time') and pc.instance = '_total') then 'OS'\n\t\t\twhen (pc.object = 'process' and pc.counter in ('% processor time') and pc.instance like 'sqlservr%') then 'Sql Server'\n\t\t\telse null\n\t\t\tend as metric,\n\t--object, counter as metric, instance\n\tcase when pc.object = 'processor' then pc.value else pc.value/$sql_schedulers end as value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand host_name = @perfmon_host_name\nand (   (pc.object = 'processor' and pc.counter in ('% processor time') and pc.instance = '_total')\n\t   or (pc.object = 'process' and pc.counter in ('% processor time') and (pc.instance = 'sqlservr' or pc.instance = 'sqlservr$$instance_name'))\n\t  )\nand pc.value > 0\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3324,7 +3461,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "Blocking Details____In Selected Time Duration____Since____${__from:date:YYYY-MM-DD HH.mm}___till___${whoisactive_collection_time_utc:date:YYYY-MM-DD HH.mm}____",
           "fieldConfig": {
@@ -3499,7 +3636,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -3560,7 +3697,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from $whoisactive_table_name\nwhere (w.blocking_session_id is null and blocked_session_count > 0)",
           "fieldConfig": {
@@ -3645,7 +3782,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "format": "time_series",
               "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time) as [time], w.login_name as metric, sum(convert(int,replace(w.blocked_session_count,',',''))) as [value]\nfrom $whoisactive_table_name w with (nolock)\nwhere (collection_time between DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc) and DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc))\nand (w.blocking_session_id is null and replace(w.blocked_session_count,',','') > 0) -- get lead blockers only\ngroup by collection_time, w.login_name\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
@@ -3658,7 +3795,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from $whoisactive_table_name\nwhere (w.blocking_session_id is null and blocked_session_count > 0)",
           "fieldConfig": {
@@ -3743,7 +3880,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "format": "time_series",
               "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time) as [time], \n       w.login_name+' {{'+(case when len(w.program_name)>35 then left(w.program_name,35)+'..' else w.program_name end)+'}}' as metric, sum(convert(int,replace(w.blocked_session_count,',',''))) as [value]\nfrom $whoisactive_table_name w with (nolock)\nwhere  (collection_time between DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc) and DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc))\nand (w.blocking_session_id is null and replace(w.blocked_session_count,',','') > 0) -- get lead blockers only\ngroup by collection_time, w.login_name, w.program_name\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
@@ -3784,7 +3921,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "fieldConfig": {
             "defaults": {
@@ -3872,7 +4009,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "time_series",
@@ -3930,7 +4067,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "fieldConfig": {
             "defaults": {
@@ -4128,7 +4265,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -4174,7 +4311,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select [collection_time], [data_size_mb], [data_used_mb], [data_used_pct], [log_size_mb], [log_used_mb], [log_used_pct], [version_store_mb], [version_store_pct]\nfrom dbo.tempdb_space_usage tsu\nwhere 1=1\nand tsu.collection_time = (select top 1 i.collection_time from dbo.tempdb_space_usage i order by i.collection_time desc)",
           "fieldConfig": {
@@ -4551,7 +4688,7 @@
               "dataset": "AdventureWorks2019",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -4583,7 +4720,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select [collection_time], [usage_rank], [spid], [login_name], [program_name], [host_name], [host_process_id], [is_active_session], [open_transaction_count], [transaction_isolation_level], [size_bytes], [transaction_begin_time], [is_snapshot], [log_bytes], [log_rsvd], [action_taken] \nfrom dbo.tempdb_space_consumers tsc \nwhere 1=1 \nand tsc.collection_time = (select top 1 i.collection_time from dbo.tempdb_space_usage i order by i.collection_time desc)\nand (tsc.size_bytes > 0 or tsc.is_snapshot = 1)",
           "fieldConfig": {
@@ -4960,7 +5097,7 @@
               "dataset": "AdventureWorks2019",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -5006,7 +5143,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select [collection_time], [database_name], [recovery_model], [log_reuse_wait_desc], [log_size_mb], [log_used_mb], [exists_valid_autogrowing_file], [log_used_pct], [log_used_pct_threshold], [log_used_gb_threshold], [spid], [transaction_start_time], [login_name], [program_name], [host_name], [host_process_id], [command], [additional_info], [action_taken], [sql_text], [is_pct_threshold_valid], [is_gb_threshold_valid], [threshold_condition], [thresholds_validated]\nfrom dbo.log_space_consumers lsc\nwhere 1=1\nand lsc.collection_time = (select top 1 i.collection_time from dbo.log_space_consumers i order by i.collection_time desc)",
           "fieldConfig": {
@@ -5430,7 +5567,7 @@
               "dataset": "AdventureWorks2019",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -5480,7 +5617,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "",
           "fieldConfig": {
@@ -5605,7 +5742,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "time_series",
@@ -5665,7 +5802,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "fieldConfig": {
             "defaults": {
@@ -5862,7 +5999,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -5922,7 +6059,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "https://sqlperformance.com/2014/10/sql-performance/knee-jerk-page-life-expectancy",
           "fieldConfig": {
@@ -6006,7 +6143,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "time_series",
@@ -6066,7 +6203,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "https://sqlperformance.com/2014/10/sql-performance/knee-jerk-page-life-expectancy",
           "fieldConfig": {
@@ -6152,7 +6289,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "time_series",
@@ -6212,7 +6349,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from sys.dm_exec_requests r where blocking_session_id <> 0",
           "fieldConfig": {
@@ -6274,7 +6411,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "format": "table",
               "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect host_name, login_name, status, client_net_address, client_interface_name, count(*) as counts\nfrom sys.dm_exec_connections as dec with (nolock) \njoin sys.dm_exec_sessions as des on des.session_id = dec.session_id\ngroup by host_name, login_name, status, client_net_address, client_interface_name\norder by counts desc, login_name\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
@@ -6287,7 +6424,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from sys.dm_exec_connections",
           "fieldConfig": {
@@ -6366,7 +6503,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "format": "table",
               "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect client_interface_name, count(*) as counts\nfrom sys.dm_exec_connections as dec with (nolock) \njoin sys.dm_exec_sessions as des with (nolock) on des.session_id = dec.session_id\nwhere len(ltrim(rtrim(client_interface_name))) > 0\ngroup by client_interface_name\norder by counts desc, client_interface_name\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
@@ -6379,7 +6516,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from sys.dm_exec_connections",
           "fieldConfig": {
@@ -6458,7 +6595,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "format": "table",
               "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect host_name, count(*) as counts\nfrom sys.dm_exec_connections as dec with (nolock) \njoin sys.dm_exec_sessions as des with (nolock) on des.session_id = dec.session_id\ngroup by host_name\norder by counts desc, host_name\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
@@ -6471,7 +6608,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from sys.dm_exec_connections",
           "fieldConfig": {
@@ -6550,7 +6687,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "format": "table",
               "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect login_name, count(*) as counts\nfrom sys.dm_exec_connections as dec with (nolock) \njoin sys.dm_exec_sessions as des with (nolock) on des.session_id = dec.session_id\ngroup by login_name\norder by counts desc, login_name\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
@@ -6563,7 +6700,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from sys.dm_exec_connections",
           "fieldConfig": {
@@ -6631,7 +6768,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "format": "table",
               "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect status, count(*) as counts\nfrom sys.dm_exec_connections as dec with (nolock) \njoin sys.dm_exec_sessions as des with (nolock) on des.session_id = dec.session_id\ngroup by status\norder by counts desc, status\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
@@ -6672,7 +6809,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from [$inventory_db].$os_task_list_table_name",
           "fieldConfig": {
@@ -6766,7 +6903,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "time_series",
@@ -6798,7 +6935,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from [$inventory_db].$os_task_list_table_name",
           "fieldConfig": {
@@ -6895,7 +7032,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "time_series",
@@ -6955,7 +7092,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from [$inventory_db].$os_task_list_table_name",
           "fieldConfig": {
@@ -7049,7 +7186,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "format": "time_series",
               "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @delta_minutes int;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @delta_minutes = $cpu_delta_minutes;\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @delta_minutes int';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\ndeclare @TopRowFilter tinyint = 10;\n\nif object_id('tempdb..#dates') is not null\n\tdrop table #dates;\ncreate table #dates (collection_time_utc datetime2 not null primary key);\ndeclare @_collection_time_utc datetime2;\ndeclare @_collection_time_utc_prev datetime2;\n\ndeclare cur_dates cursor local fast_forward for\n\tselect collection_time_utc\n\tfrom $os_task_list_table_name\n\twhere host_name = @perfmon_host_name\n\tand collection_time_utc between @start_time_utc and @end_time_utc\n\tgroup by collection_time_utc\n\torder by collection_time_utc\n\toption(recompile);\n\nopen cur_dates;\nfetch next from cur_dates into @_collection_time_utc;\n\nwhile @@fetch_status = 0\nbegin\n\t-- Set start timestamp\n\tif(@_collection_time_utc_prev is null)\n\tbegin\n\t\tinsert #dates values (@_collection_time_utc);\n\t\tset @_collection_time_utc_prev = @_collection_time_utc;\n\tend\n\t\n\t-- Choose next timestamp based on @delta_minutes\n\tif (@_collection_time_utc_prev is not null)\n\t\tand (@_collection_time_utc >= dateadd(minute,@delta_minutes,@_collection_time_utc_prev))\n\tbegin\n\t\tinsert #dates values (@_collection_time_utc);\n\t\tset @_collection_time_utc_prev = @_collection_time_utc;\n\tend\n\t\n\tfetch next from cur_dates into @_collection_time_utc;\nend\n\nclose cur_dates;\ndeallocate cur_dates;\n\n--select * from #dates;\n\nif object_id('tempdb..#os_task_list') is not null\n\tdrop table #os_task_list;\nwith cte_tasks as (\n\tselect tl.collection_time_utc, tl.task_name, [memory_kb] = sum([memory_kb]), [counts] = count(*)\n\tfrom $os_task_list_table_name tl join #dates d on d.collection_time_utc = tl.collection_time_utc\n\twhere (tl.collection_time_utc between @start_time_utc and @end_time_utc)\n\tand tl.host_name = @perfmon_host_name\n\tand task_name not in ('System Idle Process','') -- add other harmless processes here\n\tgroup by tl.collection_time_utc, tl.task_name\n)\nselect\tcollection_time_utc, task_name, [memory_kb], counts\n\t\t--,[cpu_s__delta] = isnull(cpu_s - (lag(cpu_s) over (partition by task_name order by collection_time_utc)),0)\n\t\t,[RowRank] = ROW_NUMBER() OVER(PARTITION BY [collection_time_utc] ORDER BY [memory_kb] DESC)\ninto #os_task_list\nfrom cte_tasks;\n\n\nselect collection_time_utc as time, task_name as metric, [memory_kb] as value\nfrom #os_task_list\nwhere [RowRank] <= @TopRowFilter\nand collection_time_utc > (select min(m.collection_time_utc) from #os_task_list m)\norder by [time], [RowRank], [memory_kb] desc;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @delta_minutes;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @delta_minutes;",
@@ -7062,7 +7199,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from [$inventory_db].$os_task_list_table_name",
           "fieldConfig": {
@@ -7159,7 +7296,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "format": "time_series",
               "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @delta_minutes int;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @delta_minutes = $cpu_delta_minutes;\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @delta_minutes int';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\ndeclare @TopRowFilter tinyint = 10;\n\nif object_id('tempdb..#dates') is not null\n\tdrop table #dates;\ncreate table #dates (collection_time_utc datetime2 not null primary key);\ndeclare @_collection_time_utc datetime2;\ndeclare @_collection_time_utc_prev datetime2;\n\ndeclare cur_dates cursor local fast_forward for\n\tselect collection_time_utc\n\tfrom $os_task_list_table_name\n\twhere host_name = @perfmon_host_name\n\tand collection_time_utc between @start_time_utc and @end_time_utc\n\tgroup by collection_time_utc\n\torder by collection_time_utc\n\toption(recompile);\n\nopen cur_dates;\nfetch next from cur_dates into @_collection_time_utc;\n\nwhile @@fetch_status = 0\nbegin\n\t-- Set start timestamp\n\tif(@_collection_time_utc_prev is null)\n\tbegin\n\t\tinsert #dates values (@_collection_time_utc);\n\t\tset @_collection_time_utc_prev = @_collection_time_utc;\n\tend\n\t\n\t-- Choose next timestamp based on @delta_minutes\n\tif (@_collection_time_utc_prev is not null)\n\t\tand (@_collection_time_utc >= dateadd(minute,@delta_minutes,@_collection_time_utc_prev))\n\tbegin\n\t\tinsert #dates values (@_collection_time_utc);\n\t\tset @_collection_time_utc_prev = @_collection_time_utc;\n\tend\n\t\n\tfetch next from cur_dates into @_collection_time_utc;\nend\n\nclose cur_dates;\ndeallocate cur_dates;\n\n--select * from #dates;\n\nif object_id('tempdb..#os_task_list') is not null\n\tdrop table #os_task_list;\nwith cte_tasks as (\n\tselect tl.collection_time_utc, tl.task_name, [memory_kb] = sum([memory_kb]), [counts] = count(*)\n\tfrom $os_task_list_table_name tl join #dates d on d.collection_time_utc = tl.collection_time_utc\n\twhere (tl.collection_time_utc between @start_time_utc and @end_time_utc)\n\tand tl.host_name = @perfmon_host_name\n\tand task_name not in ('System Idle Process','') -- add other harmless processes here\n\tgroup by tl.collection_time_utc, tl.task_name\n)\nselect\tcollection_time_utc, task_name, [memory_kb], counts\n\t\t--,[cpu_s__delta] = isnull(cpu_s - (lag(cpu_s) over (partition by task_name order by collection_time_utc)),0)\n\t\t,[RowRank] = ROW_NUMBER() OVER(PARTITION BY [collection_time_utc] ORDER BY [memory_kb] DESC)\ninto #os_task_list\nfrom cte_tasks;\n\n\nselect collection_time_utc as time, task_name as metric, [memory_kb] as value\nfrom #os_task_list\nwhere [RowRank] <= @TopRowFilter\nand collection_time_utc > (select min(m.collection_time_utc) from #os_task_list m)\norder by [time], [RowRank], [memory_kb] desc;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @delta_minutes;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @delta_minutes;",
@@ -7200,7 +7337,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "fieldConfig": {
             "defaults": {
@@ -7397,7 +7534,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -7453,7 +7590,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "",
           "fieldConfig": {
@@ -8060,7 +8197,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -8110,7 +8247,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "fieldConfig": {
             "defaults": {
@@ -8298,7 +8435,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "format": "table",
               "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @delta_minutes int;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @delta_minutes = $cpu_delta_minutes;\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @delta_minutes int';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect  collection_time_utc as collection_time, disk_volume, label, capacity_mb, free_mb\n        ,[free %] = (free_mb * 100.0)/capacity_mb\n        ,[used %] = ((capacity_mb - free_mb) * 100.0)/capacity_mb\n        ,block_size, filesystem\nfrom $diskspace_table_name ds with (nolock)\nwhere ds.collection_time_utc = (select top 1 collection_time_utc from $diskspace_table_name with (nolock) order by collection_time_utc desc)\norder by collection_time_utc DESC, host_name, disk_volume\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @delta_minutes;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @delta_minutes;",
@@ -8338,7 +8475,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "description": "select * from dbo.BlitzFirst_WaitStats_Deltas\nhttps://www.sqlskills.com/blogs/paul/wait-statistics-or-please-tell-me-where-it-hurts/",
           "fieldConfig": {
@@ -8420,7 +8557,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "time_series",
@@ -8518,8 +8655,7 @@
   ],
   "refresh": "1m",
   "revision": 1,
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -8530,7 +8666,7 @@
       {
         "current": {
           "selected": false,
-          "text": "SqlServer",
+          "text": "SQLMonitor",
           "value": "ygPVA4snk"
         },
         "description": "Inventory Server Name",
@@ -8551,7 +8687,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"\nselect distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "hide": 0,
@@ -8571,7 +8707,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "SELECT DB_NAME() as [db_name]",
         "hide": 2,
@@ -8591,7 +8727,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
         "hide": 2,
@@ -8611,7 +8747,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "hide": 2,
@@ -8631,7 +8767,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select host_name from dbo.instance_details\nwhere sql_instance = @sql_instance order by created_date_utc\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "hide": 0,
@@ -8651,7 +8787,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "hide": 2,
@@ -8671,7 +8807,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect case when @@servicename = 'MSSQLSERVER' then @@servicename else 'mssql$'+@@servicename end;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "hide": 0,
@@ -8733,7 +8869,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select asi.domain from dbo.vw_all_server_info asi where asi.srv_name = @sql_instance;\"\nset quoted_identifier on;\n\nexec dbo.sp_executesql @sql, @params, @sql_instance;",
         "description": "Domain of Sql Instance",
@@ -8754,7 +8890,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "description": "IP Address of Sql Instance",
@@ -8775,7 +8911,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,SERVERPROPERTY('MachineName')) as [machine_name];\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "hide": 2,
@@ -8795,7 +8931,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"declare @server_product_version varchar(20);\n\nSET @server_product_version = CONVERT(varchar,SERVERPROPERTY('ProductVersion'));\nSELECT\t[@server_product_version] = @server_product_version\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "hide": 2,
@@ -8815,7 +8951,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
         "hide": 2,
@@ -8835,7 +8971,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar, @@servicename) as [instance_name]\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "hide": 2,
@@ -8875,7 +9011,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select top 1 collection_time_utc\nfrom $perfmon_table_name with (nolock)\nwhere host_name = @perfmon_host_name\norder by collection_time_utc desc;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -8915,7 +9051,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select top 1 collection_time_utc\nfrom $os_task_list_table_name with (nolock)\nwhere host_name = @perfmon_host_name\norder by collection_time_utc desc;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -8955,7 +9091,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time )\nfrom $whoisactive_table_name with (nolock)\norder by collection_time desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -8975,7 +9111,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @start_time datetime = $__timeFrom()\ndeclare @end_time datetime = $__timeTo();\n\ndeclare @_duration_minute int = datediff(minute,@start_time,@end_time);\nselect [@delta_minutes] = (case when @_duration_minute <= 30 then 1 \n                                                           when @_duration_minute <= 60 then 2\n                                                           when @_duration_minute <= 120 then 5\n                                                           when @_duration_minute <= 480 then 10\n                                                           when @_duration_minute <= 1440 then 15\n                                                           when @_duration_minute <= 2880 then 20\n                                                           when @_duration_minute <= 10080 then 30\n                                                           else 60 end);\n",
         "hide": 2,
@@ -8994,7 +9130,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_os_schedulers dos where status = 'VISIBLE ONLINE' and is_online = 1;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9014,7 +9150,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9034,7 +9170,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT --event_time\n\t\tevent_time_utc\n\t\t/*\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9054,7 +9190,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\tevent_time_utc\n\t\t*/\n\t\tsystem_cpu\n\t\t/*\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9074,7 +9210,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t*/\n\t\tsql_cpu\n\t\t/*\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9094,7 +9230,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t*/\n\t\tidle_system_cpu\n\t\t/*\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9114,7 +9250,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t*/\n\t\tuser_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t/*\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9134,7 +9270,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t*/\n\t\tkernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t/*\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9154,7 +9290,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t*/\n\t\tpage_faults_kb\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9194,7 +9330,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect count(*) as blocked_counts --, max(wait_time)/1000 as wait_time_s\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000) -- Over 60 seconds\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9214,7 +9350,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect  max(wait_time)/1000 as wait_time_s --,count(*) as blocked_counts\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000); -- Over 60 seconds\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9234,7 +9370,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\tosm.total_physical_memory_kb\n\t\t--,osm.available_physical_memory_kb\n\t\t--,case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]\n\t\t--,opm.physical_memory_in_use_kb\n\t\t--,opm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9254,7 +9390,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\t--osm.total_physical_memory_kb\n\t\tosm.available_physical_memory_kb\n\t\t--,case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]\n\t\t--,opm.physical_memory_in_use_kb\n\t\t--,opm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9274,7 +9410,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\t--osm.total_physical_memory_kb\n\t\t--osm.available_physical_memory_kb\n\t\tconvert(int,system_high_memory_signal_state)\n\t\t--,opm.physical_memory_in_use_kb\n\t\t--,opm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9294,7 +9430,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\t--osm.total_physical_memory_kb\n\t\t--osm.available_physical_memory_kb\n\t\t--case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]\n\t\topm.physical_memory_in_use_kb\n\t\t--,opm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9314,7 +9450,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\t--osm.total_physical_memory_kb\n\t\t--osm.available_physical_memory_kb\n\t\t--case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]\n\t\t--opm.physical_memory_in_use_kb\n\t\topm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9334,7 +9470,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server'\n\t\t\t\t,@output = 'memory_grants_pending'",
         "hide": 2,
@@ -9354,7 +9490,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"declare @object_name varchar(255);\nset @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);\n\nSELECT cntr_value \nFROM sys.dm_os_performance_counters WITH (NOLOCK) \nWHERE [object_name] like (@object_name+':Buffer Manager%') AND counter_name = N'Page life expectancy'\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9374,7 +9510,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"declare @server_major_version_number tinyint;\nSET @server_major_version_number = CONVERT(tinyint, SERVERPROPERTY('ProductMajorVersion'))\n\nif @server_major_version_number is null\nbegin\n\t;with t_versions as \n\t( select CONVERT(varchar,SERVERPROPERTY('ProductVersion')) as ProductVersion\n\t\t\t ,LEFT(CONVERT(varchar,SERVERPROPERTY('ProductVersion')), CHARINDEX('.',CONVERT(varchar,SERVERPROPERTY('ProductVersion')))-1) AS MajorVersion\n\t)\n\tselect @server_major_version_number = MajorVersion from t_versions;\nend\n\nselect\t[@server_major_version_number] = @server_major_version_number;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9394,7 +9530,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\ndeclare @server_product_version varchar(20);\ndeclare @server_major_version_number tinyint;\ndeclare @server_minor_version_number smallint;\n\nSET @server_product_version = CONVERT(varchar,SERVERPROPERTY('ProductVersion'));\nSET @server_major_version_number = CONVERT(tinyint, SERVERPROPERTY('ProductMajorVersion'));\n\nif @server_major_version_number is null\nbegin\n\t;with t_versions as \n\t( select CONVERT(varchar,SERVERPROPERTY('ProductVersion')) as ProductVersion\n\t\t\t ,LEFT(CONVERT(varchar,SERVERPROPERTY('ProductVersion')), CHARINDEX('.',CONVERT(varchar,SERVERPROPERTY('ProductVersion')))-1) AS MajorVersion\n\t)\n\tselect @server_major_version_number = MajorVersion from t_versions;\nend\n\ndeclare @server_minor_version_number_intermediate varchar(20);\nset @server_minor_version_number_intermediate = REPLACE(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.'+CONVERT(varchar, SERVERPROPERTY('ProductMinorVersion'))+'.','');\n\nif(@server_minor_version_number_intermediate is null)\nbegin\n\t;with t_versions as\n\t( select replace(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.','') as VrsnString )\n\tselect @server_minor_version_number_intermediate = REPLACE(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.'+LEFT(VrsnString,CHARINDEX('.',VrsnString)-1)+'.','')\n\tfrom t_versions;\nend\n\nset @server_minor_version_number = left(@server_minor_version_number_intermediate,charindex('.',@server_minor_version_number_intermediate)-1);\n\nSELECT\t[@server_minor_version_number] = @server_minor_version_number\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9414,7 +9550,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_exec_connections with (nolock);\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9434,7 +9570,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\n--\tQuery to find what's is running on server\nSELECT\tCOUNT(*) as active_request_count\nFROM\tsys.dm_exec_sessions AS s\nLEFT JOIN sys.dm_exec_requests AS r ON r.session_id = s.session_id\nOUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS st\nOUTER APPLY sys.dm_exec_query_plan(r.plan_handle) AS bqp\nOUTER APPLY sys.dm_exec_text_query_plan(r.plan_handle,r.statement_start_offset, r.statement_end_offset) as sqp\nWHERE\ts.session_id != @@SPID\n\tAND (\t(CASE\tWHEN\ts.session_id IN (select ri.blocking_session_id from sys.dm_exec_requests as ri )\n\t\t\t\t\t--\tGet sessions involved in blocking (including system sessions)\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tWHEN\tr.blocking_session_id IS NOT NULL AND r.blocking_session_id <> 0\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tELSE\t0\n\t\t\tEND) = 1\n\t\t\tOR\n\t\t\t(CASE\tWHEN\ts.session_id > 50\n\t\t\t\t\t\t\tAND r.session_id IS NOT NULL -- either some part of session has active request\n\t\t\t\t\t\t\t--AND ISNULL(open_resultset_count,0) > 0 -- some result is open\n\t\t\t\t\t\t\tAND s.status <> 'sleeping'\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tELSE\t0\n\t\t\tEND) = 1\n\t\t\tOR\n\t\t\t(CASE\tWHEN\ts.session_id > 50\n\t\t\t\t\t\t\tAND ISNULL(r.open_transaction_count,0) > 0\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tELSE\t0\n\t\t\tEND) = 1\n\t\t);\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9454,7 +9590,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"declare @waits_seconds__per_core_per_minute bigint;\nexec usp_waits_per_core_per_minute @waits_seconds__per_core_per_minute = @waits_seconds__per_core_per_minute output;\nselect [waits_seconds__per_core_per_minute] = @waits_seconds__per_core_per_minute;\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "hide": 2,
@@ -9494,7 +9630,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 collection_time_utc\nfrom $diskspace_table_name with (nolock)\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9514,7 +9650,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "select [object_name] = (case when '$perfmon_service_name' = 'MSSQLSERVER' then 'SQLServer' else '$perfmon_service_name' end);",
         "hide": 2,
@@ -9534,7 +9670,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(tinyint,SERVERPROPERTY('IsClustered')) as IsClustered;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9554,7 +9690,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(tinyint,SERVERPROPERTY('IsHadrEnabled')) as IsHadrEnabled;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9574,7 +9710,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "select case when $is_hadr_enabled = 1 then 'AG' else 'Cluster' end",
         "hide": 2,
@@ -9636,7 +9772,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 js.[UpdatedDateUTC]\nfrom [dbo].[sql_agent_job_stats] js\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9684,7 +9820,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server'\n\t\t\t\t,@output = 'host_distribution'",
         "hide": 2,
@@ -9704,7 +9840,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server'\n\t\t\t\t,@output = 'processor_name'",
         "hide": 2,
@@ -9724,7 +9860,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 [collection_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time)\nfrom [dbo].[tempdb_space_usage] tsu\norder by collection_time desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9744,7 +9880,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 [collection_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time)\nfrom [dbo].[log_space_consumers] lsc\norder by collection_time desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9754,6 +9890,26 @@
         "name": "log_space_consumers_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 [collection_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time)\nfrom [dbo].[log_space_consumers] lsc\norder by collection_time desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLMONITOR}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"declare @avg_disk_wait_ms bigint;\nexec usp_avg_disk_wait_ms @avg_disk_wait_ms = @avg_disk_wait_ms output;\nselect [avg_disk_wait_ms] = @avg_disk_wait_ms;\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Avg Disk Wait MilliSeconds",
+        "multi": false,
+        "name": "avg_disk_wait_ms",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"declare @avg_disk_wait_ms bigint;\nexec usp_avg_disk_wait_ms @avg_disk_wait_ms = @avg_disk_wait_ms output;\nselect [avg_disk_wait_ms] = @avg_disk_wait_ms;\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -9778,6 +9934,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - Distributed",
   "uid": "distributed_live_dashboard",
-  "version": 82,
+  "version": 91,
   "weekStart": ""
 }

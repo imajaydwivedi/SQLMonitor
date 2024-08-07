@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="(local):LAB\adwivedi">
+        <ConnectionNode Name="(local):21L-LTPABL-1187\Ajay">
           <Created>2022-10-11T15:41:34.3101605+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
@@ -15,7 +15,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="(local)\SQL2014:LAB\adwivedi">
+        <ConnectionNode Name="(local)\SQL2014:21L-LTPABL-1187\Ajay">
           <Created>2022-10-11T20:40:49.0138304+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)\SQL2014</Server>
@@ -27,7 +27,19 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="Localhost:LAB\adwivedi">
+        <ConnectionNode Name="10.253.33.160:E84947">
+          <Created>2024-04-18T15:13:11.2378414+05:30</Created>
+          <Type>SQL</Type>
+          <Server>10.253.33.160</Server>
+          <UserName>E84947</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB>DBA_Admin</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="Localhost:21L-LTPABL-1187\Ajay">
           <Created>2022-10-11T20:37:53.4107777+05:30</Created>
           <Type>SQL</Type>
           <Server>Localhost</Server>
@@ -39,7 +51,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="SqlMonitor:LAB\adwivedi">
+        <ConnectionNode Name="SqlMonitor:21L-LTPABL-1187\Ajay">
           <Created>2022-10-11T20:41:12.9320366+05:30</Created>
           <Type>SQL</Type>
           <Server>SqlMonitor</Server>
@@ -51,7 +63,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="SqlPractice:LAB\adwivedi">
+        <ConnectionNode Name="SqlPractice:21L-LTPABL-1187\Ajay">
           <Created>2022-10-11T20:40:57.6599649+05:30</Created>
           <Type>SQL</Type>
           <Server>SqlPractice</Server>
@@ -63,7 +75,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="SqlProd1:LAB\adwivedi">
+        <ConnectionNode Name="SqlProd1:21L-LTPABL-1187\Ajay">
           <Created>2022-10-11T06:26:16.0281393+05:30</Created>
           <Type>SQL</Type>
           <Server>SqlProd1</Server>
@@ -75,7 +87,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="WORKSTATION\SQLEXPRESS:LAB\adwivedi">
+        <ConnectionNode Name="WORKSTATION\SQLEXPRESS:21L-LTPABL-1187\Ajay">
           <Created>2022-10-11T20:40:40.0769225+05:30</Created>
           <Type>SQL</Type>
           <Server>WORKSTATION\SQLEXPRESS</Server>
@@ -91,6 +103,12 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="LAMA-Memory-Allocation.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>LAMA-Memory-Allocation.sql</FullPath>
+        </FileNode>
         <FileNode Name="PartitionTest-Daily.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SqlProd1:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>SqlProd1</AssociatedConnSrvName>

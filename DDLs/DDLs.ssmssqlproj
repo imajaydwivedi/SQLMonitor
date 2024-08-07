@@ -115,6 +115,12 @@
           <AssociatedConnUserName />
           <FullPath>SCH-fn_get_hash_for_string.sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Capture-AlertMessages].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Capture-AlertMessages].sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-Job-[(dba) Check-InstanceAvailability].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -307,6 +313,18 @@
           <AssociatedConnUserName />
           <FullPath>SCH-usp_active_requests_count.sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-usp_avg_disk_wait_ms.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_avg_disk_wait_ms.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_capture_alert_messages.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_capture_alert_messages.sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-usp_check_instance_availability.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -361,6 +379,12 @@
           <AssociatedConnUserName />
           <FullPath>SCH-usp_collect_xevent_metrics_hashed.sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-usp_create_agent_alerts.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_create_agent_alerts.sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-usp_enable_page_compression.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
@@ -378,12 +402,6 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_GetAllServerDashboardMail.sql</FullPath>
-        </FileNode>
-        <FileNode Name="SCH-usp_GetAllServerHaDrLatency.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SCH-usp_GetAllServerHaDrLatency.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_GetAllServerInfo.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>

@@ -14,3 +14,8 @@
 /Sensitive/Sensitive.ssmssqlproj
 /Volatile/Volatile.ssmssqlproj
 /Work/Work.ssmssqlproj
+/SQLMonitor/dist/
+/SQLMonitor/dist/*
+/SQLMonitor/build/
+/SQLMonitor/build/*
+/SQLMonitor/*.spec

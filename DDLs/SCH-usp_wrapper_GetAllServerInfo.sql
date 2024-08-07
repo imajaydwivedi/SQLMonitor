@@ -29,8 +29,9 @@ AS
 BEGIN
 
 	/*
-		Version:		1.6.0
-		Date:			2023-07-14 - Enhancement#268 - Add tables sql_agent_job_stats & memory_clerks in Collection Latency Dashboard
+		Version:		2024-06-05
+		Date:			2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
+						2023-07-14 - Enhancement#268 - Add tables sql_agent_job_stats & memory_clerks in Collection Latency Dashboard
 						2023-06-19 - Enhancement#262 - Add is_enabled field
 						2023-04-02 - Initial Draft
 
@@ -105,7 +106,7 @@ else
 				PRINT 'dbo.all_server_volatile_info';
 			SET @_sql = N'-- Volatile Info
 exec dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_volatile_info'', @verbose = @verbose, 
-			@output = ''srv_name, os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, active_requests_count, waits_per_core_per_minute'';';
+			@output = ''srv_name, os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, active_requests_count, waits_per_core_per_minute, avg_disk_wait_ms'';';
 			IF @verbose > 0
 				PRINT @_sql;
 			EXEC sp_executesql @_sql, @_params, @verbose, @schedule_minutes;

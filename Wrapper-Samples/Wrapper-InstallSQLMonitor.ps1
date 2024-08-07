@@ -34,15 +34,16 @@ $params = @{
                 "22__CreateJobRunLogSaver", "23__CreateJobRunTempDbSaver", "24__CreateJobRunWhoIsActive",
                 "25__CreateJobRunBlitzIndex", "26__CreateJobRunBlitz", "27__CreateJobRunBlitzIndexWeekly",
                 "28__CreateJobCollectMemoryClerks", "29__CreateJobCollectPrivilegedInfo", "30__CreateJobCollectAgHealthState",
-                "31__CreateJobCheckSQLAgentJobs", "32__CreateJobUpdateSqlServerVersions", "33__CreateJobCheckInstanceAvailability",
-                "34__CreateJobGetAllServerInfo", "35__CreateJobGetAllServerCollectedData", "36__CreateJobGetAllServerDashboardMail",
-                "37__CreateJobStopStuckSQLMonitorJobs", "38__WhoIsActivePartition", "39__BlitzIndexPartition",
-                "40__BlitzPartition", "41__EnablePageCompression", "42__GrafanaLogin",
-                "43__LinkedServerOnInventory", "44__LinkedServerForDataDestinationInstance", "45__AlterViewsForDataDestinationInstance")
+                "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
+                "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
+                "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
+                "40__WhoIsActivePartition", "41__BlitzIndexPartition", "42__BlitzPartition",
+                "43__EnablePageCompression", "44__GrafanaLogin", "45__LinkedServerOnInventory",
+                "46__LinkedServerForDataDestinationInstance", "47__AlterViewsForDataDestinationInstance")
     #>
     #OnlySteps = @( "2__AllDatabaseObjects" )
     #StartAtStep = '1__sp_WhoIsActive'
-    #StopAtStep = '45__AlterViewsForDataDestinationInstance'
+    #StopAtStep = '47__AlterViewsForDataDestinationInstance'
     #DropCreatePowerShellJobs = $true
     #DryRun = $false
     #SkipRDPSessionSteps = $true
@@ -68,6 +69,7 @@ $params = @{
     #XEventDirectory = 'D:\MSSQL15.MSSQLSERVER\XEvents\'
     #JobsExecutionWaitTimeoutMinutes = 15
     #MemoryOptimizedObjectsUsage = $false
+    #ReturnInlineErrorMessage = $true
 }
 
 #$preSQL = "EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = 'sqlagentservice@gmail.com', @drop_recreate = 1"

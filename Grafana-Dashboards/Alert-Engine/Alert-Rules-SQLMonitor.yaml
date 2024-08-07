@@ -1,0 +1,46 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: SQLMonitor
+      folder: SQLServer
+      interval: 2m
+      rules:
+        - uid: 6gZECDEVz
+          title: Blocking
+          condition: Blockings
+          data:
+            - refId: Blockings
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: ygPVA4snk
+              model:
+                datasource:
+                    type: mssql
+                    uid: ygPVA4snk
+                editorMode: code
+                format: table
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                rawQuery: true
+                rawSql: "declare @blocked_counts_threshold int = 2;\r\ndeclare @blocked_duration_max_seconds_threshold bigint = 300;\r\ndeclare @connection_count_threshold int = 300;\r\ndeclare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\nset @params = N'@blocked_counts_threshold int, @blocked_duration_max_seconds_threshold bigint, @connection_count_threshold int';\r\nset quoted_identifier off;\r\nset @sql = \"\r\n;with t_cte as (\r\n\tselect\tsrv_name, blocked_counts, blocked_duration_max_seconds, connection_count\r\n\tfrom dbo.all_server_volatile_info_history h\r\n\twhere h.collection_time = (select max(i.collection_time) from dbo.all_server_volatile_info_history i)\r\n)\r\nselect  srv_name, blocked_counts, \r\n        [details] = quotename(srv_name) +' has '+ convert(varchar,blocked_counts)+' blocking(s) for over '+ convert(varchar,blocked_duration_max_seconds) + ' seconds'\r\nfrom t_cte cte\r\nwhere 1=1\r\nand (   -- Condition 01 -> Blocked over 4 hours\r\n\t\t(\tblocked_counts > 0\r\n\t\t\tand blocked_duration_max_seconds >= (4*60*60) -- 4 hours\r\n\t\t)\r\n\t\t-- Condition 02 -> More than @blocked_counts_threshold blockings for over @blocked_duration_max_seconds_threshold\r\n\tor\t(\tblocked_counts >= @blocked_counts_threshold\r\n\t\t\tand blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold\r\n\t\t)\r\n\t\t-- Condition 03 -> 50% blockings of @blocked_duration_max_seconds_threshold for over @blocked_duration_max_seconds_threshold when connections are over @connection_count_threshold \r\n    or  (\tconnection_count >= @connection_count_threshold \r\n\t\t\tand blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold/2\r\n\t\t\tand blocked_counts >= @blocked_counts_threshold\r\n\t\t)\r\n)\r\n\";\r\nset quoted_identifier off;\r\n--print @sql\r\nexec dbo.sp_executesql @sql, @params, @blocked_counts_threshold, @blocked_duration_max_seconds_threshold, @connection_count_threshold;"
+                refId: Blockings
+                sql:
+                    columns:
+                        - parameters: []
+                          type: function
+                    groupBy:
+                        - property:
+                            type: string
+                          type: groupBy
+                    limit: 50
+          noDataState: OK
+          execErrState: Error
+          for: 0s
+          annotations:
+            summary: '{{ $labels.details }}'
+          labels:
+            name: Blocking-SQLMonitor
+            target: sqlmonitor-slack
+          isPaused: false

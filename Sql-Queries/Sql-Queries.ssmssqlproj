@@ -15,18 +15,6 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="10.253.33.157:E84947">
-          <Created>2024-02-28T10:32:25.179366+05:30</Created>
-          <Type>SQL</Type>
-          <Server>10.253.33.157</Server>
-          <UserName>E84947</UserName>
-          <Authentication>SQL</Authentication>
-          <InitialDB>PostTradeRMSMaster</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
         <ConnectionNode Name="localhost:21L-LTPABL-1187\Ajay">
           <Created>2023-10-09T17:55:17.115376+05:30</Created>
           <Type>SQL</Type>
@@ -156,6 +144,12 @@
           <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>QRY-RC-Workload-Delta-By-Reads.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QRY-Servers-With-Disk-Latency.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QRY-Servers-With-Disk-Latency.sql</FullPath>
         </FileNode>
         <FileNode Name="QRY-SQLMonitor-Jobs-Execution-Performance-Metrics.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
