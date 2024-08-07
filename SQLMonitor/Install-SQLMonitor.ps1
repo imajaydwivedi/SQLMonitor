@@ -214,11 +214,12 @@ Param (
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-06-05'
-$sqlmonitorVersionDate = '2024-Jun-05'
+$sqlmonitorVersion = '2024-08-07'
+$sqlmonitorVersionDate = '2024-Aug-07'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 <#
-    v2024-Jun-30
+    v2024-Sep-30
+        -> Issue#44 - Copy grafana login from Inventory to keep same SID
         -> Issue$43 - Add avg_disk_wait_ms
         -> Issue#38 - Add Infra to Track AG State Change
 
@@ -5393,9 +5394,21 @@ $stepName = '44__GrafanaLogin'
 if($stepName -in $Steps2Execute) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$GrafanaLoginFilePath = '$GrafanaLoginFilePath'"
-    #"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating All Objects in [$DbaDatabase] database.."
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Create [grafana] login & user with permissions on objects.."
     $sqlGrafanaLogin = [System.IO.File]::ReadAllText($GrafanaLoginFilePath).Replace("[DBA]", "[$DbaDatabase]")
+    
+    # If not inventory server, then import [grafana] login from Inventory
+    if($SqlInstanceToBaselineWithOutPort -ne $InventoryServerWithOutPort) {
+        try {
+            Copy-DbaLogin -Source $conInventoryServer -Destination $conSqlInstanceToBaseline -Login 'grafana' -EnableException
+        }
+        catch {
+            $errMessage = $_.Exception.Message
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Error occurred while using Copy-DbaLogin for [grafana].`n`n$errMessage" | Write-Host -ForegroundColor Red
+            "STOP here, and fix above issue." | Write-Error
+        }
+    }
+
     $conSqlInstanceToBaseline | Invoke-DbaQuery -Database master -Query $sqlGrafanaLogin -EnableException
 }
 
