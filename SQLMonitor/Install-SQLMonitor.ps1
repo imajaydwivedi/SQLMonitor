@@ -259,6 +259,17 @@ $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
         -> https://github.com/imajaydwivedi/SQLMonitor/releases/tag/v1.4.0
 #>
 
+$verbose = $false;
+if ($PSBoundParameters.ContainsKey('Verbose')) { # Command line specifies -Verbose[:$false]
+    $verbose = $PSBoundParameters.Get_Item('Verbose')
+}
+
+$debug = $false;
+if ($PSBoundParameters.ContainsKey('Debug')) { # Command line specifies -Debug[:$false]
+    $debug = $PSBoundParameters.Get_Item('Debug')
+}
+
+
 # Declare other important variables/Parameters
 [String]$MailProfileFileName = "DatabaseMail_Using_GMail.sql"
 [String]$WhoIsActiveFileName = "SCH-sp_WhoIsActive_v12_00(Modified).sql"
@@ -631,26 +642,28 @@ try {
     #}
 }
 catch {
-    $errMessage = $_
+    $errMessage = "Connect-DbaInstance => $($_.Exception.Message)"
     
     if ($ReturnInlineErrorMessage) 
     {
         if([String]::IsNullOrEmpty($SqlCredential)) {
-            $errMessage = "SQL Connection to [$InventoryServer] failed.`nKindly provide SqlCredentials.`n$($errMessage.Exception.Message).."
+            $errMessage = "SQL Connection to [$InventoryServer] failed.`nKindly provide SqlCredentials.`n$errMessage.."
         } else {
-            $errMessage = "SQL Connection to [$InventoryServer] failed.`nProvided SqlCredentials seems to be NOT working.`n$($errMessage.Exception.Message).."
+            $errMessage = "SQL Connection to [$InventoryServer] failed.`nProvided SqlCredentials seems to be NOT working.`n$errMessage.."
         }
-
+        
         $errMessage | Write-Error
     }
     else
     {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "SQL Connection to [$InventoryServer] failed." | Write-Host -ForegroundColor Red
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "$errMessage." | Write-Host -ForegroundColor Red
         if([String]::IsNullOrEmpty($SqlCredential)) {
             "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly provide SqlCredentials." | Write-Host -ForegroundColor Red
         } else {
             "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Provided SqlCredentials seems to be NOT working." | Write-Host -ForegroundColor Red
         }
+
         Write-Error "Stop here. Fix above issue."
     }
 }
@@ -1784,7 +1797,13 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$AllDatabaseObjectsFilePath = '$tempAllDatabaseObjectsFilePath'"
     try {
-        $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $tempAllDatabaseObjectsFilePath -EnableException
+        Write-Debug "before debug"
+        if($verbose -or $debug) {
+            $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $tempAllDatabaseObjectsFilePath -EnableException -MessagesToOutput | Write-Verbose
+        }
+        else {
+            $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $tempAllDatabaseObjectsFilePath -EnableException
+        }
     }
     catch {
         $errMessage = $_
@@ -3972,7 +3991,12 @@ if($stepName -in $Steps2Execute)
     }
     else # If not express edition
     {
-        $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRunBlitzIndexWeeklyJob -EnableException
+        if($verbose -or $debug) {
+            $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRunBlitzIndexWeeklyJob -EnableException -MessagesToOutput | Write-Verbose
+        }
+        else {
+            $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRunBlitzIndexWeeklyJob -EnableException
+        }
     }
 }
 
