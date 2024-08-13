@@ -90,7 +90,7 @@
             "h": 13,
             "w": 24,
             "x": 0,
-            "y": 17
+            "y": 9
           },
           "id": 1,
           "options": {
@@ -212,7 +212,7 @@
             "h": 13,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 26
           },
           "id": 3,
           "options": {
@@ -334,7 +334,7 @@
             "h": 13,
             "w": 24,
             "x": 0,
-            "y": 19
+            "y": 27
           },
           "id": 5,
           "options": {
@@ -456,7 +456,7 @@
             "h": 13,
             "w": 24,
             "x": 0,
-            "y": 20
+            "y": 28
           },
           "id": 7,
           "options": {
@@ -578,7 +578,7 @@
             "h": 13,
             "w": 24,
             "x": 0,
-            "y": 13
+            "y": 21
           },
           "id": 9,
           "options": {
@@ -639,6 +639,129 @@
         "w": 24,
         "x": 0,
         "y": 5
+      },
+      "id": 16,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "server"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Individual Server Dashboard",
+                        "url": "d/distributed_live_dashboard?var-server=${__data.fields.server}"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 13,
+            "w": 24,
+            "x": 0,
+            "y": 6
+          },
+          "id": 15,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.4.5",
+          "targets": [
+            {
+              "dataset": "DBA_Admin",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server_status varchar(50);\r\ndeclare @is_decommissioned bit;\r\ndeclare @host varchar(255);\r\ndeclare @server varchar(125);\r\n\r\nset @server = case when ltrim(rtrim('$server_input')) <> '' then ltrim(rtrim('$server_input')) else null end;\r\nset @host = case when ltrim(rtrim('$host_input')) <> '' then ltrim(rtrim('$host_input')) else null end;\r\nset @server_status = '$server_status';\r\nset @is_decommissioned = case when @server_status = 'Online' then 0\r\n                              when @server_status = 'Offline' then 1\r\n                              when @server_status = 'All' then null\r\n                              else null\r\n                              end\r\n\r\nset @params = N'@is_decommissioned bit, @host varchar(255), @server varchar(255)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect [server], [server_port], [domain], [friendly_name], [stability], [hadr_strategy], [hosts], \r\n        [backup_strategy], [server_owner_email], [at_server_name], [server_name], [machine_name], \r\n        [current_host_name], [ag_replicas], [ag_listeners], \r\n        [sql_cluster_network_name], [product_version], [edition], [has_PII_data], [total_physical_memory_kb], \r\n        [cpu_count], [data_center], [server_purpose], [known_challenges], [is_onboarded], [is_decommissioned], \r\n        [server_more_info], [sql_server_remarks]\r\n\"+(case when @server_status = 'Online' then '' else '--' end)+\"from dbo.sma_sql_servers s\r\n\"+(case when @server_status in ('All','Offline') then '' else '--' end)+\"from dbo.sma_sql_servers_including_offline s\r\nwhere 1=1\r\n\"+(case when @server_status in ('Offline') then '' else '--' end)+\"and s.is_decommissioned = @is_decommissioned\r\n\"+(case when @server is null then '' else '--' end)+\" /*\r\nand (           server like ('%'+@server+'%')\r\n        or      friendly_name like ('%'+@server+'%')\r\n        or      hosts like ('%'+@server+'%')\r\n        or      at_server_name like ('%'+@server+'%')\r\n        or      server_name like ('%'+@server+'%')\r\n        or      machine_name like ('%'+@server+'%')\r\n        or      current_host_name like ('%'+@server+'%')\r\n        or      ag_replicas like ('%'+@server+'%')\r\n        or      ag_listeners like ('%'+@server+'%')\r\n)\r\n\"+(case when @server is null then '' else '--' end)+\" */\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @is_decommissioned, @host, @server;\r\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "SQL Servers - Combined Info - FILTERED - ${sma_servers_count_online} ONLINE",
+          "type": "table"
+        }
+      ],
+      "title": "SQL Servers - Combined Info - FILTERED",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
       },
       "id": 12,
       "panels": [
@@ -1015,7 +1138,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 6
+            "y": 14
           },
           "id": 11,
           "options": {
@@ -1081,7 +1204,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 7
       },
       "id": 14,
       "panels": [
@@ -1143,7 +1266,7 @@
             "h": 13,
             "w": 24,
             "x": 0,
-            "y": 7
+            "y": 15
           },
           "id": 13,
           "options": {
@@ -1252,8 +1375,8 @@
       {
         "current": {
           "selected": false,
-          "text": "Online",
-          "value": "Online"
+          "text": "All",
+          "value": "All"
         },
         "datasource": {
           "type": "mssql",
@@ -1276,8 +1399,8 @@
       {
         "current": {
           "selected": false,
-          "text": "184",
-          "value": "184"
+          "text": "185",
+          "value": "185"
         },
         "datasource": {
           "type": "mssql",
@@ -1300,8 +1423,8 @@
       {
         "current": {
           "selected": false,
-          "text": "179",
-          "value": "179"
+          "text": "182",
+          "value": "182"
         },
         "datasource": {
           "type": "mssql",
@@ -1324,8 +1447,8 @@
       {
         "current": {
           "selected": false,
-          "text": "225",
-          "value": "225"
+          "text": "226",
+          "value": "226"
         },
         "datasource": {
           "type": "mssql",
@@ -1395,13 +1518,33 @@
       },
       {
         "current": {
+          "selected": false,
+          "text": "10.253.33.157",
+          "value": "10.253.33.157"
+        },
+        "hide": 0,
+        "label": "Server",
+        "name": "server_input",
+        "options": [
+          {
+            "selected": true,
+            "text": "10.253.33.157",
+            "value": "10.253.33.157"
+          }
+        ],
+        "query": "10.253.33.157",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
           "selected": true,
           "text": "",
           "value": ""
         },
         "hide": 0,
-        "label": "Server",
-        "name": "server_input",
+        "label": "Host",
+        "name": "host_input",
         "options": [
           {
             "selected": true,
@@ -1410,26 +1553,6 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
-        "type": "textbox"
-      },
-      {
-        "current": {
-          "selected": false,
-          "text": "AODR0SPSDBN16",
-          "value": "AODR0SPSDBN16"
-        },
-        "hide": 0,
-        "label": "Host",
-        "name": "host_input",
-        "options": [
-          {
-            "selected": false,
-            "text": "",
-            "value": ""
-          }
-        ],
-        "query": "AODR0SPSDBN16",
         "skipUrlSync": false,
         "type": "textbox"
       },
@@ -1470,8 +1593,8 @@
       {
         "current": {
           "selected": false,
-          "text": "62",
-          "value": "62"
+          "text": "27",
+          "value": "27"
         },
         "datasource": {
           "type": "mssql",
@@ -1494,8 +1617,8 @@
       {
         "current": {
           "selected": false,
-          "text": "47",
-          "value": "47"
+          "text": "22",
+          "value": "22"
         },
         "datasource": {
           "type": "mssql",
@@ -1517,8 +1640,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1722565816733",
-          "value": "1722565816733"
+          "text": "1723516223377",
+          "value": "1723516223377"
         },
         "datasource": {
           "type": "mssql",
@@ -1567,6 +1690,6 @@
   "timezone": "browser",
   "title": "DBA Inventory",
   "uid": "t__DBA_Inventory",
-  "version": 34,
+  "version": 38,
   "weekStart": ""
 }

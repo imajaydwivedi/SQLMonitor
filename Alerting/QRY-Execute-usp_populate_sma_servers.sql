@@ -1,4 +1,4 @@
-use DBA_Admin
+use DBA
 go
 
 create or alter procedure dbo.usp_wrapper_populate_sma_sql_instance
@@ -52,8 +52,8 @@ begin
 		if @truncate_log_table = 1
 		begin
 			if @verbose >= 1
-				print 'truncate table dbo.sma_servers_logs;'
-			truncate table dbo.sma_servers_logs;
+				print 'truncate table dbo..sma_servers_logs;'
+			truncate table dbo..sma_servers_logs;
 		end
 
 		if @verbose >= 2
@@ -62,8 +62,8 @@ begin
 				select distinct sql_instance = ltrim(rtrim(id.sql_instance))
 				from dbo.instance_details id
 				where id.is_enabled = 1 and id.is_alias = 0
-				and id.sql_instance not in ('DBAInventoryServer')
-				and not exists (select * from dbo.sma_servers_logs l where l.sql_instance = id.sql_instance and l.status = 'Successful')
+				and id.sql_instance not in ('ATPR0SVDNTRY160')
+				and not exists (select * from dbo..sma_servers_logs l where l.sql_instance = id.sql_instance and l.status = 'Successful')
 			)
 			select t.*, s.*
 			from t_servers s
@@ -76,8 +76,8 @@ begin
 				select distinct ltrim(rtrim(id.sql_instance))
 				from dbo.instance_details id
 				where id.is_enabled = 1 and id.is_alias = 0
-				and id.sql_instance not in ('DBAInventoryServer')
-				and not exists (select * from dbo.sma_servers_logs l where l.sql_instance = id.sql_instance and l.status = 'Successful');
+				and id.sql_instance not in ('ATPR0SVDNTRY160')
+				and not exists (select * from dbo..sma_servers_logs l where l.sql_instance = id.sql_instance and l.status = 'Successful');
 
 		open cur_servers;
 		fetch next from cur_servers into @_sql_instance;
@@ -89,7 +89,7 @@ begin
 
 			print 'Working on @_sql_instance = '+quotename(@_sql_instance)+'..'
 
-			insert dbo.sma_servers_logs (sql_instance)
+			insert dbo..sma_servers_logs (sql_instance)
 			select @_sql_instance;
 
 			set @_id = SCOPE_IDENTITY();
@@ -111,13 +111,13 @@ begin
 
 				print @_crlf+@_long_star_line+@_crlf+'Error Occurred while processing server ['+@_sql_Instance+'].'+@_crlf+@_errorMessage+@_crlf+@_long_star_line+@_crlf;
 
-				update dbo.sma_servers_logs
+				update dbo..sma_servers_logs
 				set status = 'Failed', remarks = @_errorMessage
 				where id = @_id;
 			end catch
 
 			if @_errorMessage is null
-				update dbo.sma_servers_logs set status = 'Successful' where id = @_id;
+				update dbo..sma_servers_logs set status = 'Successful' where id = @_id;
 
 			fetch next from cur_servers into @_sql_instance;
 		end
@@ -499,8 +499,10 @@ begin
 		select	[related_server] = h.server, h.server_port, [sql_instance_port] = c.sql_instance_port, h.[host_name], 
 				possible_type = case when h.source = 'sma_hadr_ag' then 'ag replica' else 'sql cluster' end,
 				asi.domain,
-				[host_fqdn] = case when asi.domain = 'google' then h.host_name+'.google.com'
-									when asi.domain is not null then h.host_name+'.'+asi.domain+'.com'
+				[host_fqdn] = case when asi.domain = 'ANGELONE' then h.host_name+'.angelone.in'
+									when asi.domain = 'ANGELTRADE' then h.host_name+'.angeltrade.com'
+									when asi.domain = 'ANGELBROKING' then h.host_name+'.angelbroking.com'
+									when asi.domain = 'INTERNAL' then h.host_name+'.internal.angelone.in'
 									when asi.domain is null then h.host_name
 									else h.host_name
 								end
@@ -749,6 +751,148 @@ begin
 		end catch
 	end -- 'Send-Mail-4-Decomissioned-Server'
 
+	if ('Send-Mail-4-Missing-AgListener-Alias' = 'Send-Mail-4-Missing-AgListener-Alias')
+	begin
+		set @_table_row_count = 0;
+
+		-- Probable List of Missing AG Listener Alias in SQLMonitor
+		if OBJECT_ID('tempdb..#missing_ag_listeners') is not null
+			drop table #missing_ag_listeners;
+		;with t_ags as (
+			select ag.ag_listener_name, ag_listener_ip = ag.ag_listener_ip1
+			from dbo.sma_servers s
+			join dbo.sma_hadr_ag ag
+				on ag.server = s.server
+			where s.is_decommissioned = 0
+			and ag.is_decommissioned = 0
+			and s.hadr_strategy = 'ag'
+			and ag.ag_listener_ip1 is not null
+			--
+			union
+			--
+			select ag.ag_listener_name, ag_listener_ip = ag.ag_listener_ip2
+			from dbo.sma_servers s
+			join dbo.sma_hadr_ag ag
+				on ag.server = s.server
+			where s.is_decommissioned = 0
+			and ag.is_decommissioned = 0
+			and s.hadr_strategy = 'ag'
+			and ag.ag_listener_ip2 is not null
+		)
+		select related_server = hadr.server, hadr.ag_replicas_CSV, ag.*
+		into #missing_ag_listeners
+		from t_ags ag
+		outer apply (select top 1 server, ag_replicas_CSV from dbo.sma_hadr_ag hadr 
+							where hadr.is_decommissioned = 0 and hadr.ag_listener_name = ag.ag_listener_name) hadr
+		where 1=1
+		and not exists (select * from dbo.instance_details id
+				where id.is_enabled = 1
+				and id.is_alias = 1 and id.sql_instance = ag.ag_listener_ip);
+			
+		set @_table_row_count = (select count(*) from #missing_ag_listeners);
+
+		if @_table_row_count > 0
+		begin
+			print 'Send mail for Missing Alias..';
+
+			if @verbose >= 2
+			begin
+				select t.*, ag.*
+				from #missing_ag_listeners ag				
+				full outer join
+					(select RunningQuery = 'Missing-Alias-in-SQLMonitor') t
+					on 1=1;
+			end
+
+			set @_recepient = @dba_team_email_id;
+			set @_copy_recipients = @dba_manager_email_id
+
+			begin try
+				set @_table_data = null;
+
+				set @_table_headline = N'<h3>Following Ag Listener/IPs Alias are missing in SQLMonitor table <code>dbo.instance_details.</code> Kindly added them as <b>Alias</b>.</h3>'+@_crlf
+
+				set @_table_header = N'<tr><th>Related Server</th> <th>AG Replicas</th> <th>Ag Listener Name</th>'
+											+'<th>Ag Listener IP</th> </tr>'+@_crlf;
+				
+				;with t_login_info as (
+					select al.related_server, al.ag_replicas_CSV, al.ag_listener_name, al.ag_listener_ip
+					from #missing_ag_listeners al
+				)
+				,t_table_rows as (
+					select	'<tr>'
+								+'<td class="bg_key"><a href="'+@url_dashboard+'&var-server='+related_server+'" target="_blank">'+related_server+'</a></td>'
+								+'<td>'+coalesce(ag_replicas_CSV,' ')+'</td>'
+								+'<td>'+coalesce(ag_listener_name,' ')+'</td>'
+								+'<td>'+coalesce(ag_listener_ip,' ')+'</td>'
+							+'</tr>' as [table_row]
+					from t_login_info
+				)
+				select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+				from t_table_rows
+
+				set @_mail_html_body = @_table_headline+'<div class="tableContainerDiv"><table border="1">'
+										+'<caption>'+convert(varchar,@_table_row_count)+' rows</caption>'
+										+'<thead>'+@_table_header+'</thead><tbody>'+isnull(@_table_data,'')+'</tbody></table></div>'+@_crlf;
+
+				set @_mail_subject = 'AG Listener Alias missing in SQLMonitor'+' - '+convert(varchar,@_start_time,120);
+				set @_mail_html = '<html>'
+										+N'<head>'
+										+N'<title>'+@_mail_subject+'</title>'
+										+@_style_css
+										+N'</head>'
+										+N'<body>'
+										+N'<h1><a href="'+@url_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
+										+N'<p>'+@_mail_html_body+N'</p>'
+										+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
+										+N'</body>';	
+				if @verbose >= 1
+				begin
+					print @_long_star_line
+					print '@_table_headline => '+@_crlf+@_table_headline
+					print '@_table_header => '+@_crlf+@_table_header
+					print '@_mail_html_body => '+@_crlf+@_mail_html_body
+					print '@_table_data => '+@_crlf+@_table_data
+					print '@_mail_html => '+@_crlf+@_mail_html+@_crlf
+				end
+
+				if @send_mail = 1
+				begin
+					if @_table_data is not null
+					begin
+						exec msdb.dbo.sp_send_dbmail 
+											@recipients = @_recepient,
+											@copy_recipients = @_copy_recipients,
+											@subject = @_mail_subject,
+											@body = @_mail_html,
+											@body_format = 'HTML';
+					end
+				end
+
+			end try
+			begin catch
+				SELECT	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+									'. State: '+convert(varchar,isnull(@_errorState,'')) +
+									'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+									'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error Occurred while sending mail.'+@_crlf+@_errorMessage+@_crlf+@_long_star_line+@_crlf;
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_wrapper_populate_sma_sql_instance', 
+						[function_call_arguments] = 'Send-Mail-4-Missing-Servers', [server] = null, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = program_name();
+			end catch
+		end
+	end -- 'Send-Mail-4-Missing-AgListener-Alias'
+
 	if ('Update-Host-Ips' = 'Update-Host-Ips')
 	begin
 		print 'Update host ip addresses in dbo.sma_sql_server_hosts..';
@@ -765,7 +909,8 @@ begin
 			on s.server = h.server
 		where 1=1
 		and s.is_decommissioned = 0
-		and h.is_decommissioned = 0;
+		and h.is_decommissioned = 0
+		and h.host_ips is null;
 
 		if @verbose >= 2
 		begin
@@ -845,8 +990,8 @@ begin
 
 
 /*
-drop table dbo.sma_servers_logs
-create table dbo.sma_servers_logs
+drop table dbo..sma_servers_logs
+create table dbo..sma_servers_logs
 (	id int identity(1,1) not null,
 	sql_instance varchar(125) not null,
 	start_time datetime2 not null default sysdatetime(),
