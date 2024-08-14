@@ -511,6 +511,7 @@ $WindowsCredential | ft -AutoSize
 $ddlPath = Join-Path $SQLMonitorPath "DDLs"
 $psScriptPath = Join-Path $SQLMonitorPath "SQLMonitor"
 $isUpgradeScenario = $false
+$SkipPowerShellJobs4SQLCluster = $false
 
 $mailProfileFilePath = "$ddlPath\$MailProfileFileName"
 $WhoIsActiveFilePath = "$ddlPath\$WhoIsActiveFileName"
@@ -668,7 +669,7 @@ catch {
     }
 }
 
-# Get dbo.instance_details info
+# Get dbo.instance_details info by SqlInstanceToBaseline
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetching info from [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details].."
 $instanceDetails = @()
 if([String]::IsNullOrEmpty($HostName)) {
@@ -700,6 +701,7 @@ catch {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Could not fetch details from [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details] info."
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "So assuming fresh installation of SQLMonitor."
 }
+
 
 # Setup SQL Connection for SqlInstanceToBaseline
 try {
@@ -877,7 +879,7 @@ if ( $instanceDetails.Count -gt 0 )
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Instance details found in [dbo].[instance_details]."
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Using available info from this table."
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Incase details of [dbo].[instance_details] are outdated, `n`t`t`t`tconsider updating same 1st on Inventory & Local Instance both."
-    $instanceDetails | ft -AutoSize
+    $instanceDetails | Format-Table -AutoSize
 
     # If more than 1 host is found, then confirm from user
     if ( $instanceDetails.Count -gt 1 ) 
@@ -1737,6 +1739,37 @@ if( ((-not [String]::IsNullOrEmpty($WindowsCredential)) -or ($ssnHostName -eq $e
 }
 
 
+# Get dbo.instance_details info by HostName to figure out if PowerShell jobs to be created is Server is a SQLCluster
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetching host related info from [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details].."
+$instanceHostDetails = @()
+if(-not [String]::IsNullOrEmpty($HostName)) {
+    $sqlInstanceHostDetails = @"
+select distinct collector_powershell_jobs_server, host_name, data_destination_sql_instance
+from dbo.instance_details 
+where is_enabled = 1 and is_alias = 0 and [host_name] = '$HostName'
+and collector_powershell_jobs_server <> '$SqlInstanceForPowershellJobs'
+"@
+}
+
+if($verbose) {
+    $sqlInstanceHostDetails | Write-Host -ForegroundColor Cyan
+}
+
+try {
+    $instanceHostDetails += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlInstanceHostDetails
+
+    #"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$isClustered = $isClustered"
+    if($instanceHostDetails.Count -gt 0 -and $isClustered -eq $true) {
+        $SkipPowerShellJobs4SQLCluster = $true
+    }
+}
+catch {
+    $errMessage = $_
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Could not fetch host related details from [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details] info."
+}
+
+
 # 1__sp_WhoIsActive
 $stepName = '1__sp_WhoIsActive'
 if($stepName -in $Steps2Execute) {
@@ -1797,7 +1830,6 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$AllDatabaseObjectsFilePath = '$tempAllDatabaseObjectsFilePath'"
     try {
-        Write-Debug "before debug"
         if($verbose -or $debug) {
             $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $tempAllDatabaseObjectsFilePath -EnableException -MessagesToOutput | Write-Verbose
         }
@@ -1912,18 +1944,18 @@ if($stepName -in $Steps2Execute)
         end
 "@
     # Populate $SqlInstanceToBaseline
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHost -EnableException | ft -AutoSize
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHost -EnableException | Format-Table -AutoSize
 
     # Populate $SqlInstanceAsDataDestination
     if( ($SqlInstanceAsDataDestination -ne $SqlInstanceToBaseline) -and ($InventoryServer -ne $SqlInstanceAsDataDestination) ) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Adding entry into [$SqlInstanceAsDataDestination].[$DbaDatabase].[dbo].[instance_hosts].."
-        $conSqlInstanceAsDataDestination | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHost -EnableException | ft -AutoSize
+        $conSqlInstanceAsDataDestination | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHost -EnableException | Format-Table -AutoSize
     }
 
     # Populate $InventoryServer
     if($InventoryServer -ne $SqlInstanceToBaseline) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Adding entry into [$InventoryServer].[$InventoryDatabase].[dbo].[instance_hosts].."
-        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddInstanceHost -EnableException | ft -AutoSize
+        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddInstanceHost -EnableException | Format-Table -AutoSize
     }    
 
 
@@ -1951,18 +1983,18 @@ if($stepName -in $Steps2Execute)
 "@
     
     # Populate $SqlInstanceToBaseline
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHostMapping -EnableException | ft -AutoSize
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHostMapping -EnableException | Format-Table -AutoSize
 
     # Populate $SqlInstanceAsDataDestination
     if( ($SqlInstanceAsDataDestination -ne $SqlInstanceToBaseline) -and ($InventoryServer -ne $SqlInstanceAsDataDestination) ) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Adding entry into [$SqlInstanceAsDataDestination].[$DbaDatabase].[dbo].[instance_details].."
-        $conSqlInstanceAsDataDestination | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHostMapping -EnableException | ft -AutoSize
+        $conSqlInstanceAsDataDestination | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHostMapping -EnableException | Format-Table -AutoSize
     }
 
     # Populate $InventoryServer
     if($InventoryServer -ne $SqlInstanceToBaseline) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Adding entry into [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details].."
-        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddInstanceHostMapping -EnableException | ft -AutoSize
+        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddInstanceHostMapping -EnableException | Format-Table -AutoSize
     }
 
     if($isExpressEdition -or (-not [String]::IsNullOrEmpty($RetentionDays)) ) 
@@ -2380,10 +2412,16 @@ if( $requireProxy -and ($stepName -in $Steps2Execute) )
     }
 }
 
-
 # 13__CreateJobCollectDiskSpace
 $stepName = '13__CreateJobCollectDiskSpace'
-if($stepName -in $Steps2Execute) 
+if($stepName -in $Steps2Execute) {
+    if ($SkipPowerShellJobs4SQLCluster) {
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "*****Skipping step '$stepName'.."
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Required DiskSpace Collection job already exists on following server.."
+        $instanceHostDetails | Format-Table -AutoSize
+    }
+}
+if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4SQLCluster -eq $false) 
 {
     $jobName = '(dba) Collect-DiskSpace'
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
@@ -2501,7 +2539,14 @@ if($stepName -in $Steps2Execute)
 
 # 14__CreateJobCollectOSProcesses
 $stepName = '14__CreateJobCollectOSProcesses'
-if($stepName -in $Steps2Execute) 
+if($stepName -in $Steps2Execute) {
+    if ($SkipPowerShellJobs4SQLCluster) {
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "*****Skipping step '$stepName'.."
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Required OSProcesses Collection job already exists on following server.."
+        $instanceHostDetails | Format-Table -AutoSize
+    }
+}
+if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4SQLCluster -eq $false) 
 {
     $jobName = '(dba) Collect-OSProcesses'
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
@@ -2618,7 +2663,14 @@ if($stepName -in $Steps2Execute)
 
 # 15__CreateJobCollectPerfmonData
 $stepName = '15__CreateJobCollectPerfmonData'
-if($stepName -in $Steps2Execute) 
+if($stepName -in $Steps2Execute) {
+    if ($SkipPowerShellJobs4SQLCluster) {
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "*****Skipping step '$stepName'.."
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Required Perfmon Data Collection job already exists on following server.."
+        $instanceHostDetails | Format-Table -AutoSize
+    }
+}
+if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4SQLCluster -eq $false) 
 {
     $jobName = '(dba) Collect-PerfmonData'
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
