@@ -12,7 +12,7 @@ parser.add_argument("-d", "--inventory_database", type=str, required=False, acti
 parser.add_argument("-k", "--service_key", type=str, required=True, action="store", default="afie5a643ff44a04d02b710591a33551", help="Pager Duty API Service Key", )
 parser.add_argument("-n", "--alert_name", type=str, required=False, action="store", default="Disk Space Issue", help="PagerDuty Alert Name")
 parser.add_argument("-j", "--alert_job_name", type=str, required=False, action="store", default="(dba) Raise-DiskSpaceAlert", help="Script/Job calling this script")
-parser.add_argument("-u", "--dashboard_url", type=str, required=False, action="store", default="https://ajaydwivedi.ddns.net:3000/d/distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m'", help="All Server Dashboard URL")
+parser.add_argument("-u", "--dashboard_url", type=str, required=False, action="store", default="https://sqlmonitor.ajaydwivedi.com:3000/d/distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m'", help="All Server Dashboard URL")
 
 parser.add_argument("--disk_used_warning_percentage", type=int, required=False, action="store", default=80, help="Percentage Used for Warning Alert")
 parser.add_argument("--disk_used_warning_gb", type=int, required=False, action="store", default=200, help="Used gb size for alert")

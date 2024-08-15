@@ -23,7 +23,7 @@ CREATE OR ALTER PROCEDURE dbo.usp_send_login_expiry_emails
 	@cto_email_id varchar(125) = 'cto@gmail.com', /* Email for CTO */
 	@noc_email_id varchar(125) = 'noc@gmail.com', /* NOC team */
 	@noc_threshold_days int = 12,
-	@url_login_expiry_dashboard_panel varchar(1000) = 'http://ajaydwivedi.ddns.net:3000/SQLServer/d/distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m&viewPanel=885',
+	@url_login_expiry_dashboard_panel varchar(1000) = 'https://sqlmonitor.ajaydwivedi.com:3000/SQLServer/d/distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m&viewPanel=885',
 	@url_for_login_password_reset varchar(1000) = '#',
 	@url_for_dba_slack_channel varchar(1000) = 'https://ajaydwivedi.slack.com/archives/C0436G8SCDV',
 	@verbose tinyint = 0, /* 0 = No logs, 1 = Print Message, 2 = Table Result + Messages */

@@ -19,7 +19,7 @@ ALTER PROCEDURE dbo.usp_GetAllServerDashboardMail
 	@recipients varchar(500) = 'some_dba_mail_id@gmail.com', /* Folks who receive the failure mail */
 	@mail_subject varchar(500) = 'Monitoring - Live - All Servers', /* Subject of Failure Mail */
 	@job_name varchar(255) = '(dba) Get-AllServerDashboardMail',
-	@dashboard_link varchar(200) = 'https://ajaydwivedi.ddns.net:3000/d/',
+	@dashboard_link varchar(200) = 'https://sqlmonitor.ajaydwivedi.com:3000/d/',
 	@os_cpu_threshold decimal(20,2) = 70,
 	@sql_cpu_threshold decimal(20,2) = 65,
 	@blocked_counts_threshold int = 1,
@@ -73,9 +73,9 @@ BEGIN
 		raiserror ('@recipients is mandatory parameter', 20, -1) with log;
 
 	IF @dashboard_link is null
-		set @dashboard_link = 'https://ajaydwivedi.ddns.net:3000/d/';
+		set @dashboard_link = 'https://sqlmonitor.ajaydwivedi.com:3000/d/';
 	IF right(@dashboard_link ,3) <> '/d/'
-		raiserror ('@dashboard_link should be ending with ''/d/''. For example, https://ajaydwivedi.ddns.net:3000/d/', 20, -1) with log;
+		raiserror ('@dashboard_link should be ending with ''/d/''. For example, https://sqlmonitor.ajaydwivedi.com:3000/d/', 20, -1) with log;
 
 	-- Local Variables
 	DECLARE @_sql nvarchar(MAX);
@@ -1286,7 +1286,7 @@ GO
 if APP_NAME() = 'Microsoft SQL Server Management Studio - Query'
 	EXEC dbo.usp_GetAllServerDashboardMail 
 			@recipients = 'ajay.dwivedi2007@gmail.com;',
-			@dashboard_link = 'https://ajaydwivedi.ddns.net:3000/d/',
+			@dashboard_link = 'https://sqlmonitor.ajaydwivedi.com:3000/d/',
 			@collect_offline_servers = 1, @collect_sqlmonitor_jobs = 1,
 			@collect_disk_space = 1,
 			@only_threshold_validated = 1, @send_mail = 1, @verbose = 2

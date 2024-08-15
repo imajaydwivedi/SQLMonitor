@@ -5,7 +5,7 @@ create or alter procedure dbo.usp_wrapper_populate_sma_sql_instance
 	@dba_team_email_id varchar(125) = 'dba@gmail.com',
 	@dba_manager_email_id varchar(125) = 'dba.manager@gmail.com', /* Email for DBA Manager */
 	@sre_vp_email_id varchar(125) = 'sre.vp@gmail.com', /* Email for SRE Senior VP */
-	@url_dashboard varchar(2000) = 'http://ajaydwivedi.ddns.net:3000/SQLServer/d/distributed_live_dashboard/monitoring-live-distributed?orgId=1',
+	@url_dashboard varchar(2000) = 'https://sqlmonitor.ajaydwivedi.com:3000/SQLServer/d/distributed_live_dashboard/monitoring-live-distributed?orgId=1',
 	@job_name varchar(255) = '(dba) Populate Inventory Tables',
 	@send_mail bit = 1,
 	@verbose tinyint = 0,

@@ -6,7 +6,7 @@ declare @_htmlContent nvarchar(max);
 
 set quoted_identifier off;
 set @_title = 'Monitoring - Live - All Servers';
-set @_allServerDashLink = 'https://ajaydwivedi.ddns.net:3000/d/distributed_live_dashboard_all_servers';
+set @_allServerDashLink = 'https://sqlmonitor.ajaydwivedi.com:3000/d/distributed_live_dashboard_all_servers';
 
 set @_styleCSS = "<style>
     iframe {
@@ -16,7 +16,7 @@ set @_styleCSS = "<style>
     }
   </style>";
 
-set @_coreHealthMetricsHTML = '<div id="core-health-metrics" class="dashboard-panel"><iframe src="https://ajaydwivedi.ddns.net:3000/d-solo/distributed_live_dashboard_all_servers/monitoring---live---all-servers?orgId=1&refresh=1m&from=1703996344492&to=1703998144492&panelId=842" width="100%"></iframe></div>';
+set @_coreHealthMetricsHTML = '<div id="core-health-metrics" class="dashboard-panel"><iframe src="https://sqlmonitor.ajaydwivedi.com:3000/d-solo/distributed_live_dashboard_all_servers/monitoring---live---all-servers?orgId=1&refresh=1m&from=1703996344492&to=1703998144492&panelId=842" width="100%"></iframe></div>';
 
 set @_htmlContent = "<head><title>"+@_title+"</title><head>";
 set @_htmlContent += @_styleCSS;

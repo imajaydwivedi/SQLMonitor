@@ -17,7 +17,7 @@ parser.add_argument("--slack_channel", type=str, required=False, action="store",
 parser.add_argument("--slack_bot", type=str, required=False, action="store", default="SQLMonitor", help="Slack Bot name", )
 parser.add_argument("-n", "--alert_name", type=str, required=False, action="store", default="Core Health Metrics Alert", help="Alert Name")
 parser.add_argument("-j", "--alert_job_name", type=str, required=False, action="store", default="(dba) Raise-CoreHealthMetricsAlert", help="Script/Job calling this script")
-parser.add_argument("-u", "--dashboard_url", type=str, required=False, action="store", default="https://ajaydwivedi.ddns.net:3000/d/distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m'", help="All Server Dashboard URL")
+parser.add_argument("-u", "--dashboard_url", type=str, required=False, action="store", default="https://sqlmonitor.ajaydwivedi.com:3000/d/distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m'", help="All Server Dashboard URL")
 
 parser.add_argument("--latency_minutes", type=int, required=False, action="store", default=30, help="Latency in minutes for Alert")
 parser.add_argument("--redo_queue_size_gb", type=int, required=False, action="store", default=10, help="Redo Queue size in gb for alert")
