@@ -96,13 +96,19 @@ QuitWithRollback:
 EndSave:
 GO
 
-
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '***************************** EXEC master.dbo.sp_BlitzIndex @Mode = 0 *****************************';
 EXEC master.dbo.sp_BlitzIndex @DatabaseName = 'master', @Mode = 0, @BringThePain = 1, 
 			@OutputDatabaseName = 'DBA', @OutputSchemaName = 'dbo', @OutputTableName = 'BlitzIndex_Mode0';
 GO
+
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '***************************** EXEC master.dbo.sp_BlitzIndex @Mode = 1 *****************************';
 EXEC master.dbo.sp_BlitzIndex @DatabaseName = 'master', @Mode = 1, @BringThePain = 1, 
 			@OutputDatabaseName = 'DBA', @OutputSchemaName = 'dbo', @OutputTableName = 'BlitzIndex_Mode1';
 GO
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '***************************** EXEC master.dbo.sp_BlitzIndex @Mode = 4 *****************************';
 EXEC master.dbo.sp_BlitzIndex @DatabaseName = 'master', @Mode = 4, @BringThePain = 1, 
 			@OutputDatabaseName = 'DBA', @OutputSchemaName = 'dbo', @OutputTableName = 'BlitzIndex_Mode4';
 GO

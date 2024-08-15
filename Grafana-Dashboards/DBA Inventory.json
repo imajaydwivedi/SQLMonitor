@@ -1,0 +1,1724 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_MSSQL_172.31.25.106",
+      "label": "MSSQL_172.31.25.106",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "mssql",
+      "pluginName": "Microsoft SQL Server"
+    },
+    {
+      "name": "VAR_LOGIN_EXPIRY_WARNING_THRESHOLD_DAYS",
+      "type": "constant",
+      "label": "login_expiry_warning_threshold_days",
+      "value": "20",
+      "description": ""
+    },
+    {
+      "name": "VAR_LOGIN_EXPIRY_CRITICAL_THRESHOLD_DAYS",
+      "type": "constant",
+      "label": "login_expiry_critical_threshold_days",
+      "value": "10",
+      "description": ""
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.4.5"
+    },
+    {
+      "type": "datasource",
+      "id": "mssql",
+      "name": "Microsoft SQL Server",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "SQL Server Inventory",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_MSSQL_172.31.25.106}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "server"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Individual Server Dashboard",
+                        "url": "d/distributed_live_dashboard?var-server=${__data.fields.server}"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 13,
+            "w": 24,
+            "x": 0,
+            "y": 9
+          },
+          "id": 1,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.4.5",
+          "targets": [
+            {
+              "dataset": "DBA_Admin",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_MSSQL_172.31.25.106}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server_status varchar(50);\r\ndeclare @is_decommissioned bit;\r\ndeclare @host varchar(255);\r\ndeclare @server varchar(125);\r\n\r\nset @server = case when '$server_input' <> '' then '$server_input' else null end;\r\nset @host = case when '$host_input' <> '' then '$host_input' else null end;\r\nset @server_status = '$server_status';\r\nset @is_decommissioned = case when @server_status = 'Online' then 0\r\n                              when @server_status = 'Offline' then 1\r\n                              when @server_status = 'All' then null\r\n                              else null\r\n                              end\r\n\r\nset @params = N'@is_decommissioned bit, @host varchar(255), @server varchar(255)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect [server], [server_port], [domain], [friendly_name], [stability], [priority], [server_type], [has_hadr], [hadr_strategy], [backup_strategy], [server_owner_email], [rdp_credential], [sql_credential], [is_monitoring_enabled], [is_maintenance_scheduled], [is_tde_implemented], [enabled_restart_schedule], [is_decommissioned], [more_info], [created_date_utc], [is_onboarded]\r\nfrom dbo.sma_servers s\r\nwhere 1=1\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\"and s.is_decommissioned = @is_decommissioned\r\n\"+(case when @server is not null then '' else '--' end)+\"and s.server = @server\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @is_decommissioned, @host, @server;\r\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "All Servers - Basic Info - ${sma_servers_count_online} ONLINE",
+          "type": "table"
+        }
+      ],
+      "title": "All Servers - Basic Info - ${sma_servers_count_online} ONLINE",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 4,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_MSSQL_172.31.25.106}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "server"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Individual Server Dashboard",
+                        "url": "d/distributed_live_dashboard?var-server=${__data.fields.server}"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 13,
+            "w": 24,
+            "x": 0,
+            "y": 26
+          },
+          "id": 3,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.4.5",
+          "targets": [
+            {
+              "dataset": "DBA_Admin",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_MSSQL_172.31.25.106}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server_status varchar(50);\r\ndeclare @is_decommissioned bit;\r\n\r\ndeclare @host varchar(255);\r\ndeclare @server varchar(125);\r\n\r\nset @server = case when '$server_input' <> '' then '$server_input' else null end;\r\nset @host = case when '$host_input' <> '' then '$host_input' else null end;\r\n\r\nset @server_status = '$server_status';\r\nset @is_decommissioned = case when @server_status = 'Online' then 0\r\n                              when @server_status = 'Offline' then 1\r\n                              when @server_status = 'All' then null\r\n                              else null\r\n                              end\r\n\r\nset @params = N'@is_decommissioned bit, @host varchar(255), @server varchar(255)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect e.[server], s.server_port, e.[at_server_name], e.[server_name], e.[alias_names], e.[product_version], e.[edition], e.[has_PII_data], e.[total_physical_memory_kb], e.[cpu_count], e.[rpo_worst_case_minutes], e.[rto_minutes], e.[data_center], e.[availability_zone], e.[avg_utilization_JSON], e.[ticket], e.[purpose], e.[known_challenges], e.[remarks], e.[more_info_JSON]\r\nfrom dbo.sma_sql_server_extended_info e\r\njoin dbo.sma_servers s\r\n\ton s.server = e.server\r\nwhere 1=1\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\"and s.is_decommissioned = @is_decommissioned\r\n\"+(case when @server is not null then '' else '--' end)+\"and s.server = @server\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @is_decommissioned, @host, @server;\r\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "SQL Servers - Basic Info - ${sql_servers_count_online} ONLINE",
+          "type": "table"
+        }
+      ],
+      "title": "SQL Servers - Extended Info - ${sql_servers_count_online} ONLINE",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 6,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_MSSQL_172.31.25.106}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "server"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Individual Server Dashboard",
+                        "url": "d/distributed_live_dashboard?var-server=${__data.fields.server}"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 13,
+            "w": 24,
+            "x": 0,
+            "y": 27
+          },
+          "id": 5,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.4.5",
+          "targets": [
+            {
+              "dataset": "DBA_Admin",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_MSSQL_172.31.25.106}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server_status varchar(50);\r\ndeclare @is_decommissioned bit;\r\n\r\ndeclare @host varchar(255);\r\ndeclare @server varchar(125);\r\n\r\nset @server = case when '$server_input' <> '' then '$server_input' else null end;\r\nset @host = case when '$host_input' <> '' then '$host_input' else null end;\r\n\r\nset @server_status = '$server_status';\r\nset @is_decommissioned = case when @server_status = 'Online' then 0\r\n                              when @server_status = 'Offline' then 1\r\n                              when @server_status = 'All' then null\r\n                              else null\r\n                              end\r\n\r\nset @params = N'@is_decommissioned bit, @host varchar(255), @server varchar(255)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect h.[server], s.server_port, \r\n        s.hadr_strategy,\r\n      h.[host_name], h.[host_ips], h.[host_distribution], h.[processor_name], h.[ram_mb], h.[cpu_count], h.[wsfc_name], h.[wsfc_ip1], h.[wsfc_ip2], h.[is_quarantined], h.[is_decommissioned], h.[more_info_JSON]\r\nfrom dbo.sma_sql_server_hosts h\r\njoin dbo.sma_servers s\r\n\ton s.server = h.server\r\nwhere 1=1\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\"and s.is_decommissioned = @is_decommissioned\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\"and h.is_decommissioned = @is_decommissioned\r\n\"+(case when @server is not null then '' else '--' end)+\"and s.server = @server\r\n\"+(case when @host is not null then '' else '--' end)+\"and h.host_name = @host\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @is_decommissioned, @host, @server;\r\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "SQL Server Hosts - $sql_server_hosts_count_online ONLINE",
+          "type": "table"
+        }
+      ],
+      "title": "SQL Server Hosts - $sql_server_hosts_count_online ONLINE",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 8,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_MSSQL_172.31.25.106}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "server"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Individual Server Dashboard",
+                        "url": "d/distributed_live_dashboard?var-server=${__data.fields.server}"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 13,
+            "w": 24,
+            "x": 0,
+            "y": 28
+          },
+          "id": 7,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.4.5",
+          "targets": [
+            {
+              "dataset": "DBA_Admin",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_MSSQL_172.31.25.106}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server_status varchar(50);\r\ndeclare @is_decommissioned bit;\r\n\r\ndeclare @host varchar(255);\r\ndeclare @server varchar(125);\r\n\r\nset @server = case when '$server_input' <> '' then '$server_input' else null end;\r\nset @host = case when '$host_input' <> '' then '$host_input' else null end;\r\n\r\nset @server_status = '$server_status';\r\nset @is_decommissioned = case when @server_status = 'Online' then 0\r\n                              when @server_status = 'Offline' then 1\r\n                              when @server_status = 'All' then null\r\n                              else null\r\n                              end\r\n\r\nset @params = N'@is_decommissioned bit, @host varchar(255), @server varchar(255)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect s.[server], s.server_port, ag.[ag_name], ag.[ag_replicas_CSV], ag.[preferred_role], ag.[current_role], ag.[ag_databases_CSV], ag.[ag_listener_name], ag.[ag_listener_ip1], ag.[ag_listener_ip2], ag.[backup_preference], ag.[backup_replica], ag.[is_decommissioned], ag.[remarks]\r\nfrom dbo.sma_hadr_ag ag\r\njoin dbo.sma_servers s\r\n\ton s.server = ag.server\r\nwhere 1=1\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\"and s.is_decommissioned = @is_decommissioned\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\"and ag.is_decommissioned = @is_decommissioned\r\n\"+(case when @server is not null then '' else '--' end)+\"and s.server = @server\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @is_decommissioned, @host, @server;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "SQL Server Availability Groups - $sql_ags_count_online ONLINE",
+          "type": "table"
+        }
+      ],
+      "title": "SQL Server Availability Groups - $sql_ags_count_online ONLINE",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 10,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_MSSQL_172.31.25.106}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "server"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Individual Server Dashboard",
+                        "url": "d/distributed_live_dashboard?var-server=${__data.fields.server}"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 13,
+            "w": 24,
+            "x": 0,
+            "y": 21
+          },
+          "id": 9,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.4.5",
+          "targets": [
+            {
+              "dataset": "DBA_Admin",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_MSSQL_172.31.25.106}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server_status varchar(50);\r\ndeclare @is_decommissioned bit;\r\n\r\ndeclare @host varchar(255);\r\ndeclare @server varchar(125);\r\n\r\nset @server = case when '$server_input' <> '' then '$server_input' else null end;\r\nset @host = case when '$host_input' <> '' then '$host_input' else null end;\r\n\r\nset @server_status = '$server_status';\r\nset @is_decommissioned = case when @server_status = 'Online' then 0\r\n                              when @server_status = 'Offline' then 1\r\n                              when @server_status = 'All' then null\r\n                              else null\r\n                              end\r\n\r\nset @params = N'@is_decommissioned bit, @host varchar(255), @server varchar(255)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect s.[server], s.server_port, cl.[sql_cluster_network_name], cl.[preferred_owner_node], cl.[sql_cluster_ip1], cl.[sql_cluster_ip2], cl.[is_decommissioned], cl.[remarks]\r\nfrom dbo.sma_hadr_sql_cluster cl\r\njoin dbo.sma_servers s\r\n\ton s.server = cl.server\r\nwhere 1=1\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\"and s.is_decommissioned = @is_decommissioned\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\"and cl.is_decommissioned = @is_decommissioned\r\n\"+(case when @server is not null then '' else '--' end)+\"and s.server = @server\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @is_decommissioned, @host, @server;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "SQL Clusters - $sql_cluster_count_online ONLINE",
+          "type": "table"
+        }
+      ],
+      "title": "SQL Clusters - $sql_cluster_count_online ONLINE",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 16,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_MSSQL_172.31.25.106}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "server"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Individual Server Dashboard",
+                        "url": "d/distributed_live_dashboard?var-server=${__data.fields.server}"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 13,
+            "w": 24,
+            "x": 0,
+            "y": 6
+          },
+          "id": 15,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.4.5",
+          "targets": [
+            {
+              "dataset": "DBA_Admin",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_MSSQL_172.31.25.106}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server_status varchar(50);\r\ndeclare @is_decommissioned bit;\r\ndeclare @host varchar(255);\r\ndeclare @server varchar(125);\r\n\r\nset @server = case when ltrim(rtrim('$server_input')) <> '' then ltrim(rtrim('$server_input')) else null end;\r\nset @host = case when ltrim(rtrim('$host_input')) <> '' then ltrim(rtrim('$host_input')) else null end;\r\nset @server_status = '$server_status';\r\nset @is_decommissioned = case when @server_status = 'Online' then 0\r\n                              when @server_status = 'Offline' then 1\r\n                              when @server_status = 'All' then null\r\n                              else null\r\n                              end\r\n\r\nset @params = N'@is_decommissioned bit, @host varchar(255), @server varchar(255)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect [server], [server_port], [domain], [friendly_name], [stability], [hadr_strategy], [hosts], \r\n        [backup_strategy], [server_owner_email], [at_server_name], [server_name], [machine_name], \r\n        [current_host_name], [ag_replicas], [ag_listeners], \r\n        [sql_cluster_network_name], [product_version], [edition], [has_PII_data], [total_physical_memory_kb], \r\n        [cpu_count], [data_center], [server_purpose], [known_challenges], [is_onboarded], [is_decommissioned], \r\n        [server_more_info], [sql_server_remarks]\r\n\"+(case when @server_status = 'Online' then '' else '--' end)+\"from dbo.sma_sql_servers s\r\n\"+(case when @server_status in ('All','Offline') then '' else '--' end)+\"from dbo.sma_sql_servers_including_offline s\r\nwhere 1=1\r\n\"+(case when @server_status in ('Offline') then '' else '--' end)+\"and s.is_decommissioned = @is_decommissioned\r\n\"+(case when @server is null then '' else '--' end)+\" /*\r\nand (           server like ('%'+@server+'%')\r\n        or      friendly_name like ('%'+@server+'%')\r\n        or      hosts like ('%'+@server+'%')\r\n        or      at_server_name like ('%'+@server+'%')\r\n        or      server_name like ('%'+@server+'%')\r\n        or      machine_name like ('%'+@server+'%')\r\n        or      current_host_name like ('%'+@server+'%')\r\n        or      ag_replicas like ('%'+@server+'%')\r\n        or      ag_listeners like ('%'+@server+'%')\r\n)\r\n\"+(case when @server is null then '' else '--' end)+\" */\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @is_decommissioned, @host, @server;\r\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "SQL Servers - Combined Info - FILTERED - ${sma_servers_count_online} ONLINE",
+          "type": "table"
+        }
+      ],
+      "title": "SQL Servers - Combined Info - FILTERED",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 12,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_MSSQL_172.31.25.106}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "sql_instance"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Server"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 127
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "blue"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Disk Space Dashboard",
+                        "url": "d/disk_space?var-server=${__data.fields.sql_instance}&var-perfmon_host_name=${__data.fields.host_name}&viewPanel=23"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "blue"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "login_name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "blue"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Login Name"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "is_sysadmin"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Is SysAdmin"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "match": "true",
+                          "result": {
+                            "color": "super-light-yellow",
+                            "index": 0
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "false",
+                          "result": {
+                            "color": "transparent",
+                            "index": 1
+                          }
+                        },
+                        "type": "special"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "unit",
+                    "value": "bool"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "password_last_set_time"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Password Last Set"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "blue"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "password_expiration"
+                },
+                "properties": [
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "blue"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Password Expiration"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "is_expired"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Is Expired"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "match": "true",
+                          "result": {
+                            "color": "red",
+                            "index": 0
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "false",
+                          "result": {
+                            "color": "super-light-yellow",
+                            "index": 1
+                          }
+                        },
+                        "type": "special"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "is_locked"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Is Locked"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "match": "true",
+                          "result": {
+                            "color": "red",
+                            "index": 0
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "false",
+                          "result": {
+                            "color": "transparent",
+                            "index": 1
+                          }
+                        },
+                        "type": "special"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "days_until_expiration"
+                },
+                "properties": [
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "red"
+                        },
+                        {
+                          "color": "orange",
+                          "value": 10
+                        },
+                        {
+                          "color": "super-light-yellow",
+                          "value": 20
+                        },
+                        {
+                          "color": "#6ED0E0",
+                          "value": 100
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 24,
+            "x": 0,
+            "y": 14
+          },
+          "id": 11,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Used %"
+              }
+            ]
+          },
+          "pluginVersion": "10.4.5",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_MSSQL_172.31.25.106}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @warning_threshold_days int;\r\ndeclare @critical_threshold_days int;\r\ndeclare @sql nvarchar(max)\r\ndeclare @params nvarchar(max)\r\ndeclare @sql_instance varchar(125)\r\ndeclare @login_name varchar(125)\r\n\r\nset @warning_threshold_days = $login_expiry_warning_threshold_days;\r\nset @critical_threshold_days = $login_expiry_critical_threshold_days;\r\nset @sql_instance = case when '$server_input' = '' then null else '$server_input' end\r\nset @login_name = case when '$login_input' = '' then null else '$login_input' end\r\n\r\nset @params = N'@warning_threshold_days int, @critical_threshold_days int, @sql_instance varchar(125), @login_name varchar(125)';\r\n\r\nset @sql = 'select\t[collection_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time), \r\n                    [sql_instance], [login_name], [is_sysadmin], \r\n                    [password_last_set_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), password_last_set_time), \r\n                    [password_expiration], [is_expired], [is_locked], [days_until_expiration], [login_owner_group_email], [server_owner_email], [app_team_emails], [application_owner_emails]\r\nfrom dbo.all_server_login_expiry_info_dashboard lei\r\nwhere 1=1\r\nand lei.days_until_expiration <= @warning_threshold_days\r\nand left(lower(login_name),6) <> ''bidba.''\r\n'+(case when @sql_instance is null then '--' else '' end)+'and sql_instance = @sql_instance\r\n'+(case when @login_name is null then '--' else '' end)+'and login_name = @login_name\r\n';\r\n\r\nexec dbo.sp_executesql @sql, @params, @warning_threshold_days, @critical_threshold_days, @sql_instance, @login_name;\r\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "SQL Servers - Login Expiry - \"$login_expiry_warnings_count\" WARNING - \"$login_expiry_criticals_count\" CRITICAL @ ${login_expiry__collection_time_utc:date:YYYY-MM-DD HH.mm}",
+          "type": "table"
+        }
+      ],
+      "title": "SQL Servers - Login Expiry - \"$login_expiry_warnings_count\" WARNING - \"$login_expiry_criticals_count\" CRITICAL @ ${login_expiry__collection_time_utc:date:YYYY-MM-DD HH.mm}",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "id": 14,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_MSSQL_172.31.25.106}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "server"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Individual Server Dashboard",
+                        "url": "d/distributed_live_dashboard?var-server=${__data.fields.server}"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 13,
+            "w": 24,
+            "x": 0,
+            "y": 15
+          },
+          "id": 13,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.4.5",
+          "targets": [
+            {
+              "dataset": "DBA_Admin",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_MSSQL_172.31.25.106}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server_status varchar(50);\r\ndeclare @is_decommissioned bit;\r\ndeclare @email varchar(255);\r\ndeclare @login varchar(125);\r\ndeclare @host varchar(255);\r\ndeclare @server varchar(125);\r\n\r\nset @server = case when '$server_input' <> '' then '$server_input' else null end;\r\nset @host = case when '$host_input' <> '' then '$host_input' else null end;\r\nset @email = case when '$email' <> '' then '$email' else null end;\r\nset @login = case when '$login_input' <> '' then '$login_input' else null end;\r\n\r\nset @server_status = '$server_status';\r\nset @is_decommissioned = case when @server_status = 'Online' then 0\r\n                              when @server_status = 'Offline' then 1\r\n                              when @server_status = 'All' then null\r\n                              else null\r\n                              end\r\n\r\nset @params = N'@is_decommissioned bit, @host varchar(255), @server varchar(255), @email varchar(255), @login varchar(125)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect [server] = coalesce(s.[server],lem.[sql_instance_ip]), s.server_port, lem.[login_name], lem.[owner_group_email], \r\n      lem.[sql_instance_name], lem.[server_alias_name], \r\n      lem.[at_server_name], lem.[host_name], lem.[created_date], \r\n      lem.[created_by], lem.[is_deleted], lem.[remarks]\r\nfrom dbo.login_email_mapping lem\r\nleft join dbo.sma_servers s\r\n\ton s.server = lem.[sql_instance_ip]\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\" and s.is_decommissioned = @is_decommissioned\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\" and lem.is_deleted = @is_decommissioned\r\nwhere 1=1\r\n\"+(case when @server is not null then '' else '--' end)+\"and s.server = @server\r\n\"+(case when @email is not null then '' else '--' end)+\"and lem.[owner_group_email] = @email\r\n\"+(case when @login is not null then '' else '--' end)+\"and lem.[login_name] = @login\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @is_decommissioned, @host, @server, @email, @login;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "SQL Clusters - $sql_cluster_count_online ONLINE",
+          "type": "table"
+        }
+      ],
+      "title": "Login Email Mapping",
+      "type": "row"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "inventory",
+    "login-expiry"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "MSSQL_172.31.25.106",
+          "value": "RhwH5By7z"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "SQL Monitor Data Source",
+        "multi": false,
+        "name": "sqlmonitor_datasource",
+        "options": [],
+        "query": "mssql",
+        "refresh": 1,
+        "regex": ".*25.106",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_MSSQL_172.31.25.106}"
+        },
+        "definition": "SELECT DB_NAME() as [db_name]",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Inventory Database",
+        "multi": false,
+        "name": "inventory_db",
+        "options": [],
+        "query": "SELECT DB_NAME() as [db_name]",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_MSSQL_172.31.25.106}"
+        },
+        "definition": "select *\nfrom (values ('Online'),('Offline'),('All')\n    ) status(status)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Server Status",
+        "multi": false,
+        "name": "server_status",
+        "options": [],
+        "query": "select *\nfrom (values ('Online'),('Offline'),('All')\n    ) status(status)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_MSSQL_172.31.25.106}"
+        },
+        "definition": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_servers s\nwhere s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Online Server in dbo.sma_servers",
+        "multi": false,
+        "name": "sma_servers_count_online",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_servers s\nwhere s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_MSSQL_172.31.25.106}"
+        },
+        "definition": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_sql_server_extended_info e\njoin dbo.sma_servers s\n\ton s.server = e.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Online SQL Server in dbo.sma_servers",
+        "multi": false,
+        "name": "sql_servers_count_online",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_sql_server_extended_info e\njoin dbo.sma_servers s\n\ton s.server = e.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_MSSQL_172.31.25.106}"
+        },
+        "definition": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_sql_server_hosts h\njoin dbo.sma_servers s\n\ton s.server = h.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Online SQL Server Hosts",
+        "multi": false,
+        "name": "sql_server_hosts_count_online",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_sql_server_hosts h\njoin dbo.sma_servers s\n\ton s.server = h.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_MSSQL_172.31.25.106}"
+        },
+        "definition": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_hadr_ag ag\njoin dbo.sma_servers s\n\ton s.server = ag.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Online SQL Server Hosts",
+        "multi": false,
+        "name": "sql_ags_count_online",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_hadr_ag ag\njoin dbo.sma_servers s\n\ton s.server = ag.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_MSSQL_172.31.25.106}"
+        },
+        "definition": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_hadr_sql_cluster cl\njoin dbo.sma_servers s\n\ton s.server = cl.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Online SQL Server Clusters",
+        "multi": false,
+        "name": "sql_cluster_count_online",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_hadr_sql_cluster cl\njoin dbo.sma_servers s\n\ton s.server = cl.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "10.253.33.157",
+          "value": "10.253.33.157"
+        },
+        "hide": 0,
+        "label": "Server",
+        "name": "server_input",
+        "options": [
+          {
+            "selected": true,
+            "text": "10.253.33.157",
+            "value": "10.253.33.157"
+          }
+        ],
+        "query": "10.253.33.157",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Host",
+        "name": "host_input",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Login",
+        "name": "login_input",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "hide": 2,
+        "name": "login_expiry_warning_threshold_days",
+        "query": "${VAR_LOGIN_EXPIRY_WARNING_THRESHOLD_DAYS}",
+        "skipUrlSync": false,
+        "type": "constant",
+        "current": {
+          "value": "${VAR_LOGIN_EXPIRY_WARNING_THRESHOLD_DAYS}",
+          "text": "${VAR_LOGIN_EXPIRY_WARNING_THRESHOLD_DAYS}",
+          "selected": false
+        },
+        "options": [
+          {
+            "value": "${VAR_LOGIN_EXPIRY_WARNING_THRESHOLD_DAYS}",
+            "text": "${VAR_LOGIN_EXPIRY_WARNING_THRESHOLD_DAYS}",
+            "selected": false
+          }
+        ]
+      },
+      {
+        "hide": 2,
+        "name": "login_expiry_critical_threshold_days",
+        "query": "${VAR_LOGIN_EXPIRY_CRITICAL_THRESHOLD_DAYS}",
+        "skipUrlSync": false,
+        "type": "constant",
+        "current": {
+          "value": "${VAR_LOGIN_EXPIRY_CRITICAL_THRESHOLD_DAYS}",
+          "text": "${VAR_LOGIN_EXPIRY_CRITICAL_THRESHOLD_DAYS}",
+          "selected": false
+        },
+        "options": [
+          {
+            "value": "${VAR_LOGIN_EXPIRY_CRITICAL_THRESHOLD_DAYS}",
+            "text": "${VAR_LOGIN_EXPIRY_CRITICAL_THRESHOLD_DAYS}",
+            "selected": false
+          }
+        ]
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_MSSQL_172.31.25.106}"
+        },
+        "definition": "declare @warning_threshold_days int;\ndeclare @critical_threshold_days int;\ndeclare @sql nvarchar(max)\ndeclare @params nvarchar(max)\ndeclare @login_expiry_warnings_count int = 0\n\nset @warning_threshold_days = $login_expiry_warning_threshold_days;\nset @critical_threshold_days = $login_expiry_critical_threshold_days;\n\nset @params = N'@warning_threshold_days int, @critical_threshold_days int, @login_expiry_warnings_count int output';\n\nset @sql = 'select\t@login_expiry_warnings_count = count(*)\nfrom dbo.all_server_login_expiry_info_dashboard lei\nwhere 1=1\nand left(lower(login_name),6) <> ''bidba.''\n--and lei.days_until_expiration <= @warning_threshold_days\n';\n\nexec dbo.sp_executesql @sql, @params, @warning_threshold_days, @critical_threshold_days, @login_expiry_warnings_count = @login_expiry_warnings_count output;\n\nselect @login_expiry_warnings_count ",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Login Expiry Warning Count",
+        "multi": false,
+        "name": "login_expiry_warnings_count",
+        "options": [],
+        "query": "declare @warning_threshold_days int;\ndeclare @critical_threshold_days int;\ndeclare @sql nvarchar(max)\ndeclare @params nvarchar(max)\ndeclare @login_expiry_warnings_count int = 0\n\nset @warning_threshold_days = $login_expiry_warning_threshold_days;\nset @critical_threshold_days = $login_expiry_critical_threshold_days;\n\nset @params = N'@warning_threshold_days int, @critical_threshold_days int, @login_expiry_warnings_count int output';\n\nset @sql = 'select\t@login_expiry_warnings_count = count(*)\nfrom dbo.all_server_login_expiry_info_dashboard lei\nwhere 1=1\nand left(lower(login_name),6) <> ''bidba.''\n--and lei.days_until_expiration <= @warning_threshold_days\n';\n\nexec dbo.sp_executesql @sql, @params, @warning_threshold_days, @critical_threshold_days, @login_expiry_warnings_count = @login_expiry_warnings_count output;\n\nselect @login_expiry_warnings_count ",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_MSSQL_172.31.25.106}"
+        },
+        "definition": "declare @warning_threshold_days int;\ndeclare @critical_threshold_days int;\n\nset @warning_threshold_days = $login_expiry_warning_threshold_days;\nset @critical_threshold_days = $login_expiry_critical_threshold_days;\n\nselect\tcount(*)\nfrom dbo.all_server_login_expiry_info_dashboard lei\nwhere 1=1\nand left(lower(login_name),6) <> 'bidba.'\nand lei.days_until_expiration <= @critical_threshold_days;",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "login_expiry_criticals_count",
+        "options": [],
+        "query": "declare @warning_threshold_days int;\ndeclare @critical_threshold_days int;\n\nset @warning_threshold_days = $login_expiry_warning_threshold_days;\nset @critical_threshold_days = $login_expiry_critical_threshold_days;\n\nselect\tcount(*)\nfrom dbo.all_server_login_expiry_info_dashboard lei\nwhere 1=1\nand left(lower(login_name),6) <> 'bidba.'\nand lei.days_until_expiration <= @critical_threshold_days;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_MSSQL_172.31.25.106}"
+        },
+        "definition": "select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_login_expiry_info lei",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "login_expiry__collection_time_utc",
+        "options": [],
+        "query": "select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_login_expiry_info lei",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Email",
+        "name": "email",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "DBA Inventory",
+  "uid": "t__DBA_Inventory",
+  "version": 38,
+  "weekStart": ""
+}

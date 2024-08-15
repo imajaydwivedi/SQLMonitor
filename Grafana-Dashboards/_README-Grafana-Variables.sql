@@ -30,7 +30,7 @@ d/disk_space?var-server=${__data.fields.sql_instance}&var-perfmon_host_name=${__
 d/disk_space?var-server=${__data.fields.sql_instance}&var-perfmon_host_name=${__data.fields.host_name}&var-disk_drive=${__data.fields.disk_volume}&viewPanel=22
 d/disk_space?var-server=${server}&var-database=${__data.fields.database_name}&viewPanel=30
 
-https://ajaydwivedi.ddns.net:3000/d/disk_space/t-disk-space?orgId=1&var-sqlmonitor_datasource=ygPVA4snk&var-server=21L-LTPABL-1187&var-inventory_db=DBA&var-is_local=1&var-dba_db=DBA&var-perfmon_host_name=21L-LTPABL-1187&var-host_name=21L-LTPABL-1187&var-ip=192.168.1.5&var-fqdn=WORKGROUP&var-diskspace_table_name=dbo.vw_disk_space&var-diskspace_collection_time_utc=1693558809487&var-sql_schedulers=8&var-sqlserver_start_time_utc=1693547309393&var-disk_drive=__All__&var-database=DBA&var-fileiostats_table_name=dbo.file_io_stats&var-fileiostats_collection_time_utc=1693559401279&viewPanel=30
+https://sqlmonitor.ajaydwivedi.com:3000/d/disk_space/t-disk-space?orgId=1&var-sqlmonitor_datasource=ygPVA4snk&var-server=21L-LTPABL-1187&var-inventory_db=DBA&var-is_local=1&var-dba_db=DBA&var-perfmon_host_name=21L-LTPABL-1187&var-host_name=21L-LTPABL-1187&var-ip=192.168.1.5&var-fqdn=WORKGROUP&var-diskspace_table_name=dbo.vw_disk_space&var-diskspace_collection_time_utc=1693558809487&var-sql_schedulers=8&var-sqlserver_start_time_utc=1693547309393&var-disk_drive=__All__&var-database=DBA&var-fileiostats_table_name=dbo.file_io_stats&var-fileiostats_collection_time_utc=1693559401279&viewPanel=30
 
 d/job_activity_monitor/monitoring-live-all-servers-job-activity-monitor?orgId=1&viewPanel=2&var-server=${__data.fields.sql_instance}&var-last_outcome=Canceled
 d/job_activity_monitor/monitoring-live-all-servers-job-activity-monitor?orgId=1&viewPanel=2&var-server=${__data.fields.sql_instance}&var-status=Running
@@ -165,7 +165,7 @@ $unixEpochStart = Get-Date -Date "01/01/1970"
 $startTimeSeconds = [bigint]((New-TimeSpan -Start $UnixEpochStart -End $StartTimeUTC).TotalSeconds)
 $endTimeSeconds = [bigint]((New-TimeSpan -Start $UnixEpochStart -End $EndTimeUTC).TotalSeconds)
 
-#$grafana ="https://ajaydwivedi.ddns.net:3000/d-solo/distributed_live_dashboard_all_servers/monitoring---live---all-servers?orgId=1&from=now-15m&to=now&var-Server=$EvaluatedServer"
+#$grafana ="https://sqlmonitor.ajaydwivedi.com:3000/d-solo/distributed_live_dashboard_all_servers/monitoring---live---all-servers?orgId=1&from=now-15m&to=now&var-Server=$EvaluatedServer"
 #$grafana = "http://$($CentralServer):8989/d-solo/distributed_live_dashboard_all_servers/monitoring---live---all-servers?orgId=1&from=$($startTimeSeconds)000&to=$($endTimeSeconds)000&var-Server=$EvaluatedServer"
 $grafana = "http://$($CentralServer):8989/d-solo/distributed_live_dashboard_all_servers/monitoring---live---all-servers?orgId=1&from=$($startTimeSeconds)000&to=$($endTimeSeconds)000&var-Server=$EvaluatedServer"
     

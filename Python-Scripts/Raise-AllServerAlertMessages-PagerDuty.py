@@ -11,7 +11,7 @@ parser.add_argument("-s", "--inventory_server", type=str, required=False, action
 parser.add_argument("-d", "--inventory_database", type=str, required=False, action="store", default="DBA", help="Inventory Database")
 parser.add_argument("-k", "--service_key", type=str, required=False, action="store", default="afie5a643ff44a04d02b710591a33551", help="Pager Duty API Service Key", )
 parser.add_argument("-j", "--alert_job_name", type=str, required=False, action="store", default="(dba) Raise-AllServerAlertMessages", help="Script/Job calling this script")
-parser.add_argument("-u", "--dashboard_url", type=str, required=False, action="store", default="https://ajaydwivedi.ddns.net:3000/d/distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m'", help="All Server Dashboard URL")
+parser.add_argument("-u", "--dashboard_url", type=str, required=False, action="store", default="https://sqlmonitor.ajaydwivedi.com:3000/d/distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m'", help="All Server Dashboard URL")
 
 args=parser.parse_args()
 

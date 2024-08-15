@@ -13,10 +13,11 @@ $AllServerLogin = 'sa'
 $WorkFolder = "C:\SQLMonitor\Work-Attachments"
 $RemoveLog = $true
 
-$DateString = Get-Date -Format yyyyMMMdd_HHmm
+$startTime = Get-Date
+$startTimeString = Get-Date -Format yyyyMMMdd_HHmm
 
 $AppName = "Wrapper-GetHostIpAddresses.ps1"
-$outputFile ="$WorkFolder\$AppName-$DateString.txt"
+$outputFile ="$WorkFolder\$AppName-$startTimeString.txt"
 
 Set-DbatoolsConfig -FullName 'sql.connection.trustcert' -Value $true -Register
 
@@ -58,12 +59,12 @@ select	[sql_instance] = h.server, id.sql_instance_port, [inventory_host_name] = 
 from dbo.sma_sql_server_hosts h
 join dbo.sma_servers s
 	on s.server = h.server
-join dbo.instance_details id 
+left join dbo.instance_details id 
 	on id.sql_instance = s.server and id.host_name = h.host_name
+	and id.is_enabled = 1 and id.is_alias = 0
 left join dbo.vw_all_server_info asi
 	on asi.srv_name = s.server
 where s.is_decommissioned = 0 and h.is_decommissioned = 0
-and id.is_enabled = 1 and id.is_alias = 0
 --and h.host_ips is null
 "@
 $hostsWithoutIPs = @()
@@ -126,7 +127,8 @@ if($findIPAddress)
                             host_name = $host_name; 
                             Ip = $ip1; 
                             hadr_strategy = $hadr_strategy;
-                            host_fqdn = $host_fqdn
+                            host_fqdn = $host_fqdn;
+                            collection_time = $startTime
                         }
             $queryResult.Add($db_row) | Out-Null
             $successServers.Add([PSCustomObject]@{sql_instance=$srvName; host_name = $host_name}) | Out-Null

@@ -1,11 +1,11 @@
-use DBA_Admin
+use DBA
 go
 
 create or alter procedure dbo.usp_wrapper_populate_sma_sql_instance
 	@dba_team_email_id varchar(125) = 'dba@gmail.com',
 	@dba_manager_email_id varchar(125) = 'dba.manager@gmail.com', /* Email for DBA Manager */
 	@sre_vp_email_id varchar(125) = 'sre.vp@gmail.com', /* Email for SRE Senior VP */
-	@url_dashboard varchar(2000) = 'http://ajaydwivedi.ddns.net:3000/SQLServer/d/distributed_live_dashboard/monitoring-live-distributed?orgId=1',
+	@url_dashboard varchar(2000) = 'https://sqlmonitor.ajaydwivedi.com:3000/SQLServer/d/distributed_live_dashboard/monitoring-live-distributed?orgId=1',
 	@job_name varchar(255) = '(dba) Populate Inventory Tables',
 	@send_mail bit = 1,
 	@verbose tinyint = 0,
@@ -482,25 +482,31 @@ begin
 		;with t_hosts as (
 			select *
 			from (
-					select h.server, s.server_port, [host_name] = ltrim(rtrim(h.host_name)), source = 'sma_sql_server_hosts' 
+					select h.server, s.server_port, [host_name] = ltrim(rtrim(h.host_name)), h.host_ips, source = 'sma_sql_server_hosts' 
 					from dbo.sma_sql_server_hosts h join dbo.sma_servers s on s.server = h.server
 					where s.is_decommissioned = 0 and h.is_decommissioned = 0 -- covers standalone + cluster nodes
 					--
 					union
 					--
-					select ag.server, s.server_port,
-							[host_name] = (select top 1 ltrim(rtrim(Value)) from string_split(ltrim(rtrim(r.host_name)),'\')), 
-					source = 'sma_hadr_ag' 
+					select	ag.server, s.server_port,
+							[host_name] = rh.[replica_host], 
+							h.host_ips,
+							source = 'sma_hadr_ag' 
 					from dbo.sma_hadr_ag ag join dbo.sma_servers s on s.server = ag.server
-					cross apply (select host_name = Value from string_split(ag.ag_replicas_CSV,',')) r
+					cross apply (select replica_name = Value from string_split(ag.ag_replicas_CSV,',')) r
+					cross apply (select top 1 [replica_host] = ltrim(rtrim(Value)) from string_split(ltrim(rtrim(r.replica_name)),'\')o) rh
+					outer apply (select top 1 host_ips from dbo.sma_sql_server_hosts h where h.is_decommissioned = 0 and h.host_name = rh.replica_host ) h
 					where s.is_decommissioned = 0 and ag.is_decommissioned = 0 -- get list of ag replicas	
 				)h
 		)
-		select	[related_server] = h.server, h.server_port, [sql_instance_port] = c.sql_instance_port, h.[host_name], 
+		select	[related_server] = h.server, h.server_port, [sql_instance_port] = c.sql_instance_port, 
+				h.[host_name], host_ips,
 				possible_type = case when h.source = 'sma_hadr_ag' then 'ag replica' else 'sql cluster' end,
 				asi.domain,
-				[host_fqdn] = case when asi.domain = 'google' then h.host_name+'.google.com'
-									when asi.domain is not null then h.host_name+'.'+asi.domain+'.com'
+				[host_fqdn] = case when asi.domain = 'ANGELONE' then h.host_name+'.angelone.in'
+									when asi.domain = 'ANGELTRADE' then h.host_name+'.angeltrade.com'
+									when asi.domain = 'ANGELBROKING' then h.host_name+'.angelbroking.com'
+									when asi.domain = 'INTERNAL' then h.host_name+'.internal.angelone.in'
 									when asi.domain is null then h.host_name
 									else h.host_name
 								end
@@ -547,10 +553,10 @@ begin
 				set @_table_headline = N'<h3>Possible list of Hosts missing in SQLMonitor table <code>dbo.instance_details</code></h3>'+@_crlf
 
 				set @_table_header = N'<tr><th>Related Server</th> <th>Possible Port</th> <th>Host Name</th>'
-											+'<th>Possible Type</th> <th>Host FQDN</th> </tr>'+@_crlf;
+											+'<th>Host Ip</th> <th>Possible Type</th> <th>Host FQDN</th> </tr>'+@_crlf;
 				
 				;with t_login_info as (
-					select h.related_server, h.server_port, h.sql_instance_port, h.host_name, h.possible_type, domain, h.host_fqdn
+					select h.related_server, h.server_port, h.sql_instance_port, h.host_name, h.host_ips, h.possible_type, domain, h.host_fqdn
 					from #hosts h
 				)
 				,t_table_rows as (
@@ -558,6 +564,7 @@ begin
 								+'<td class="bg_key"><a href="'+@url_dashboard+'&var-server='+related_server+'" target="_blank">'+related_server+'</a></td>'
 								+'<td>'+coalesce(sql_instance_port,server_port,' ')+'</td>'
 								+'<td>'+coalesce(host_name,' ')+'</td>'
+								+'<td>'+coalesce(host_ips,' ')+'</td>'
 								+'<td>'+coalesce(possible_type,' ')+'</td>'
 								+'<td>'+coalesce(host_fqdn,' ')+'</td>'
 							+'</tr>' as [table_row]
@@ -749,6 +756,294 @@ begin
 		end catch
 	end -- 'Send-Mail-4-Decomissioned-Server'
 
+	if ('Send-Mail-4-Missing-AgListener-Alias' = 'Send-Mail-4-Missing-AgListener-Alias')
+	begin
+		set @_table_row_count = 0;
+
+		-- Probable List of Missing AG Listener Alias in SQLMonitor
+		if OBJECT_ID('tempdb..#missing_ag_listeners') is not null
+			drop table #missing_ag_listeners;
+		;with t_ags as (
+			select ag.ag_listener_name, ag_listener_ip = ag.ag_listener_ip1
+			from dbo.sma_servers s
+			join dbo.sma_hadr_ag ag
+				on ag.server = s.server
+			where s.is_decommissioned = 0
+			and ag.is_decommissioned = 0
+			and s.hadr_strategy = 'ag'
+			and ag.ag_listener_ip1 is not null
+			--
+			union
+			--
+			select ag.ag_listener_name, ag_listener_ip = ag.ag_listener_ip2
+			from dbo.sma_servers s
+			join dbo.sma_hadr_ag ag
+				on ag.server = s.server
+			where s.is_decommissioned = 0
+			and ag.is_decommissioned = 0
+			and s.hadr_strategy = 'ag'
+			and ag.ag_listener_ip2 is not null
+		)
+		select related_server = hadr.server, hadr.ag_replicas_CSV, ag.*
+		into #missing_ag_listeners
+		from t_ags ag
+		outer apply (select top 1 server, ag_replicas_CSV from dbo.sma_hadr_ag hadr 
+							where hadr.is_decommissioned = 0 and hadr.ag_listener_name = ag.ag_listener_name) hadr
+		where 1=1
+		and not exists (select * from dbo.instance_details id
+				where id.is_enabled = 1
+				and id.is_alias = 1 and id.sql_instance = ag.ag_listener_ip);
+			
+		set @_table_row_count = (select count(*) from #missing_ag_listeners);
+
+		if @_table_row_count > 0
+		begin
+			print 'Send mail for Missing Alias..';
+
+			if @verbose >= 2
+			begin
+				select t.*, ag.*
+				from #missing_ag_listeners ag				
+				full outer join
+					(select RunningQuery = 'Missing-Alias-in-SQLMonitor') t
+					on 1=1;
+			end
+
+			set @_recepient = @dba_team_email_id;
+			set @_copy_recipients = @dba_manager_email_id
+
+			begin try
+				set @_table_data = null;
+
+				set @_table_headline = N'<h3>Following Ag Listener/IPs Alias are missing in SQLMonitor table <code>dbo.instance_details.</code> Kindly added them as <b>Alias</b>.</h3>'+@_crlf
+
+				set @_table_header = N'<tr><th>Related Server</th> <th>AG Replicas</th> <th>Ag Listener Name</th>'
+											+'<th>Ag Listener IP</th> </tr>'+@_crlf;
+				
+				;with t_login_info as (
+					select al.related_server, al.ag_replicas_CSV, al.ag_listener_name, al.ag_listener_ip
+					from #missing_ag_listeners al
+				)
+				,t_table_rows as (
+					select	'<tr>'
+								+'<td class="bg_key"><a href="'+@url_dashboard+'&var-server='+related_server+'" target="_blank">'+related_server+'</a></td>'
+								+'<td>'+coalesce(ag_replicas_CSV,' ')+'</td>'
+								+'<td>'+coalesce(ag_listener_name,' ')+'</td>'
+								+'<td>'+coalesce(ag_listener_ip,' ')+'</td>'
+							+'</tr>' as [table_row]
+					from t_login_info
+				)
+				select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+				from t_table_rows
+
+				set @_mail_html_body = @_table_headline+'<div class="tableContainerDiv"><table border="1">'
+										+'<caption>'+convert(varchar,@_table_row_count)+' rows</caption>'
+										+'<thead>'+@_table_header+'</thead><tbody>'+isnull(@_table_data,'')+'</tbody></table></div>'+@_crlf;
+
+				set @_mail_subject = 'AG Listener Alias missing in SQLMonitor'+' - '+convert(varchar,@_start_time,120);
+				set @_mail_html = '<html>'
+										+N'<head>'
+										+N'<title>'+@_mail_subject+'</title>'
+										+@_style_css
+										+N'</head>'
+										+N'<body>'
+										+N'<h1><a href="'+@url_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
+										+N'<p>'+@_mail_html_body+N'</p>'
+										+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
+										+N'</body>';	
+				if @verbose >= 1
+				begin
+					print @_long_star_line
+					print '@_table_headline => '+@_crlf+@_table_headline
+					print '@_table_header => '+@_crlf+@_table_header
+					print '@_mail_html_body => '+@_crlf+@_mail_html_body
+					print '@_table_data => '+@_crlf+@_table_data
+					print '@_mail_html => '+@_crlf+@_mail_html+@_crlf
+				end
+
+				if @send_mail = 1
+				begin
+					if @_table_data is not null
+					begin
+						exec msdb.dbo.sp_send_dbmail 
+											@recipients = @_recepient,
+											@copy_recipients = @_copy_recipients,
+											@subject = @_mail_subject,
+											@body = @_mail_html,
+											@body_format = 'HTML';
+					end
+				end
+
+			end try
+			begin catch
+				SELECT	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+									'. State: '+convert(varchar,isnull(@_errorState,'')) +
+									'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+									'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error Occurred while sending mail.'+@_crlf+@_errorMessage+@_crlf+@_long_star_line+@_crlf;
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_wrapper_populate_sma_sql_instance', 
+						[function_call_arguments] = 'Send-Mail-4-Missing-Servers', [server] = null, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = program_name();
+			end catch
+		end
+	end -- 'Send-Mail-4-Missing-AgListener-Alias'
+
+
+	if ('Send-Mail-4-Wrong-SqlInstance-Entry' = 'Send-Mail-4-Wrong-SqlInstance-Entry')
+	begin
+		set @_table_row_count = 0;
+
+		-- Wrong SQLInstance Entry in SQLMonitor Using AG Listener
+		if OBJECT_ID('tempdb..#wrong_entry_on_listeners') is not null
+			drop table #wrong_entry_on_listeners;
+		;with t_ags as (
+			select ag.ag_listener_name, ag_listener_ip = ag.ag_listener_ip1
+			from dbo.sma_servers s
+			join dbo.sma_hadr_ag ag
+				on ag.server = s.server
+			where s.is_decommissioned = 0
+			and ag.is_decommissioned = 0
+			and s.hadr_strategy = 'ag'
+			and ag.ag_listener_ip1 is not null
+			--
+			union
+			--
+			select ag.ag_listener_name, ag_listener_ip = ag.ag_listener_ip2
+			from dbo.sma_servers s
+			join dbo.sma_hadr_ag ag
+				on ag.server = s.server
+			where s.is_decommissioned = 0
+			and ag.is_decommissioned = 0
+			and s.hadr_strategy = 'ag'
+			and ag.ag_listener_ip2 is not null
+		)
+		select id.sql_instance, id.sql_instance_port, id.host_name, id.is_enabled, id.data_destination_sql_instance, id.created_date_utc
+		into #wrong_entry_on_listeners
+		from dbo.instance_details id
+		where id.is_enabled = 1
+		and id.is_alias = 0 
+		and id.sql_instance in (select ag.ag_listener_ip from t_ags ag);
+
+			
+		set @_table_row_count = (select count(*) from #wrong_entry_on_listeners);
+
+		if @_table_row_count > 0
+		begin
+			print 'Send mail for Wrong AG Listener Entry in dbo.instance_details..';
+
+			if @verbose >= 2
+			begin
+				select t.*, ag.*
+				from #wrong_entry_on_listeners ag				
+				full outer join
+					(select RunningQuery = 'Wrong-Entry-in-SQLMonitor') t
+					on 1=1;
+			end
+
+			set @_recepient = @dba_team_email_id;
+			set @_copy_recipients = @dba_manager_email_id
+
+			begin try
+				set @_table_data = null;
+
+				set @_table_headline = N'<h3>Following Ag Listener are added as SQLInstance in SQLMonitor table <code>dbo.instance_details instead of being an Alias Entry.</code> Kindly remove them, and re-added them as <b>Alias</b>.</h3>'+@_crlf
+
+				set @_table_header = N'<tr><th>SQL Instance</th> <th>Port</th> <th>Host Name</th> <th>Is Enabled</th>'
+											+'<th>Data Destination Server</th> <th>Created Date</th> </tr>'+@_crlf;
+				
+				;with t_login_info as (
+					select al.sql_instance, al.sql_instance_port, al.host_name, al.is_enabled, 
+							al.data_destination_sql_instance, 
+							[created_date] = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), al.created_date_utc)
+					from #wrong_entry_on_listeners al
+				)
+				,t_table_rows as (
+					select	'<tr>'
+								+'<td class="bg_key"><a href="'+@url_dashboard+'&var-server='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
+								+'<td>'+coalesce(convert(varchar,sql_instance_port),' ')+'</td>'
+								+'<td>'+coalesce([host_name],' ')+'</td>'
+								+'<td>'+coalesce(convert(varchar,is_enabled),' ')+'</td>'
+								+'<td>'+coalesce(data_destination_sql_instance,' ')+'</td>'
+								+'<td>'+coalesce(convert(varchar,[created_date]),' ')+'</td>'
+							+'</tr>' as [table_row]
+					from t_login_info
+				)
+				select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+				from t_table_rows
+
+				set @_mail_html_body = @_table_headline+'<div class="tableContainerDiv"><table border="1">'
+										+'<caption>'+convert(varchar,@_table_row_count)+' rows</caption>'
+										+'<thead>'+@_table_header+'</thead><tbody>'+isnull(@_table_data,'')+'</tbody></table></div>'+@_crlf;
+
+				set @_mail_subject = 'Wrong AG Listener entries in SQLMonitor'+' - '+convert(varchar,@_start_time,120);
+				set @_mail_html = '<html>'
+										+N'<head>'
+										+N'<title>'+@_mail_subject+'</title>'
+										+@_style_css
+										+N'</head>'
+										+N'<body>'
+										+N'<h1><a href="'+@url_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
+										+N'<p>'+@_mail_html_body+N'</p>'
+										+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
+										+N'</body>';	
+				if @verbose >= 1
+				begin
+					print @_long_star_line
+					print '@_table_headline => '+@_crlf+@_table_headline
+					print '@_table_header => '+@_crlf+@_table_header
+					print '@_mail_html_body => '+@_crlf+@_mail_html_body
+					print '@_table_data => '+@_crlf+@_table_data
+					print '@_mail_html => '+@_crlf+@_mail_html+@_crlf
+				end
+
+				if @send_mail = 1
+				begin
+					if @_table_data is not null
+					begin
+						exec msdb.dbo.sp_send_dbmail 
+											@recipients = @_recepient,
+											@copy_recipients = @_copy_recipients,
+											@subject = @_mail_subject,
+											@body = @_mail_html,
+											@body_format = 'HTML';
+					end
+				end
+
+			end try
+			begin catch
+				SELECT	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+									'. State: '+convert(varchar,isnull(@_errorState,'')) +
+									'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+									'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error Occurred while sending mail.'+@_crlf+@_errorMessage+@_crlf+@_long_star_line+@_crlf;
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_wrapper_populate_sma_sql_instance', 
+						[function_call_arguments] = 'Send-Mail-4-Wrong-SqlInstance-Entry', [server] = null, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = program_name();
+			end catch
+		end
+	end -- 'Send-Mail-4-Wrong-SqlInstance-Entry'
+
+
 	if ('Update-Host-Ips' = 'Update-Host-Ips')
 	begin
 		print 'Update host ip addresses in dbo.sma_sql_server_hosts..';
@@ -765,7 +1060,8 @@ begin
 			on s.server = h.server
 		where 1=1
 		and s.is_decommissioned = 0
-		and h.is_decommissioned = 0;
+		and h.is_decommissioned = 0
+		and h.host_ips is null;
 
 		if @verbose >= 2
 		begin
@@ -859,6 +1155,7 @@ create table dbo.sma_servers_logs
 */
 end
 go
+
 
 exec dbo.usp_wrapper_populate_sma_sql_instance @send_mail = 0, @verbose = 2, @truncate_log_table = 0
 go

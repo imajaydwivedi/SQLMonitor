@@ -1,5 +1,6 @@
 /*
-	Version -> 2024-04-26
+	Version -> 2024-08-10
+	2024-08-10 = #35 - Add Debugging parameter
 	2024-04-26 - #38 - Add Infra to Track AG State Change
 	2023-12-30 - #21 - Add exception for some waits through Wait Stats table
 	-----------------
@@ -60,6 +61,9 @@ IF DB_NAME() = 'master'
 go
 
 /* ****** 1) Create Partition function for [datetime2], [datetime] & [bigint] ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '1) Create Partition function for [datetime2], [datetime] & [bigint]';
+
 --drop partition function pf_dba_datetime2_hourly
 declare @is_partitioned bit = 1;
 if not exists (select * from sys.partition_functions where name = 'pf_dba_datetime2_hourly') and @is_partitioned = 1
@@ -107,6 +111,9 @@ if not exists (select * from sys.partition_functions where name = 'pf_dba_bigint
 go
 
 /* ****** 2) Create Partition Scheme for [datetime2], [datetime] & [bigint] ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '2) Create Partition Scheme for [datetime2], [datetime] & [bigint]';
+
 --drop partition scheme ps_dba_datetime2_hourly
 declare @is_partitioned bit = 1;
 if not exists (select * from sys.partition_schemes where name = 'ps_dba_datetime2_hourly') and @is_partitioned = 1
@@ -156,6 +163,9 @@ go
 
 
 /* ***** 3) Create table dbo.purge_table ***************************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '3) Create table dbo.purge_table';
+
 -- drop table dbo.purge_table;
 if object_id('dbo.purge_table') is null
 begin
@@ -243,6 +253,9 @@ go
 
 
 /* ***** 4) Create table dbo.instance_hosts ***************************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '4) Create table dbo.instance_hosts';
+
 -- drop table dbo.instance_hosts;
 if object_id('dbo.instance_hosts') is null
 begin
@@ -264,6 +277,9 @@ go
 
 
 /* ***** 5) Create table dbo.instance_details ***************************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '5) Create table dbo.instance_details';
+
 -- drop table dbo.instance_details;
 if object_id('dbo.instance_details') is null
 begin
@@ -313,6 +329,9 @@ go
 
 
 /* ***** 6) Create table [dbo].[performance_counters] using Partition scheme ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '6) Create table [dbo].[performance_counters] using Partition scheme';
+
 -- drop table [dbo].[performance_counters]
 if object_id('[dbo].[performance_counters]') is null
 begin
@@ -356,6 +375,9 @@ go
 
 
 /* ***** 7) Create View [dbo].[vw_performance_counters] for Multi SqlCluster on same nodes Architecture */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '7) Create View [dbo].[vw_performance_counters] for Multi SqlCluster on same nodes Architecture';
+
 -- drop view dbo.vw_performance_counters
 if OBJECT_ID('dbo.vw_performance_counters') is null
 	exec ('create view dbo.vw_performance_counters as select 1 as dummy;');
@@ -383,6 +405,9 @@ go
 
 
 /* ***** 8) Create dbo.perfmon_files table using Partition scheme ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '8) Create dbo.perfmon_files table using Partition scheme';
+
 -- drop table [dbo].[perfmon_files]
 if OBJECT_ID('[dbo].[perfmon_files]') is null
 begin
@@ -415,6 +440,9 @@ go
 
 
 /* ***** 9) Create table [dbo].[os_task_list] using Partition scheme ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '9) Create table [dbo].[os_task_list] using Partition scheme';
+
 -- drop table [dbo].[os_task_list]
 if OBJECT_ID('[dbo].[os_task_list]') is null
 begin
@@ -455,6 +483,9 @@ go
 
 
 /* ***** 10) Create View [dbo].[vw_os_task_list] for Multi SqlCluster on same nodes Architecture */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '10) Create View [dbo].[vw_os_task_list] for Multi SqlCluster on same nodes Architecture';
+
 -- drop view dbo.vw_os_task_list
 if OBJECT_ID('dbo.vw_os_task_list') is null
 	exec ('create view dbo.vw_os_task_list as select 1 as dummy;')
@@ -482,6 +513,9 @@ go
 
 
 /* ***** 11) Create table  [dbo].[wait_stats] using Partition scheme ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '11) Create table  [dbo].[wait_stats] using Partition scheme';
+
 -- drop table [dbo].[wait_stats]
 if OBJECT_ID('[dbo].[wait_stats]') is null
 begin
@@ -519,6 +553,9 @@ go
 
 
 /* ***** 12) Create table  [dbo].[BlitzFirst_WaitStats_Categories] ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '12) Create table  [dbo].[BlitzFirst_WaitStats_Categories]';
+
 -- drop table [dbo].[BlitzFirst_WaitStats_Categories]
 if OBJECT_ID('[dbo].[BlitzFirst_WaitStats_Categories]') is null
 begin
@@ -553,6 +590,9 @@ go
 
 
 /* ***** 13) Create view  [dbo].[vw_wait_stats_deltas] ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '13) Create view  [dbo].[vw_wait_stats_deltas]';
+
 -- DROP VIEW [dbo].[vw_wait_stats_deltas];
 if OBJECT_ID('[dbo].[vw_wait_stats_deltas]') is null
 	exec ('CREATE VIEW [dbo].[vw_wait_stats_deltas] AS SELECT 1 as Dummy');
@@ -596,6 +636,9 @@ GO
 
 
 /* ***** 14) Create table  [dbo].[file_io_stats] using Partition scheme ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '14) Create table  [dbo].[file_io_stats] using Partition scheme';
+
 -- drop table [dbo].[file_io_stats]
 if OBJECT_ID('[dbo].[file_io_stats]') is null
 begin
@@ -647,6 +690,9 @@ go
 
 
 /* ***** 15) Create required schemas ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '15) Create required schemas';
+
 if not exists (select * from sys.schemas where name = 'bkp')
 	exec ('CREATE SCHEMA [bkp]')
 GO
@@ -662,6 +708,9 @@ GO
 
 
 /* ***** 16) Create procedure dbo.usp_extended_results ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '16) Create procedure dbo.usp_extended_results';
+
 -- drop procedure usp_extended_results
 if OBJECT_ID('dbo.usp_extended_results') is null
 	exec('create procedure dbo.usp_extended_results as select 1 as dummy;')
@@ -686,6 +735,9 @@ go
 
 
 /* ***** 17) Create table [dbo].[xevent_metrics] ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '17) Create table [dbo].[xevent_metrics]';
+
 -- DROP TABLE [dbo].[xevent_metrics]
 IF OBJECT_ID('[dbo].[xevent_metrics]') IS NULL
 BEGIN
@@ -740,6 +792,9 @@ go
 
 
 /* ***** 18) Create table [dbo].[xevent_metrics_queries] ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '18) Create table [dbo].[xevent_metrics_queries]';
+
 -- DROP TABLE [dbo].[xevent_metrics_queries]
 IF OBJECT_ID('[dbo].[xevent_metrics_queries]') IS NULL
 BEGIN
@@ -768,6 +823,9 @@ go
 
 
 /* ***** 19) Create view  [dbo].[vw_xevent_metrics] ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '19) Create view  [dbo].[vw_xevent_metrics]';
+
 -- DROP VIEW [dbo].[vw_xevent_metrics];
 if OBJECT_ID('[dbo].[vw_xevent_metrics]') is null
 	exec ('CREATE VIEW [dbo].[vw_xevent_metrics] AS SELECT 1 as Dummy');
@@ -785,6 +843,9 @@ GO
 
 
 /* ***** 20) Create Trigger [tgr_insert_xevent_metrics] on View  [dbo].[vw_xevent_metrics] ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '20) Create Trigger [tgr_insert_xevent_metrics] on View  [dbo].[vw_xevent_metrics]';
+
 if exists (select * from sys.objects where [name] = N'tgr_insert_xevent_metrics' and [type] = 'TR')
 	drop trigger [dbo].tgr_insert_xevent_metrics
 GO
@@ -812,6 +873,9 @@ go
 
 
 /* ***** 21) Create table [dbo].[xevent_metrics_Processed_XEL_Files] ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '21) Create table [dbo].[xevent_metrics_Processed_XEL_Files]';
+
 -- drop table dbo.xevent_metrics_Processed_XEL_Files
 if OBJECT_ID('dbo.xevent_metrics_Processed_XEL_Files') is null
 begin
@@ -840,6 +904,9 @@ go
 
 
 /* ***** 22) Create table [dbo].[disk_space] using Partition scheme *********** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '22) Create table [dbo].[disk_space] using Partition scheme';
+
 if OBJECT_ID('[dbo].[disk_space]') is null
 begin
 	CREATE TABLE [dbo].[disk_space]
@@ -871,6 +938,9 @@ end
 go
 
 /* ***** 23) Create View [dbo].[vw_disk_space] for Multi SqlCluster on same nodes Architecture */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '23) Create View [dbo].[vw_disk_space] for Multi SqlCluster on same nodes Architecture';
+
 -- drop view dbo.vw_disk_space
 if OBJECT_ID('dbo.vw_disk_space') is null
 	exec ('create view dbo.vw_disk_space as select 1 as dummy;')
@@ -897,6 +967,9 @@ go
 
 
 /* ***** 24) Create view  [dbo].[vw_file_io_stats_deltas] ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '24) Create view  [dbo].[vw_file_io_stats_deltas]';
+
 -- DROP VIEW [dbo].[vw_file_io_stats_deltas];
 if OBJECT_ID('[dbo].[vw_file_io_stats_deltas]') is null
 	exec ('CREATE VIEW [dbo].[vw_file_io_stats_deltas] AS SELECT 1 as Dummy');
@@ -951,6 +1024,9 @@ GO
 
 
 /* ***** 25) Create table [dbo].[memory_clerks] *************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '25) Create table [dbo].[memory_clerks]';
+
 -- drop table [dbo].[memory_clerks]
 if OBJECT_ID('[dbo].[memory_clerks]') is null
 begin
@@ -1021,6 +1097,9 @@ go
 
 
 /* ***** 27) Create table [dbo].[ag_health_state] using Partition scheme ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '27) Create table [dbo].[ag_health_state] using Partition scheme';
+
 -- drop table [dbo].[ag_health_state]
 if OBJECT_ID('[dbo].[ag_health_state]') is null
 begin
@@ -1070,6 +1149,9 @@ go
 
 
 /* ***** 28) Create table [dbo].[alert_categories] **************************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '28) Create table [dbo].[alert_categories]';
+
 -- drop table [dbo].[alert_categories]
 if OBJECT_ID('[dbo].[alert_categories]') is null
 begin
@@ -1133,6 +1215,9 @@ go
 
 
 /* ***** 29) Create table [dbo].[alert_history]		**************************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '29) Create table [dbo].[alert_history]';
+
 -- drop table [dbo].[alert_history]
 if OBJECT_ID('[dbo].[alert_history]') is null
 begin
@@ -1170,6 +1255,9 @@ go
 
 
 /* ***** 30) Add boundaries to partition. 1 boundary per hour ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '30) Add boundaries to partition. 1 boundary per hour';
+
 set nocount on;
 declare @is_partitioned bit = 1;
 if @is_partitioned = 1
@@ -1209,6 +1297,9 @@ go
 
 
 /* ***** 31) Remove boundaries with retention of 3 months ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '31) Remove boundaries with retention of 3 months';
+
 set nocount on;
 declare @is_partitioned bit = 1;
 if @is_partitioned = 1
@@ -1242,6 +1333,9 @@ go
 
 
 /* ***** 32) Populate [dbo].[BlitzFirst_WaitStats_Categories] ***************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '32) Populate [dbo].[BlitzFirst_WaitStats_Categories]';
+
 IF OBJECT_ID('[dbo].[BlitzFirst_WaitStats_Categories]') IS NOT NULL
 BEGIN
 	-- Add new entries of Wait Types

@@ -21,7 +21,9 @@ CREATE OR ALTER PROCEDURE dbo.usp_send_login_expiry_emails
 	@sre_vp_email_id varchar(125) = 'sre.vp@gmail.com', /* Email for SRE Senior VP */
 	@cto_threshold_days int = 3,
 	@cto_email_id varchar(125) = 'cto@gmail.com', /* Email for CTO */
-	@url_login_expiry_dashboard_panel varchar(1000) = 'http://ajaydwivedi.ddns.net:3000/SQLServer/d/distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m&viewPanel=885',
+	@noc_email_id varchar(125) = 'noc@gmail.com', /* NOC team */
+	@noc_threshold_days int = 12,
+	@url_login_expiry_dashboard_panel varchar(1000) = 'https://sqlmonitor.ajaydwivedi.com:3000/SQLServer/d/distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m&viewPanel=885',
 	@url_for_login_password_reset varchar(1000) = '#',
 	@url_for_dba_slack_channel varchar(1000) = 'https://ajaydwivedi.slack.com/archives/C0436G8SCDV',
 	@verbose tinyint = 0, /* 0 = No logs, 1 = Print Message, 2 = Table Result + Messages */
@@ -490,6 +492,126 @@ BEGIN
 		deallocate cur_recipients
 
 	end -- 'Send-Mail-Notification-2-Owners'
+
+
+	if 'Send-Mail-Notification-2-NOC' = 'Send-Mail-Notification-2-NOC'
+	begin
+		set @c_mail_recipient = @noc_email_id+';'+@dba_team_email_id;
+
+		if @verbose >= 1
+			print 'Sending mail for '''+@noc_email_id+'''..';
+
+		begin try
+			set @_table_data = null;
+
+			set @_table_headline = N'<h3><a href="'+@url_login_expiry_dashboard_panel+'" target="_blank">NOTE: Following login passwords are expiring/expired within '+convert(varchar,@noc_threshold_days)+' days. Ensure to reset the password for continous working of applications.</a></h3>'+@_crlf+
+									N'<div><p><span class="underline thick">How to Resolve - Method 01</span>: If login password has not expired yet, then password can be reset using following tsql - <pre><code> ALTER LOGIN [your_login_name_here] WITH PASSWORD=N''new_login_password_here'' </code></pre></p></div>'+@_crlf+
+									N'<div><p><span class="underline thick">How to Resolve - Method 02</span>: Kindly raise a DBA request and share same on <a href="'+@url_for_dba_slack_channel+'" target="_blank">#angel-dba slack channel</a>.</p></div>'+@_crlf+
+									N'<div><p><span class="underline thick">How to Resolve - Method 03</span>: Utilize login reset portal <a href="'+@url_for_login_password_reset+'" target="_blank">'+@url_for_login_password_reset+'</a>.</p></div>'+@_crlf
+
+			set @_table_header = N'<tr><th>SQL Instance</th> <th>Login Name</th> <th>Days Until Expiry</th>'
+							+N'<th>Password Last Set</th> <th>Expired</th> <th>Locked</th>'
+							+N'<th>Collection Time</th>'+@_crlf;
+				
+			;with t_login_info as (
+				select lei.sql_instance, lei.login_name, lei.days_until_expiration,
+						lei.password_last_set_time, lei.is_expired, lei.is_locked,
+						lei.collection_time, lei.login_owner_group_email
+				from dbo.all_server_login_expiry_info_dashboard lei
+				--inner join #login_email_xref lex
+				--	on lei.sql_instance = lex.sql_instance and lei.login_name = lex.login_name
+				where 1=1
+				and (		left(lower(lei.login_name),6) <> 'dba.' 
+						--and coalesce(lei.login_owner_group_email,'') <> @dba_team_email_id
+					)
+				and lei.days_until_expiration <= @noc_threshold_days
+			)
+			,t_table_rows as (
+				select	'<tr>'
+							+'<td class="bg_key"><a href="'+@url_login_expiry_dashboard_panel+'&var-log_expiry_sql_instance='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
+							+'<td class="bg_key"><a href="'+@url_login_expiry_dashboard_panel+'&var-login_expiry_login_name='+login_name+'" target="_blank">'+login_name+'</a></td>'
+						+'<td class="'+(case when days_until_expiration <= @critical_threshold_days then 'bg_red' else 'bg_orange' end)+'">'
+									+convert(varchar,days_until_expiration)+'</td>'
+						+'<td>'+isnull(convert(varchar,password_last_set_time,121),'')+'</td>'
+						+'<td class="'+(case when is_expired = 1 then 'bg_red' else 'bg_none' end)+'">'
+									+(case when is_expired = 1 then 'Yes' else 'No' end)+'</td>'
+						+'<td class="'+(case when is_locked = 1 then 'bg_red' else 'bg_none' end)+'">'
+									+(case when is_locked = 1 then 'Yes' else 'No' end)+'</td>'
+						+'<td class="bg_key">'+convert(varchar,collection_time,121)+'</td>'
+						+'</tr>' as [table_row]
+				from t_login_info
+			)
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_table_rows
+
+			set @_mail_html_body = @_table_headline+'<div class="tableContainerDiv"><table border="1">'
+									+'<caption>@warning_threshold_days:'+convert(varchar,@warning_threshold_days)
+									+' || @critical_threshold_days:'+convert(varchar,@critical_threshold_days)
+									+' || @noc_threshold_days:'+convert(varchar,@noc_threshold_days)
+									+' || @sre_vp_threshold_days:'+convert(varchar,@sre_vp_threshold_days)
+									+' || @cto_threshold_days:'+convert(varchar,@cto_threshold_days)
+									+'</caption>'
+									+'<thead>'+@_table_header+'</thead><tbody>'+isnull(@_table_data,'')+'</tbody></table></div>'+@_crlf;
+
+			set @_mail_subject = @mail_subject+' - '+convert(varchar,@_start_time,120);
+			set @_mail_html = '<html>'
+									+N'<head>'
+									+N'<title>'+@_mail_subject+'</title>'
+									+@_style_css
+									+N'</head>'
+									+N'<body>'
+									+N'<h1><a href="'+@url_login_expiry_dashboard_panel+'" target="_blank">'+@_mail_subject+'</a></h1>'
+									+N'<p>'+@_mail_html_body+N'</p>'
+									+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
+									+N'</body>';	
+			if @verbose >= 1
+			begin
+				print @_long_star_line
+				print @_crlf+@_mail_html+@_crlf
+			end
+
+			if @send_mail = 1 or @enable_dba_mail_while_testing = 1
+			begin
+				if @_table_data is not null
+				begin
+					if @send_mail = 0
+					begin
+						set @_mail_subject = 'Testing - NOC - '+@_mail_subject
+						set @c_mail_recipient = @dba_team_email_id;
+					end
+					exec msdb.dbo.sp_send_dbmail 
+										@recipients = @c_mail_recipient,
+										@copy_recipients = @_copy_recipients,
+										@subject = @_mail_subject,
+										@body = @_mail_html,
+										@body_format = 'HTML';
+				end
+			end
+
+		end try
+		begin catch
+			SELECT	@_errorNumber	 = Error_Number()
+					,@_errorSeverity = Error_Severity()
+					,@_errorState	 = Error_State()
+					,@_errorLine	 = Error_Line()
+					,@_errorMessage	 = Error_Message();
+
+			set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+			print @_crlf+@_long_star_line+@_crlf+'Error Occurred while sending mail for '''+@c_mail_recipient+'''.'+@_crlf+@_errorMessage+@_crlf+@_long_star_line+@_crlf;
+
+			insert [dbo].[sma_errorlog]
+			([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+			select	[collection_time] = @_start_time, [function_name] = 'usp_send_login_expiry_emails', 
+					[function_call_arguments] = @c_mail_recipient, [server] = null, [error] = @_errorMessage, 
+					[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = program_name();
+		end catch
+
+	end -- 'Send-Mail-Notification-2-NOC'
+
 
 
 	if 'Send-Mail-Notification-2-SreVP' = 'Send-Mail-Notification-2-SreVP'
