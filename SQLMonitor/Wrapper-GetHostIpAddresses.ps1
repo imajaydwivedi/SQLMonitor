@@ -65,13 +65,7 @@ else {
 $qryGetHostsWithoutIPs = @"
 select	[sql_instance] = h.server, id.sql_instance_port, [inventory_host_name] = h.host_name, 
 		s.domain, s.hadr_strategy, [asi_host_name] = asi.host_name, [asi_machine_name] = asi.machine_name,
-		[host_fqdn] = case when asi.domain = 'ANGELONE' then h.host_name+'.angelone.in'
-							when asi.domain = 'ANGELTRADE' then h.host_name+'.angeltrade.com'
-							when asi.domain = 'ANGELBROKING' then h.host_name+'.angelbroking.com'
-							when asi.domain = 'INTERNAL' then h.host_name+'.internal.angelone.in'
-							when asi.domain is null then h.host_name
-							else h.host_name
-						end
+		[host_fqdn] = coalesce(h.host_name+'.'+asi.domain+'.com', h.host_name)
 from dbo.sma_sql_server_hosts h
 join dbo.sma_servers s
 	on s.server = h.server
