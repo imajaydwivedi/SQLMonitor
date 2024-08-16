@@ -400,7 +400,7 @@ BEGIN
 				
 				set @_table_headline = N'<h3><a href="'+@url_login_expiry_dashboard_panel+'" target="_blank">NOTE: Following login passwords are expiring/expired. Ensure to reset the password for continous working of applications.</a></h3>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 01</span>: If login password has not expired yet, then password can be reset using following tsql - <pre><code> ALTER LOGIN [your_login_name_here] WITH PASSWORD=N''new_login_password_here'' </code></pre></p></div>'+@_crlf+
-									N'<div><p><span class="underline thick">How to Resolve - Method 02</span>: Kindly raise a DBA request and share same on <a href="'+@url_for_dba_slack_channel+'" target="_blank">#angel-dba slack channel</a>.</p></div>'+@_crlf+
+									N'<div><p><span class="underline thick">How to Resolve - Method 02</span>: Kindly raise a DBA request and share same on <a href="'+@url_for_dba_slack_channel+'" target="_blank">#dba slack channel</a>.</p></div>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 03</span>: Utilize login reset portal <a href="'+@url_for_login_password_reset+'" target="_blank">'+@url_for_login_password_reset+'</a>.</p></div>'+@_crlf
 
 				set @_table_header = N'<tr><th>SQL Instance</th> <th>Login Name</th> <th>Days Until Expiry</th>'
