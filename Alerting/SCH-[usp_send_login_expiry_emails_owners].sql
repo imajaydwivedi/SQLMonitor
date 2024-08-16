@@ -41,6 +41,17 @@ BEGIN
 	Examples:	
 		exec dbo.usp_send_login_expiry_emails @verbose = 2, @execute = 0, @test_server = '192.168.1.5'				
 		exec dbo.usp_send_login_expiry_emails @verbose = 2, @send_mail = 0, @enable_dba_mail_while_testing = 1;
+
+		exec dbo.usp_send_login_expiry_emails
+					@dba_team_email_id = 'sqlagentservice@gmail.com',
+					@dba_manager_email_id = 'sqlagentservice@gmail.com',
+					@sre_vp_email_id = 'sqlagentservice@gmail.com',
+					@cto_email_id = 'sqlagentservice@gmail.com',
+					@noc_email_id = 'sqlagentservice@gmail.com',
+					@verbose = 2, 
+					@send_mail = 0, 
+					@warning_threshold_days = 365,
+					@enable_dba_mail_while_testing = 1;
 */
 	SET NOCOUNT ON;
 

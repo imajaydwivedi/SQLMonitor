@@ -12,6 +12,7 @@ https://grafana.com/docs/grafana/latest/panels-visualizations/configure-data-lin
 
 d/wait_stats?var-server=${server}
 d/distributed_perfmon?var-server=${__data.fields.srv_name}
+d/distributed_perfmon?var-server=${__data.fields.srv_name}&var-perfmon_host_name=${__data.fields.srv_name}
 d/distributed_perfmon?var-server=${__data.fields.srv_name}&viewPanel=30
 d/distributed_perfmon?var-server=${__data.fields.sql_instance}&var-database=tempdb&viewPanel=115
 d/distributed_perfmon?var-server=${__data.fields.sql_instance}&var-database=tempdb&viewPanel=38

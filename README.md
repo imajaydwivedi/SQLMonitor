@@ -53,7 +53,7 @@ Visit [https://sqlmonitor.ajaydwivedi.com:3000](https://sqlmonitor.ajaydwivedi.c
 Database/Grafana Portal | User Name | Password
 ------------ | --------- | ---------
 [https://sqlmonitor.ajaydwivedi.com:3000/](https://sqlmonitor.ajaydwivedi.com:3000/dashboards?tag=sqlmonitor) | guest | ajaydwivedi-guest
-Sql Instance -> ajaydwivedi.ddns.net:1433 | grafana | grafana
+Sql Instance -> sqlmonitor.ajaydwivedi.com:1433 | grafana | grafana
 
 ## How to Setup
 SQLMonitor supports both Central & Distributed topology. In preferred distributed topology, each SQL Server instance monitors itself. The required objects like tables, view, functions, procedures, scripts, jobs etc. are created on the monitored instance itself.

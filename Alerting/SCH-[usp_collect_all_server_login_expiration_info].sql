@@ -53,7 +53,7 @@ BEGIN
 		drop table #servers;
 	;with t_servers as (
 		select distinct id.sql_instance 
-		from DBA_Admin.dbo.instance_details id 
+		from dbo.instance_details id 
 		where id.is_enabled = 1 and id.is_available = 1 and id.is_alias = 0
 	)
 	select * into #servers from t_servers
@@ -163,7 +163,7 @@ BEGIN
 	if @execute = 1
 		UPDATE LE SET owner_group_email = LM.owner_group_email 
 		FROM dbo.all_server_login_expiry_info LE 
-		INNER JOIN dba_admin.dbo.login_email_mapping LM 
+		INNER JOIN dbo.login_email_mapping LM 
 			ON LE.sql_instance = LM.sql_instance_ip 
 			AND LE.login_name = LM.login_name
 
@@ -208,5 +208,6 @@ BEGIN
 */
 END
 GO
+
 
 

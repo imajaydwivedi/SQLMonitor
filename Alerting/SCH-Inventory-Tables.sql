@@ -28,7 +28,7 @@ go
 	10) Create table dbo.sma_applications_server_xref
 	11) Create table dbo.sma_applications_database_xref
 	12) Create table dbo.sma_errorlog
-	13) Create view dbo.sma_sql_servers	
+	13) Create view dbo.sma_sql_servers	& dbo.sma_sql_servers_including_offline
 	14) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers
 	15) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers
 	16) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications
@@ -447,11 +447,156 @@ go
 
 
 
-/*	***** 13) Create view dbo.sma_sql_servers **************************** */
+/*	***** 13) Create view dbo.sma_sql_servers & dbo.sma_sql_servers_including_offline **************************** */
 create or alter view dbo.sma_sql_servers
 as
-select 1 as [dummy]
+select	server = case when s.server = 'ATPR0SVDNTRY160' then '10.253.33.160' else s.server end, 
+		server_port = coalesce(id.sql_instance_port, s.server_port), s.domain, s.friendly_name, 
+		s.stability, s.hadr_strategy, hosts = hosts.hosts, s.backup_strategy,
+		s.server_owner_email, 
+		at_server_name = coalesce(asi.at_server_name,ei.at_server_name), 
+		server_name = coalesce(asi.server_name,ei.server_name), 
+		asi.machine_name, [current_host_name] = asi.host_name,
+		--ag.ag_replicas_CSV, ag.ag_listener_name, ag.ag_listener_ip1, ag.ag_listener_ip2,
+		agr.ag_replicas, agr.ag_listeners,
+		sc.sql_cluster_network_name,
+		product_version = coalesce(asi.product_version,ei.product_version),
+		edition = coalesce(asi.edition, ei.edition),
+		ei.has_PII_data,
+		total_physical_memory_kb = coalesce(asi.total_physical_memory_kb, ei.total_physical_memory_kb),
+		cpu_count = coalesce(asi.cpu_count, ei.cpu_count),
+		ei.data_center,		
+		[server_purpose] = ei.purpose,
+		ei.known_challenges,		
+		s.is_onboarded,
+		s.is_decommissioned,
+		[server_more_info] = s.more_info,
+		[sql_server_remarks] = ei.remarks
+from dbo.sma_servers s
+left join dbo.sma_sql_server_extended_info ei
+	on ei.server = s.server
+left join dbo.vw_all_server_info asi
+	on asi.srv_name = s.server
+outer apply (
+		select top 1 id.sql_instance_port, id.sql_instance
+		from dbo.instance_details id
+		where id.is_enabled = 1
+		and id.sql_instance = s.server
+		and id.is_alias = 0
+	) id
+outer apply (
+	select STUFF(
+         (SELECT ', ' + h.host_name+'('+h.host_ips+')'
+          FROM dbo.sma_sql_server_hosts h
+          where 1=1
+		  and h.server = s.server
+		  and h.is_decommissioned = 0
+          FOR XML PATH (''))
+          , 1, 1, '')  AS hosts
+	) hosts
+outer apply (
+	select STUFF((	SELECT ', ' + [ag_replica]
+					from (
+							select distinct [ag_replica] = ltrim(rtrim(r.value))
+							from dbo.sma_hadr_ag ag
+							outer apply string_split(ag.ag_replicas_CSV,',') r
+							where 1=1
+							and ag.is_decommissioned = 0
+							and ag.server = s.server
+						) agr
+					FOR XML PATH (''))
+			, 1, 1, '')  AS ag_replicas,
+
+			STUFF((	SELECT ', ' + ag.ag_listener_name+'('+ag.ag_listener_ip1+coalesce(','+ag.ag_listener_ip2,'')+')'
+					from dbo.sma_hadr_ag ag
+					where 1=1
+					and ag.is_decommissioned = 0
+					and ag.server = s.server
+					FOR XML PATH (''))
+			, 1, 1, '')  AS ag_listeners
+	) agr
+left join dbo.sma_hadr_sql_cluster sc
+	on sc.server = s.server
+	and sc.is_decommissioned = 0
+where 1=1
+and s.is_decommissioned = 0
+--and s.server in ('10.253.33.157','10.253.80.100')
 go
+
+create or alter view dbo.sma_sql_servers_including_offline
+as
+select	server = case when s.server = 'ATPR0SVDNTRY160' then '10.253.33.160' else s.server end, 
+		server_port = coalesce(id.sql_instance_port, s.server_port), s.domain, s.friendly_name, 
+		s.stability, s.hadr_strategy, hosts = hosts.hosts, s.backup_strategy,
+		s.server_owner_email, 
+		at_server_name = coalesce(asi.at_server_name,ei.at_server_name), 
+		server_name = coalesce(asi.server_name,ei.server_name), 
+		asi.machine_name, [current_host_name] = asi.host_name,
+		--ag.ag_replicas_CSV, ag.ag_listener_name, ag.ag_listener_ip1, ag.ag_listener_ip2,
+		agr.ag_replicas, agr.ag_listeners,
+		sc.sql_cluster_network_name,
+		product_version = coalesce(asi.product_version,ei.product_version),
+		edition = coalesce(asi.edition, ei.edition),
+		ei.has_PII_data,
+		total_physical_memory_kb = coalesce(asi.total_physical_memory_kb, ei.total_physical_memory_kb),
+		cpu_count = coalesce(asi.cpu_count, ei.cpu_count),
+		ei.data_center,		
+		[server_purpose] = ei.purpose,
+		ei.known_challenges,		
+		s.is_onboarded,
+		s.is_decommissioned,
+		[server_more_info] = s.more_info,
+		[sql_server_remarks] = ei.remarks
+from dbo.sma_servers s
+left join dbo.sma_sql_server_extended_info ei
+	on ei.server = s.server
+left join dbo.vw_all_server_info asi
+	on asi.srv_name = s.server
+outer apply (
+		select top 1 id.sql_instance_port, id.sql_instance, id.host_name
+		from dbo.instance_details id
+		where id.is_enabled = 1
+		and id.sql_instance = s.server
+		and id.is_alias = 0
+	) id
+outer apply (
+	select STUFF(
+         (SELECT ', ' + h.host_name+'('+h.host_ips+')'
+          FROM dbo.sma_sql_server_hosts h
+          where 1=1
+		  and h.server = s.server
+		  --and h.is_decommissioned = 0
+          FOR XML PATH (''))
+          , 1, 1, '')  AS hosts
+	) hosts
+outer apply (
+	select STUFF((	SELECT ', ' + [ag_replica]
+					from (
+							select distinct [ag_replica] = ltrim(rtrim(r.value))
+							from dbo.sma_hadr_ag ag
+							outer apply string_split(ag.ag_replicas_CSV,',') r
+							where 1=1
+							--and ag.is_decommissioned = 0
+							and ag.server = s.server
+						) agr
+					FOR XML PATH (''))
+			, 1, 1, '')  AS ag_replicas,
+
+			STUFF((	SELECT ', ' + ag.ag_listener_name+'('+ag.ag_listener_ip1+coalesce(','+ag.ag_listener_ip2,'')+')'
+					from dbo.sma_hadr_ag ag
+					where 1=1
+					--and ag.is_decommissioned = 0
+					and ag.server = s.server
+					FOR XML PATH (''))
+			, 1, 1, '')  AS ag_listeners
+	) agr
+left join dbo.sma_hadr_sql_cluster sc
+	on sc.server = s.server
+	--and sc.is_decommissioned = 0
+where 1=1
+--and s.is_decommissioned = 0
+go
+
 
 /* ***** 14) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers ***************************** */
 -- drop trigger dbo.tgr_dml__fk_validation_sma_servers__server;

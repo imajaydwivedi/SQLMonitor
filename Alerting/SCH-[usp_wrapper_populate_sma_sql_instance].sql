@@ -18,6 +18,12 @@ begin
 
 		exec dbo.usp_wrapper_populate_sma_sql_instance @send_mail = 0, @verbose = 2, @truncate_log_table = 0
 
+		exec dbo.usp_wrapper_populate_sma_sql_instance
+					@dba_team_email_id = 'sqlagentservice@gmail.com',
+					@dba_manager_email_id = 'sqlagentservice@gmail.com',
+					@sre_vp_email_id = 'sqlagentservice@gmail.com',
+					@send_mail = 1, @verbose = 2, @truncate_log_table = 0
+
 */
 	set nocount on;
 
@@ -366,7 +372,7 @@ begin
 					id.collector_tsql_jobs_server, 
 					id.data_destination_sql_instance
 			from master.sys.servers s
-			cross apply (select top 1 * from DBA_Admin.dbo.instance_details id
+			cross apply (select top 1 * from dbo.instance_details id
 							where id.sql_instance = s.name
 							and id.is_enabled = 1
 							and id.is_alias = 0
@@ -1157,8 +1163,13 @@ end
 go
 
 
-exec dbo.usp_wrapper_populate_sma_sql_instance @send_mail = 0, @verbose = 2, @truncate_log_table = 0
+--exec dbo.usp_wrapper_populate_sma_sql_instance
+--					@dba_team_email_id = 'sqlagentservice@gmail.com',
+--					@dba_manager_email_id = 'sqlagentservice@gmail.com',
+--					@sre_vp_email_id = 'sqlagentservice@gmail.com',
+--					@send_mail = 1, @verbose = 2, @truncate_log_table = 0
 go
+
 
 -- select * from dbo.sma_servers_logs l;
 go
