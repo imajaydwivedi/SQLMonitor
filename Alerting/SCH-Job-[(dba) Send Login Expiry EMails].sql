@@ -1,7 +1,8 @@
 USE [msdb]
 GO
 
-EXEC msdb.dbo.sp_delete_job @job_name=N'(dba) Send Login Expiry EMails', @delete_unused_schedule=1
+IF EXISTS (SELECT * FROM msdb.dbo.sysjobs_view WHERE name = N'(dba) Send Login Expiry EMails')
+	EXEC msdb.dbo.sp_delete_job @job_name=N'(dba) Send Login Expiry EMails', @delete_unused_schedule=1
 GO
 
 BEGIN TRANSACTION

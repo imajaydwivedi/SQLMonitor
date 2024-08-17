@@ -5,6 +5,7 @@
 cls
 Import-Module dbatools;
 $SqlInstanceToBaseline = 'Workstation'
+$SqlInstanceAsDataDestination = $SqlInstanceToBaseline
 #$SqlInstanceAsDataDestination = 'Workstation'
 #$SqlInstanceForPowershellJobs = 'Workstation'
 #$SqlInstanceForTsqlJobs = 'Workstation'
@@ -56,7 +57,7 @@ $params = @{
     #SkipPingCheck = $true
     #SkipMultiServerviewsUpgrade = $false
     #ForceSetupOfTaskSchedulerJobs = $true
-    #SqlInstanceAsDataDestination = $SqlInstanceAsDataDestination
+    SqlInstanceAsDataDestination = $SqlInstanceAsDataDestination
     #SqlInstanceForPowershellJobs = $SqlInstanceForPowershellJobs
     #SqlInstanceForTsqlJobs = $SqlInstanceForTsqlJobs
     #ConfirmValidationOfMultiInstance = $true
@@ -70,6 +71,7 @@ $params = @{
     #JobsExecutionWaitTimeoutMinutes = 15
     #MemoryOptimizedObjectsUsage = $false
     #ReturnInlineErrorMessage = $true
+    #ForceTSQLStepType4TsqlJobs = $true
 }
 
 #$preSQL = "EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = 'sqlagentservice@gmail.com', @drop_recreate = 1"

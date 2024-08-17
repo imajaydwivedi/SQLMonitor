@@ -1,7 +1,8 @@
 USE [msdb]
 GO
 
-EXEC msdb.dbo.sp_delete_job @job_name=N'(dba) Populate Inventory Tables', @delete_unused_schedule=1
+IF EXISTS (SELECT * FROM msdb.dbo.sysjobs_view WHERE name = N'(dba) Populate Inventory Tables')
+	EXEC msdb.dbo.sp_delete_job @job_name=N'(dba) Populate Inventory Tables', @delete_unused_schedule=1
 GO
 
 BEGIN TRANSACTION

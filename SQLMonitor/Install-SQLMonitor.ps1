@@ -170,6 +170,9 @@ Param (
     [bool]$HasCustomizedTsqlJobs = $false,
 
     [Parameter(Mandatory=$false)]
+    [bool]$ForceTSQLStepType4TsqlJobs = $false,
+
+    [Parameter(Mandatory=$false)]
     [bool]$HasCustomizedPowerShellJobs = $false,
 
     [Parameter(Mandatory=$false)]
@@ -214,11 +217,12 @@ Param (
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-08-07'
-$sqlmonitorVersionDate = '2024-Aug-07'
+$sqlmonitorVersion = '2024-08-17'
+$sqlmonitorVersionDate = '2024-Aug-17'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 <#
     v2024-Sep-30
+        -> Issue#50 - Add switch to create tsql script jobs as TSQL Step type
         -> Issue#44 - Copy grafana login from Inventory to keep same SID
         -> Issue$43 - Add avg_disk_wait_ms
         -> Issue#38 - Add Infra to Track AG State Change
@@ -2812,9 +2816,29 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCollectWaitStats = [System.IO.File]::ReadAllText($CollectWaitStatsJobFilePath)
+
+    if($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) 
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCollectWaitStats)
+        #$sqlCreateJobCollectWaitStats = $flagsPattern.Replace($sqlCreateJobCollectWaitStats, "@flags=`${flagsValue}, @database_name=N'$DbaDatabase'")
+        $sqlCreateJobCollectWaitStats = $flagsPattern.Replace($sqlCreateJobCollectWaitStats, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while($cmdPattern.IsMatch($sqlCreateJobCollectWaitStats)) {
+            #$Matches = $cmdPattern.Match($testJobStepSQL)
+            #$Matches.Groups
+            $sqlCreateJobCollectWaitStats = $cmdPattern.Replace($sqlCreateJobCollectWaitStats, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+   
     if($jobNameNew -ne $jobName) {
         $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace($jobName, $jobNameNew)
     }
@@ -2914,6 +2938,25 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCollectXEvents = [System.IO.File]::ReadAllText($CollectXEventsJobFilePath)
+
+    if($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) 
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCollectXEvents = $sqlCreateJobCollectXEvents.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCollectXEvents)
+        #$sqlCreateJobCollectXEvents = $flagsPattern.Replace($sqlCreateJobCollectXEvents, "@flags=`${flagsValue}, @database_name=N'$DbaDatabase'")
+        $sqlCreateJobCollectXEvents = $flagsPattern.Replace($sqlCreateJobCollectXEvents, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while($cmdPattern.IsMatch($sqlCreateJobCollectXEvents)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobCollectXEvents)
+            #$Matches.Groups
+            $sqlCreateJobCollectXEvents = $cmdPattern.Replace($sqlCreateJobCollectXEvents, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCollectXEvents = $sqlCreateJobCollectXEvents.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectXEvents = $sqlCreateJobCollectXEvents.Replace('-d DBA', "-d `"$DbaDatabase`"")
     if($jobNameNew -ne $jobName) {
@@ -3016,6 +3059,24 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobFileIOStats = [System.IO.File]::ReadAllText($CollectFileIOStatsJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobFileIOStats)
+        #$sqlCreateJobFileIOStats = $flagsPattern.Replace($sqlCreateJobFileIOStats, "@flags=`${flagsValue}, @database_name=N'$DbaDatabase'")
+        $sqlCreateJobFileIOStats = $flagsPattern.Replace($sqlCreateJobFileIOStats, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobFileIOStats)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobFileIOStats)
+            #$Matches.Groups
+            $sqlCreateJobFileIOStats = $cmdPattern.Replace($sqlCreateJobFileIOStats, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -3119,6 +3180,24 @@ if($stepName -in $Steps2Execute -and $IsNonPartitioned -eq $false)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlPartitionsMaintenance = [System.IO.File]::ReadAllText($PartitionsMaintenanceJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlPartitionsMaintenance = $sqlPartitionsMaintenance.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlPartitionsMaintenance)
+        #$sqlPartitionsMaintenance = $flagsPattern.Replace($sqlPartitionsMaintenance, "@flags=`${flagsValue}, @database_name=N'$DbaDatabase'")
+        $sqlPartitionsMaintenance = $flagsPattern.Replace($sqlPartitionsMaintenance, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlPartitionsMaintenance)) {
+            #$Matches = $cmdPattern.Match($sqlPartitionsMaintenance)
+            #$Matches.Groups
+            $sqlPartitionsMaintenance = $cmdPattern.Replace($sqlPartitionsMaintenance, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlPartitionsMaintenance = $sqlPartitionsMaintenance.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlPartitionsMaintenance = $sqlPartitionsMaintenance.Replace('-d DBA', "-d `"$DbaDatabase`"")
     if($jobNameNew -ne $jobName) {
@@ -3222,6 +3301,23 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlPurgeDbaMetrics = [System.IO.File]::ReadAllText($PurgeTablesJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlPurgeDbaMetrics = $sqlPurgeDbaMetrics.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlPurgeDbaMetrics)
+        $sqlPurgeDbaMetrics = $flagsPattern.Replace($sqlPurgeDbaMetrics, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlPurgeDbaMetrics)) {
+            #$Matches = $cmdPattern.Match($sqlPurgeDbaMetrics)
+            #$Matches.Groups
+            $sqlPurgeDbaMetrics = $cmdPattern.Replace($sqlPurgeDbaMetrics, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlPurgeDbaMetrics = $sqlPurgeDbaMetrics.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlPurgeDbaMetrics = $sqlPurgeDbaMetrics.Replace('-d DBA', "-d `"$DbaDatabase`"")
     if($jobNameNew -ne $jobName) {
@@ -3325,6 +3421,7 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForPowershellJobs].."
     $sqlCreateJobRemoveXEventFiles = [System.IO.File]::ReadAllText($RemoveXEventFilesJobFilePath)
+
     $sqlCreateJobRemoveXEventFiles = $sqlCreateJobRemoveXEventFiles.Replace('-SqlInstance localhost', "-SqlInstance ''$sqlInstanceOnJobStep''")
     $sqlCreateJobRemoveXEventFiles = $sqlCreateJobRemoveXEventFiles.Replace('-Database DBA', "-Database `"$DbaDatabase`"")
     if($jobNameNew -ne $jobName) {
@@ -3442,6 +3539,23 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobRunLogSaver = [System.IO.File]::ReadAllText($RunLogSaverJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobRunLogSaver)
+        $sqlCreateJobRunLogSaver = $flagsPattern.Replace($sqlCreateJobRunLogSaver, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobRunLogSaver)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobRunLogSaver)
+            #$Matches.Groups
+            $sqlCreateJobRunLogSaver = $cmdPattern.Replace($sqlCreateJobRunLogSaver, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -3545,6 +3659,23 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobRunTempDbSaver = [System.IO.File]::ReadAllText($RunTempDbSaverJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobRunTempDbSaver)
+        $sqlCreateJobRunTempDbSaver = $flagsPattern.Replace($sqlCreateJobRunTempDbSaver, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobRunTempDbSaver)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobRunTempDbSaver)
+            #$Matches.Groups
+            $sqlCreateJobRunTempDbSaver = $cmdPattern.Replace($sqlCreateJobRunTempDbSaver, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -3648,6 +3779,23 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlRunWhoIsActive = [System.IO.File]::ReadAllText($RunWhoIsActiveJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlRunWhoIsActive)
+        $sqlRunWhoIsActive = $flagsPattern.Replace($sqlRunWhoIsActive, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlRunWhoIsActive)) {
+            #$Matches = $cmdPattern.Match($sqlRunWhoIsActive)
+            #$Matches.Groups
+            $sqlRunWhoIsActive = $cmdPattern.Replace($sqlRunWhoIsActive, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -3755,6 +3903,23 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlRunBlitzIndexJob = [System.IO.File]::ReadAllText($RunBlitzIndexJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlRunBlitzIndexJob)
+        $sqlRunBlitzIndexJob = $flagsPattern.Replace($sqlRunBlitzIndexJob, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlRunBlitzIndexJob)) {
+            #$Matches = $cmdPattern.Match($sqlRunBlitzIndexJob)
+            #$Matches.Groups
+            $sqlRunBlitzIndexJob = $cmdPattern.Replace($sqlRunBlitzIndexJob, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace("''DBA''", "''$DbaDatabase''" )
@@ -3861,6 +4026,23 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlRunBlitzJob = [System.IO.File]::ReadAllText($RunBlitzJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlRunBlitzJob = $sqlRunBlitzJob.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlRunBlitzJob)
+        $sqlRunBlitzJob = $flagsPattern.Replace($sqlRunBlitzJob, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlRunBlitzJob)) {
+            #$Matches = $cmdPattern.Match($sqlRunBlitzJob)
+            #$Matches.Groups
+            $sqlRunBlitzJob = $cmdPattern.Replace($sqlRunBlitzJob, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlRunBlitzJob = $sqlRunBlitzJob.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlRunBlitzJob = $sqlRunBlitzJob.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlRunBlitzJob = $sqlRunBlitzJob.Replace("''DBA''", "''$DbaDatabase''" )
@@ -3967,6 +4149,23 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlRunBlitzIndexWeeklyJob = [System.IO.File]::ReadAllText($RunBlitzIndexWeeklyJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlRunBlitzIndexWeeklyJob)
+        $sqlRunBlitzIndexWeeklyJob = $flagsPattern.Replace($sqlRunBlitzIndexWeeklyJob, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlRunBlitzIndexWeeklyJob)) {
+            #$Matches = $cmdPattern.Match($sqlRunBlitzIndexWeeklyJob)
+            #$Matches.Groups
+            $sqlRunBlitzIndexWeeklyJob = $cmdPattern.Replace($sqlRunBlitzIndexWeeklyJob, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace('-S "localhost"', "-S `"$sqlInstanceOnJobStep`"")
     $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace('-d DBA', "-d `"$DbaDatabase`"")
@@ -4080,6 +4279,23 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCollectMemoryClerks = [System.IO.File]::ReadAllText($CollectMemoryClerksJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCollectMemoryClerks)
+        $sqlCreateJobCollectMemoryClerks = $flagsPattern.Replace($sqlCreateJobCollectMemoryClerks, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobCollectMemoryClerks)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobCollectMemoryClerks)
+            #$Matches.Groups
+            $sqlCreateJobCollectMemoryClerks = $cmdPattern.Replace($sqlCreateJobCollectMemoryClerks, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4184,6 +4400,23 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCollectPrivilegedInfo = [System.IO.File]::ReadAllText($CollectPrivilegedInfoJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCollectPrivilegedInfo)
+        $sqlCreateJobCollectPrivilegedInfo = $flagsPattern.Replace($sqlCreateJobCollectPrivilegedInfo, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobCollectPrivilegedInfo)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobCollectPrivilegedInfo)
+            #$Matches.Groups
+            $sqlCreateJobCollectPrivilegedInfo = $cmdPattern.Replace($sqlCreateJobCollectPrivilegedInfo, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4287,6 +4520,23 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCollectAgHealthState = [System.IO.File]::ReadAllText($CollectAgHealthStateJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCollectAgHealthState)
+        $sqlCreateJobCollectAgHealthState = $flagsPattern.Replace($sqlCreateJobCollectAgHealthState, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobCollectAgHealthState)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobCollectAgHealthState)
+            #$Matches.Groups
+            $sqlCreateJobCollectAgHealthState = $cmdPattern.Replace($sqlCreateJobCollectAgHealthState, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4391,6 +4641,23 @@ if($stepName -in $Steps2Execute)
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCheckSQLAgentJobs = [System.IO.File]::ReadAllText($CheckSQLAgentJobsJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCheckSQLAgentJobs)
+        $sqlCreateJobCheckSQLAgentJobs = $flagsPattern.Replace($sqlCreateJobCheckSQLAgentJobs, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobCheckSQLAgentJobs)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobCheckSQLAgentJobs)
+            #$Matches.Groups
+            $sqlCreateJobCheckSQLAgentJobs = $cmdPattern.Replace($sqlCreateJobCheckSQLAgentJobs, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4746,6 +5013,23 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlGetAllServerInfoJobFileText = [System.IO.File]::ReadAllText($GetAllServerInfoJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlGetAllServerInfoJobFileText)
+        $sqlGetAllServerInfoJobFileText = $flagsPattern.Replace($sqlGetAllServerInfoJobFileText, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlGetAllServerInfoJobFileText)) {
+            #$Matches = $cmdPattern.Match($sqlGetAllServerInfoJobFileText)
+            #$Matches.Groups
+            $sqlGetAllServerInfoJobFileText = $cmdPattern.Replace($sqlGetAllServerInfoJobFileText, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4859,6 +5143,23 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlGetAllServerCollectedDataJobFileText = [System.IO.File]::ReadAllText($GetAllServerCollectedDataJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlGetAllServerCollectedDataJobFileText)
+        $sqlGetAllServerCollectedDataJobFileText = $flagsPattern.Replace($sqlGetAllServerCollectedDataJobFileText, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlGetAllServerCollectedDataJobFileText)) {
+            #$Matches = $cmdPattern.Match($sqlGetAllServerCollectedDataJobFileText)
+            #$Matches.Groups
+            $sqlGetAllServerCollectedDataJobFileText = $cmdPattern.Replace($sqlGetAllServerCollectedDataJobFileText, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4972,6 +5273,23 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlGetAllServerDashboardMailJobFileText = [System.IO.File]::ReadAllText($GetAllServerDashboardMailJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlGetAllServerDashboardMailJobFileText)
+        $sqlGetAllServerDashboardMailJobFileText = $flagsPattern.Replace($sqlGetAllServerDashboardMailJobFileText, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlGetAllServerDashboardMailJobFileText)) {
+            #$Matches = $cmdPattern.Match($sqlGetAllServerDashboardMailJobFileText)
+            #$Matches.Groups
+            $sqlGetAllServerDashboardMailJobFileText = $cmdPattern.Replace($sqlGetAllServerDashboardMailJobFileText, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -5075,6 +5393,21 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$StopStuckSQLMonitorJobsJobFilePath = '$StopStuckSQLMonitorJobsJobFilePath'"
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobName] on [$SqlInstanceToBaseline].."
     $sqlStopStuckSQLMonitorJobs = [System.IO.File]::ReadAllText($StopStuckSQLMonitorJobsJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlStopStuckSQLMonitorJobs = $sqlStopStuckSQLMonitorJobs.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?'flagsValue'\d+)[^,]"
+        $sqlStopStuckSQLMonitorJobs = $flagsPattern.Replace($sqlStopStuckSQLMonitorJobs, "@flags=$($Matches['flagsValue']), @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?'CommandText'sqlcmd.* -Q `"(?'JobStepTsqlCode'.*)`")',"
+        $counter = 1
+        while ($sqlStopStuckSQLMonitorJobs -match $cmdPattern) {
+            $sqlStopStuckSQLMonitorJobs = $cmdPattern.Replace($sqlStopStuckSQLMonitorJobs, "@command=N'$($Matches['jobStepTsqlCode'])',", 1) # Replace one occurrences at a time
+        }
+    }
+
     $sqlStopStuckSQLMonitorJobs = $sqlStopStuckSQLMonitorJobs.Replace('-InventoryServer localhost', "-InventoryServer `"$SqlInstanceToBaselineWithOutPort`"")
     $sqlStopStuckSQLMonitorJobs = $sqlStopStuckSQLMonitorJobs.Replace('-InventoryDatabase DBA', "-InventoryDatabase `"$InventoryDatabase`"")
     $sqlStopStuckSQLMonitorJobs = $sqlStopStuckSQLMonitorJobs.Replace('-CredentialManagerDatabase DBA', "-CredentialManagerDatabase `"$InventoryDatabase`"")
@@ -5832,6 +6165,8 @@ $timeTaken = New-TimeSpan -Start $startTime -End $(Get-Date)
     When enabled, ping operation is not done for connectivity validation
     .PARAMETER HasCustomizedTsqlJobs
     When enabled, assumption is that SQL Agent jobs running sqlcmd/tsql queries have modified version. This flag ensures that these jobs/steps are skipped in upgrades unless OverrideCustomizedTsqlJobs parameter is used
+    .PARAMETER ForceTSQLStepType4TsqlJobs
+    When enabled, TSQL jobs running tsql queries are created as TSQL step type. Default is disabled. When disabled, then jobs are created as CmdExec step type running sqlcmd utility.
     .PARAMETER HasCustomizedPowerShellJobs
     When enabled, assumption is that SQL Agent jobs running powershell scripts have modified version. This flag ensures that these jobs/steps are skipped in upgrades unless OverrideCustomizedPowerShellJobs parameter is used
     .PARAMETER OverrideCustomizedTsqlJobs

@@ -1,7 +1,8 @@
 USE [msdb]
 GO
 
-EXEC msdb.dbo.sp_delete_job @job_name=N'Update-SQLMonitorIPAddress', @delete_unused_schedule=1
+IF EXISTS (SELECT * FROM msdb.dbo.sysjobs_view WHERE name = N'Update-SQLMonitorIPAddress')
+	EXEC msdb.dbo.sp_delete_job @job_name=N'Update-SQLMonitorIPAddress', @delete_unused_schedule=1
 GO
 
 BEGIN TRANSACTION
