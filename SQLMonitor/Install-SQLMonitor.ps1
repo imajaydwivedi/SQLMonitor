@@ -1429,7 +1429,8 @@ and name in ('master','msdb','tempdb','$DbaDatabase')
 	    else {            
 		    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Collation of below databases is not [SQL_Latin1_General_CP1_CI_AS]." | Write-Host -ForegroundColor Red
             "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly rectify this collation problem, or Using SkipCollationCheck parameter." | Write-Host -ForegroundColor Red
-            $dbCollationResult | Format-Table -AutoSize #| Write-Host -ForegroundColor Red
+            $dbCollationResult | Format-Table -AutoSize | Out-String | Write-Host -ForegroundColor Red
+            Start-Sleep -Seconds 1
             Write-Error "Stop here. Fix above issue."
         }
     }
@@ -1816,6 +1817,13 @@ if($stepName -in $Steps2Execute)
 
         $AllDatabaseObjectsFileContent = $AllDatabaseObjectsFileContent.Replace('declare @is_partitioned bit = 1;', 'declare @is_partitioned bit = 0;')
         $AllDatabaseObjectsFileContent = $AllDatabaseObjectsFileContent.Replace(' on ps_dba', ' --on ps_dba')
+    }
+
+    # Modify content if upgrade scenario
+    if($isUpgradeScenario) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "For upgrade scenario, don't touch partitioning."
+
+        $AllDatabaseObjectsFileContent = $AllDatabaseObjectsFileContent.Replace('declare @is_upgrade bit = 0;', 'declare @is_upgrade bit = 1;')
     }
 
     # Modify AllDatabaseObjectsFileContent if MemoryOptimized Objects are NOT to be used
