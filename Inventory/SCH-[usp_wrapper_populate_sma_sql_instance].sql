@@ -1144,21 +1144,6 @@ begin
 			on s.server = ag.server
 		where 1=1;
 	end -- 'Update-Hadr-AG'
-
-
-/*
-drop table dbo.sma_servers_logs
-create table dbo.sma_servers_logs
-(	id int identity(1,1) not null,
-	sql_instance varchar(125) not null,
-	start_time datetime2 not null default sysdatetime(),
-	status varchar(125) default 'start',
-	remarks varchar(2000) null
-
-	,constraint pk_sma_servers_logs primary key clustered (id)
-	,index sql_instance nonclustered (sql_instance, start_time)
-);
-*/
 end
 go
 

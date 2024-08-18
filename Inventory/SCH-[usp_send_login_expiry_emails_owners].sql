@@ -858,39 +858,6 @@ BEGIN
 		end catch
 
 	end -- 'Send-Mail-Notification-2-CTO'
-
-/*
-create table dbo.server_login_expiry_collection_computed
-(	sql_instance varchar(125) not null,
-	collection_time_latest datetime2 not null,
-	server_owner_email varchar(2000) null,
-	app_team_emails varchar(2000) null,
-	application_owner_emails varchar(2000) null
-
-	,index CI_server_login_expiry_collection_computed unique clustered (sql_instance, collection_time_latest)
-);
-
-
-create table [dbo].[all_server_login_expiry_info_dashboard]
-(
-	[collection_time] [datetime2](7) NOT NULL,
-	[sql_instance] [varchar](125) not null,
-	[login_name] [varchar](125) not null,
-	[is_sysadmin] [bit] NULL,
-	[password_last_set_time] [datetime] NULL,
-	[password_expiration] [datetime] NULL,
-	[is_expired] [bit] NULL,
-	[is_locked] [bit] NULL,
-	[days_until_expiration] [int] NULL,
-	[login_owner_group_email] [varchar](4000) NULL,
-	[server_owner_email] [varchar](2000) NULL,
-	[app_team_emails] [varchar](2000) NULL,
-	[application_owner_emails] [varchar](2000) NULL
-
-	,index CI_all_server_login_expiry_info_dashboard unique clustered (sql_instance, login_name)
-);
-
-*/
 END
 GO
 

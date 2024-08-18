@@ -2,7 +2,7 @@ use DBA
 go
 
 /*
-	Version -> 2024-07-08
+	Version -> 2024-07-18
 	2024-07-08 - #01 - Initial Draft of Inventory Servers
 	-----------------
 
@@ -34,6 +34,10 @@ go
 	16) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications
 	17) Create table dbo.login_email_mapping
 	18) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping
+	19) Create table dbo.all_server_login_expiry_info
+	20) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails]
+	21) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails]
+	22) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance]
 
 */
 
@@ -705,6 +709,7 @@ create table dbo.login_email_mapping
 );
 go
 
+
 /* ***** 18) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping ***************************** */
 create or alter trigger dbo.tgr_dml__login_email_mapping__email__validation
 	on dbo.login_email_mapping
@@ -733,6 +738,87 @@ begin
 	end
 end
 go
+
+
+/* ***** 19) Create table dbo.all_server_login_expiry_info ***************************** */
+-- drop table dbo.all_server_login_expiry_info
+CREATE TABLE dbo.all_server_login_expiry_info
+(
+	collection_time datetime2 not null default sysdatetime(),
+	sql_instance	varchar(125),
+	[host_name]		varchar(125),	
+	login_name		varchar(125),
+	login_sid 		varbinary(85),
+	create_date		datetime,
+	modify_date		datetime,
+	default_database_name varchar(125),
+	is_policy_checked bit,
+	is_expiration_checked bit,
+	is_sysadmin bit,
+	password_last_set_time	datetime,
+	days_until_expiration	int,
+	password_expiration	datetime,
+	is_expired	bit,
+	is_locked	bit,		
+	owner_group_email varchar(500)		
+
+	,index CI_all_server_login_expiry_info clustered (collection_time, sql_instance)
+);
+go
+
+
+/* ***** 20) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails] ***************************** */
+create table dbo.server_login_expiry_collection_computed
+(	sql_instance varchar(125) not null,
+	collection_time_latest datetime2 not null,
+	server_owner_email varchar(2000) null,
+	app_team_emails varchar(2000) null,
+	application_owner_emails varchar(2000) null
+
+	,index CI_server_login_expiry_collection_computed unique clustered (sql_instance, collection_time_latest)
+);
+go
+
+
+/* ***** 21) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails] ***************************** */
+create table dbo.all_server_login_expiry_info_dashboard
+(
+	[collection_time] [datetime2](7) NOT NULL,
+	[sql_instance] [varchar](125) not null,
+	[login_name] [varchar](125) not null,
+	[is_sysadmin] [bit] NULL,
+	[password_last_set_time] [datetime] NULL,
+	[password_expiration] [datetime] NULL,
+	[is_expired] [bit] NULL,
+	[is_locked] [bit] NULL,
+	[days_until_expiration] [int] NULL,
+	[login_owner_group_email] [varchar](4000) NULL,
+	[server_owner_email] [varchar](2000) NULL,
+	[app_team_emails] [varchar](2000) NULL,
+	[application_owner_emails] [varchar](2000) NULL
+
+	,index CI_all_server_login_expiry_info_dashboard unique clustered (sql_instance, login_name)
+);
+go
+
+
+/* ***** 22) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance] ***************************** */
+--drop table dbo.sma_servers_logs
+create table dbo.sma_servers_logs
+(	id int identity(1,1) not null,
+	sql_instance varchar(125) not null,
+	start_time datetime2 not null default sysdatetime(),
+	status varchar(125) default 'start',
+	remarks varchar(2000) null
+
+	,constraint pk_sma_servers_logs primary key clustered (id)
+	,index sql_instance nonclustered (sql_instance, start_time)
+);
+go
+
+
+
+
 
 /*
 -- SQLMonitor core table

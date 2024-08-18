@@ -178,34 +178,6 @@ BEGIN
 			select RunningQuery = '[dbo].[sma_errorlog]', * 
 			from [dbo].[sma_errorlog] where collection_time = @_start_time;		
 	end
-
-/*
-	-- drop table dbo.all_server_login_expiry_info
-	CREATE TABLE dbo.all_server_login_expiry_info
-	(
-		collection_time datetime2 not null default sysdatetime(),
-		sql_instance	varchar(125),
-		[host_name]		varchar(125),	
-		login_name		varchar(125),
-		login_sid 		varbinary(85),
-		create_date		datetime,
-		modify_date		datetime,
-		default_database_name varchar(125),
-		is_policy_checked bit,
-		is_expiration_checked bit,
-		is_sysadmin bit,
-		password_last_set_time	datetime,
-		days_until_expiration	int,
-		password_expiration	datetime,
-		is_expired	bit,
-		is_locked	bit,		
-		owner_group_email varchar(500)		
-
-		,index CI_all_server_login_expiry_info clustered (collection_time, sql_instance)
-	);
-
-
-*/
 END
 GO
 
