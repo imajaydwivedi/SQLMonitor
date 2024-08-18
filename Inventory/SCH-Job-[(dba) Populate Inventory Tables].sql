@@ -53,7 +53,11 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'TSQL', 
-		@command=N'exec dbo.usp_wrapper_populate_sma_sql_instance @send_mail = 1, @verbose = 0, @truncate_log_table = 1', 
+		@command=N'exec dbo.usp_wrapper_populate_sma_sql_instance
+					@dba_team_email_id = ''sqlagentservice@gmail.com'',
+					@dba_manager_email_id = ''sqlagentservice@gmail.com'',
+					@sre_vp_email_id = ''sqlagentservice@gmail.com'',
+					@send_mail = 1, @verbose = 0, @truncate_log_table = 1', 
 		@database_name=N'DBA', 
 		@flags=12
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback

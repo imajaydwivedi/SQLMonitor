@@ -25,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 36,
+  "id": 9,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -63,7 +63,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -130,7 +131,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "11.1.4",
           "targets": [
             {
               "alias": "",
@@ -142,7 +143,7 @@
               "format": "table",
               "hide": false,
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255) = '$server';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @delta_days_threshold int = ${delta_days_threshold};\ndeclare @buffer_days int = 2;\ndeclare @database varchar(255) = '$database';\ndeclare @page_no int;\ndeclare @page_size int;\ndeclare @table_name varchar(255);\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nif len(ltrim(rtrim('$page_no'))) > 0 and (case when '$page_no' like '%[^0-9.]%' then 'invalid' when '$page_no' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_no = convert(int,ltrim(rtrim('$page_no')));\nif len(ltrim(rtrim('$page_size'))) > 0 and (case when '$page_size' like '%[^0-9.]%' then 'invalid' when '$page_size' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_size = convert(int,ltrim(rtrim('$page_size')));\nif len(ltrim(rtrim('$table_name'))) > 0\n  set @table_name = '$table_name'\n\nset @params = N'@database varchar(255), @delta_days_threshold int, @buffer_days int, @page_no int, @page_size int, @table_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - BlitzIndex Analysis - 0 Delta Rows */\nset nocount on;\n\nselect \trun_datetime = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.run_datetime),\n\t\t\t\tbi.[database_name], bi.[object_count], bi.[reserved_gb], \n        bi.[reserved_lob_gb], bi.[reserved_row_overflow_gb], bi.[clustered_table_count], \n        bi.[clustered_table_gb], bi.[nc_index_count], bi.[nc_index_gb], \n        bi.[table_nc_index_ratio], bi.[heap_count], bi.[heap_gb], bi.[partioned_table_count], \n        bi.[partioned_nc_count], bi.[partioned_gb], bi.[filtered_index_count], \n        bi.[indexed_view_count], bi.[max_table_row_count], bi.[max_table_gb], \n        bi.[max_nc_index_gb], bi.[table_count_over_1gb], bi.[table_count_over_10gb], \n        bi.[table_count_over_100gb], bi.[nc_index_count_over_1gb], bi.[nc_index_count_over_10gb], \n        bi.[nc_index_count_over_100gb], bi.[min_create_date], \n        [max_create_date] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.max_create_date), \n        [max_modify_date] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.max_modify_date)\nfrom ${blitzindex_mode1_table_name} bi\nwhere bi.run_datetime = (select max(i.run_datetime) from ${blitzindex_mode1_table_name} i)\n\"+(case when @database is null then '-- ' else '' end)+\"and bi.database_name = @database\norder by bi.reserved_gb desc, bi.object_count desc, bi.database_name\noffset ((@page_no-1)*@page_size) rows fetch next @page_size rows only;\n\"\nset quoted_identifier on;\n\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255) = '$server';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @delta_days_threshold int = ${delta_days_threshold};\ndeclare @buffer_days int = 2;\ndeclare @database varchar(255) = '$database';\ndeclare @page_no int;\ndeclare @page_size int;\ndeclare @table_name varchar(255);\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nif len(ltrim(rtrim('$page_no'))) > 0 and (case when '$page_no' like '%[^0-9.]%' then 'invalid' when '$page_no' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_no = convert(int,ltrim(rtrim('$page_no')));\nif len(ltrim(rtrim('$page_size'))) > 0 and (case when '$page_size' like '%[^0-9.]%' then 'invalid' when '$page_size' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_size = convert(int,ltrim(rtrim('$page_size')));\nif len(ltrim(rtrim('$table_name'))) > 0\n  set @table_name = '$table_name'\n\nset @params = N'@database varchar(255), @delta_days_threshold int, @buffer_days int, @page_no int, @page_size int, @table_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - BlitzIndex Analysis - 0 Delta Rows */\nset nocount on;\n\nselect \trun_datetime = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.run_datetime),\n\t\t\t\tbi.[database_name], bi.[object_count], bi.[reserved_gb], \n        bi.[reserved_lob_gb], bi.[reserved_row_overflow_gb], bi.[clustered_table_count], \n        bi.[clustered_table_gb], bi.[nc_index_count], bi.[nc_index_gb], \n        bi.[table_nc_index_ratio], bi.[heap_count], bi.[heap_gb], bi.[partitioned_table_count], \n        bi.[partitioned_nc_count], bi.[partitioned_gb], bi.[filtered_index_count], \n        bi.[indexed_view_count], bi.[max_table_row_count], bi.[max_table_gb], \n        bi.[max_nc_index_gb], bi.[table_count_over_1gb], bi.[table_count_over_10gb], \n        bi.[table_count_over_100gb], bi.[nc_index_count_over_1gb], bi.[nc_index_count_over_10gb], \n        bi.[nc_index_count_over_100gb], bi.[min_create_date], \n        [max_create_date] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.max_create_date), \n        [max_modify_date] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.max_modify_date)\nfrom ${blitzindex_mode1_table_name} bi\nwhere bi.run_datetime = (select max(i.run_datetime) from ${blitzindex_mode1_table_name} i)\n\"+(case when @database is null then '-- ' else '' end)+\"and bi.database_name = @database\norder by bi.reserved_gb desc, bi.object_count desc, bi.database_name\noffset ((@page_no-1)*@page_size) rows fetch next @page_size rows only;\n\"\nset quoted_identifier on;\n\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;",
               "refId": "Query-Db-File-Stats-Since-Startup",
               "sql": {
                 "columns": [
@@ -164,7 +165,6 @@
             }
           ],
           "title": "Database Size Summary -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode1_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
-          "transformations": [],
           "type": "table"
         }
       ],
@@ -209,7 +209,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -264,7 +265,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "11.1.4",
           "targets": [
             {
               "alias": "",
@@ -298,7 +299,6 @@
             }
           ],
           "title": "Tables with 0 Delta rows in Last __\"$delta_days_threshold\"__Days -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}",
-          "transformations": [],
           "type": "table"
         }
       ],
@@ -348,7 +348,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -431,7 +432,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "11.1.4",
           "targets": [
             {
               "alias": "",
@@ -465,7 +466,6 @@
             }
           ],
           "title": "Tables with \"Highest Growth\" in Last __\"$delta_days_threshold\"__Days -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
-          "transformations": [],
           "type": "table"
         }
       ],
@@ -506,7 +506,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -711,7 +712,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "11.1.4",
           "targets": [
             {
               "alias": "",
@@ -745,7 +746,6 @@
             }
           ],
           "title": "High Priority Recommendations -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode0_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
-          "transformations": [],
           "type": "table"
         }
       ],
@@ -786,7 +786,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -991,7 +992,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "11.1.4",
           "targets": [
             {
               "alias": "",
@@ -1025,7 +1026,6 @@
             }
           ],
           "title": "All Recommendations -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode4_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
-          "transformations": [],
           "type": "table"
         }
       ],
@@ -1066,7 +1066,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -1096,7 +1097,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "11.1.4",
           "targets": [
             {
               "alias": "",
@@ -1130,7 +1131,6 @@
             }
           ],
           "title": "All INDEX -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
-          "transformations": [],
           "type": "table"
         }
       ],
@@ -1139,8 +1139,7 @@
     }
   ],
   "refresh": "15m",
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -1151,8 +1150,8 @@
       {
         "current": {
           "selected": false,
-          "text": "SqlServer",
-          "value": "ygPVA4snk"
+          "text": "SQLMonitor",
+          "value": "a28aeb06-bb6e-4c74-81af-65de433776c8"
         },
         "description": "Inventory Server Name",
         "hide": 2,
@@ -1218,8 +1217,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -1266,8 +1265,8 @@
       {
         "current": {
           "selected": false,
-          "text": "100.64.0.1",
-          "value": "100.64.0.1"
+          "text": "192.168.1.2",
+          "value": "192.168.1.2"
         },
         "datasource": {
           "type": "mssql",
@@ -1314,8 +1313,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704893400000",
-          "value": "1704893400000"
+          "text": "1723987800000",
+          "value": "1723987800000"
         },
         "datasource": {
           "type": "mssql",
@@ -1362,8 +1361,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704298182597",
-          "value": "1704298182597"
+          "text": "1723658594213",
+          "value": "1723658594213"
         },
         "datasource": {
           "type": "mssql",
@@ -1592,8 +1591,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704465000000",
-          "value": "1704465000000"
+          "text": "1717770600000",
+          "value": "1717770600000"
         },
         "datasource": {
           "type": "mssql",
@@ -1616,8 +1615,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704465000000",
-          "value": "1704465000000"
+          "text": "1717770600000",
+          "value": "1717770600000"
         },
         "datasource": {
           "type": "mssql",
@@ -1640,8 +1639,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704465000000",
-          "value": "1704465000000"
+          "text": "1717770660000",
+          "value": "1717770660000"
         },
         "datasource": {
           "type": "mssql",
@@ -1678,7 +1677,7 @@
   },
   "timezone": "",
   "title": "t___BlitzIndex_Analysis",
-  "uid": "t___BlitzIndex_Analysis",
-  "version": 2,
+  "uid": "PkaYSnOVk",
+  "version": 4,
   "weekStart": ""
 }

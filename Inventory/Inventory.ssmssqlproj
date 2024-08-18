@@ -61,6 +61,30 @@
           <AssociatedConnUserName />
           <FullPath>SCH-Inventory-Tables.sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect Login Expiration Info].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect Login Expiration Info].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Populate Inventory Tables].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Populate Inventory Tables].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[Update-SQLMonitorDashboardIPAddress].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[Update-SQLMonitorDashboardIPAddress].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[Update-SQLMonitorIPAddress].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[Update-SQLMonitorIPAddress].sql</FullPath>
+        </FileNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
