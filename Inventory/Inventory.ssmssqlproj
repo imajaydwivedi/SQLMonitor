@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="localhost:21L-LTPABL-1187\Ajay">
+        <ConnectionNode Name="localhost:LAB\adwivedi">
           <Created>2022-07-21T09:01:59.8469198+05:30</Created>
           <Type>SQL</Type>
           <Server>localhost</Server>
@@ -19,6 +19,12 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="QRY-Explore-Inventory-Tables.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>QRY-Explore-Inventory-Tables.sql</FullPath>
+        </FileNode>
         <FileNode Name="QRY-Usages-Inventory.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
@@ -48,6 +54,42 @@
           <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-[dbo].[sm_inventory].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-[usp_collect_all_server_login_expiration_info].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-[usp_collect_all_server_login_expiration_info].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-[usp_populate_sma_servers].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-[usp_populate_sma_servers].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-[usp_send_login_expiry_emails_owners].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-[usp_send_login_expiry_emails_owners].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-[usp_wrapper_populate_sma_sql_instance].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-[usp_wrapper_populate_sma_sql_instance].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Create-Alert-Objects.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Create-Alert-Objects.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Inventory-Tables.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Inventory-Tables.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
