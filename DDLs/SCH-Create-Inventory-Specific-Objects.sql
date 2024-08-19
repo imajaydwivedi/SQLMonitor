@@ -805,6 +805,8 @@ create or alter trigger dbo.tgr_dml__instance_details__prevent_bulk_udpate
 as 
 begin
 	declare @action_type varchar(20);
+	declare @program_name nvarchar(255);
+	set @program_name = PROGRAM_NAME();
 
 	if exists (select * from deleted) and exists (select * from inserted)
 	begin
@@ -822,6 +824,7 @@ begin
 	-- Check if sql_instance has been 'Disabled'
 	if @action_type in ('update','delete')
 		and (select count(*) from deleted) > 5
+		and @program_name <> 'check-instance-availability.ps1'
 	begin
 		RAISERROR ('More than 5 rows cannot be updated in a single transaction in table [dbo].[instance_details].', 16, 1);  
 		ROLLBACK TRANSACTION; 
