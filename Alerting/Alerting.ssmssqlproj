@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="(local):LAB\adwivedi">
+        <ConnectionNode Name="(local):21L-LTPABL-1187\Ajay">
           <Created>2023-10-04T11:02:02.1774017+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
@@ -20,8 +20,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="SCH-[dbo].[sm_alert].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-[dbo].[sm_alert].sql</FullPath>
         </FileNode>
@@ -37,15 +37,9 @@
           <AssociatedConnUserName />
           <FullPath>SCH-[dbo].[sm_error].sql</FullPath>
         </FileNode>
-        <FileNode Name="SCH-[dbo].[sm_inventory].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>SCH-[dbo].[sm_inventory].sql</FullPath>
-        </FileNode>
         <FileNode Name="SCH-Create-Alert-Objects.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Create-Alert-Objects.sql</FullPath>
         </FileNode>
