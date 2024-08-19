@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 31,
+  "id": 6,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -36,7 +36,7 @@
         "y": 0
       },
       "id": 8,
-      "title": "Overall Status",
+      "title": "Overall Status @ ${collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -192,7 +192,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "datasource": {
@@ -337,7 +337,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "datasource": {
@@ -494,7 +494,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "datasource": {
@@ -651,7 +651,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "datasource": {
@@ -718,7 +718,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -733,6 +734,7 @@
           },
           "id": 2,
           "options": {
+            "cellHeight": "sm",
             "footer": {
               "countRows": false,
               "enablePagination": true,
@@ -744,7 +746,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "9.2.2",
+          "pluginVersion": "11.1.4",
           "targets": [
             {
               "datasource": {
@@ -775,18 +777,17 @@
               }
             }
           ],
-          "title": "All Servers - Job Activity Monitor - FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}",
+          "title": "All Servers - Job Activity Monitor - FILTERED @ ${server_collection_time_utc:date:YYYY-MM-DD HH.mm} - Paginated - Page No {$page_no} - Page Size {$page_size}",
           "type": "table"
         }
       ],
-      "title": "All Servers - Job Activity Monitor - FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}",
+      "title": "All Servers - Job Activity Monitor - FILTERED @ ${server_collection_time_utc:date:YYYY-MM-DD HH.mm} - Paginated - Page No {$page_no} - Page Size {$page_size}",
       "type": "row"
     }
   ],
-  "refresh": "",
+  "refresh": "5s",
   "revision": 1,
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -797,8 +798,8 @@
       {
         "current": {
           "selected": false,
-          "text": "SqlServer",
-          "value": "ygPVA4snk"
+          "text": "SQLMonitor",
+          "value": "a28aeb06-bb6e-4c74-81af-65de433776c8"
         },
         "hide": 2,
         "includeAll": false,
@@ -808,7 +809,7 @@
         "options": [],
         "query": "mssql",
         "refresh": 1,
-        "regex": "",
+        "regex": "SQLMonitor",
         "skipUrlSync": false,
         "type": "datasource"
       },
@@ -863,8 +864,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1704944100560",
-          "value": "1704944100560"
+          "text": "1724084401640",
+          "value": "1724084401640"
         },
         "datasource": {
           "type": "mssql",
@@ -878,7 +879,31 @@
         "name": "collection_time_utc",
         "options": [],
         "query": "select top 1 collection_time_utc = CollectionTimeUTC\nfrom dbo.sql_agent_jobs_all_servers",
-        "refresh": 1,
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1724084401940",
+          "value": "1724084401940"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\n\nset @_sql_instance = '${server}';\nset @_params = N'@_sql_instance varchar(125)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect max(UpdatedDateUTC)\nfrom dbo.sql_agent_jobs_all_servers saj\nwhere 1=1\n\"+(case when @_sql_instance = '__ALL__' then '--' else '' end)+\"and saj.sql_instance in (select case when id.source_sql_instance is not null then id.source_sql_instance else id.sql_instance end from dbo.instance_details id where id.sql_instance = @_sql_instance or id.source_sql_instance = @_sql_instance)\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance;\n",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Server Collection Time UTC",
+        "multi": false,
+        "name": "server_collection_time_utc",
+        "options": [],
+        "query": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\n\nset @_sql_instance = '${server}';\nset @_params = N'@_sql_instance varchar(125)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect max(UpdatedDateUTC)\nfrom dbo.sql_agent_jobs_all_servers saj\nwhere 1=1\n\"+(case when @_sql_instance = '__ALL__' then '--' else '' end)+\"and saj.sql_instance in (select case when id.source_sql_instance is not null then id.source_sql_instance else id.sql_instance end from dbo.instance_details id where id.sql_instance = @_sql_instance or id.source_sql_instance = @_sql_instance)\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance;\n",
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -1146,9 +1171,9 @@
       },
       {
         "current": {
-          "selected": true,
-          "text": "__All__",
-          "value": "__All__"
+          "selected": false,
+          "text": "Running",
+          "value": "Running"
         },
         "hide": 0,
         "includeAll": false,
@@ -1157,12 +1182,12 @@
         "name": "status",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "__All__",
             "value": "__All__"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "Running",
             "value": "Running"
           },
@@ -1179,7 +1204,7 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "__ALL__",
           "value": "__ALL__"
         },
@@ -1455,6 +1480,6 @@
   "timezone": "",
   "title": "Monitoring - Live - All Servers - Job Activity Monitor",
   "uid": "job_activity_monitor",
-  "version": 13,
+  "version": 8,
   "weekStart": ""
 }
