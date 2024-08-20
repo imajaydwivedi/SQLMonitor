@@ -96,8 +96,8 @@ go
 		go
 	*/
 create table dbo.sma_alert_rules
-(	[sql_instance] varchar(125) not null,
-	[alert_key] varchar(255) not null,	
+(	[alert_key] varchar(255) not null,	
+	[sql_instance] varchar(125) not null, -- Use '*' when no server needed
 	[host_name] varchar(125) null,
 	[database_name] varchar(125) null,
 	client_app_name varchar(255) null,
@@ -125,7 +125,7 @@ create table dbo.sma_alert_rules
     ,valid_to DATETIME2 GENERATED ALWAYS AS ROW END HIDDEN NOT NULL
     ,PERIOD FOR SYSTEM_TIME (valid_from,valid_to)
 
-	,constraint pk_sma_alert_rules primary key ([sql_instance],[alert_key])
+	,constraint pk_sma_alert_rules primary key clustered ([alert_key],[sql_instance])
 	,constraint chk_sma_alert_rules__severity check ( [severity] in ('Critical', 'High', 'Medium', 'Low') )
 
 )
