@@ -1,6 +1,7 @@
 /*
-	Version:		2024-08-07
-	Date:			2024-08-07 - Enhancement#45 - Add Preventive Triggers on dbo.instance_details to avoid mistakes
+	Version:		2024-08-20
+	Date:			2024-08-20 - Enhancement#10 - Add few objects required for Alerting
+					2024-08-07 - Enhancement#45 - Add Preventive Triggers on dbo.instance_details to avoid mistakes
 					2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
 					2024-04-26 - Enhancement#40 - Change Retention of dbo.all_server_volatile_info_history to 15 Days
 					2024-02-21 - Enhancement#30 - Add flag for choice of MemoryOptimized Tables 
@@ -8,6 +9,11 @@
 					2023-07-14 - Enhancement#268 - Add tables sql_agent_job_stats & memory_clerks in Collection Latency Dashboard
 					2023-06-16 - Enhancement#262 - Add is_enabled on Inventory.DBA.dbo.instance_details
 					2022-03-31 - Enhancement#227 - Add CollectionTime of Each Table Data
+
+	*** Steps in this Script ****
+	-----------------------------
+	12) Create table dbo.sma_errorlog
+	/* ***** 22) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance] ***************************** */
 */
 
 IF APP_NAME() = 'Microsoft SQL Server Management Studio - Query'
@@ -25,21 +31,33 @@ IF DB_NAME() = 'master'
 	raiserror ('Kindly execute all queries in [DBA] database', 20, -1) with log;
 go
 
+/* ****** 1) Alter inventory database with [MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT] ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '1) Alter inventory database with [MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT]';
 DECLARE @MemoryOptimizedObjectUsage bit = 1;
 IF @MemoryOptimizedObjectUsage = 1
 	EXEC ('ALTER DATABASE CURRENT SET MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT = ON');
 go
 
+/* ****** 2) Alter inventory database with MemoryOptimized filegroup ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '2) Alter inventory database with MemoryOptimized filegroup';
 DECLARE @MemoryOptimizedObjectUsage bit = 1;
 if not exists (select * from sys.filegroups where name = 'MemoryOptimized') and (@MemoryOptimizedObjectUsage = 1)
 	EXEC ('ALTER DATABASE CURRENT ADD FILEGROUP MemoryOptimized CONTAINS MEMORY_OPTIMIZED_DATA');
 go
 
+/* ****** 3) Alter inventory database with MemoryOptimized filegroup file ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '3) Alter inventory database with MemoryOptimized filegroup file';
 DECLARE @MemoryOptimizedObjectUsage bit = 1;
 if not exists (select * from sys.database_files where name = 'MemoryOptimized') and (@MemoryOptimizedObjectUsage = 1)
 	EXEC ('ALTER DATABASE CURRENT ADD FILE (name=''MemoryOptimized'', filename=''E:\Data\MemoryOptimized.ndf'') TO FILEGROUP MemoryOptimized');
 go
 
+/* ****** 4) Drop all self created tables ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '4) Drop all self created tables';
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[all_server_stable_info]') AND type in (N'U'))
 	DROP TABLE [dbo].[all_server_stable_info]
 GO
@@ -118,7 +136,11 @@ GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[alert_history_all_servers_last_actioned]') AND type in (N'U'))
 	DROP TABLE dbo.alert_history_all_servers_last_actioned
+GO
 
+/* ****** 5) Create table dbo.all_server_stable_info ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '5) Create table dbo.all_server_stable_info';
 DECLARE @_sql NVARCHAR(MAX);
 DECLARE @MemoryOptimizedObjectUsage bit = 1;
 
@@ -154,6 +176,9 @@ CREATE TABLE [dbo].[all_server_stable_info]
 EXEC (@_sql);
 GO
 
+/* ****** 6) Create table dbo.all_server_volatile_info ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '6) Create table dbo.all_server_volatile_info';
 DECLARE @_sql NVARCHAR(MAX);
 DECLARE @MemoryOptimizedObjectUsage bit = 1;
 
@@ -185,6 +210,11 @@ CREATE TABLE [dbo].[all_server_volatile_info]
 EXEC (@_sql);
 GO
 
+/* ****** 7) Create table dbo.all_server_collection_latency_info ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '7) Create table dbo.all_server_collection_latency_info';
+go
+
 CREATE TABLE [dbo].[all_server_collection_latency_info]
 (
 	[srv_name] [varchar](125) NOT NULL,
@@ -207,6 +237,11 @@ CREATE TABLE [dbo].[all_server_collection_latency_info]
 )
 GO
 
+/* ****** 8) Create table dbo.all_server_volatile_info_history ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '8) Create table dbo.all_server_volatile_info_history';
+go
+
 CREATE TABLE [dbo].[all_server_volatile_info_history]
 (
 	[collection_time] [datetime2] NULL default sysdatetime(),
@@ -228,6 +263,11 @@ CREATE TABLE [dbo].[all_server_volatile_info_history]
 	INDEX ci_all_server_volatile_info_history clustered ([collection_time],[srv_name])
 )
 GO
+
+/* ****** 9) Create table dbo.sql_agent_jobs_all_servers ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '9) Create table dbo.sql_agent_jobs_all_servers';
+go
 
 CREATE TABLE [dbo].[sql_agent_jobs_all_servers]
 (
@@ -277,6 +317,11 @@ CREATE TABLE [dbo].[sql_agent_jobs_all_servers]
 )
 GO
 
+/* ****** 10) Create table dbo.sql_agent_jobs_all_servers__staging ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '10) Create table dbo.sql_agent_jobs_all_servers__staging';
+go
+
 CREATE TABLE [dbo].[sql_agent_jobs_all_servers__staging]
 (
 	[sql_instance] [varchar](255) NOT NULL,
@@ -325,6 +370,11 @@ CREATE TABLE [dbo].[sql_agent_jobs_all_servers__staging]
 )
 GO
 
+/* ****** 11) Create table dbo.disk_space_all_servers ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '11) Create table dbo.disk_space_all_servers';
+go
+
 CREATE TABLE [dbo].[disk_space_all_servers]
 (
 	[sql_instance] [varchar](255) NOT NULL,	
@@ -343,6 +393,11 @@ CREATE TABLE [dbo].[disk_space_all_servers]
 )
 go
 
+/* ****** 12) Create table dbo.disk_space_all_servers__staging ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '12) Create table dbo.disk_space_all_servers__staging';
+go
+
 CREATE TABLE [dbo].[disk_space_all_servers__staging]
 (
 	[sql_instance] [varchar](255) NOT NULL,	
@@ -359,6 +414,11 @@ CREATE TABLE [dbo].[disk_space_all_servers__staging]
 
 	INDEX ci_disk_space_all_servers__staging CLUSTERED ([sql_instance])
 )
+go
+
+/* ****** 13) Create table dbo.log_space_consumers_all_servers ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '13) Create table dbo.log_space_consumers_all_servers';
 go
 
 CREATE TABLE [dbo].[log_space_consumers_all_servers]
@@ -395,6 +455,11 @@ CREATE TABLE [dbo].[log_space_consumers_all_servers]
 );
 go
 
+/* ****** 14) Create table dbo.log_space_consumers_all_servers__staging ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '14) Create table dbo.log_space_consumers_all_servers__staging';
+go
+
 CREATE TABLE [dbo].[log_space_consumers_all_servers__staging]
 (
 	[sql_instance] [varchar](255) NOT NULL,
@@ -429,6 +494,11 @@ CREATE TABLE [dbo].[log_space_consumers_all_servers__staging]
 );
 go
 
+/* ****** 15) Create table dbo.tempdb_space_usage_all_servers ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '15) Create table dbo.tempdb_space_usage_all_servers';
+go
+
 CREATE TABLE dbo.tempdb_space_usage_all_servers
 (	
 	[sql_instance] [varchar](255) NOT NULL,
@@ -448,6 +518,11 @@ CREATE TABLE dbo.tempdb_space_usage_all_servers
 );
 go
 
+/* ****** 16) Create table dbo.tempdb_space_usage_all_servers__staging ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '16) Create table dbo.tempdb_space_usage_all_servers__staging';
+go
+
 CREATE TABLE dbo.tempdb_space_usage_all_servers__staging
 (	
 	[sql_instance] [varchar](255) NOT NULL,
@@ -465,6 +540,11 @@ CREATE TABLE dbo.tempdb_space_usage_all_servers__staging
 
 	INDEX [CI_tempdb_space_usage_all_servers__staging] clustered ([sql_instance])
 );
+go
+
+/* ****** 17) Create table dbo.ag_health_state_all_servers ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '17) Create table dbo.ag_health_state_all_servers';
 go
 
 CREATE TABLE dbo.ag_health_state_all_servers
@@ -498,6 +578,11 @@ CREATE TABLE dbo.ag_health_state_all_servers
 );
 go
 
+/* ****** 18) Create table dbo.ag_health_state_all_servers__staging ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '18) Create table dbo.ag_health_state_all_servers__staging';
+go
+
 CREATE TABLE dbo.ag_health_state_all_servers__staging
 (	
 	[sql_instance] [varchar](255) not null,
@@ -529,6 +614,9 @@ CREATE TABLE dbo.ag_health_state_all_servers__staging
 );
 go
 
+/* ****** 19) Add dbo.purge_table entry for dbo.all_server_volatile_info_history ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '19) Add dbo.purge_table entry for dbo.all_server_volatile_info_history';
 if not exists (select 1 from dbo.purge_table where table_name = 'dbo.all_server_volatile_info_history')
 begin
 	insert dbo.purge_table
@@ -540,6 +628,10 @@ begin
 			reference = 'SQLMonitor Data Collection'
 end
 go
+
+/* ****** 20) Create procedure dbo.usp_populate__all_server_volatile_info_history ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '20) Create procedure dbo.usp_populate__all_server_volatile_info_history';
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_NAME = 'usp_populate__all_server_volatile_info_history')
     EXEC ('CREATE PROC dbo.usp_populate__all_server_volatile_info_history AS SELECT ''stub version, to be replaced''')
@@ -561,6 +653,10 @@ BEGIN
 	from dbo.all_server_volatile_info vi
 END
 go
+
+/* ****** 21) Create view dbo.vw_all_server_info ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '21) Create view dbo.vw_all_server_info';
 
 if OBJECT_ID('dbo.vw_all_server_info') is null
 	exec ('create view dbo.vw_all_server_info as select 1 as dummy;');
@@ -605,6 +701,10 @@ BEGIN
 END
 GO
 
+/* ****** 22) Alter multiple tables and add few columns ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '22) Alter multiple tables and add few columns';
+
 if not exists (select * from sys.columns c where c.object_id = OBJECT_ID('dbo.instance_details') and c.name = 'is_available')
     alter table dbo.instance_details add [is_available] bit NOT NULL default 1;
 go
@@ -622,6 +722,11 @@ if not exists (select * from sys.columns c where c.object_id = OBJECT_ID('dbo.in
 go
 if not exists (select * from sys.columns c where c.object_id = OBJECT_ID('dbo.instance_details') and c.name = 'is_linked_server_working')
     alter table dbo.instance_details add [is_linked_server_working] bit NOT NULL default 1;
+go
+
+/* ****** 23) Create table dbo.instance_details_history ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '23) Create table dbo.instance_details_history';
 go
 
 if OBJECT_ID('dbo.instance_details_history') is null
@@ -657,6 +762,11 @@ begin
 		index CI_instance_details_history clustered (action_time)
 	);
 end
+go
+
+/* ****** 24) Create trigger tgr_dml__instance_details on dbo.instance_details ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '24) Create trigger tgr_dml__instance_details on dbo.instance_details';
 go
 
 -- drop trigger [dbo].[tgr_dml__instance_details] on dbo.instance_details
@@ -798,6 +908,11 @@ begin
 end
 go
 
+/* ****** 25) Create trigger tgr_dml__instance_details__prevent_bulk_udpate on dbo.instance_details ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '25) Create trigger tgr_dml__instance_details__prevent_bulk_udpate on dbo.instance_details';
+go
+
 -- drop trigger [dbo].[tgr_dml__instance_details__prevent_bulk_udpate] on dbo.instance_details
 create or alter trigger dbo.tgr_dml__instance_details__prevent_bulk_udpate
 	on dbo.instance_details
@@ -855,6 +970,10 @@ begin
 end
 go
 
+/* ****** 26) Add dbo.purge_table entry for dbo.instance_details_history ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '26) Add dbo.purge_table entry for dbo.instance_details_history';
+go
 insert dbo.purge_table (table_name, date_key, retention_days, purge_row_size, reference)
 select	table_name, date_key, retention_days, purge_row_size = 100000, reference = 'Login Expiry Infra'
 from ( values 
@@ -864,7 +983,10 @@ where 1=1
 and not exists (select * from dbo.purge_table pt where pt.table_name = login_expiry_infra_tables.table_name)
 go
 
-
+/* ****** 27) Create table dbo.backups_all_servers ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '27) Create table dbo.backups_all_servers';
+go
 CREATE TABLE [dbo].[backups_all_servers]
 (
 	[sql_instance] [varchar](255) not null,
@@ -893,6 +1015,10 @@ CREATE TABLE [dbo].[backups_all_servers]
 ) ON [PRIMARY]
 GO
 
+/* ****** 28) Create table dbo.backups_all_servers__staging ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '28) Create table dbo.backups_all_servers__staging';
+go
 CREATE TABLE [dbo].[backups_all_servers__staging]
 (
 	[sql_instance] [varchar](255) not null,
@@ -921,6 +1047,10 @@ CREATE TABLE [dbo].[backups_all_servers__staging]
 ) ON [PRIMARY]
 GO
 
+/* ****** 29) Create table dbo.services_all_servers ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '29) Create table dbo.services_all_servers';
+go
 CREATE TABLE [dbo].[services_all_servers]
 (
 	[sql_instance] [varchar](255) NOT NULL,
@@ -941,6 +1071,10 @@ CREATE TABLE [dbo].[services_all_servers]
 ) ON [PRIMARY]
 GO
 
+/* ****** 30) Create table dbo.services_all_servers__staging ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '30) Create table dbo.services_all_servers__staging';
+go
 CREATE TABLE [dbo].[services_all_servers__staging]
 (
 	[sql_instance] [varchar](255) NOT NULL,
@@ -960,6 +1094,10 @@ CREATE TABLE [dbo].[services_all_servers__staging]
 ) ON [PRIMARY]
 GO
 
+/* ****** 31) Create table dbo.alert_history_all_servers ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '31) Create table dbo.alert_history_all_servers';
+go
 create table [dbo].[alert_history_all_servers]
 (
 	[collection_time_utc] [datetime2](7) NOT NULL,	
@@ -976,6 +1114,10 @@ create table [dbo].[alert_history_all_servers]
 ) on ps_dba_datetime2_daily ([collection_time_utc]);
 go
 
+/* ****** 32) Add dbo.purge_table entry for dbo.alert_history_all_servers ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '32) Add dbo.purge_table entry for dbo.alert_history_all_servers';
+go
 if not exists (select 1 from dbo.purge_table where table_name = 'dbo.alert_history_all_servers')
 begin
 	insert dbo.purge_table
@@ -988,6 +1130,10 @@ begin
 end
 go
 
+/* ****** 33) Create table dbo.sent_alert_history_all_servers ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '33) Create table dbo.sent_alert_history_all_servers';
+go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sent_alert_history_all_servers]') AND type in (N'U'))
 BEGIN
 	create table dbo.sent_alert_history_all_servers
@@ -996,7 +1142,53 @@ BEGIN
 END
 go
 
+/* ****** 34) Create table dbo.alert_history_all_servers_last_actioned ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '34) Create table dbo.alert_history_all_servers_last_actioned';
+go
 create table dbo.alert_history_all_servers_last_actioned
 (	updated_time_utc datetime2 not null  );
 go
 
+
+/* ****** 35) Create table dbo.sma_errorlog ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '35) Create table dbo.sma_errorlog';
+go
+-- drop table [dbo].[sma_errorlog]
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sma_errorlog]') AND type in (N'U'))
+BEGIN
+	create table [dbo].[sma_errorlog]
+	( 	[collection_time] datetime2 not null default sysdatetime(), 
+		[function_name] varchar(125) not null, 
+		[function_call_arguments] varchar(1000) null, 
+		[server] varchar(125) null,
+		[error] varchar(1000) not null, 
+		[is_resolved] bit not null default 0,
+		[remark] varchar(1000) null,
+		[executed_by] varchar(125) not null default SUSER_NAME(),
+		[executor_program_name] varchar(125) not null default program_name()
+
+		,index [ci_sma_errorlog] clustered ([collection_time])
+	)
+END
+go
+
+/* ****** 36) Create table dbo.sma_params ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '36) Create table dbo.sma_params';
+go
+--drop table dbo.sma_params
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sma_errorlog]') AND type in (N'U'))
+BEGIN
+	create table dbo.sma_params
+	(	param_key varchar(125) not null,
+		param_value varchar(500) not null,
+		created_date datetime2 not null default sysdatetime(),
+		created_by datetime2 not null default suser_name(),
+		remarks varchar(2000) null
+
+		,constraint pk_sma_params primary key clustered (param_key)
+	);
+END
+go

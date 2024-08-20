@@ -27,17 +27,16 @@ go
 	9) Create table dbo.sma_applications
 	10) Create table dbo.sma_applications_server_xref
 	11) Create table dbo.sma_applications_database_xref
-	12) Create table dbo.sma_errorlog
-	13) Create view dbo.sma_sql_servers	& dbo.sma_sql_servers_including_offline
-	14) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers
-	15) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers
-	16) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications
-	17) Create table dbo.login_email_mapping
-	18) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping
-	19) Create table dbo.all_server_login_expiry_info
-	20) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails]
-	21) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails]
-	22) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance]
+	12) Create view dbo.sma_sql_servers	& dbo.sma_sql_servers_including_offline
+	13) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers
+	14) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers
+	15) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications
+	16) Create table dbo.login_email_mapping
+	17) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping
+	18) Create table dbo.all_server_login_expiry_info
+	29) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails]
+	20) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails]
+	21) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance]
 
 */
 
@@ -431,27 +430,7 @@ with (system_versioning = on (history_table = dbo.sma_applications_database_xref
 go
 
 
-
-/* ***** 12) Create table dbo.sma_errorlog ***************************** */
--- drop table [dbo].[sma_errorlog]
-create table [dbo].[sma_errorlog]
-( 	[collection_time] datetime2 not null default sysdatetime(), 
-    [function_name] varchar(125) not null, 
-	[function_call_arguments] varchar(1000) null, 
-	[server] varchar(125) null,
-	[error] varchar(1000) not null, 
-	[is_resolved] bit not null default 0,
-    [remark] varchar(1000) null,
-	[executed_by] varchar(125) not null default SUSER_NAME(),
-	[executor_program_name] varchar(125) not null default program_name()
-
-	,index [ci_sma_errorlog] clustered ([collection_time])
-)
-go
-
-
-
-/*	***** 13) Create view dbo.sma_sql_servers & dbo.sma_sql_servers_including_offline **************************** */
+/*	***** 12) Create view dbo.sma_sql_servers & dbo.sma_sql_servers_including_offline **************************** */
 create or alter view dbo.sma_sql_servers
 as
 select	server = case when s.server = 'ATPR0SVDNTRY160' then '10.253.33.160' else s.server end, 
@@ -602,7 +581,7 @@ where 1=1
 go
 
 
-/* ***** 14) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers ***************************** */
+/* ***** 13) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers ***************************** */
 -- drop trigger dbo.tgr_dml__fk_validation_sma_servers__server;
 create or alter trigger dbo.tgr_dml__fk_validation_sma_servers__server
 	on dbo.sma_servers
@@ -621,7 +600,7 @@ begin
 end
 go
 
-/* ***** 15) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers ***************************** */
+/* ***** 14) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers ***************************** */
 create or alter trigger dbo.tgr_dml__sma_servers__server_owner_email__validation
 	on dbo.sma_servers
 	for insert, update
@@ -651,7 +630,7 @@ end
 go
 
 
-/* ***** 16) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications ***************************** */
+/* ***** 15) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications ***************************** */
 create or alter trigger dbo.tgr_dml__sma_applications__email__validation
 	on dbo.sma_applications
 	for insert, update
@@ -688,7 +667,7 @@ end
 go
 
 
-/* ***** 17) Create table dbo.login_email_mapping ***************************** */
+/* ***** 15) Create table dbo.login_email_mapping ***************************** */
 -- drop table [dbo].[login_email_mapping]
 create table dbo.login_email_mapping
 (
@@ -710,7 +689,7 @@ create table dbo.login_email_mapping
 go
 
 
-/* ***** 18) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping ***************************** */
+/* ***** 17) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping ***************************** */
 create or alter trigger dbo.tgr_dml__login_email_mapping__email__validation
 	on dbo.login_email_mapping
 	for insert, update
@@ -740,7 +719,7 @@ end
 go
 
 
-/* ***** 19) Create table dbo.all_server_login_expiry_info ***************************** */
+/* ***** 18) Create table dbo.all_server_login_expiry_info ***************************** */
 -- drop table dbo.all_server_login_expiry_info
 CREATE TABLE dbo.all_server_login_expiry_info
 (
@@ -767,7 +746,7 @@ CREATE TABLE dbo.all_server_login_expiry_info
 go
 
 
-/* ***** 20) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails] ***************************** */
+/* ***** 19) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails] ***************************** */
 create table dbo.server_login_expiry_collection_computed
 (	sql_instance varchar(125) not null,
 	collection_time_latest datetime2 not null,
@@ -780,7 +759,7 @@ create table dbo.server_login_expiry_collection_computed
 go
 
 
-/* ***** 21) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails] ***************************** */
+/* ***** 20) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails] ***************************** */
 create table dbo.all_server_login_expiry_info_dashboard
 (
 	[collection_time] [datetime2](7) NOT NULL,
@@ -802,7 +781,7 @@ create table dbo.all_server_login_expiry_info_dashboard
 go
 
 
-/* ***** 22) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance] ***************************** */
+/* ***** 21) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance] ***************************** */
 --drop table dbo.sma_servers_logs
 create table dbo.sma_servers_logs
 (	id int identity(1,1) not null,

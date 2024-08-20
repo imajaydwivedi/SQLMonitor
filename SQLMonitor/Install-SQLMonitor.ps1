@@ -217,11 +217,12 @@ Param (
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-08-17'
-$sqlmonitorVersionDate = '2024-Aug-17'
+$sqlmonitorVersion = '2024-08-20'
+$sqlmonitorVersionDate = '2024-Aug-20'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 <#
     v2024-Sep-30
+        -> Issue#10 - Work on SQLMonitor Alerting
         -> Issue#50 - Add switch to create tsql script jobs as TSQL Step type
         -> Issue#44 - Copy grafana login from Inventory to keep same SID
         -> Issue$43 - Add avg_disk_wait_ms
@@ -1885,7 +1886,14 @@ if($stepName -in $Steps2Execute)
         $memoryOptimizedFilePath = if($dbaDatabaseParentPath -notmatch '\\$') { "$dbaDatabaseParentPath\MemoryOptimized.ndf" } else { "$($dabaDatabaseParentPath)MemoryOptimized.ndf" }
         #$InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('E:\Data\MemoryOptimized.ndf', "$(Join-Path $dbaDatabaseParentPath 'MemoryOptimized.ndf')")
         $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('E:\Data\MemoryOptimized.ndf', $memoryOptimizedFilePath)
-        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $InventorySpecificObjectsFileText -EnableException
+        
+
+        if($verbose -or $debug) {
+            $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $InventorySpecificObjectsFileText -EnableException -MessagesToOutput | Write-Verbose
+        }
+        else {
+            $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $InventorySpecificObjectsFileText -EnableException
+        }
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCaptureAlertMessagesFilePath = '$UspCaptureAlertMessagesFilePath'"
