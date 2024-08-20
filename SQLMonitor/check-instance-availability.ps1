@@ -3,12 +3,16 @@ Param (
     # Set SQL Server where data should be saved
     [Parameter(Mandatory=$false)]
     $InventoryServer = 'localhost',
-
     [Parameter(Mandatory=$false)]
     $InventoryDatabase = 'DBA',
-
     [Parameter(Mandatory=$false)]
-    $Threads = 4
+    $Threads = 4,
+    [Parameter(Mandatory=$false)]
+    [bool]$SkipNotOnBoardedServers = $false,
+    [Parameter(Mandatory=$false)]
+    [String]$ClientAppName = "check-instance-availability.ps1",
+    [Parameter(Mandatory=$false)]
+    [String]$JobName = "(dba) Check-InstanceAvailability"
 )
 
 $modulePath = [Environment]::GetEnvironmentVariable('PSModulePath')
@@ -20,9 +24,10 @@ Import-Module PoshRSJob -WarningAction Continue;
 
 $ErrorActionPreference = 'Stop'
 $currentTime = Get-Date
+$ClientAppName = "check-instance-availability.ps1"
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] Create connection for '$InventoryServer'.."
-$conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database master -ClientName "check-instance-availability.ps1" -TrustServerCertificate -EncryptConnection
+$conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database master -ClientName $ClientAppName -TrustServerCertificate -EncryptConnection
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Get all SQLInstances in SQLMonitor server [$InventoryServer].[dbo].[instance_details].."
 $sqlSupportedInstances = @"
@@ -42,6 +47,12 @@ $username = "grafana"
 $password = ConvertTo-SecureString "grafana" -AsPlainText -Force
 $sqlCredential = New-Object System.Management.Automation.PSCredential -ArgumentList ($username, $password)
 
+$sqlAddErrorLogEntry = @"
+insert dbo.sma_errorlog
+(function_name, function_call_arguments, server, error, executor_program_name)
+select @function_name, @function_call_arguments, @server, @error, @executor_program_name
+"@
+
 # Loop through each SQLInstance
 $blockGetServerHealth = {
     $sqlInstanceDetails = $_;
@@ -56,7 +67,7 @@ $blockGetServerHealth = {
     #"`$sqlInstance => $sqlInstance"
 
     Import-Module dbatools
-    $conSqlInstanceWithPort = Connect-DbaInstance -SqlInstance $sqlInstanceWithPort -Database master -ClientName "check-instance-availability.ps1" -SqlCredential $Using:sqlCredential -TrustServerCertificate -EncryptConnection
+    $conSqlInstanceWithPort = Connect-DbaInstance -SqlInstance $sqlInstanceWithPort -Database master -ClientName $ClientAppName -SqlCredential $Using:sqlCredential -TrustServerCertificate -EncryptConnection
     $conSqlInstanceWithPort | Invoke-DbaQuery -Database $database -Query "select [sql_instance] = '$sqlInstance', [database] = db_name();" -EnableException;
 }
 
@@ -114,9 +125,39 @@ if($jobs_exception.Count -gt 0 ) {
         $jobErrMessage += "`nError Message for server [$($job.Name)] => `n`n$($job.Error | Out-String)"
         $jobErrMessage += "$("_"*20)`n`n" | Write-Output
         $jobErrMessages.Add($jobErrMessage) | Out-Null;
+
+        Write-Debug "Inside failed job loop"
+
+        $exceptionMessage = $job.Error.Exception.Message
+        $garbageText = 'Exception calling "EndInvoke" with "1" argument(s): '
+        $errorParams = [ordered]@{
+            function_name = $ClientAppName
+            function_call_arguments = 'Failed-Jobs'
+            server = $job.Name
+            error = $exceptionMessage.Replace($garbageText,'')
+            executor_program_name = $JobName
+        }
+        "{0} {1,-10} {2}" -f "($((Get-Date).ToString('yyyy-MM-dd HH:mm:ss')))","(INFO)","Marking an entry in error log table dbo.sma_errorlog.." | Write-Output
+        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddErrorLogEntry `
+                    -EnableException -ErrorAction Stop -SqlParameter $errorParams
+        
     }
     $errMessage += ($jobErrMessages -join '')
     #throw $errMessage
+
+    foreach($job in $jobs_timedout) {
+        #$exceptionMessage = $job.Error.Exception.Message
+        #$garbageText = 'Exception calling "EndInvoke" with "1" argument(s): '
+        $errorParams = @{
+            function_name = $ClientAppName
+            function_call_arguments = 'TimedOut-Jobs'
+            server = $job.Name
+            error = 'Query Timed Out'
+            executor_program_name = $JobName
+        }
+        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddErrorLogEntry `
+                    -EnableException -ErrorAction Stop -SqlParameter $errorParams
+    }
 }
 $jobs | Remove-RSJob -Verbose:$false
 

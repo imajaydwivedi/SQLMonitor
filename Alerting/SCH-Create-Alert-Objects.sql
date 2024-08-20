@@ -222,7 +222,7 @@ create table [dbo].[sma_process_logs]
 	[executor_program_name] varchar(125) not null default program_name(),
 	[process_end_time_utc] datetime2
 
-	,index [ci_sma_errorlog] clustered ([process_start_time_utc])
+	,index [ci_sma_process_logs] clustered ([process_start_time_utc])
 	,index [process_name] nonclustered ([process_name],[process_start_time_utc])
 )
 go
