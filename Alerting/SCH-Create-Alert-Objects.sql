@@ -174,27 +174,27 @@ create index ix_sma_alert__alert_key__active on [dbo].[sma_alert]
 go
 
 
-/* ***** 8) Create table dbo.sma_alert_history ***************************** */
+/* ***** 6) Create table dbo.sma_alert_history ***************************** */
 -- drop table [dbo].[sma_alert_history]
 create table [dbo].[sma_alert_history]
-(	[log_time] datetime2 not null default sysutcdatetime(),
+(	[log_time_utc] datetime2 not null default sysutcdatetime(),
 	[alert_id] bigint not null,
-	[alert_id_part_no] bigint not null,
+	--[alert_id_part_no] bigint not null,
+	[alert_id_part_no] as [alert_id] % 10 persisted,
 	[logger] varchar(125) not null,
 	[header] varchar(500) not null,
 	[description] nvarchar(max) null
 
-	,index ci_sma_alert_history clustered ([log_time]) on ps_dba_datetime2_daily ([log_time])
-	,index [alert_id__log_time] ([alert_id], [log_time]) on ps_dba_datetime2_daily ([log_time])
+	,index ci_sma_alert_history clustered ([log_time_utc]) on ps_dba_datetime2_daily ([log_time_utc])
+	,index [alert_id__log_time] ([alert_id], [log_time_utc]) on ps_dba_datetime2_daily ([log_time_utc])
 	
 	--,constraint fk_alert_id foreign key ([alert_id],[alert_id_part_no]) references [dbo].[sma_alert] (id, id_part_no)
 ) 
-on ps_dba_datetime2_daily ([log_time])
+on ps_dba_datetime2_daily ([log_time_utc])
 go
 
 
-
-/* ***** 9) Create table dbo.sma_alert_affected_servers ***************************** */
+/* ***** 7) Create table dbo.sma_alert_affected_servers ***************************** */
 -- drop table dbo.sma_alert_affected_servers
 create table [dbo].[sma_alert_affected_servers]
 (
@@ -207,4 +207,21 @@ create table [dbo].[sma_alert_affected_servers]
 go
 
 
+/* ***** 8) Create table dbo.sma_alert_affected_servers ***************************** */
+-- drop table dbo.sma_alert_affected_servers
+create table [dbo].[sma_process_logs]
+(
+	[process_start_time_utc] datetime2 not null default sysutcdatetime(),
+	[process_name] varchar(255) not null, 
+	[process_call_arguments] varchar(1000) null, 
+	[process_unique_key] varchar(255) null,
+	[server] varchar(125) null,
+    [remark] varchar(1000) null,
+	[executed_by] varchar(125) not null default SUSER_NAME(),
+	[executor_program_name] varchar(125) not null default program_name(),
+	[process_end_time_utc] datetime2
 
+	,index [ci_sma_errorlog] clustered ([process_start_time_utc])
+	,index [process_name] nonclustered ([process_name],[process_start_time_utc])
+)
+go
