@@ -2,8 +2,8 @@ use DBA
 go
 
 /*
-	Version -> 2024-08-19
-	2024-08-19 - #10 - Setup Alert Engine Using Python+SQLServer
+	Version -> 2024-08-20
+	2024-08-20 - #10 - Setup Alert Engine Using Python+SQLServer
 	-----------------
 
 	https://github.com/imajaydwivedi/SQLMonitor/issues/10
@@ -17,12 +17,13 @@ go
 	-----------------------------
 	1) Create table dbo.sma_oncall_teams
 	2) Create table dbo.sma_oncall_schedule
-	4) Create table dbo.sma_errorlog
-	5) Create table dbo.sma_alert_rules
-	6) Create sequence object dbo.sma_alert_sequence
-	7) Create table dbo.sma_alert	
-	8) Create table dbo.sma_alert_history
-	9) Create table dbo.sma_alert_affected_servers
+	3) Create table dbo.sma_alert_rules
+	4) Create sequence object dbo.sma_alert_sequence
+	5) Create table dbo.sma_alert
+	6) Create table dbo.sma_alert_history
+	7) Create table dbo.sma_alert_affected_servers
+	8) Create table dbo.sma_process_logs
+
 */
 
 IF DB_NAME() = 'master'
@@ -207,8 +208,8 @@ create table [dbo].[sma_alert_affected_servers]
 go
 
 
-/* ***** 8) Create table dbo.sma_alert_affected_servers ***************************** */
--- drop table dbo.sma_alert_affected_servers
+/* ***** 8) Create table dbo.sma_process_logs ***************************** */
+-- drop table dbo.sma_process_logs
 create table [dbo].[sma_process_logs]
 (
 	[process_start_time_utc] datetime2 not null default sysutcdatetime(),

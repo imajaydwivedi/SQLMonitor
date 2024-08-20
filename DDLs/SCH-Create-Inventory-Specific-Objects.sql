@@ -12,8 +12,45 @@
 
 	*** Steps in this Script ****
 	-----------------------------
-	12) Create table dbo.sma_errorlog
-	/* ***** 22) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance] ***************************** */
+	1) Alter inventory database with [MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT]
+	2) Alter inventory database with MemoryOptimized filegroup
+	3) Alter inventory database with MemoryOptimized filegroup file
+	4) Drop all self created tables
+	5) Create table dbo.all_server_stable_info
+	6) Create table dbo.all_server_volatile_info
+	7) Create table dbo.all_server_collection_latency_info
+	8) Create table dbo.all_server_volatile_info_history
+	9) Create table dbo.sql_agent_jobs_all_servers
+	10) Create table dbo.sql_agent_jobs_all_servers__staging
+	11) Create table dbo.disk_space_all_servers
+	12) Create table dbo.disk_space_all_servers__staging
+	13) Create table dbo.log_space_consumers_all_servers
+	14) Create table dbo.log_space_consumers_all_servers__staging
+	15) Create table dbo.tempdb_space_usage_all_servers
+	16) Create table dbo.tempdb_space_usage_all_servers__staging
+	17) Create table dbo.ag_health_state_all_servers
+	18) Create table dbo.ag_health_state_all_servers__staging
+	19) Add dbo.purge_table entry for dbo.all_server_volatile_info_history
+	20) Create procedure dbo.usp_populate__all_server_volatile_info_history
+	21) Create view dbo.vw_all_server_info
+	22) Alter multiple tables and add few columns
+	23) Create table dbo.instance_details_history
+	24) Create trigger tgr_dml__instance_details on dbo.instance_details
+	25) Create trigger tgr_dml__instance_details__prevent_bulk_udpate on dbo.instance_details
+	26) Add dbo.purge_table entry for dbo.instance_details_history
+	27) Create table dbo.backups_all_servers
+	28) Create table dbo.backups_all_servers__staging
+	29) Create table dbo.services_all_servers
+	30) Create table dbo.services_all_servers__staging
+	31) Create table dbo.alert_history_all_servers
+	32) Add dbo.purge_table entry for dbo.alert_history_all_servers
+	33) Create table dbo.sent_alert_history_all_servers
+	34) Create table dbo.alert_history_all_servers_last_actioned
+	35) Create table dbo.sma_errorlog
+	36) Add dbo.purge_table entry for dbo.sma_errorlog
+	37) Create table dbo.sma_params
+
+
 */
 
 IF APP_NAME() = 'Microsoft SQL Server Management Studio - Query'
@@ -1174,9 +1211,25 @@ BEGIN
 END
 go
 
-/* ****** 36) Create table dbo.sma_params ******* */
+/* ****** 36) Add dbo.purge_table entry for dbo.sma_errorlog ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '36) Create table dbo.sma_params';
+	print '36) Add dbo.purge_table entry for dbo.sma_errorlog';
+go
+if not exists (select 1 from dbo.purge_table where table_name = 'dbo.sma_errorlog')
+begin
+	insert dbo.purge_table
+	(table_name, date_key, retention_days, purge_row_size, reference)
+	select	table_name = 'dbo.sma_errorlog', 
+			date_key = 'collection_time', 
+			retention_days = 30, 
+			purge_row_size = 100000,
+			reference = 'SQLMonitor Data Collection'
+end
+go
+
+/* ****** 37) Create table dbo.sma_params ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '37) Create table dbo.sma_params';
 go
 --drop table dbo.sma_params
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sma_errorlog]') AND type in (N'U'))

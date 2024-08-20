@@ -745,6 +745,19 @@ CREATE TABLE dbo.all_server_login_expiry_info
 );
 go
 
+-- Add dbo.purge_table entry for dbo.all_server_login_expiry_info
+if not exists (select 1 from dbo.purge_table where table_name = 'dbo.all_server_login_expiry_info')
+begin
+	insert dbo.purge_table
+	(table_name, date_key, retention_days, purge_row_size, reference)
+	select	table_name = 'dbo.all_server_login_expiry_info', 
+			date_key = 'collection_time', 
+			retention_days = 30, 
+			purge_row_size = 100000,
+			reference = 'SQLMonitor Data Collection'
+end
+go
+
 
 /* ***** 19) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails] ***************************** */
 create table dbo.server_login_expiry_collection_computed
