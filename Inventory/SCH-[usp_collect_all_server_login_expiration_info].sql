@@ -39,6 +39,12 @@ BEGIN
 			@_errorState int,
 			@_errorLine int,
 			@_errorMessage nvarchar(4000);
+	DECLARE @_caller_program nvarchar(255);
+
+	set @_caller_program = case when HOST_NAME() like '(dba) Get-AllServerInfo%'
+								then HOST_NAME()
+								else PROGRAM_NAME()
+								end;
 
 	if @verbose >= 1
 		print 'Declare variables..'
@@ -151,7 +157,7 @@ BEGIN
 			([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
 			select	[collection_time] = @_start_time, [function_name] = 'usp_collect_all_server_login_expiration_info', 
 					[function_call_arguments] = '', [server] = @_sql_Instance, [error] = @_errorMessage, 
-					[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = program_name();
+					[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 		END CATCH
 
 		FETCH NEXT FROM curServers INTO @_sql_Instance;
