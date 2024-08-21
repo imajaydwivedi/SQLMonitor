@@ -71,3 +71,4 @@ GO
 
 EXEC msdb.dbo.sp_start_job @job_name='(dba) Get-AllServerDashboardMail'
 go
+

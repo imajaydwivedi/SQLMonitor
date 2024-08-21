@@ -31,36 +31,6 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
-        <FileNode Name="SCH-[usp_collect_all_server_login_expiration_info].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SCH-[usp_collect_all_server_login_expiration_info].sql</FullPath>
-        </FileNode>
-        <FileNode Name="SCH-[usp_populate_sma_servers].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SCH-[usp_populate_sma_servers].sql</FullPath>
-        </FileNode>
-        <FileNode Name="SCH-[usp_send_login_expiry_emails_owners].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SCH-[usp_send_login_expiry_emails_owners].sql</FullPath>
-        </FileNode>
-        <FileNode Name="SCH-[usp_wrapper_populate_sma_sql_instance].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SCH-[usp_wrapper_populate_sma_sql_instance].sql</FullPath>
-        </FileNode>
-        <FileNode Name="SCH-Inventory-Tables.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SCH-Inventory-Tables.sql</FullPath>
-        </FileNode>
         <FileNode Name="SCH-Job-[(dba) Collect Login Expiration Info].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -73,15 +43,9 @@
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Populate Inventory Tables].sql</FullPath>
         </FileNode>
-        <FileNode Name="SCH-Job-[Update-SQLMonitorDashboardIPAddress].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>SCH-Job-[Update-SQLMonitorDashboardIPAddress].sql</FullPath>
-        </FileNode>
         <FileNode Name="SCH-Job-[Update-SQLMonitorIPAddress].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[Update-SQLMonitorIPAddress].sql</FullPath>
         </FileNode>

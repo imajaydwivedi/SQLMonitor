@@ -5,7 +5,7 @@ Param (
     [String]$Action = "AddStep",
 
     [Parameter(Mandatory=$false)]
-    [String]$StepName = "33__CreateSQLAgentAlerts",
+    [String]$StepName = "42__CreateJobSendLoginExpiryEmails",
     
     [Parameter(Mandatory=$false)]
     [String[]]$AllSteps = @( "1__sp_WhoIsActive", "2__AllDatabaseObjects", "3__XEventSession",
@@ -21,9 +21,10 @@ Param (
                 "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
                 "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
                 "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
-                "40__WhoIsActivePartition", "41__BlitzIndexPartition", "42__BlitzPartition",
-                "43__EnablePageCompression", "44__GrafanaLogin", "45__LinkedServerOnInventory",
-                "46__LinkedServerForDataDestinationInstance", "47__AlterViewsForDataDestinationInstance"
+                "40__CreateJobCollectLoginExpirationInfo", "41__CreateJobPopulateInventoryTables", "42__CreateJobSendLoginExpiryEmails",
+                "43__WhoIsActivePartition", "44__BlitzIndexPartition", "45__BlitzPartition",
+                "46__EnablePageCompression", "47__GrafanaLogin", "48__LinkedServerOnInventory",
+                "49__LinkedServerForDataDestinationInstance", "50__AlterViewsForDataDestinationInstance"
                 ),
 
     [Parameter(Mandatory=$false)]
@@ -31,7 +32,7 @@ Param (
 
     [Parameter(Mandatory=$false)]
     [String]$ScriptFile = #'E:\GitHub-Personal\SQLMonitor\SQLMonitor\Remove-SQLMonitor.ps1'
-                          'E:\GitHub\SQLMonitor\SQLMonitor\Install-SQLMonitor.ps1'
+                          'D:\GitHub-Personal\SQLMonitor\SQLMonitor\Install-SQLMonitor.ps1'
 )
 
 cls

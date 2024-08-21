@@ -8,9 +8,10 @@ GO
 BEGIN TRANSACTION
 DECLARE @ReturnCode INT
 SELECT @ReturnCode = 0
-IF NOT EXISTS (SELECT name FROM msdb.dbo.syscategories WHERE name=N'(dba) Monitoring & Alerting' AND category_class=1)
+
+IF NOT EXISTS (SELECT name FROM msdb.dbo.syscategories WHERE name=N'(dba) SQLMonitor' AND category_class=1)
 BEGIN
-EXEC @ReturnCode = msdb.dbo.sp_add_category @class=N'JOB', @type=N'LOCAL', @name=N'(dba) Monitoring & Alerting'
+EXEC @ReturnCode = msdb.dbo.sp_add_category @class=N'JOB', @type=N'LOCAL', @name=N'(dba) SQLMonitor'
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
 END
@@ -24,8 +25,9 @@ EXEC @ReturnCode =  msdb.dbo.sp_add_job @job_name=N'(dba) Collect Login Expirati
 		@notify_level_page=0, 
 		@delete_level=0, 
 		@description=N'This job collects all info about SQL Server logins that are active on all servers, and populates them on dbo.all_server_login_expiry_info', 
-		@category_name=N'(dba) Monitoring & Alerting', 
-		@owner_login_name=N'sa', @job_id = @jobId OUTPUT
+		@category_name=N'(dba) SQLMonitor', 
+		--@owner_login_name=N'sa', 
+		@job_id = @jobId OUTPUT
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
 EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_collect_all_server_login_expiration_info', 
@@ -37,10 +39,9 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_
 		@on_fail_step_id=0, 
 		@retry_attempts=0, 
 		@retry_interval=0, 
-		@os_run_priority=0, @subsystem=N'TSQL', 
-		@command=N'exec dbo.usp_collect_all_server_login_expiration_info', 
-		@database_name=N'DBA', 
-		@flags=12
+		@os_run_priority=0, @subsystem=N'CmdExec', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Collect Login Expiration Info" -d DBA -Q "EXEC dbo.usp_collect_all_server_login_expiration_info @execute = 1, @verbose = 0;"', 
+		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
@@ -55,7 +56,8 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobschedule @job_id=@jobId, @name=N'(dba) Col
 		@active_start_date=20240721, 
 		@active_end_date=99991231, 
 		@active_start_time=80000, 
-		@active_end_time=235959
+		@active_end_time=235959 
+		--,@schedule_uid=N'ac8e6451-c54f-47ba-8ee0-08ce7ea0e257'
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_add_jobserver @job_id = @jobId, @server_name = N'(local)'
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
@@ -66,4 +68,5 @@ QuitWithRollback:
 EndSave:
 GO
 
-
+EXEC msdb.dbo.sp_start_job @job_name='(dba) Collect Login Expiration Info'
+go

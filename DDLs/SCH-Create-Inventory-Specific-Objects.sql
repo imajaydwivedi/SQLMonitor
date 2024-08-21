@@ -1282,13 +1282,10 @@ go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_servers') AND type in (N'U'))
 BEGIN	
 	/*
-		ALTER TABLE dbo.sma_servers SET ( SYSTEM_VERSIONING = OFF)
-		go
-		drop table dbo.sma_servers
-		go
-		drop table dbo.sma_servers_history
-		go
-	*/	
+		ALTER TABLE dbo.sma_servers SET ( SYSTEM_VERSIONING = OFF);
+		drop table dbo.sma_servers;
+		drop table dbo.sma_servers_history;
+	*/
 	create table dbo.sma_servers
 	(
 		[server] varchar(125) not null,
@@ -1337,12 +1334,9 @@ go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_sql_server_extended_info') AND type in (N'U'))
 BEGIN	
 	/*
-		ALTER TABLE dbo.sma_sql_server_extended_info SET ( SYSTEM_VERSIONING = OFF)
-		go
-		drop table dbo.sma_sql_server_extended_info
-		go
-		drop table dbo.sma_sql_server_extended_info_history
-		go
+		ALTER TABLE dbo.sma_sql_server_extended_info SET ( SYSTEM_VERSIONING = OFF);
+		drop table dbo.sma_sql_server_extended_info;
+		drop table dbo.sma_sql_server_extended_info_history;
 	*/
 	create table dbo.sma_sql_server_extended_info
 	(
@@ -1397,12 +1391,9 @@ IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_
 BEGIN	
 	/* ***** 40) Create table dbo.sma_sql_server_hosts ***************************** */
 		/*
-			ALTER TABLE dbo.sma_sql_server_hosts SET ( SYSTEM_VERSIONING = OFF)
-			go
-			drop table dbo.sma_sql_server_hosts
-			go
-			drop table dbo.sma_sql_server_hosts_history
-			go
+			ALTER TABLE dbo.sma_sql_server_hosts SET ( SYSTEM_VERSIONING = OFF);
+			drop table dbo.sma_sql_server_hosts;
+			drop table dbo.sma_sql_server_hosts_history;
 		*/
 	create table dbo.sma_sql_server_hosts
 	(
@@ -1438,12 +1429,9 @@ IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_
 BEGIN
 	/* ***** 41) Create table dbo.sma_hadr_ag ***************************** */
 		/*
-			ALTER TABLE dbo.sma_hadr_ag SET ( SYSTEM_VERSIONING = OFF)
-			go
-			drop table dbo.sma_hadr_ag
-			go
-			drop table dbo.sma_hadr_ag_history
-			go
+			ALTER TABLE dbo.sma_hadr_ag SET ( SYSTEM_VERSIONING = OFF);
+			drop table dbo.sma_hadr_ag;
+			drop table dbo.sma_hadr_ag_history;
 		*/
 	create table dbo.sma_hadr_ag
 	(
@@ -1485,12 +1473,9 @@ IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_
 BEGIN
 	/* ***** 42) Create table dbo.sma_hadr_sql_cluster ***************************** */
 		/*
-			ALTER TABLE dbo.sma_hadr_sql_cluster SET ( SYSTEM_VERSIONING = OFF)
-			go
-			drop table dbo.sma_hadr_sql_cluster
-			go
-			drop table dbo.sma_hadr_sql_cluster_history
-			go
+			ALTER TABLE dbo.sma_hadr_sql_cluster SET ( SYSTEM_VERSIONING = OFF);
+			drop table dbo.sma_hadr_sql_cluster;
+			drop table dbo.sma_hadr_sql_cluster_history;
 		*/
 	create table dbo.sma_hadr_sql_cluster
 	(
@@ -1524,12 +1509,9 @@ IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_
 BEGIN
 	/* ***** 43) Create table dbo.sma_hadr_mirroring ***************************** */
 		/*
-			ALTER TABLE dbo.sma_hadr_mirroring SET ( SYSTEM_VERSIONING = OFF)
-			go
-			drop table dbo.sma_hadr_mirroring
-			go
-			drop table dbo.sma_hadr_mirroring_history
-			go
+			ALTER TABLE dbo.sma_hadr_mirroring SET ( SYSTEM_VERSIONING = OFF);
+			drop table dbo.sma_hadr_mirroring;
+			drop table dbo.sma_hadr_mirroring_history;
 		*/
 	create table dbo.sma_hadr_mirroring
 	(
@@ -1559,12 +1541,9 @@ IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_
 BEGIN
 	/* ***** 44) Create table dbo.sma_hadr_log_shipping ***************************** */
 		/*
-			ALTER TABLE dbo.sma_hadr_log_shipping SET ( SYSTEM_VERSIONING = OFF)
-			go
-			drop table dbo.sma_hadr_log_shipping
-			go
-			drop table dbo.sma_hadr_log_shipping_history
-			go
+			ALTER TABLE dbo.sma_hadr_log_shipping SET ( SYSTEM_VERSIONING = OFF);
+			drop table dbo.sma_hadr_log_shipping;
+			drop table dbo.sma_hadr_log_shipping_history;
 		*/
 	create table dbo.sma_hadr_log_shipping
 	(
@@ -1593,12 +1572,9 @@ IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_
 BEGIN
 	/* ***** 45) Create table dbo.sma_hadr_transaction_replication_publishers ***************************** */
 		/*
-			ALTER TABLE dbo.sma_hadr_transaction_replication_publishers SET ( SYSTEM_VERSIONING = OFF)
-			go
-			drop table dbo.sma_hadr_transaction_replication_publishers
-			go
-			drop table dbo.sma_hadr_transaction_replication_publishers_history
-			go
+			ALTER TABLE dbo.sma_hadr_transaction_replication_publishers SET ( SYSTEM_VERSIONING = OFF);
+			drop table dbo.sma_hadr_transaction_replication_publishers;
+			drop table dbo.sma_hadr_transaction_replication_publishers_history;
 		*/
 	create table dbo.sma_hadr_transaction_replication_publishers
 	(
@@ -1628,12 +1604,9 @@ IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_
 BEGIN
 	/* ***** 46) Create table dbo.sma_applications ***************************** */
 		/*
-			ALTER TABLE dbo.sma_applications SET ( SYSTEM_VERSIONING = OFF)
-			go
-			drop table dbo.sma_applications
-			go
-			drop table dbo.sma_applications_history
-			go
+			ALTER TABLE dbo.sma_applications SET ( SYSTEM_VERSIONING = OFF);
+			drop table dbo.sma_applications;
+			drop table dbo.sma_applications_history;
 		*/
 	create table dbo.sma_applications
 	(
@@ -1663,12 +1636,9 @@ IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_
 BEGIN
 	/* ***** 47) Create table dbo.sma_applications_server_xref ***************************** */
 		/*
-			ALTER TABLE dbo.sma_applications_server_xref SET ( SYSTEM_VERSIONING = OFF)
-			go
-			drop table dbo.sma_applications_server_xref
-			go
-			drop table dbo.sma_applications_server_xref_history
-			go
+			ALTER TABLE dbo.sma_applications_server_xref SET ( SYSTEM_VERSIONING = OFF);
+			drop table dbo.sma_applications_server_xref;
+			drop table dbo.sma_applications_server_xref_history;
 		*/
 	create table dbo.sma_applications_server_xref
 	(
@@ -1699,12 +1669,9 @@ IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_
 BEGIN
 	/* ***** 48) Create table dbo.sma_applications_database_xref ***************************** */
 		/*
-			ALTER TABLE dbo.sma_applications_database_xref SET ( SYSTEM_VERSIONING = OFF)
-			go
-			drop table dbo.sma_applications_database_xref
-			go
-			drop table dbo.sma_applications_database_xref_history
-			go
+			ALTER TABLE dbo.sma_applications_database_xref SET ( SYSTEM_VERSIONING = OFF);
+			drop table dbo.sma_applications_database_xref;
+			drop table dbo.sma_applications_database_xref_history;
 		*/
 	create table dbo.sma_applications_database_xref
 	(
@@ -2187,5 +2154,4 @@ dbo.usp_send_login_expiry_emails -> send mail notifications for login expiry
 -- Populate Inventory Table
 exec dbo.usp_populate_sma_sql_instance @server = '192.168.1.2' ,@execute = 1 ,@verbose = 2;
 
-go
 */

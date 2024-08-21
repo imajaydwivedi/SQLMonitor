@@ -38,9 +38,10 @@ $params = @{
                 "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
                 "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
                 "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
-                "40__WhoIsActivePartition", "41__BlitzIndexPartition", "42__BlitzPartition",
-                "43__EnablePageCompression", "44__GrafanaLogin", "45__LinkedServerOnInventory",
-                "46__LinkedServerForDataDestinationInstance", "47__AlterViewsForDataDestinationInstance")
+                "40__CreateJobCollectLoginExpirationInfo", "41__CreateJobPopulateInventoryTables", "42__CreateJobSendLoginExpiryEmails",
+                "43__WhoIsActivePartition", "44__BlitzIndexPartition", "45__BlitzPartition",
+                "46__EnablePageCompression", "47__GrafanaLogin", "48__LinkedServerOnInventory",
+                "49__LinkedServerForDataDestinationInstance", "50__AlterViewsForDataDestinationInstance")
     #>
     #OnlySteps = @( "2__AllDatabaseObjects" )
     #StartAtStep = '1__sp_WhoIsActive'
@@ -50,6 +51,8 @@ $params = @{
     #SkipRDPSessionSteps = $true
     #SkipPowerShellJobs = $true
     #SkipTsqlJobs = $true
+    #SkipInventorySteps = $true
+    #SkipMultiMailJobSteps = $false
     #SkipMailProfileCheck = $true
     #skipCollationCheck = $true
     #SkipWindowsAdminAccessTest = $true
@@ -72,6 +75,7 @@ $params = @{
     #MemoryOptimizedObjectsUsage = $false
     #ReturnInlineErrorMessage = $true
     #ForceTSQLStepType4TsqlJobs = $true
+    #$GrafanaDashboardPortal = 'https://sqlmonitor.ajaydwivedi.com:3000/'
 }
 
 #$preSQL = "EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = 'sqlagentservice@gmail.com', @drop_recreate = 1"

@@ -61,30 +61,6 @@
           <AssociatedConnUserName />
           <FullPath>grafana-login.sql</FullPath>
         </FileNode>
-        <FileNode Name="SCH-[usp_collect_all_server_login_expiration_info].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>SCH-[usp_collect_all_server_login_expiration_info].sql</FullPath>
-        </FileNode>
-        <FileNode Name="SCH-[usp_populate_sma_servers].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>SCH-[usp_populate_sma_servers].sql</FullPath>
-        </FileNode>
-        <FileNode Name="SCH-[usp_send_login_expiry_emails_owners].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>SCH-[usp_send_login_expiry_emails_owners].sql</FullPath>
-        </FileNode>
-        <FileNode Name="SCH-[usp_wrapper_populate_sma_sql_instance].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>SCH-[usp_wrapper_populate_sma_sql_instance].sql</FullPath>
-        </FileNode>
         <FileNode Name="SCH-BlitzIndex_Mode0-Partitioning.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -164,8 +140,8 @@
           <FullPath>SCH-Job-[(dba) Check-SQLAgentJobs].sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Job-[(dba) Collect Login Expiration Info].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Collect Login Expiration Info].sql</FullPath>
         </FileNode>
@@ -260,8 +236,8 @@
           <FullPath>SCH-Job-[(dba) Partitions-Maintenance].sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Job-[(dba) Populate Inventory Tables].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Populate Inventory Tables].sql</FullPath>
         </FileNode>
@@ -313,6 +289,12 @@
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Run-WhoIsActive].sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Send Login Expiry EMails].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Send Login Expiry EMails].sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-Job-[(dba) Stop-StuckSQLMonitorJobs].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -336,12 +318,6 @@
           <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Update-SqlServerVersions].sql</FullPath>
-        </FileNode>
-        <FileNode Name="SCH-Job-[Update-SQLMonitorDashboardIPAddress].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>SCH-Job-[Update-SQLMonitorDashboardIPAddress].sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Job-[Update-SQLMonitorIPAddress].sql">
           <AssociatedConnectionMoniker />
@@ -402,6 +378,12 @@
           <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_collect_ag_health_state.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_collect_all_server_login_expiration_info.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_collect_all_server_login_expiration_info.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_collect_file_io_stats.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
@@ -481,6 +463,12 @@
           <AssociatedConnUserName />
           <FullPath>SCH-usp_partition_maintenance.sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-usp_populate_sma_servers.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_populate_sma_servers.sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-usp_purge_tables.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
@@ -498,6 +486,12 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_run_WhoIsActive.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_send_login_expiry_emails.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_send_login_expiry_emails.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_TempDbSaver.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
@@ -528,6 +522,12 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_wrapper_GetAllServerInfo.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_wrapper_populate_sma_sql_instance.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_wrapper_populate_sma_sql_instance.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-WhoIsActive-Partitioning.sql">
           <AssociatedConnectionMoniker />
