@@ -67,6 +67,12 @@ BEGIN
 	DECLARE @_job_name nvarchar(500);
 	DECLARE @_continous_failures tinyint = 0;
 	DECLARE @_send_mail bit = 0;
+	DECLARE @_caller_program nvarchar(255);
+
+	set @_caller_program = case when HOST_NAME() like '(dba) Get-AllServerCollectedData%'
+								then HOST_NAME()
+								else PROGRAM_NAME()
+								end;
 
 	SET @_job_name = '(dba) '+@alert_key;
 
@@ -259,6 +265,12 @@ else
 			PRINT '@_errorMessage => '+@_errorMessage;
 			PRINT CHAR(13);
 		END
+
+		insert [dbo].[sma_errorlog]
+		([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+		select	[collection_time] = @_collection_time, [function_name] = 'usp_wrapper_GetAllServerCollectedData', 
+				[function_call_arguments] = @step_name, [server] = null, [error] = @_errorMessage, 
+				[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
 		IF OBJECT_ID('tempdb..#CommandLog') IS NOT NULL
 			TRUNCATE TABLE #CommandLog;

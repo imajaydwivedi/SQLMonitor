@@ -32,8 +32,9 @@ AS
 BEGIN
 
 	/*
-		Version:		2024-02-10
-		Date:			2024-02-10 - #26 Track Status of SQLAgent Service
+		Version:		2024-08-20
+		Date:			2024-08-20 - #10 Add error log entry
+						2024-02-10 - #26 Track Status of SQLAgent Service
 						2024-01-08 - Backup History on Dashboard
 						2023-10-17 - Add Latency Dashboard for AG
 						2023-07-27 - Add truncate table feature
@@ -54,13 +55,27 @@ BEGIN
 	IF @result_to_table NOT IN ('dbo.sql_agent_jobs_all_servers','dbo.disk_space_all_servers','dbo.log_space_consumers_all_servers',
 								'dbo.tempdb_space_usage_all_servers','dbo.ag_health_state_all_servers','dbo.backups_all_servers',
 								'dbo.services_all_servers')
-		THROW 50001, '''result_to_table'' Parameter value is invalid.', 1;		
+		THROW 50001, '''result_to_table'' Parameter value is invalid.', 1;	
+		
+	declare @_start_time datetime2 = sysdatetime();
+	declare @_crlf nchar(2) = char(10)+char(13);
+	declare @_long_star_line varchar(500) = replicate('*',75);
+	declare @_caller_program nvarchar(255);
+	DECLARE	@_errorNumber int,
+			@_errorSeverity int,
+			@_errorState int,
+			@_errorLine int,
+			@_errorMessage nvarchar(4000);
+
+	set @_caller_program = case when HOST_NAME() like '(dba) Get-AllServerCollectedData%'
+								then HOST_NAME()
+								else PROGRAM_NAME()
+								end;
 
 	DECLARE @_tbl_servers table (srv_name varchar(125));
 	DECLARE @_linked_server_failed bit = 0;
 	DECLARE @_sql NVARCHAR(max);
 	DECLARE @_params NVARCHAR(max);
-	DECLARE @_crlf NCHAR(2);
 	DECLARE @_isLocalHost bit = 0;
 	DECLARE @_int_variable int = 0;
 
@@ -69,7 +84,6 @@ BEGIN
 	DECLARE @_staging_table nvarchar(125);
 
 	SET @_staging_table = @result_to_table + (case when @has_staging_table = 1 then '__staging' else '' end);
-	SET @_crlf = NCHAR(10)+NCHAR(13);
 
 	IF @verbose >= 1
 		PRINT 'Extracting server names from @servers ('+@servers+') parameter value..';
@@ -161,7 +175,24 @@ BEGIN
 				exec sys.sp_testlinkedserver @_srv_name;
 			end try
 			begin catch
+				set @_errorMessage = 'Linked Server '+quotename(@_srv_name)+' not connecting.';
 				print '	ERROR => Linked Server '+quotename(@_srv_name)+' not connecting.';
+
+				if @verbose >= 1
+				begin
+					print  '	ErrorNumber => '+convert(varchar,ERROR_NUMBER());
+					print  '	ErrorSeverity => '+convert(varchar,ERROR_SEVERITY());
+					print  '	ErrorState => '+convert(varchar,ERROR_STATE());
+					--print  '	ErrorProcedure => '+ERROR_PROCEDURE();
+					print  '	ErrorLine => '+convert(varchar,ERROR_LINE());
+					print  '	ErrorMessage => '+ERROR_MESSAGE();
+				end
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerCollectedData', 
+						[function_call_arguments] = 'sys.sp_testlinkedserver '+@_srv_name, [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
 				set @_linked_server_failed = 1;
 				--fetch next from cur_servers into @_srv_name;
@@ -221,14 +252,24 @@ where 1=1
 				exec (@_sql);
 			end try
 			begin catch
-				-- print @_sql;
-				print char(10)+char(13)+'Error occurred while executing below query on '+quotename(@_srv_name)+char(10)+'     '+@_sql;
-				print  '	ErrorNumber => '+convert(varchar,ERROR_NUMBER());
-				print  '	ErrorSeverity => '+convert(varchar,ERROR_SEVERITY());
-				print  '	ErrorState => '+convert(varchar,ERROR_STATE());
-				--print  '	ErrorProcedure => '+ERROR_PROCEDURE();
-				print  '	ErrorLine => '+convert(varchar,ERROR_LINE());
-				print  '	ErrorMessage => '+ERROR_MESSAGE();
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerCollectedData', 
+						[function_call_arguments] = 'dbo.sql_agent_jobs_all_servers', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
 			end catch
 		end
 
@@ -257,14 +298,24 @@ and ds.collection_time_utc = (select top 1 l.collection_time_utc from dbo.disk_s
 				exec (@_sql);
 			end try
 			begin catch
-				-- print @_sql;
-				print char(10)+char(13)+'Error occurred while executing below query on '+quotename(@_srv_name)+char(10)+'     '+@_sql;
-				print  '	ErrorNumber => '+convert(varchar,ERROR_NUMBER());
-				print  '	ErrorSeverity => '+convert(varchar,ERROR_SEVERITY());
-				print  '	ErrorState => '+convert(varchar,ERROR_STATE());
-				--print  '	ErrorProcedure => '+ERROR_PROCEDURE();
-				print  '	ErrorLine => '+convert(varchar,ERROR_LINE());
-				print  '	ErrorMessage => '+ERROR_MESSAGE();
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerCollectedData', 
+						[function_call_arguments] = 'dbo.disk_space_all_servers', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
 			end catch
 		end
 
@@ -299,14 +350,24 @@ where lsc.collection_time = (select top 1 l.collection_time from dbo.log_space_c
 				exec (@_sql);
 			end try
 			begin catch
-				-- print @_sql;
-				print char(10)+char(13)+'Error occurred while executing below query on '+quotename(@_srv_name)+char(10)+'     '+@_sql;
-				print  '	ErrorNumber => '+convert(varchar,ERROR_NUMBER());
-				print  '	ErrorSeverity => '+convert(varchar,ERROR_SEVERITY());
-				print  '	ErrorState => '+convert(varchar,ERROR_STATE());
-				--print  '	ErrorProcedure => '+ERROR_PROCEDURE();
-				print  '	ErrorLine => '+convert(varchar,ERROR_LINE());
-				print  '	ErrorMessage => '+ERROR_MESSAGE();
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerCollectedData', 
+						[function_call_arguments] = 'dbo.log_space_consumers_all_servers', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
 			end catch
 		end
 
@@ -335,14 +396,24 @@ where tsu.collection_time = (select top 1 l.collection_time from dbo.tempdb_spac
 				exec (@_sql);
 			end try
 			begin catch
-				-- print @_sql;
-				print char(10)+char(13)+'Error occurred while executing below query on '+quotename(@_srv_name)+char(10)+'     '+@_sql;
-				print  '	ErrorNumber => '+convert(varchar,ERROR_NUMBER());
-				print  '	ErrorSeverity => '+convert(varchar,ERROR_SEVERITY());
-				print  '	ErrorState => '+convert(varchar,ERROR_STATE());
-				--print  '	ErrorProcedure => '+ERROR_PROCEDURE();
-				print  '	ErrorLine => '+convert(varchar,ERROR_LINE());
-				print  '	ErrorMessage => '+ERROR_MESSAGE();
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerCollectedData', 
+						[function_call_arguments] = 'dbo.tempdb_space_usage_all_servers', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
 			end catch
 		end
 
@@ -382,14 +453,24 @@ END
 				exec (@_sql);
 			end try
 			begin catch
-				-- print @_sql;
-				print char(10)+char(13)+'Error occurred while executing below query on '+quotename(@_srv_name)+char(10)+'     '+@_sql;
-				print  '	ErrorNumber => '+convert(varchar,ERROR_NUMBER());
-				print  '	ErrorSeverity => '+convert(varchar,ERROR_SEVERITY());
-				print  '	ErrorState => '+convert(varchar,ERROR_STATE());
-				--print  '	ErrorProcedure => '+ERROR_PROCEDURE();
-				print  '	ErrorLine => '+convert(varchar,ERROR_LINE());
-				print  '	ErrorMessage => '+ERROR_MESSAGE();
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerCollectedData', 
+						[function_call_arguments] = 'dbo.ag_health_state_all_servers', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
 			end catch
 		end
 
@@ -539,14 +620,24 @@ order by [database_name], [backup_start_date_utc];';
 				exec (@_sql);
 			end try
 			begin catch
-				-- print @_sql;
-				print char(10)+char(13)+'Error occurred while executing below query on '+quotename(@_srv_name)+char(10)+'     '+@_sql;
-				print  '	ErrorNumber => '+convert(varchar,ERROR_NUMBER());
-				print  '	ErrorSeverity => '+convert(varchar,ERROR_SEVERITY());
-				print  '	ErrorState => '+convert(varchar,ERROR_STATE());
-				--print  '	ErrorProcedure => '+ERROR_PROCEDURE();
-				print  '	ErrorLine => '+convert(varchar,ERROR_LINE());
-				print  '	ErrorMessage => '+ERROR_MESSAGE();
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerCollectedData', 
+						[function_call_arguments] = 'dbo.backups_all_servers', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
 			end catch
 		end
 
@@ -593,14 +684,24 @@ and (dm.servicename like 'SQL Server (%)' or dm.servicename like 'SQL Server Age
 				exec (@_sql);
 			end try
 			begin catch
-				-- print @_sql;
-				print char(10)+char(13)+'Error occurred while executing below query on '+quotename(@_srv_name)+char(10)+'     '+@_sql;
-				print  '	ErrorNumber => '+convert(varchar,ERROR_NUMBER());
-				print  '	ErrorSeverity => '+convert(varchar,ERROR_SEVERITY());
-				print  '	ErrorState => '+convert(varchar,ERROR_STATE());
-				--print  '	ErrorProcedure => '+ERROR_PROCEDURE();
-				print  '	ErrorLine => '+convert(varchar,ERROR_LINE());
-				print  '	ErrorMessage => '+ERROR_MESSAGE();
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerCollectedData', 
+						[function_call_arguments] = 'dbo.services_all_servers', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
 			end catch
 		end
 

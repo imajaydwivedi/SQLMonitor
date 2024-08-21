@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="(local):LAB\adwivedi">
+        <ConnectionNode Name="(local):21L-LTPABL-1187\Ajay">
           <Created>2024-08-18T18:37:05.1697449+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
@@ -15,7 +15,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="localhost:LAB\adwivedi">
+        <ConnectionNode Name="localhost:21L-LTPABL-1187\Ajay">
           <Created>2022-07-21T09:01:59.8469198+05:30</Created>
           <Type>SQL</Type>
           <Server>localhost</Server>
@@ -62,8 +62,8 @@
           <FullPath>SCH-Inventory-Tables.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Job-[(dba) Collect Login Expiration Info].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Collect Login Expiration Info].sql</FullPath>
         </FileNode>
