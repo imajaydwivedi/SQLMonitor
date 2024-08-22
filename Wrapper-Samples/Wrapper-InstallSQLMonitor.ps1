@@ -187,7 +187,9 @@ Set-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
 Enter-PSSession -ComputerName '192.168.56.31' -Credential $localAdmin -Authentication Negotiate
 Test-WSMan '192.168.56.31' -Credential $localAdmin -Authentication Negotiate
 
-Get-ChildItem C:\SQLMonitor -Recurse -File | Unblock-File -Verbose
+Get-ChildItem "C:\SQLMonitor" -Recurse -File | Unblock-File -Verbose
+Get-ChildItem "C:\Program Files\WindowsPowerShell\Modules\dbatools" -Recurse -File | Unblock-File -Verbose
+Get-ChildItem "C:\Program Files\WindowsPowerShell\Modules\dbatools.library" -Recurse -File | Unblock-File -Verbose
 #>
 
 <#
