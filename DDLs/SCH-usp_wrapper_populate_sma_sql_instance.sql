@@ -326,6 +326,7 @@ begin
 										@copy_recipients = @_copy_recipients,
 										@subject = @_mail_subject,
 										@body = @_mail_html,
+										@importance = 'High',
 										@body_format = 'HTML';
 				end
 			end
@@ -450,7 +451,8 @@ begin
 										@recipients = @_recepient,
 										@copy_recipients = @_copy_recipients,
 										@subject = @_mail_subject,
-										@body = @_mail_html,
+										@body = @_mail_html,										
+										@importance = 'High',
 										@body_format = 'HTML';
 				end
 			end
@@ -613,6 +615,7 @@ begin
 											@copy_recipients = @_copy_recipients,
 											@subject = @_mail_subject,
 											@body = @_mail_html,
+											@importance = 'High',
 											@body_format = 'HTML';
 					end
 				end
@@ -735,6 +738,7 @@ begin
 										@copy_recipients = @_copy_recipients,
 										@subject = @_mail_subject,
 										@body = @_mail_html,
+										@importance = 'High',
 										@body_format = 'HTML';
 				end
 			end
@@ -876,6 +880,7 @@ begin
 											@copy_recipients = @_copy_recipients,
 											@subject = @_mail_subject,
 											@body = @_mail_html,
+											@importance = 'High',
 											@body_format = 'HTML';
 					end
 				end
@@ -1021,6 +1026,7 @@ begin
 											@copy_recipients = @_copy_recipients,
 											@subject = @_mail_subject,
 											@body = @_mail_html,
+											@importance = 'High',
 											@body_format = 'HTML';
 					end
 				end

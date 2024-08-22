@@ -464,8 +464,8 @@
           <FullPath>SCH-usp_partition_maintenance.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_populate_sma_servers.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_populate_sma_servers.sql</FullPath>
         </FileNode>
@@ -524,8 +524,8 @@
           <FullPath>SCH-usp_wrapper_GetAllServerInfo.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_wrapper_populate_sma_sql_instance.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_wrapper_populate_sma_sql_instance.sql</FullPath>
         </FileNode>
