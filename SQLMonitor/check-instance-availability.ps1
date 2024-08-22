@@ -33,9 +33,12 @@ $conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Databas
 $sqlSupportedInstances = @"
 select distinct [sql_instance], [sql_instance_port], [database] 
 from dbo.instance_details id
+outer apply (select s.is_onboarded from dbo.sma_servers s 
+			where s.is_decommissioned = 0 and s.server = id.sql_instance
+			) s
 where is_enabled = 1 and is_alias = 0
 and id.host_name <> CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS'))
-and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = id.sql_instance)
+and (s.is_onboarded = 1 or s.is_onboarded is null)
 "@ 
 $supportedInstances = @()
 $supportedInstances += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlSupportedInstances -EnableException
