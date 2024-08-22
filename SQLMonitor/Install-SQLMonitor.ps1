@@ -230,8 +230,8 @@ Param (
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-08-20'
-$sqlmonitorVersionDate = '2024-Aug-20'
+$sqlmonitorVersion = '2024-08-22'
+$sqlmonitorVersionDate = '2024-Aug-22'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 <#
     v2024-Sep-30
@@ -1833,6 +1833,8 @@ try {
     if($instanceHostDetails.Count -gt 0 -and $isClustered -eq $true) {
         $SkipPowerShellJobs4SQLCluster = $true
     }
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Host related info fetched."
 }
 catch {
     $errMessage = $_
@@ -2121,11 +2123,15 @@ and created_date >= DATEADD(hour,-2,getdate())
     }
 }
 
+
 # Save additional settings in [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details].[more_info] as JSON
+$stepName = 'Post_Step2_Block_Update_moreInfo'
 if( ($ForceSetupOfTaskSchedulerJobs -or $HasCustomizedTsqlJobs -or $HasCustomizedPowerShellJobs) `
     -and ($isUpgradeScenario -or ($Steps2Execute -contains '2__AllDatabaseObjects'))
   )
 {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working on [$stepName].."
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Save additional settings in more_info columns.."
     $moreInfo = New-Object psobject -Property @{
         ForceSetupOfTaskSchedulerJobs = $ForceSetupOfTaskSchedulerJobs
         HasCustomizedTsqlJobs = $HasCustomizedTsqlJobs
@@ -2145,19 +2151,36 @@ if( ($ForceSetupOfTaskSchedulerJobs -or $HasCustomizedTsqlJobs -or $HasCustomize
     $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddMoreInfo -EnableException | ft -AutoSize
 }
 
-[System.Collections.ArrayList]$newList = $Steps2Execute
+#Write-Debug 'Post_Step2_Block_HasCustomizedTsqlJobs'
+
+$stepName = 'Post_Step2_Block_Initialize_newList'
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working on [$stepName].."
+if($Steps2Execute -is [array]) {
+    [System.Collections.ArrayList]$newList = $Steps2Execute
+}
+else {
+    [System.Collections.ArrayList]$newList = @()
+    $newList.Add($Steps2Execute) | Out-Null
+}
+
+$stepName = 'Post_Step2_Block_HasCustomizedTsqlJobs'
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working on [$stepName].."
 if($HasCustomizedTsqlJobs) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "*****Based on `$HasCustomizedTsqlJobs, skipping TSQL Jobs.." | Write-Host -ForegroundColor Yellow
     foreach($tsqJobStepName in $TsqlJobSteps) {
         $newList.Remove($tsqJobStepName) | Out-Null
     }
 }
+
+$stepName = 'Post_Step2_Block_HasCustomizedPowerShellJobs'
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working on [$stepName].."
 if($HasCustomizedPowerShellJobs) {
     "$(if(-not $HasCustomizedTsqlJobs){"`n"})$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}`n" -f 'WARNING:', "*****Based on `$HasCustomizedPowerShellJobs, skipping PowerShell Jobs.." | Write-Host -ForegroundColor Yellow
     foreach($psJobStepName in $PowerShellJobSteps) {
         $newList.Remove($psJobStepName) | Out-Null
     }
 }
+
 $Steps2Execute = $newList
 
 
@@ -2484,6 +2507,8 @@ if($stepName -in $Steps2Execute) {
 }
 
 # If non-domain server, then added HostName in credential name
+$stepName = 'Post_Step11_Block_CredentialName_Formatter'
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working on [$stepName].."
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Add hostname in Credential name if non-domain server.."
 if(-not [String]::IsNullOrEmpty($WindowsCredential))
 {
@@ -6300,7 +6325,6 @@ if( ($stepName -in $Steps2Execute) -and ($SkipPageCompression -eq $false) -and $
     $sqlExecuteUspEnablePageCompression = "exec dbo.usp_enable_page_compression;"
     $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlExecuteUspEnablePageCompression -EnableException
 }
-
 
 # 47__GrafanaLogin
 $stepName = '47__GrafanaLogin'
