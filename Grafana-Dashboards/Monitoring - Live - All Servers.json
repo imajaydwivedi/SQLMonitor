@@ -421,7 +421,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 1
+            "y": 9
           },
           "id": 219,
           "options": {
@@ -819,7 +819,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 2
+            "y": 10
           },
           "id": 850,
           "options": {
@@ -1507,8 +1507,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "blue",
-                    "value": null
+                    "color": "blue"
                   }
                 ]
               }
@@ -1537,8 +1536,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1661,7 +1659,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 4
+            "y": 12
           },
           "id": 871,
           "options": {
@@ -1742,7 +1740,8 @@
                 "cellOptions": {
                   "type": "auto"
                 },
-                "inspect": false
+                "filterable": true,
+                "inspect": true
               },
               "mappings": [],
               "thresholds": {
@@ -1767,13 +1766,6 @@
                     "value": "Server"
                   },
                   {
-                    "id": "custom.cellOptions",
-                    "value": {
-                      "mode": "basic",
-                      "type": "color-background"
-                    }
-                  },
-                  {
                     "id": "thresholds",
                     "value": {
                       "mode": "absolute",
@@ -1796,13 +1788,6 @@
                   {
                     "id": "displayName",
                     "value": "Database"
-                  },
-                  {
-                    "id": "custom.cellOptions",
-                    "value": {
-                      "mode": "basic",
-                      "type": "color-background"
-                    }
                   },
                   {
                     "id": "thresholds",
@@ -1851,12 +1836,6 @@
                   {
                     "id": "displayName",
                     "value": "Recovery Model"
-                  },
-                  {
-                    "id": "custom.cellOptions",
-                    "value": {
-                      "type": "color-text"
-                    }
                   },
                   {
                     "id": "thresholds",
@@ -2045,6 +2024,7 @@
                   {
                     "id": "custom.cellOptions",
                     "value": {
+                      "mode": "basic",
                       "type": "color-background"
                     }
                   }
@@ -2063,12 +2043,6 @@
                   {
                     "id": "unit",
                     "value": "h"
-                  },
-                  {
-                    "id": "custom.cellOptions",
-                    "value": {
-                      "type": "color-background"
-                    }
                   },
                   {
                     "id": "thresholds",
@@ -2093,6 +2067,13 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
                   }
                 ]
               },
@@ -2109,12 +2090,6 @@
                   {
                     "id": "unit",
                     "value": "m"
-                  },
-                  {
-                    "id": "custom.cellOptions",
-                    "value": {
-                      "type": "color-background"
-                    }
                   },
                   {
                     "id": "thresholds",
@@ -2138,6 +2113,13 @@
                           "value": 360
                         }
                       ]
+                    }
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
                     }
                   }
                 ]
@@ -2177,12 +2159,12 @@
             ]
           },
           "gridPos": {
-            "h": 19,
+            "h": 8,
             "w": 24,
             "x": 0,
             "y": 5
           },
-          "id": 869,
+          "id": 874,
           "options": {
             "cellHeight": "sm",
             "footer": {
@@ -2207,7 +2189,7 @@
               "format": "table",
               "hide": false,
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n--declare @sql_instance varchar(255);\n--declare @backup_type varchar(2000);\n--declare @backup_description varchar(2000);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n--declare @disk_drive varchar(255) = '$disk_drive';\n--declare @database varchar(255) = '$database';\n--declare @filter_for_latency varchar(50) = '$filter_for_latency';\ndeclare @full_threshold_days int = $full_threshold_days;\ndeclare @diff_threshold_hours int = $diff_threshold_hours;\ndeclare @tlog_threshold_minutes int = $tlog_threshold_minutes;\ndeclare @_has_inventory bit = 0;\n\n--set @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\n--set @backup_type = '${backup_type:csv}';\n--set @backup_description = case when ltrim(rtrim('$backup_description')) = '' then null else ltrim(rtrim('$backup_description')) end;\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, \n\t\t\t\t\t\t\t\t@full_threshold_days int, @diff_threshold_hours int, @tlog_threshold_minutes int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Dashboard [$__dashboard] */\nset nocount on;\n\n;with t_backups as (\n\t\tselect [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]\n\t\tfrom dbo.backups_all_servers bas\n)\n,t_pivot as (\n\t\tselect\t[sql_instance], [database_name]\n\t\t\t\t,[recovery_model] = max([recovery_model])\n\t\t\t\t,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[log_backups_count] = max([log_backups_count])\n\t\t\t\t,[database_creation_date_utc] = max([database_creation_date_utc])\n\t\t\t\t,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)\n\t\tfrom t_backups bkp\n\t\twhere 1=1\n\t\tgroup by [sql_instance], [database_name]\n)\n,t_latency as (\n\t\t\tselect \t[sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(day,[full_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\t\t\t\t\t\t\n\t\t\t\t\t\t\t[diff_latency_hours] = case when [diff_backup_time_utc] is null \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen @full_threshold_days * 24\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(hour,[diff_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen recovery_model <> 'SIMPLE'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when [tlog_backup_time_utc] is null then @full_threshold_days * 1440\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t when [tlog_backup_time_utc] is not null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then datediff(minute,[tlog_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],\n\t\t\t\t\t\t\t[tlog_compressed_size_mb], [log_backups_count],\n\t\t\t\t\t\t\t[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]\n\t\t\tfrom t_pivot as bkp\n\t\t\twhere 1=1\n)\nselect [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], \n\t\t\t\t\t\t\t[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], \n\t\t\t\t\t\t\t[full_backup_file], [diff_backup_file], [tlog_backup_file]\nfrom t_latency as l\nwhere 1=1\nAND (\t\t(full_latency_days is null or full_latency_days >= @full_threshold_days)\n\t\tOR \t(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)\n\t\tOR\t(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)\n\t\t)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = l.sql_instance)\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @full_threshold_days, @diff_threshold_hours, \n\t\t\t\t\t\t\t\t\t\t\t\t@tlog_threshold_minutes;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n--declare @sql_instance varchar(255);\n--declare @backup_type varchar(2000);\n--declare @backup_description varchar(2000);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n--declare @disk_drive varchar(255) = '$disk_drive';\n--declare @database varchar(255) = '$database';\n--declare @filter_for_latency varchar(50) = '$filter_for_latency';\ndeclare @full_threshold_days int = $full_threshold_days;\ndeclare @diff_threshold_hours int = $diff_threshold_hours;\ndeclare @tlog_threshold_minutes int = $tlog_threshold_minutes;\ndeclare @_has_inventory bit = 0;\n\n\n--set @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\n--set @backup_type = '${backup_type:csv}';\n--set @backup_description = case when ltrim(rtrim('$backup_description')) = '' then null else ltrim(rtrim('$backup_description')) end;\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, \n\t\t\t\t\t\t\t\t@full_threshold_days int, @diff_threshold_hours int, @tlog_threshold_minutes int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Dashboard [$__dashboard] */\nset nocount on;\n\n;with t_backups as (\n\t\tselect [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]\n\t\tfrom dbo.backups_all_servers bas\n)\n,t_pivot as (\n\t\tselect\t[sql_instance], [database_name]\n\t\t\t\t,[recovery_model] = max([recovery_model])\n\t\t\t\t,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[log_backups_count] = max([log_backups_count])\n\t\t\t\t,[database_creation_date_utc] = max([database_creation_date_utc])\n\t\t\t\t,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)\n\t\tfrom t_backups bkp\n\t\twhere 1=1\n\t\tgroup by [sql_instance], [database_name]\n)\n,t_latency as (\n\t\t\tselect \t[sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(day,[full_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\t\t\t\t\t\t\n\t\t\t\t\t\t\t[diff_latency_hours] = case when [diff_backup_time_utc] is null \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen @full_threshold_days * 24\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(hour,[diff_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen recovery_model <> 'SIMPLE'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when [tlog_backup_time_utc] is null then @full_threshold_days * 1440\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t when [tlog_backup_time_utc] is not null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then datediff(minute,[tlog_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],\n\t\t\t\t\t\t\t[tlog_compressed_size_mb], [log_backups_count],\n\t\t\t\t\t\t\t[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]\n\t\t\tfrom t_pivot as bkp\n\t\t\twhere 1=1\n)\nselect [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], \n\t\t\t\t\t\t\t[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], \n\t\t\t\t\t\t\t[full_backup_file], [diff_backup_file], [tlog_backup_file]\nfrom t_latency as l\nwhere 1=1\nAND (\t\t(full_latency_days is null or full_latency_days >= @full_threshold_days)\n\t\tOR \t(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)\n\t\tOR\t(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)\n\t\t)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = l.sql_instance and (s.hadr_strategy is null or s.hadr_strategy <> 'ag'))\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @full_threshold_days, @diff_threshold_hours, \n\t\t\t\t\t\t\t\t\t\t\t\t@tlog_threshold_minutes;",
               "refId": "Query-Db-File-Stats-Since-Startup",
               "sql": {
                 "columns": [
@@ -2228,11 +2210,493 @@
               }
             }
           ],
-          "title": "All Servers - Backup History - Require ATTENTION @ ${backups_all_servers__collection_time_utc:date:YYYY-MM-DD HH.mm}",
+          "title": "\"${nonag_database_counts_with_backup_issue}\" __Non AG__ Dbs @ ${backups_all_servers__collection_time_utc:date:YYYY-MM-DD HH.mm}",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "select * from dbo.backups_all_servers",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "sql_instance"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Server"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "purple"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "database_name"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Database"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "super-light-purple"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "log_backups_count"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Total Log Backups"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "database_creation_date_utc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Db Created Date"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "recovery_model"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Recovery Model"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "dark-blue"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "full_backup_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Full Bkp Time"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "full_backup_size_mb"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Full Bkp Size"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "full_compressed_size_mb"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Full Compressed"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "diff_backup_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Diff Bkp Time"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "diff_backup_size_mb"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Diff Bkp Size"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "diff_compressed_size_mb"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Diff Compressed"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "tlog_backup_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "TLog Bkp Time"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "full_backup_file"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Full File"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "diff_backup_file"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Diff File"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "tlog_backup_file"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "TLog File"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "full_latency_days"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Full Delay"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "d"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green"
+                        },
+                        {
+                          "color": "orange",
+                          "value": 8
+                        },
+                        {
+                          "color": "red",
+                          "value": 15
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "diff_latency_hours"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Diff Delay"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "h"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green"
+                        },
+                        {
+                          "color": "yellow",
+                          "value": 24
+                        },
+                        {
+                          "color": "orange",
+                          "value": 32
+                        },
+                        {
+                          "color": "red",
+                          "value": 48
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "tlog_latency_minutes"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "TLog Delay"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "m"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green"
+                        },
+                        {
+                          "color": "#EAB839",
+                          "value": 30
+                        },
+                        {
+                          "color": "orange",
+                          "value": 120
+                        },
+                        {
+                          "color": "red",
+                          "value": 360
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "tlog_backup_size_mb"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "TLog Bkp Size"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "tlog_compressed_size_mb"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "TLog Compressed"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 13
+          },
+          "id": 888,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.4.5",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n--declare @sql_instance varchar(255);\n--declare @backup_type varchar(2000);\n--declare @backup_description varchar(2000);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n--declare @disk_drive varchar(255) = '$disk_drive';\n--declare @database varchar(255) = '$database';\n--declare @filter_for_latency varchar(50) = '$filter_for_latency';\ndeclare @full_threshold_days int = $full_threshold_days;\ndeclare @diff_threshold_hours int = $diff_threshold_hours;\ndeclare @tlog_threshold_minutes int = $tlog_threshold_minutes;\ndeclare @_has_inventory bit = 0;\n\n\n--set @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\n--set @backup_type = '${backup_type:csv}';\n--set @backup_description = case when ltrim(rtrim('$backup_description')) = '' then null else ltrim(rtrim('$backup_description')) end;\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, \n\t\t\t\t\t\t\t\t@full_threshold_days int, @diff_threshold_hours int, @tlog_threshold_minutes int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Dashboard [Monitoring - Live - All Servers] */\nset nocount on;\n\n;with t_backups as (\n\tselect [collection_time_utc], [sql_instance], s.ag_replicas, [database_name], [backup_type], [log_backups_count], \n\t\t\t[backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]\n\t\t\t,db_rowid = ROW_NUMBER()over(partition by s.ag_replicas, [database_name], [backup_type] order by [backup_start_date_utc] desc)\n\tfrom dbo.backups_all_servers bas\n\tjoin dbo.sma_sql_servers s on s.server = bas.sql_instance and s.is_decommissioned = 0 and s.is_onboarded = 1 and s.hadr_strategy = 'ag'\n\twhere 1=1\n\tand charindex(',',s.ag_replicas) > 0\n)\n,t_pivot as (\n\t\tselect\tag_replicas, [sql_instance], [database_name]\n\t\t\t\t,[recovery_model] = max([recovery_model])\n\t\t\t\t,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[log_backups_count] = max([log_backups_count])\n\t\t\t\t,[database_creation_date_utc] = max([database_creation_date_utc])\n\t\t\t\t,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)\n\t\tfrom t_backups bkp\n\t\twhere 1=1\n\t\tand db_rowid = 1\n\t\tgroup by ag_replicas, [sql_instance], [database_name]\n)\n,t_latency as (\n\t\t\tselect \tag_replicas, [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(day,[full_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\t\t\t\t\t\t\n\t\t\t\t\t\t\t[diff_latency_hours] = case when [diff_backup_time_utc] is null \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen @full_threshold_days * 24\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(hour,[diff_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen recovery_model <> 'SIMPLE'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when [tlog_backup_time_utc] is null then @full_threshold_days * 1440\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t when [tlog_backup_time_utc] is not null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then datediff(minute,[tlog_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],\n\t\t\t\t\t\t\t[tlog_compressed_size_mb], [log_backups_count],\n\t\t\t\t\t\t\t[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]\n\t\t\tfrom t_pivot as bkp\n\t\t\twhere 1=1\n)\nselect ag_replicas, [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], \n\t\t\t\t\t\t\t[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], \n\t\t\t\t\t\t\t[full_backup_file], [diff_backup_file], [tlog_backup_file]\nfrom t_latency as l\nwhere 1=1\nAND (\t\t(full_latency_days is null or full_latency_days >= @full_threshold_days)\n\t\tOR \t(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)\n\t\tOR\t(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)\n\t\t)\norder by ag_replicas, database_name\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @full_threshold_days, @diff_threshold_hours, \n\t\t\t\t\t\t\t\t\t\t\t\t@tlog_threshold_minutes;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "\"${ag_database_counts_with_backup_issue}\" __AG__ Dbs @ ${backups_all_servers__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "type": "table"
         }
       ],
-      "title": "All Servers - Backup History - Require ATTENTION - \"${database_counts_with_backup_issue}\" Databases @ ${backups_all_servers__collection_time_utc:date:YYYY-MM-DD HH.mm}",
+      "title": "All Backup Issues - Require ATTENTION - \"${nonag_database_counts_with_backup_issue}\" Non AG & \"${ag_database_counts_with_backup_issue}\" AG Dbs @ ${backups_all_servers__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
@@ -2267,8 +2731,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2301,8 +2764,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple",
-                          "value": null
+                          "color": "super-light-purple"
                         }
                       ]
                     }
@@ -2332,8 +2794,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -2373,8 +2834,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         }
                       ]
                     }
@@ -2416,8 +2876,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-yellow",
-                          "value": null
+                          "color": "super-light-yellow"
                         },
                         {
                           "color": "#EAB839",
@@ -2541,8 +3000,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -2575,8 +3033,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -2621,7 +3078,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 6
+            "y": 14
           },
           "id": 864,
           "options": {
@@ -2707,8 +3164,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2745,8 +3201,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -2786,8 +3241,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-blue",
-                          "value": null
+                          "color": "super-light-blue"
                         }
                       ]
                     }
@@ -2954,8 +3408,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "#EAB839",
@@ -3007,8 +3460,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple",
-                          "value": null
+                          "color": "super-light-purple"
                         }
                       ]
                     }
@@ -3021,7 +3473,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 7
+            "y": 15
           },
           "id": 852,
           "options": {
@@ -3109,8 +3561,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -3139,8 +3590,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple",
-                          "value": null
+                          "color": "super-light-purple"
                         }
                       ]
                     }
@@ -3228,8 +3678,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple",
-                          "value": null
+                          "color": "super-light-purple"
                         }
                       ]
                     }
@@ -3268,8 +3717,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -3303,8 +3751,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-blue",
-                          "value": null
+                          "color": "super-light-blue"
                         }
                       ]
                     }
@@ -3473,8 +3920,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "super-light-yellow",
@@ -3535,8 +3981,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "super-light-yellow",
@@ -3582,8 +4027,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "super-light-yellow",
@@ -3809,8 +4253,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "dark-blue",
-                          "value": null
+                          "color": "dark-blue"
                         }
                       ]
                     }
@@ -3846,8 +4289,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -3876,8 +4318,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple",
-                          "value": null
+                          "color": "super-light-purple"
                         }
                       ]
                     }
@@ -3890,7 +4331,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 8
+            "y": 16
           },
           "id": 867,
           "options": {
@@ -3978,8 +4419,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4016,8 +4456,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -4057,8 +4496,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-blue",
-                          "value": null
+                          "color": "super-light-blue"
                         }
                       ]
                     }
@@ -4220,8 +4658,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "#EAB839",
@@ -4265,8 +4702,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "#EAB839",
@@ -4355,8 +4791,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple",
-                          "value": null
+                          "color": "super-light-purple"
                         }
                       ]
                     }
@@ -4493,7 +4928,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 9
+            "y": 17
           },
           "id": 856,
           "options": {
@@ -4581,8 +5016,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4615,8 +5049,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -4716,8 +5149,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "yellow",
@@ -4829,8 +5261,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "#EAB839",
@@ -4912,8 +5343,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "#EAB839",
@@ -4973,8 +5403,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple",
-                          "value": null
+                          "color": "super-light-purple"
                         }
                       ]
                     }
@@ -4991,7 +5420,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 10
+            "y": 18
           },
           "id": 860,
           "options": {
@@ -5078,8 +5507,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -5094,7 +5522,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 11
+            "y": 19
           },
           "id": 873,
           "options": {
@@ -5926,7 +6354,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 58
+            "y": 66
           },
           "id": 119,
           "links": [],
@@ -6851,14 +7279,14 @@
           "type": "mssql",
           "uid": "${DS_SQLMONITOR}"
         },
-        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n--declare @sql_instance varchar(255);\n--declare @backup_type varchar(2000);\n--declare @backup_description varchar(2000);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n--declare @disk_drive varchar(255) = '$disk_drive';\n--declare @database varchar(255) = '$database';\n--declare @filter_for_latency varchar(50) = '$filter_for_latency';\ndeclare @full_threshold_days int = $full_threshold_days;\ndeclare @diff_threshold_hours int = $diff_threshold_hours;\ndeclare @tlog_threshold_minutes int = $tlog_threshold_minutes;\n\n--set @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\n\n--set @backup_type = '${backup_type:csv}';\n--set @backup_description = case when ltrim(rtrim('$backup_description')) = '' then null else ltrim(rtrim('$backup_description')) end;\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, \n\t\t\t\t\t\t\t\t@full_threshold_days int, @diff_threshold_hours int, @tlog_threshold_minutes int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Dashboard [$__dashboard] */\nset nocount on;\n\n;with t_backups as (\n\t\tselect [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]\n\t\tfrom dbo.backups_all_servers bas\n)\n,t_pivot as (\n\t\tselect\t[sql_instance], [database_name]\n\t\t\t\t,[recovery_model] = max([recovery_model])\n\t\t\t\t,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[log_backups_count] = max([log_backups_count])\n\t\t\t\t,[database_creation_date_utc] = max([database_creation_date_utc])\n\t\t\t\t,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)\n\t\tfrom t_backups bkp\n\t\twhere 1=1\n\t\tgroup by [sql_instance], [database_name]\n)\n,t_latency as (\n\t\t\tselect \t[sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(day,[full_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\t\t\t\t\t\t\n\t\t\t\t\t\t\t[diff_latency_hours] = case when [diff_backup_time_utc] is null \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen @full_threshold_days * 24\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(hour,[diff_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen recovery_model <> 'SIMPLE'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when [tlog_backup_time_utc] is null then @full_threshold_days * 1440\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t when [tlog_backup_time_utc] is not null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then datediff(minute,[tlog_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],\n\t\t\t\t\t\t\t[tlog_compressed_size_mb], [log_backups_count],\n\t\t\t\t\t\t\t[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]\n\t\t\tfrom t_pivot as bkp\n\t\t\twhere 1=1\n)\nselect count(*)\n/*\nselect [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], \n\t\t\t\t\t\t\t[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], \n\t\t\t\t\t\t\t[full_backup_file], [diff_backup_file], [tlog_backup_file]\n*/\nfrom t_latency as l\nwhere 1=1\nAND (\t\t(full_latency_days is null or full_latency_days >= @full_threshold_days)\n\t\tOR \t(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)\n\t\tOR\t(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)\n\t\t)\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @full_threshold_days, @diff_threshold_hours, \n\t\t\t\t\t\t\t\t\t\t\t\t@tlog_threshold_minutes;",
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n--declare @sql_instance varchar(255);\n--declare @backup_type varchar(2000);\n--declare @backup_description varchar(2000);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n--declare @disk_drive varchar(255) = '$disk_drive';\n--declare @database varchar(255) = '$database';\n--declare @filter_for_latency varchar(50) = '$filter_for_latency';\ndeclare @full_threshold_days int = $full_threshold_days;\ndeclare @diff_threshold_hours int = $diff_threshold_hours;\ndeclare @tlog_threshold_minutes int = $tlog_threshold_minutes;\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\n--set @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\n\n--set @backup_type = '${backup_type:csv}';\n--set @backup_description = case when ltrim(rtrim('$backup_description')) = '' then null else ltrim(rtrim('$backup_description')) end;\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, \n\t\t\t\t\t\t\t\t@full_threshold_days int, @diff_threshold_hours int, @tlog_threshold_minutes int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Dashboard [$__dashboard] */\nset nocount on;\n\n;with t_backups as (\n\t\tselect [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]\n\t\tfrom dbo.backups_all_servers bas\n)\n,t_pivot as (\n\t\tselect\t[sql_instance], [database_name]\n\t\t\t\t,[recovery_model] = max([recovery_model])\n\t\t\t\t,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[log_backups_count] = max([log_backups_count])\n\t\t\t\t,[database_creation_date_utc] = max([database_creation_date_utc])\n\t\t\t\t,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)\n\t\tfrom t_backups bkp\n\t\twhere 1=1\n\t\tgroup by [sql_instance], [database_name]\n)\n,t_latency as (\n\t\t\tselect \t[sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(day,[full_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\t\t\t\t\t\t\n\t\t\t\t\t\t\t[diff_latency_hours] = case when [diff_backup_time_utc] is null \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen @full_threshold_days * 24\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(hour,[diff_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen recovery_model <> 'SIMPLE'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when [tlog_backup_time_utc] is null then @full_threshold_days * 1440\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t when [tlog_backup_time_utc] is not null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then datediff(minute,[tlog_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],\n\t\t\t\t\t\t\t[tlog_compressed_size_mb], [log_backups_count],\n\t\t\t\t\t\t\t[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]\n\t\t\tfrom t_pivot as bkp\n\t\t\twhere 1=1\n)\nselect count(*)\n/*\nselect [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], \n\t\t\t\t\t\t\t[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], \n\t\t\t\t\t\t\t[full_backup_file], [diff_backup_file], [tlog_backup_file]\n*/\nfrom t_latency as l\nwhere 1=1\nAND (\t\t(full_latency_days is null or full_latency_days >= @full_threshold_days)\n\t\tOR \t(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)\n\t\tOR\t(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)\n\t\t)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = l.sql_instance and (s.hadr_strategy is null or s.hadr_strategy <> 'ag'))\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @full_threshold_days, @diff_threshold_hours, \n\t\t\t\t\t\t\t\t\t\t\t\t@tlog_threshold_minutes;",
         "hide": 2,
         "includeAll": false,
         "label": "Database Count With Backup Issue",
         "multi": false,
-        "name": "database_counts_with_backup_issue",
+        "name": "nonag_database_counts_with_backup_issue",
         "options": [],
-        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n--declare @sql_instance varchar(255);\n--declare @backup_type varchar(2000);\n--declare @backup_description varchar(2000);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n--declare @disk_drive varchar(255) = '$disk_drive';\n--declare @database varchar(255) = '$database';\n--declare @filter_for_latency varchar(50) = '$filter_for_latency';\ndeclare @full_threshold_days int = $full_threshold_days;\ndeclare @diff_threshold_hours int = $diff_threshold_hours;\ndeclare @tlog_threshold_minutes int = $tlog_threshold_minutes;\n\n--set @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\n\n--set @backup_type = '${backup_type:csv}';\n--set @backup_description = case when ltrim(rtrim('$backup_description')) = '' then null else ltrim(rtrim('$backup_description')) end;\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, \n\t\t\t\t\t\t\t\t@full_threshold_days int, @diff_threshold_hours int, @tlog_threshold_minutes int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Dashboard [$__dashboard] */\nset nocount on;\n\n;with t_backups as (\n\t\tselect [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]\n\t\tfrom dbo.backups_all_servers bas\n)\n,t_pivot as (\n\t\tselect\t[sql_instance], [database_name]\n\t\t\t\t,[recovery_model] = max([recovery_model])\n\t\t\t\t,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[log_backups_count] = max([log_backups_count])\n\t\t\t\t,[database_creation_date_utc] = max([database_creation_date_utc])\n\t\t\t\t,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)\n\t\tfrom t_backups bkp\n\t\twhere 1=1\n\t\tgroup by [sql_instance], [database_name]\n)\n,t_latency as (\n\t\t\tselect \t[sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(day,[full_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\t\t\t\t\t\t\n\t\t\t\t\t\t\t[diff_latency_hours] = case when [diff_backup_time_utc] is null \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen @full_threshold_days * 24\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(hour,[diff_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen recovery_model <> 'SIMPLE'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when [tlog_backup_time_utc] is null then @full_threshold_days * 1440\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t when [tlog_backup_time_utc] is not null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then datediff(minute,[tlog_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],\n\t\t\t\t\t\t\t[tlog_compressed_size_mb], [log_backups_count],\n\t\t\t\t\t\t\t[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]\n\t\t\tfrom t_pivot as bkp\n\t\t\twhere 1=1\n)\nselect count(*)\n/*\nselect [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], \n\t\t\t\t\t\t\t[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], \n\t\t\t\t\t\t\t[full_backup_file], [diff_backup_file], [tlog_backup_file]\n*/\nfrom t_latency as l\nwhere 1=1\nAND (\t\t(full_latency_days is null or full_latency_days >= @full_threshold_days)\n\t\tOR \t(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)\n\t\tOR\t(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)\n\t\t)\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @full_threshold_days, @diff_threshold_hours, \n\t\t\t\t\t\t\t\t\t\t\t\t@tlog_threshold_minutes;",
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n--declare @sql_instance varchar(255);\n--declare @backup_type varchar(2000);\n--declare @backup_description varchar(2000);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n--declare @disk_drive varchar(255) = '$disk_drive';\n--declare @database varchar(255) = '$database';\n--declare @filter_for_latency varchar(50) = '$filter_for_latency';\ndeclare @full_threshold_days int = $full_threshold_days;\ndeclare @diff_threshold_hours int = $diff_threshold_hours;\ndeclare @tlog_threshold_minutes int = $tlog_threshold_minutes;\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\n--set @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\n\n--set @backup_type = '${backup_type:csv}';\n--set @backup_description = case when ltrim(rtrim('$backup_description')) = '' then null else ltrim(rtrim('$backup_description')) end;\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, \n\t\t\t\t\t\t\t\t@full_threshold_days int, @diff_threshold_hours int, @tlog_threshold_minutes int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Dashboard [$__dashboard] */\nset nocount on;\n\n;with t_backups as (\n\t\tselect [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]\n\t\tfrom dbo.backups_all_servers bas\n)\n,t_pivot as (\n\t\tselect\t[sql_instance], [database_name]\n\t\t\t\t,[recovery_model] = max([recovery_model])\n\t\t\t\t,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[log_backups_count] = max([log_backups_count])\n\t\t\t\t,[database_creation_date_utc] = max([database_creation_date_utc])\n\t\t\t\t,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)\n\t\tfrom t_backups bkp\n\t\twhere 1=1\n\t\tgroup by [sql_instance], [database_name]\n)\n,t_latency as (\n\t\t\tselect \t[sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(day,[full_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\t\t\t\t\t\t\n\t\t\t\t\t\t\t[diff_latency_hours] = case when [diff_backup_time_utc] is null \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen @full_threshold_days * 24\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(hour,[diff_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen recovery_model <> 'SIMPLE'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when [tlog_backup_time_utc] is null then @full_threshold_days * 1440\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t when [tlog_backup_time_utc] is not null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then datediff(minute,[tlog_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],\n\t\t\t\t\t\t\t[tlog_compressed_size_mb], [log_backups_count],\n\t\t\t\t\t\t\t[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]\n\t\t\tfrom t_pivot as bkp\n\t\t\twhere 1=1\n)\nselect count(*)\n/*\nselect [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], \n\t\t\t\t\t\t\t[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], \n\t\t\t\t\t\t\t[full_backup_file], [diff_backup_file], [tlog_backup_file]\n*/\nfrom t_latency as l\nwhere 1=1\nAND (\t\t(full_latency_days is null or full_latency_days >= @full_threshold_days)\n\t\tOR \t(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)\n\t\tOR\t(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)\n\t\t)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = l.sql_instance and (s.hadr_strategy is null or s.hadr_strategy <> 'ag'))\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @full_threshold_days, @diff_threshold_hours, \n\t\t\t\t\t\t\t\t\t\t\t\t@tlog_threshold_minutes;",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -6870,6 +7298,26 @@
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n--declare @sql_instance varchar(255);\n--declare @backup_type varchar(2000);\n--declare @backup_description varchar(2000);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n--declare @disk_drive varchar(255) = '$disk_drive';\n--declare @database varchar(255) = '$database';\n--declare @filter_for_latency varchar(50) = '$filter_for_latency';\ndeclare @full_threshold_days int = $full_threshold_days;\ndeclare @diff_threshold_hours int = $diff_threshold_hours;\ndeclare @tlog_threshold_minutes int = $tlog_threshold_minutes;\ndeclare @_has_inventory bit = 0;\n\n\n--set @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\n--set @backup_type = '${backup_type:csv}';\n--set @backup_description = case when ltrim(rtrim('$backup_description')) = '' then null else ltrim(rtrim('$backup_description')) end;\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, \n\t\t\t\t\t\t\t\t@full_threshold_days int, @diff_threshold_hours int, @tlog_threshold_minutes int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Dashboard [Monitoring - Live - All Servers] */\nset nocount on;\n\n;with t_backups as (\n\tselect [collection_time_utc], [sql_instance], s.ag_replicas, [database_name], [backup_type], [log_backups_count], \n\t\t\t[backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]\n\t\t\t,db_rowid = ROW_NUMBER()over(partition by s.ag_replicas, [database_name], [backup_type] order by [backup_start_date_utc] desc)\n\tfrom dbo.backups_all_servers bas\n\tjoin dbo.sma_sql_servers s on s.server = bas.sql_instance and s.is_decommissioned = 0 and s.is_onboarded = 1 and s.hadr_strategy = 'ag'\n\twhere 1=1\n\tand charindex(',',s.ag_replicas) > 0\n)\n,t_pivot as (\n\t\tselect\tag_replicas, [sql_instance], [database_name]\n\t\t\t\t,[recovery_model] = max([recovery_model])\n\t\t\t\t,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[log_backups_count] = max([log_backups_count])\n\t\t\t\t,[database_creation_date_utc] = max([database_creation_date_utc])\n\t\t\t\t,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)\n\t\tfrom t_backups bkp\n\t\twhere 1=1\n\t\tand db_rowid = 1\n\t\tgroup by ag_replicas, [sql_instance], [database_name]\n)\n,t_latency as (\n\t\t\tselect \tag_replicas, [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(day,[full_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\t\t\t\t\t\t\n\t\t\t\t\t\t\t[diff_latency_hours] = case when [diff_backup_time_utc] is null \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen @full_threshold_days * 24\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(hour,[diff_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen recovery_model <> 'SIMPLE'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when [tlog_backup_time_utc] is null then @full_threshold_days * 1440\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t when [tlog_backup_time_utc] is not null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then datediff(minute,[tlog_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],\n\t\t\t\t\t\t\t[tlog_compressed_size_mb], [log_backups_count],\n\t\t\t\t\t\t\t[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]\n\t\t\tfrom t_pivot as bkp\n\t\t\twhere 1=1\n)\nselect count(*)\nfrom t_latency as l\nwhere 1=1\nAND (\t\t(full_latency_days is null or full_latency_days >= @full_threshold_days)\n\t\tOR \t(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)\n\t\tOR\t(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)\n\t\t)\n--order by ag_replicas, database_name\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @full_threshold_days, @diff_threshold_hours, \n\t\t\t\t\t\t\t\t\t\t\t\t@tlog_threshold_minutes;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Database Count With Backup Issue",
+        "multi": false,
+        "name": "ag_database_counts_with_backup_issue",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n--declare @sql_instance varchar(255);\n--declare @backup_type varchar(2000);\n--declare @backup_description varchar(2000);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n--declare @disk_drive varchar(255) = '$disk_drive';\n--declare @database varchar(255) = '$database';\n--declare @filter_for_latency varchar(50) = '$filter_for_latency';\ndeclare @full_threshold_days int = $full_threshold_days;\ndeclare @diff_threshold_hours int = $diff_threshold_hours;\ndeclare @tlog_threshold_minutes int = $tlog_threshold_minutes;\ndeclare @_has_inventory bit = 0;\n\n\n--set @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\n--set @backup_type = '${backup_type:csv}';\n--set @backup_description = case when ltrim(rtrim('$backup_description')) = '' then null else ltrim(rtrim('$backup_description')) end;\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, \n\t\t\t\t\t\t\t\t@full_threshold_days int, @diff_threshold_hours int, @tlog_threshold_minutes int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Dashboard [Monitoring - Live - All Servers] */\nset nocount on;\n\n;with t_backups as (\n\tselect [collection_time_utc], [sql_instance], s.ag_replicas, [database_name], [backup_type], [log_backups_count], \n\t\t\t[backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]\n\t\t\t,db_rowid = ROW_NUMBER()over(partition by s.ag_replicas, [database_name], [backup_type] order by [backup_start_date_utc] desc)\n\tfrom dbo.backups_all_servers bas\n\tjoin dbo.sma_sql_servers s on s.server = bas.sql_instance and s.is_decommissioned = 0 and s.is_onboarded = 1 and s.hadr_strategy = 'ag'\n\twhere 1=1\n\tand charindex(',',s.ag_replicas) > 0\n)\n,t_pivot as (\n\t\tselect\tag_replicas, [sql_instance], [database_name]\n\t\t\t\t,[recovery_model] = max([recovery_model])\n\t\t\t\t,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[log_backups_count] = max([log_backups_count])\n\t\t\t\t,[database_creation_date_utc] = max([database_creation_date_utc])\n\t\t\t\t,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)\n\t\tfrom t_backups bkp\n\t\twhere 1=1\n\t\tand db_rowid = 1\n\t\tgroup by ag_replicas, [sql_instance], [database_name]\n)\n,t_latency as (\n\t\t\tselect \tag_replicas, [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(day,[full_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\t\t\t\t\t\t\n\t\t\t\t\t\t\t[diff_latency_hours] = case when [diff_backup_time_utc] is null \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen @full_threshold_days * 24\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(hour,[diff_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen recovery_model <> 'SIMPLE'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when [tlog_backup_time_utc] is null then @full_threshold_days * 1440\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t when [tlog_backup_time_utc] is not null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then datediff(minute,[tlog_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],\n\t\t\t\t\t\t\t[tlog_compressed_size_mb], [log_backups_count],\n\t\t\t\t\t\t\t[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]\n\t\t\tfrom t_pivot as bkp\n\t\t\twhere 1=1\n)\nselect count(*)\nfrom t_latency as l\nwhere 1=1\nAND (\t\t(full_latency_days is null or full_latency_days >= @full_threshold_days)\n\t\tOR \t(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)\n\t\tOR\t(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)\n\t\t)\n--order by ag_replicas, database_name\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @full_threshold_days, @diff_threshold_hours, \n\t\t\t\t\t\t\t\t\t\t\t\t@tlog_threshold_minutes;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @_buffer_time_minutes int = 30;\ndeclare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\n\nset @_params = N'@_buffer_time_minutes int';\nset quoted_identifier off;\nset @_sql = \"\nselect\tcount(*) /* [Tsql-Stop-Job] = 'exec msdb.dbo.sp_stop_job @job_name = '''+sj.JobName+'''' ,\n\t\t[Tsql-Start-Job] = 'exec msdb.dbo.sp_start_job @job_name = '''+sj.JobName+'''' , \n\t\t\n\t\t[CollectionTimeUTC] = [UpdatedDateUTC],\n\t\t[sql_instance] = sql_instance_with_port, [JobName],\n\t\t[Job-Delay-Minutes] = case when sj.Last_Successful_ExecutionTime is null then 10080 else datediff(minute, sj.Last_Successful_ExecutionTime, dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@_buffer_time_minutes),getutcdate())) end,\n\t\t [Last_RunTime], [Last_Run_Duration_Seconds], [Last_Run_Outcome], \n\t\t [Successfull_Execution_ClockTime_Threshold_Minutes], \n\t\t [Expected_Max_Duration_Minutes],\n\t\t [Last_Successful_ExecutionTime], [Last_Successful_Execution_Hours], \n\t\t [Running_Since], [Running_StepName], [Running_Since_Min] \n*/\nfrom dbo.sql_agent_jobs_all_servers sj\ninner join dbo.services_all_servers sas\n\ton sas.sql_instance = sj.sql_instance\n\tand sas.service_type = 'Agent'\n\tand sas.status_desc = 'Running'\ncross apply (select top 1 sql_instance_with_port = coalesce(id.sql_instance+','+sql_instance_port,id.sql_instance) from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1) id\nwhere 1=1\n--and exists (select 1/0 from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1)\nand sj.JobCategory = '(dba) SQLMonitor'\nand sj.JobName like '(dba) %'\nand sj.IsDisabled = 0\nand (\tdateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@_buffer_time_minutes),getutcdate()) > sj.Last_Successful_ExecutionTime\n\t\t\tor sj.Last_Successful_ExecutionTime is null\n\t\t)\n--order by Last_Run_Outcome\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_buffer_time_minutes = @_buffer_time_minutes;",
         "hide": 2,
@@ -6889,7 +7337,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @_disk_warning_pct decimal(20,2) = 80;\ndeclare @_disk_critical_pct decimal(20,2) = 90;\ndeclare @_disk_threshold_gb decimal(20,2) = 200;\ndeclare @_large_disk_threshold_pct decimal(20,2) = 95;\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\ndeclare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\n\nset @_params = '@disk_warning_pct decimal(20,2), @disk_critical_pct decimal(20,2), @disk_threshold_gb decimal(20,2), @large_disk_threshold_pct decimal(20,2)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect\tcount(*) \nfrom dbo.disk_space_all_servers ds\nwhere ds.updated_date_utc >= dateadd(minute,-60,getutcdate())\nand (\t(\t(ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_warning_pct)\n\t\t\tand ds.free_mb < (@disk_threshold_gb)*1024\n\t  \t)\n\t\tor ( (ds.free_mb*100.0/ds.capacity_mb) < (100-@large_disk_threshold_pct)) -- free %\n\t)\nand (ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_critical_pct)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = ds.sql_instance)\n\";\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_disk_warning_pct, @_disk_critical_pct, @_disk_threshold_gb , @_large_disk_threshold_pct;",
         "hide": 2,
@@ -6909,7 +7357,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${sqlmonitor_datasource}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @_disk_warning_pct decimal(20,2) = 80;\ndeclare @_disk_critical_pct decimal(20,2) = 90;\ndeclare @_disk_threshold_gb decimal(20,2) = 200;\ndeclare @_large_disk_threshold_pct decimal(20,2) = 95;\ndeclare @_critical_disks_counts int = 0;\ndeclare @_has_inventory bit = 0;\n\nset @_has_inventory = convert(bit,'${has_inventory}');\nset @_critical_disks_counts = '${critical_disks_counts}';\n\ndeclare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\n\nset @_params = '@disk_warning_pct decimal(20,2), @disk_critical_pct decimal(20,2), @disk_threshold_gb decimal(20,2), @large_disk_threshold_pct decimal(20,2), @critical_disks_counts int';\n\nset quoted_identifier off;\nset @_sql = \"\nselect counts = count(*)-@critical_disks_counts\nfrom dbo.disk_space_all_servers ds\nwhere ds.updated_date_utc >= dateadd(minute,-60,getutcdate())\nand (\t(\t(ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_warning_pct)\n\t\t\tand ds.free_mb < (@disk_threshold_gb)*1024\n\t  \t)\n\t\tor ( (ds.free_mb*100.0/ds.capacity_mb) < (100-@large_disk_threshold_pct)) -- free %\n\t)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = ds.sql_instance)\n\";\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_disk_warning_pct, @_disk_critical_pct, @_disk_threshold_gb , @_large_disk_threshold_pct, @_critical_disks_counts;",
         "hide": 2,
@@ -6929,7 +7377,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @_sqltext nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\nset @_sqltext = '\nselect\tcount(*)\nfrom dbo.log_space_consumers_all_servers ls\nwhere 1=1\nand ls.thresholds_validated = 1\nand (ls.updated_date_utc >= dateadd(minute,-60,getutcdate())\n  and ls.collection_time_utc >= dateadd(minute,-20,getutcdate())\n\t\t)\n'+(case when @_has_inventory = 0 then '--' else '' end)+'and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = ls.sql_instance)\n';\n\nexec sp_executesql @_sqltext, @_params;",
         "hide": 2,
@@ -6949,7 +7397,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${sqlmonitor_datasource}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @_sqltext nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\nset @_sqltext = '\nselect\tcount(*)\nfrom dbo.tempdb_space_usage_all_servers su\nwhere (su.data_used_pct > 80.0\n\tor su.data_used_mb > (200.0*1024) -- 200 gb\n\t)\nand (su.updated_date_utc >= dateadd(minute,-60,getutcdate())\n  and su.collection_time_utc >= dateadd(minute,-20,getutcdate())\n\t)\n'+(case when @_has_inventory = 0 then '--' else '' end)+'and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = su.sql_instance)\n'\nexec sp_executesql @_sqltext, @_params;",
         "hide": 2,
@@ -6969,7 +7417,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @os_cpu_threshold decimal(20,2) = 70;\ndeclare @sql_cpu_threshold decimal(20,2) = 65;\ndeclare @blocked_counts_threshold int = 1;\ndeclare @blocked_duration_max_seconds_threshold bigint = 60;\ndeclare @available_physical_memory_kb_threshold bigint = (4*1024*1024);\ndeclare @system_high_memory_signal_state_threshold varchar(20) = 'Low';\n--declare @physical_memory_in_use_kb_threshold decimal(20,2);\ndeclare @memory_grants_pending_threshold int = 1;\ndeclare @connection_count_threshold int = 1500;\ndeclare @waits_per_core_per_minute_threshold decimal(20,2) = 180;\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\ndeclare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n\nset @params = N'@os_cpu_threshold decimal(20,2), @sql_cpu_threshold decimal(20,2), @blocked_counts_threshold int, \n\t\t\t\t@blocked_duration_max_seconds_threshold bigint, @available_physical_memory_kb_threshold bigint, \n\t\t\t\t@system_high_memory_signal_state_threshold varchar(20), @memory_grants_pending_threshold int, \n\t\t\t\t@connection_count_threshold int, @waits_per_core_per_minute_threshold decimal(20,2)';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_cte as (\n\tselect\tsrv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, waits_per_core_per_minute\n\tfrom dbo.vw_all_server_info asi\n        where 1=1\n        \"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = asi.srv_name)\n)\nselect  count(*)\nfrom t_cte cte\nwhere 1=1\nand (   os_cpu >= @os_cpu_threshold\n    or  sql_cpu >= @sql_cpu_threshold \n    or  blocked_counts >= @blocked_counts_threshold\n    or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold\n    or  ( available_physical_memory_kb < @available_physical_memory_kb_threshold and system_high_memory_signal_state = @system_high_memory_signal_state_threshold )\n    or  memory_grants_pending > @memory_grants_pending_threshold\n    or  connection_count >= @connection_count_threshold\n    or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold\n)\n\";\nset quoted_identifier off;\n\n--print @sql\nexec dbo.sp_executesql @sql, @params, @os_cpu_threshold, @sql_cpu_threshold, @blocked_counts_threshold, @blocked_duration_max_seconds_threshold, @available_physical_memory_kb_threshold, @system_high_memory_signal_state_threshold, @memory_grants_pending_threshold, @connection_count_threshold, @waits_per_core_per_minute_threshold;",
         "hide": 2,
@@ -6989,7 +7437,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${sqlmonitor_datasource}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "set nocount on;\n\ndeclare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\n\ndeclare @_latency_minutes int;\ndeclare @_redo_queue_size_gb int;\ndeclare @_log_send_queue_size_gb int;\ndeclare @_filter_out_offline_sqlagent bit = 1;\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\nset @_latency_minutes = 30;\nset @_redo_queue_size_gb = 10;\nset @_log_send_queue_size_gb = 10;\n\nset @_params = N'@_latency_minutes int, @_redo_queue_size_gb int, @_log_send_queue_size_gb int';\n\nset @_sql = '\nif object_id(''tempdb..#replica_servers'') is not null\n\tdrop table #replica_servers\nselect distinct ahs.replica_server_name\ninto #replica_servers\nfrom dbo.ag_health_state_all_servers ahs\nwhere 1=1;\n\nselect\tcount(*) /* sql_instance, [replica_database] = replica_server_name+'' || ''+database_name,\n\t\t--replica_server_name, database_name, \n\t\tag_name, is_primary_replica, \n\t\tag_listener, is_local, synchronization_state_desc, synchronization_health_desc, \n\t\tlatency_seconds, log_send_queue_size, redo_queue_size, last_redone_time, log_send_rate, \n\t\tredo_rate, estimated_redo_completion_time_min, last_commit_time, is_suspended, \n\t\tsuspend_reason_desc, is_distributed, replica_server = rs.srv_name, updated_date_utc, collection_time_utc */\nfrom dbo.ag_health_state_all_servers ahs\nleft join (\tselect replica_server = rs.replica_server_name, srv_name = max(asi.srv_name)\n\t\tfrom #replica_servers rs\n\t\tjoin dbo.vw_all_server_info asi\n\t\t\ton rs.replica_server_name in (asi.machine_name, asi.server_name)\n\t\tgroup by rs.replica_server_name\n\t) rs\n\ton rs.replica_server = ahs.replica_server_name\nwhere 1=1\nand (\tahs.synchronization_health_desc <> ''HEALTHY''\n\tor\tahs.synchronization_state_desc not in (''SYNCHRONIZED'',''SYNCHRONIZING'')\n\tor\t(ahs.latency_seconds is not null and ahs.latency_seconds >= @_latency_minutes*60)\n\tor\t(ahs.log_send_queue_size is not null and ahs.log_send_queue_size >= @_log_send_queue_size_gb*1024*1024)\n\tor\t(ahs.redo_queue_size is not null and ahs.redo_queue_size >= @_redo_queue_size_gb*1024*1024)\n\t)\n'+(case when @_filter_out_offline_sqlagent = 0 then '--' else '' end)+'and exists (select 1/0 from dbo.services_all_servers sas where sas.sql_instance = ahs.sql_instance and sas.service_type = ''Agent''\tand sas.status_desc = ''Running'')\n\n'+(case when @_has_inventory = 0 then '--' else '' end)+'and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = ahs.sql_instance)\n';\n\nexec sp_executesql @_sql, @_params, @_latency_minutes, @_redo_queue_size_gb, @_log_send_queue_size_gb;\n",
         "hide": 2,
@@ -7009,7 +7457,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(max);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\n--set @sql_instance = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - All Server Alert History */\nset nocount on;\nselect count(*)\nfrom dbo.alert_history_all_servers a\nwhere 1 = 1\nand a.collection_time_utc between @start_time_utc and @end_time_utc\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = a.sql_instance)\n\"\nset quoted_identifier on;\n\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
         "description": "Alert History Row Count",
@@ -7030,7 +7478,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${sqlmonitor_datasource}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "select all_server_stable_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_stable_info",
         "hide": 2,
@@ -7050,7 +7498,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select all_server_volatile_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_volatile_info",
         "hide": 2,
@@ -7070,7 +7518,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${sqlmonitor_datasource}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "select all_server_collection_latency_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_collection_latency_info cli",
         "hide": 2,
@@ -7090,7 +7538,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select services_all_servers__collection_time_utc = max(collection_time_utc)\nfrom dbo.services_all_servers sas",
         "hide": 2,
@@ -7110,7 +7558,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${sqlmonitor_datasource}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "select backups_all_servers__collection_time_utc = max(bas.collection_time_utc)\nfrom dbo.backups_all_servers bas",
         "hide": 2,
@@ -7130,7 +7578,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select sql_agent_jobs__collection_time_utc = max(sj.CollectionTimeUTC)\nfrom dbo.sql_agent_jobs_all_servers sj",
         "hide": 2,
@@ -7150,7 +7598,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${sqlmonitor_datasource}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "select disk_space__collection_time_utc = max(ds.collection_time_utc)\nfrom dbo.disk_space_all_servers ds",
         "hide": 2,
@@ -7170,7 +7618,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select ag_health_state__collection_time_utc = max(ahs.collection_time_utc)\nfrom dbo.ag_health_state_all_servers ahs",
         "hide": 2,
@@ -7190,7 +7638,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${sqlmonitor_datasource}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "select log_space_consumers__collection_time_utc = max(ls.collection_time_utc)\nfrom dbo.log_space_consumers_all_servers ls",
         "hide": 2,
@@ -7210,7 +7658,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select tempdb_space_usage__collection_time_utc = max(su.collection_time_utc)\nfrom dbo.tempdb_space_usage_all_servers su",
         "hide": 2,
@@ -7230,7 +7678,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${sqlmonitor_datasource}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "if object_id('dbo.sma_servers') is not null\n  select [has_inventory] = 1\nelse\n  select [has_inventory] = 0",
         "hide": 2,
@@ -7264,6 +7712,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - All Servers",
   "uid": "distributed_live_dashboard_all_servers",
-  "version": 175,
+  "version": 180,
   "weekStart": ""
 }
