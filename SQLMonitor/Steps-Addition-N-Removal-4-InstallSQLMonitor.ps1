@@ -31,8 +31,7 @@ Param (
     [Bool]$PrintUserFriendlyFormat = $true,
 
     [Parameter(Mandatory=$false)]
-    [String]$ScriptFile = #'E:\GitHub-Personal\SQLMonitor\SQLMonitor\Remove-SQLMonitor.ps1'
-                          'D:\GitHub-Personal\SQLMonitor\SQLMonitor\Install-SQLMonitor.ps1'
+    [String]$ScriptFile = 'D:\GitHub-Personal\SQLMonitor\SQLMonitor\Install-SQLMonitor.ps1'
 )
 
 cls
