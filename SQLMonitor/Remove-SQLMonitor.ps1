@@ -2823,6 +2823,456 @@ else
 }
 
 
+# 25__RemoveJob_CollectLoginExpirationInfo
+$stepName = '25__RemoveJob_CollectLoginExpirationInfo'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Collect Login Expiration Info'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 26__RemoveJob_CollectAllServerAlertMessages
+$stepName = '26__RemoveJob_CollectAllServerAlertMessages'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Collect-AllServerAlertMessages'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 27__RemoveJob_GetAllServerDashboardMail
+$stepName = '27__RemoveJob_GetAllServerDashboardMail'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Get-AllServerDashboardMail'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 28__RemoveJob_PopulateInventoryTables
+$stepName = '28__RemoveJob_PopulateInventoryTables'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Populate Inventory Tables'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 29__RemoveJob_SendLoginExpiryEMails
+$stepName = '29__RemoveJob_SendLoginExpiryEMails'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Send Login Expiry EMails'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 30__RemoveJob_StopStuckSQLMonitorJobs
+$stepName = '30__RemoveJob_StopStuckSQLMonitorJobs'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Stop-StuckSQLMonitorJobs'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
 # 31__DropProc_UspExtendedResults
 $stepName = '31__DropProc_UspExtendedResults'
 if($stepName -in $Steps2Execute) {
