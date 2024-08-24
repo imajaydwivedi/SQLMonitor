@@ -5,13 +5,16 @@ Param (
     [String]$Action = "AddStep",
 
     [Parameter(Mandatory=$false)]
-    [String]$StepName = "64__DropProc_UspWrapperPopulateSmaSqlInstance",
+    [String]$StepName = "73__DropView_SmaSqlServersIncludingOffline",
 
     [Parameter(Mandatory=$false)]
     [Bool]$PrintUserFriendlyFormat = $true,
 
     [Parameter(Mandatory=$false)]
-    [String]$ScriptFile = 'E:\GitHub\SQLMonitor\Work\Remove-SQLMonitor __new.ps1'
+    [String]$ScriptFile = 'E:\GitHub\SQLMonitor\Work\Remove-SQLMonitor __new.ps1',
+
+    [Parameter(Mandatory=$false)]
+    [bool]$SkipFileContentWriting = $true
 )
 
 cls
@@ -46,6 +49,11 @@ if(-not ($AllSteps -is [array])) {
     "Seems could not extract AllSteps from Script File content." | Write-Error -ErrorAction Stop
 }
 
+
+# Check if $StepName is already present
+if($StepName -in $AllSteps) {
+    "Seems specified step is already present in Script File." | Write-Error -ErrorAction Stop
+}
 
 # Calculations of Step Index
 [int]$paramStepNo = $StepName -replace "__\w+", ''
@@ -155,7 +163,7 @@ else {
 
 
 # Replace nos of Steps one at a time
-if(-not [String]::IsNullOrEmpty($newFilecontent)) {
+if( (-not [String]::IsNullOrEmpty($newFilecontent)) -and ($SkipFileContentWriting -eq $false) ) {
     foreach($index in $($existingPostStepIndex..$($AllSteps.Count-1))) 
     {
         if($Action -eq "AddStep") { # Add New Step
