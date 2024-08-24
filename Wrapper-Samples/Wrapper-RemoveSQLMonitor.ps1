@@ -13,21 +13,20 @@ $params = @{
     #RemoteSQLMonitorPath = 'C:\SQLMonitor'
     #SqlCredential = $saAdmin
     #WindowsCredential = $localAdmin
-    #SkipRDPSessionSteps = $true
-    #SkipSteps = @("43__RemovePerfmonFilesFromDisk")    
-    #StartAtStep = '30__DropLogin_Grafana'
+    #SkipSteps = @("43__RemovePerfmonFilesFromDisk")
+    #StartAtStep = '47__DropLogin_Grafana'
     #StopAtStep = '11__RemoveJob_RunBlitzIndex'
     #SqlInstanceForTsqlJobs = 'Experiment\SQL2019'
     #SqlInstanceAsDataDestination = 'Experiment\SQL2019'
     #SqlInstanceForPowershellJobs = 'Experiment\SQL2019'
-    SkipDropTable = $true
+    #SkipDropTable = $false
+    #SkipDropTablesForInventory = $true
     #SkipRemoveJob = $true
     #SkipDropProc = $true
     #SkipDropView = $true
+    #SkipAllInventorySteps = $true
     #ConfirmValidationOfMultiInstance = $true
-    #ActionType = "Update"
-    #OnlySteps = @("16__RemoveJob_RunBlitz","70__DropTable_Blitz")
-    #DryRun = $false
+    DryRun = $false
 }
 
 #$preSQL = "EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = 'sqlagentservice@gmail.com', @drop_recreate = 1"

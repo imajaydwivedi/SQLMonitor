@@ -222,6 +222,9 @@ Param (
     [bool]$SkipDropTable = $false,
 
     [Parameter(Mandatory=$false)]
+    [bool]$SkipDropTablesForInventory = $false,
+
+    [Parameter(Mandatory=$false)]
     [bool]$SkipRemoveTsqlJobs = $false,
 
     [Parameter(Mandatory=$false)]
@@ -385,6 +388,11 @@ $InventoryTablesSteps = @("109__DropTable_AllServerCollectionLatencyInfo", "111_
                 "121__DropTable_AgHealthStateAllServersStaging", "122__DropTable_AllServerVolatileInfoHistory", "123__DropTable_DiskSpaceAllServersStaging"
                 )
 
+# If inventory server, and the core tables should be considered inventory tables
+if($SqlInstanceToBaseline -eq $InventoryServer) {
+    $InventoryTablesSteps = $InventoryTablesSteps + @("83__DropTable_InstanceDetails", "84__DropTable_InstanceHosts")
+}
+
 # AllInventorySteps
 $AllInventorySteps = $InventoryJobsSteps + $InventoryProceduresSteps + $InventoryViewsSteps + $InventoryTablesSteps
 
@@ -402,19 +410,29 @@ if ($ActionType -eq 'Delete' -and $OnlySteps.Count -gt 0) {
 }
 
 
-# Add $PowerShellJobSteps to Skip Jobs
+# Add $PowerShellJobSteps to Skip PowerShell Jobs
 if($SkipRemovePowerShellJobs) {
     $SkipSteps = $SkipSteps + $($PowerShellJobSteps | % {if($_ -notin $SkipSteps){$_}});
 }
 
-# Add $RDPSessionSteps to Skip Jobs
+# Add $RDPSessionSteps to Skip RDP steps
 if($SkipRDPSessionSteps) {
     $SkipSteps = $SkipSteps + $($RDPSessionSteps | % {if($_ -notin $SkipSteps){$_}});
 }
 
-# Add $TsqlJobSteps to Skip Jobs
+# Add $TsqlJobSteps to Skip TSQL Jobs
 if($SkipRemoveTsqlJobs) {
     $SkipSteps = $SkipSteps + $($TsqlJobSteps | % {if($_ -notin $SkipSteps){$_}});
+}
+
+# Add $InventoryTablesSteps to Skip Inventory tables
+if($SkipDropTablesForInventory) {
+    $SkipSteps = $SkipSteps + $($InventoryTablesSteps | % {if($_ -notin $SkipSteps){$_}});
+}
+
+# Add $AllInventorySteps to Skip all inventory specific objects
+if($SkipAllInventorySteps) {
+    $SkipSteps = $SkipSteps + $($AllInventorySteps | % {if($_ -notin $SkipSteps){$_}});
 }
 
 # For backward compatability
