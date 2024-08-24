@@ -53,6 +53,10 @@ begin
 				@_errorLine int,
 				@_errorMessage nvarchar(4000);
 
+	if object_id('tempdb..#vw_all_server_info') is not null
+		drop table #vw_all_server_info;
+	select * into #vw_all_server_info from dbo.vw_all_server_info asi;
+
 	if ('Populate-Inventory-Tables' = 'Populate-Inventory-Tables')
 	begin
 		if @truncate_log_table = 1
@@ -520,7 +524,7 @@ begin
 								end
 		into #hosts
 		from t_hosts h
-		outer apply (select * from dbo.vw_all_server_info asi where asi.srv_name = h.server) asi
+		outer apply (select * from #vw_all_server_info asi where asi.srv_name = h.server) asi
 		outer apply (select top 1 * from dbo.instance_details id where is_enabled = 1 and is_alias = 0 and id.sql_instance = h.server) c
 		where 1=1
 		and (	(	h.source = 'sma_sql_server_hosts'
