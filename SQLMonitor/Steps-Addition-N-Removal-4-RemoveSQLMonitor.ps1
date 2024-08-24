@@ -5,7 +5,7 @@ Param (
     [String]$Action = "AddStep",
 
     [Parameter(Mandatory=$false)]
-    [String]$StepName = "73__DropView_SmaSqlServersIncludingOffline",
+    [String]$StepName = "140__DropTable_SmaSqlServerHostsWrapper",
 
     [Parameter(Mandatory=$false)]
     [Bool]$PrintUserFriendlyFormat = $true,
@@ -14,13 +14,15 @@ Param (
     [String]$ScriptFile = 'E:\GitHub\SQLMonitor\Work\Remove-SQLMonitor __new.ps1',
 
     [Parameter(Mandatory=$false)]
-    [bool]$SkipFileContentWriting = $true
+    [bool]$SkipFileContentWriting = $false
 )
 
 cls
 
 # Placeholders
 $newFinalSteps = @()
+
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working for `$StepName = '$StepName'.." | Write-Host -ForegroundColor Yellow
 
 # Read Script File Content
 if(-not (Test-Path $ScriptFile)) {
@@ -36,6 +38,7 @@ else {
 }
 
 # Extract AllSteps from Script File Content, and dynamically create a $AllSteps variable
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Extract `$AllSteps from Script File.."
 $allStepsPatternInFile = '\$AllSteps = \@\((\s*(?<steps>(\"\d+_{2}\w+\",?\s?)+\n)+(\s+\"\d+_{2}\w+\",?)+)\n?\s*\)'
 if($fileContent -match $allStepsPatternInFile) {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "AllSteps pattern found in script file.."
@@ -57,6 +60,7 @@ if($StepName -in $AllSteps) {
 
 # Calculations of Step Index
 [int]$paramStepNo = $StepName -replace "__\w+", ''
+[String]$paramStepWithoutNo = $StepName -replace "\d+", ""
 $preStepIndex = $paramStepNo-2;
 if($Action -eq "AddStep") { # Add New Step
     $existingPostStepIndex = $paramStepNo-1;
@@ -74,6 +78,7 @@ if( $preStepIndex -ne -1) {
 }
 
 # Create array with all the new steps including pre & post
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating `$newFinalSteps array with new steps.."
 $newPostSteps = @()
 if($Action -eq "AddStep") { # Add New Step
     $newPostSteps += $AllSteps[$existingPostStepIndex..$existingLastStepIndex] | 
@@ -86,8 +91,19 @@ else { # Remove Existing Step
     $newFinalSteps = $newPreSteps + $newPostSteps
 }
 
+# Validate Steps for Overlapping while Replacing
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Validating if new step placement is OK.."
+foreach($rowStep in $newFinalSteps[$paramStepNo..$newFinalStepsLastIndex]) {
+    $rowStepWithOutNo = $rowStep -replace "\d+", ""
+    #"Working on '$rowStepWithOutNo'.."
+    if($paramStepWithoutNo -like "$rowStepWithOutNo*") {
+        "Step `"$StepName`" should be placed after `"$rowStep`" due to String Replacement issues in PowerShell." | Write-Host -ForegroundColor Red
+        "Fix above issues."  | Write-Error -ErrorAction Stop
+    }
+}
 
-"Creating String Matrix of `"New Steps`"..`n " | Write-Host -ForegroundColor Green
+
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating String Matrix of `"New Steps`" (`$newFinalStepsStringMatrix)..`n " | Write-Host -ForegroundColor Green
 $newFinalStepsCount = $newFinalSteps.Count
 $newFinalStepsLastIndex = $newFinalStepsCount-1
 [String]$newFinalStepsStringMatrix = ''
@@ -122,7 +138,7 @@ if($PrintUserFriendlyFormat) {
 }
 
 
-"Creating String Matrix of `"Old Steps`"..`n " | Write-Host -ForegroundColor Green
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating String Matrix of `"Old Steps`" (`$oldStepsStringMatrix).."
 $oldStepsCount = $AllSteps.Count
 $oldStepsLastIndex = $oldStepsCount-1
 [String]$oldStepsStringMatrix = ''
@@ -144,13 +160,7 @@ if($PrintUserFriendlyFormat) {
     #"$oldStepsStringMatrix`n"
 }
 
-if([String]::IsNullOrEmpty($ScriptFile)) {
-    "`n`nNo file provided to replace the content."
-} else {
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Read file content.."
-    $fileContent = [System.IO.File]::ReadAllText($ScriptFile)
-}
-
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Replace old step array `$oldStepsStringMatrix with new step array `$newFinalStepsStringMatrix in `$newFilecontent..`n "
 $newFilecontent = $fileContent
 $oldStepsPattern = '(\s*(\"\d+_{2}\w+\",?\s?)+\n){'+$([Math]::Floor($oldStepsCount/3)-1)+'}(\s+\"\d+_{2}\w+\",?)+'
 if($fileContent -match $oldStepsPattern) {
@@ -163,7 +173,9 @@ else {
 
 
 # Replace nos of Steps one at a time
-if( (-not [String]::IsNullOrEmpty($newFilecontent)) -and ($SkipFileContentWriting -eq $false) ) {
+if( (-not [String]::IsNullOrEmpty($newFilecontent)) ) 
+{
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Update step no of old steps with new nos in `$newFilecontent..`n "
     foreach($index in $($existingPostStepIndex..$($AllSteps.Count-1))) 
     {
         if($Action -eq "AddStep") { # Add New Step
@@ -186,13 +198,22 @@ if( (-not [String]::IsNullOrEmpty($newFilecontent)) -and ($SkipFileContentWritin
     else {
         $newScriptFile = $ScriptFile
     }
-    $newFilecontent | Out-File -FilePath $newScriptFile
 
-    if($scriptFileName -eq 'Remove-SQLMonitor') {
-        notepad $newScriptFile
+    if($SkipFileContentWriting -eq $false) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Create/Update '$newScriptFile' with `$newFilecontent..`n "
+        $newFilecontent | Out-File -FilePath $newScriptFile
+
+        if($scriptFileName -eq 'Remove-SQLMonitor') {
+            notepad $newScriptFile
+        }
+        "Updated data saved into file '$newScriptFile'." | Write-Host -ForegroundColor Green
+        "Opening saved file '$newScriptFile'." | Write-Host -ForegroundColor Green
     }
-    "Updated data saved into file '$newScriptFile'." | Write-Host -ForegroundColor Green
-    "Opening saved file '$newScriptFile'." | Write-Host -ForegroundColor Green
+    else {
+        "`n$("*"*60)" | Write-Host -ForegroundColor Cyan
+        "`n*"*10 | Write-Host -ForegroundColor Cyan
+        $newFilecontent
+    }
 }
 
 
