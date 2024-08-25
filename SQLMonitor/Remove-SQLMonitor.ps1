@@ -1219,26 +1219,26 @@ else
 # 2__RemoveJob_CaptureAlertMessages
 $stepName = '2__RemoveJob_CaptureAlertMessages'
 if ($stepName -in $Steps2Execute) {
-  $objName = '(dba) Capture-AlertMessages'
-  $objType = 'job'
-  $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+    $objName = '(dba) Capture-AlertMessages'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
-  "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
 
-  # Append SQLInstance Name if TSQLJob server is different 
-  $objNameNew = $objName
-  if ( $SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-    $objNameNew = "$objName - $SqlInstanceToBaseline"
-  }
+    # Append SQLInstance Name if TSQLJob server is different 
+    $objNameNew = $objName
+    if ( $SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+      $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
 
-  if ($DryRun) {
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
-  }
-  else {
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
-  }
+    if ($DryRun) {
+      "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+      "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
+    }
 
-  if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
     { # If Job Server is Express edition
         
         $taskPath = '\DBA\'
@@ -1293,16 +1293,16 @@ else
 $stepName = '3__RemoveJob_CheckSQLAgentJobs'
 if ($stepName -in $Steps2Execute) 
 {
-  $objName = '(dba) Check-SQLAgentJobs'
-  $objType = 'job'
-  $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+    $objName = '(dba) Check-SQLAgentJobs'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
-  "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
 
-  # Append SQLInstance Name if TSQLJob server is different 
+    # Append SQLInstance Name if TSQLJob server is different 
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ( $SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+      $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -1375,8 +1375,8 @@ if ($stepName -in $Steps2Execute)
 
     # Append SQLInstance Name if TSQLJob server is different 
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ( $SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+      $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -1672,11 +1672,11 @@ if ($stepName -in $Steps2Execute)
 
   "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
 
-   # Append SQLInstance Name if TSQLJob server is different 
-   $objNameNew = $objName
-   if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-       $objNameNew = "$objName - $SqlInstanceToBaseline"
-   }
+  # Append SQLInstance Name if TSQLJob server is different 
+  $objNameNew = $objName
+  if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+      $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+  }
 
   if ($DryRun) {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
@@ -1748,7 +1748,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -1823,7 +1823,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -1899,7 +1899,7 @@ if( $stepName -in $Steps2Execute ) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -1975,7 +1975,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -2051,7 +2051,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) ) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -2127,7 +2127,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -2203,7 +2203,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -2279,7 +2279,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -2355,7 +2355,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -2431,7 +2431,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -2521,7 +2521,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -2597,7 +2597,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -2826,7 +2826,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -2902,7 +2902,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -2978,7 +2978,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -3054,7 +3054,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -3130,7 +3130,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -3206,7 +3206,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -3282,7 +3282,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {
@@ -3358,7 +3358,7 @@ if($stepName -in $Steps2Execute) {
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
     if($DryRun) {

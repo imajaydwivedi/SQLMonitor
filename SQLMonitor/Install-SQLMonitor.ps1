@@ -3541,7 +3541,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) ) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -4919,8 +4919,14 @@ $stepName = '33__CreateSQLAgentAlerts'
 if($stepName -in $Steps2Execute -and $IsNonPartitioned -eq $false) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
 
-    $sqlCreateAgentAlerts = "exec dbo.usp_create_agent_alerts; "
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlCreateAgentAlerts -EnableException
+    if($isExpressEdition) {
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Skipping SQLAgent Alerts creation for SQLExpress edition.."    
+    }
+    else {
+        $sqlCreateAgentAlerts = "exec dbo.usp_create_agent_alerts; "
+        $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlCreateAgentAlerts -EnableException
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "SQLAgent Alerts created using dbo.usp_create_agent_alerts.."    
+    }
 }
 
 
