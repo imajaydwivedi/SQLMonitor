@@ -857,8 +857,6 @@ if( ($RemoteSQLMonitorPath -ne $instanceDetailsForRemoval.sqlmonitor_script_path
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceForPowershellJobs = [$SqlInstanceForPowershellJobs]"
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$RemoteSQLMonitorPath = [$RemoteSQLMonitorPath]"
 
-exit
-
 # Get SQL Connections
 if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
     $conSqlInstanceAsDataDestination = $conSqlInstanceToBaseline
