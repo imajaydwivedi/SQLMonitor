@@ -3058,7 +3058,7 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -3179,7 +3179,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -3300,7 +3300,7 @@ if($stepName -in $Steps2Execute -and $IsNonPartitioned -eq $false)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -3421,7 +3421,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -3659,7 +3659,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -3779,7 +3779,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -3899,7 +3899,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -4023,7 +4023,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -4146,7 +4146,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -4269,7 +4269,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -4399,7 +4399,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -4520,7 +4520,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -4640,7 +4640,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -4761,7 +4761,7 @@ if($stepName -in $Steps2Execute -and $isExpressEdition -eq $false)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -5138,7 +5138,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -5268,7 +5268,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -5398,7 +5398,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -5634,7 +5634,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -5767,7 +5767,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -5911,7 +5911,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
