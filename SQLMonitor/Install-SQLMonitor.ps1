@@ -2936,7 +2936,7 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
     if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
