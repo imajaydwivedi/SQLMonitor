@@ -2,7 +2,7 @@ use DBA
 go
 
 /*
-	Version -> 2024-07-08
+	Version -> 2024-07-18
 	2024-07-08 - #01 - Initial Draft of Inventory Servers
 	-----------------
 
@@ -27,13 +27,16 @@ go
 	9) Create table dbo.sma_applications
 	10) Create table dbo.sma_applications_server_xref
 	11) Create table dbo.sma_applications_database_xref
-	12) Create table dbo.sma_errorlog
-	13) Create view dbo.sma_sql_servers & dbo.sma_sql_servers_including_offline	
-	14) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers
-	15) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers
-	16) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications
-	17) Create table dbo.login_email_mapping
-	18) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping
+	12) Create view dbo.sma_sql_servers	& dbo.sma_sql_servers_including_offline
+	13) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers
+	14) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers
+	15) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications
+	16) Create table dbo.login_email_mapping
+	17) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping
+	18) Create table dbo.all_server_login_expiry_info
+	29) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails]
+	20) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails]
+	21) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance]
 
 */
 
@@ -43,7 +46,7 @@ go
 
 /* ***** 1) Create table dbo.sma_servers ***************************** */
 	/*
-		ALTER TABLE dbo.sma_servers SET ( SYSTEM_VERSIONING = ON)
+		ALTER TABLE dbo.sma_servers SET ( SYSTEM_VERSIONING = OFF)
 		go
 		drop table dbo.sma_servers
 		go
@@ -86,14 +89,8 @@ create table dbo.sma_servers
 	,constraint [chk_server_type] check ([server_type] in ('SQLServer','PostgreSQL'))
 	,constraint [chk_hadr_strategy] check ([hadr_strategy] in ('standalone','mirroring','logshipping','sqlcluster','ag'))
 	,constraint [chk_backup_strategy] check ([backup_strategy] in ('Native','CommVault','Rubrik','Redgate','VSS'))
-
-	,constraint [fk_sma_servers__server] foreign key ([sql_instance]) references dbo.instance_details ([sql_instance])
 )
 WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.sma_servers_history));
-go
-
-alter table dbo.sma_servers
-	add constraint [fk_sma_servers__server] foreign key ([sql_instance]) references dbo.instance_details ([sql_instance])
 go
 
 /* ***** 2) Create table dbo.sma_sql_server_extended_info ***************************** */
@@ -121,12 +118,12 @@ create table dbo.sma_sql_server_extended_info
 	[rto_minutes] int null,
 	[data_center] varchar(125) null,
 	[availability_zone] varchar(125) null,
-	[avg_utilization_JSON] varchar(2000) null,
+	[avg_utilization] varchar(2000) null,
 	[ticket] varchar(2000) null,
 	[purpose] varchar(2000) null,
 	[known_challenges] varchar(2000) null,
 	[remarks] varchar(2000) null,
-	[more_info_JSON] varchar(2000) null
+	[more_info] varchar(2000) null
 
 	,[valid_from] DATETIME2 GENERATED ALWAYS AS ROW START HIDDEN NOT NULL
     ,[valid_to] DATETIME2 GENERATED ALWAYS AS ROW END HIDDEN NOT NULL
@@ -167,7 +164,7 @@ create table dbo.sma_sql_server_hosts
 	[wsfc_ip2] varchar(15) null,
 	[is_quarantined] bit not null default 0,
 	[is_decommissioned] bit not null default 0,
-	[more_info_JSON] varchar(2000) null
+	[more_info] varchar(2000) null
 
 	,[valid_from] DATETIME2 GENERATED ALWAYS AS ROW START HIDDEN NOT NULL
     ,[valid_to] DATETIME2 GENERATED ALWAYS AS ROW END HIDDEN NOT NULL
@@ -202,9 +199,6 @@ create table dbo.sma_hadr_ag
 	[ag_listener_ip2] varchar(15) null,
 	[backup_preference] varchar(125) null,
 	[backup_replica] varchar(125) null,
-	--[ag_listener_02_name] varchar(80) null,
-	--[ag_listener_02_ip1] varchar(15) null,
-	--[ag_listener_02_ip2] varchar(15) null,
 	[is_decommissioned] bit not null default 0,
 	[remarks] varchar(2000) null
 
@@ -363,7 +357,8 @@ create table dbo.sma_applications
 	[app_team_email] varchar(125) null,
 	[primary_contact_email] varchar(125) null,
 	[is_decommissioned] bit not null default 0,
-	[more_app_info] varchar(2000) null
+	[more_info] varchar(2000) null,
+	[remarks] varchar(2000) null
 
 	,[valid_from] DATETIME2 GENERATED ALWAYS AS ROW START HIDDEN NOT NULL
     ,[valid_to] DATETIME2 GENERATED ALWAYS AS ROW END HIDDEN NOT NULL
@@ -387,7 +382,9 @@ create table dbo.sma_applications_server_xref
 (
 	[server] varchar(125) not null,
 	[application_name] varchar(125) not null,
-	[is_valid] bit not null default 0
+	[is_valid] bit not null default 0,
+	[more_info] varchar(2000) null,
+	[remarks] varchar(2000) null
 
 	,[valid_from] DATETIME2 GENERATED ALWAYS AS ROW START HIDDEN NOT NULL
     ,[valid_to] DATETIME2 GENERATED ALWAYS AS ROW END HIDDEN NOT NULL
@@ -416,7 +413,9 @@ create table dbo.sma_applications_database_xref
 	[server] varchar(125) not null,
 	[database_name] varchar(125) not null,
 	[application_name] varchar(125) not null,
-	[is_valid] bit not null default 0
+	[is_valid] bit not null default 0,
+	[more_info] varchar(2000) null,
+	[remarks] varchar(2000) null
 
 	,[valid_from] DATETIME2 GENERATED ALWAYS AS ROW START HIDDEN NOT NULL
     ,[valid_to] DATETIME2 GENERATED ALWAYS AS ROW END HIDDEN NOT NULL
@@ -431,31 +430,10 @@ with (system_versioning = on (history_table = dbo.sma_applications_database_xref
 go
 
 
-
-/* ***** 12) Create table dbo.sma_errorlog ***************************** */
--- drop table [dbo].[sma_errorlog]
-create table [dbo].[sma_errorlog]
-( 	[collection_time] datetime2 not null default sysdatetime(), 
-    [function_name] varchar(125) not null, 
-	[function_call_arguments] varchar(1000) null, 
-	[server] varchar(125) null,
-	[error] varchar(1000) not null, 
-	[is_resolved] bit not null default 0,
-    [remark] varchar(1000) null,
-	[executed_by] varchar(125) not null default SUSER_NAME(),
-	[executor_program_name] varchar(125) not null default program_name()
-
-	,index [ci_sma_errorlog] clustered ([collection_time])
-)
-go
-
-
-
-
-/*	***** 13) Create view dbo.sma_sql_servers & dbo.sma_sql_servers_including_offline **************************** */
+/*	***** 12) Create view dbo.sma_sql_servers & dbo.sma_sql_servers_including_offline **************************** */
 create or alter view dbo.sma_sql_servers
 as
-select	s.server, 
+select	server = case when s.server = 'ATPR0SVDNTRY160' then '10.253.33.160' else s.server end, 
 		server_port = coalesce(id.sql_instance_port, s.server_port), s.domain, s.friendly_name, 
 		s.stability, s.hadr_strategy, hosts = hosts.hosts, s.backup_strategy,
 		s.server_owner_email, 
@@ -530,7 +508,7 @@ go
 
 create or alter view dbo.sma_sql_servers_including_offline
 as
-select	s.server, 
+select	server = case when s.server = 'ATPR0SVDNTRY160' then '10.253.33.160' else s.server end, 
 		server_port = coalesce(id.sql_instance_port, s.server_port), s.domain, s.friendly_name, 
 		s.stability, s.hadr_strategy, hosts = hosts.hosts, s.backup_strategy,
 		s.server_owner_email, 
@@ -603,7 +581,7 @@ where 1=1
 go
 
 
-/* ***** 14) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers ***************************** */
+/* ***** 13) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers ***************************** */
 -- drop trigger dbo.tgr_dml__fk_validation_sma_servers__server;
 create or alter trigger dbo.tgr_dml__fk_validation_sma_servers__server
 	on dbo.sma_servers
@@ -622,7 +600,7 @@ begin
 end
 go
 
-/* ***** 15) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers ***************************** */
+/* ***** 14) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers ***************************** */
 create or alter trigger dbo.tgr_dml__sma_servers__server_owner_email__validation
 	on dbo.sma_servers
 	for insert, update
@@ -652,7 +630,7 @@ end
 go
 
 
-/* ***** 16) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications ***************************** */
+/* ***** 15) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications ***************************** */
 create or alter trigger dbo.tgr_dml__sma_applications__email__validation
 	on dbo.sma_applications
 	for insert, update
@@ -689,7 +667,7 @@ end
 go
 
 
-/* ***** 17) Create table dbo.login_email_mapping ***************************** */
+/* ***** 15) Create table dbo.login_email_mapping ***************************** */
 -- drop table [dbo].[login_email_mapping]
 create table dbo.login_email_mapping
 (
@@ -710,7 +688,8 @@ create table dbo.login_email_mapping
 );
 go
 
-/* ***** 18) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping ***************************** */
+
+/* ***** 17) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping ***************************** */
 create or alter trigger dbo.tgr_dml__login_email_mapping__email__validation
 	on dbo.login_email_mapping
 	for insert, update
@@ -738,6 +717,100 @@ begin
 	end
 end
 go
+
+
+/* ***** 18) Create table dbo.all_server_login_expiry_info ***************************** */
+-- drop table dbo.all_server_login_expiry_info
+CREATE TABLE dbo.all_server_login_expiry_info
+(
+	collection_time datetime2 not null default sysdatetime(),
+	sql_instance	varchar(125),
+	[host_name]		varchar(125),	
+	login_name		varchar(125),
+	login_sid 		varbinary(85),
+	create_date		datetime,
+	modify_date		datetime,
+	default_database_name varchar(125),
+	is_policy_checked bit,
+	is_expiration_checked bit,
+	is_sysadmin bit,
+	password_last_set_time	datetime,
+	days_until_expiration	int,
+	password_expiration	datetime,
+	is_expired	bit,
+	is_locked	bit,		
+	owner_group_email varchar(500)		
+
+	,index CI_all_server_login_expiry_info clustered (collection_time, sql_instance)
+);
+go
+
+-- Add dbo.purge_table entry for dbo.all_server_login_expiry_info
+if not exists (select 1 from dbo.purge_table where table_name = 'dbo.all_server_login_expiry_info')
+begin
+	insert dbo.purge_table
+	(table_name, date_key, retention_days, purge_row_size, reference)
+	select	table_name = 'dbo.all_server_login_expiry_info', 
+			date_key = 'collection_time', 
+			retention_days = 30, 
+			purge_row_size = 100000,
+			reference = 'SQLMonitor Data Collection'
+end
+go
+
+
+/* ***** 19) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails] ***************************** */
+create table dbo.server_login_expiry_collection_computed
+(	sql_instance varchar(125) not null,
+	collection_time_latest datetime2 not null,
+	server_owner_email varchar(2000) null,
+	app_team_emails varchar(2000) null,
+	application_owner_emails varchar(2000) null
+
+	,index CI_server_login_expiry_collection_computed unique clustered (sql_instance, collection_time_latest)
+);
+go
+
+
+/* ***** 20) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails] ***************************** */
+create table dbo.all_server_login_expiry_info_dashboard
+(
+	[collection_time] [datetime2](7) NOT NULL,
+	[sql_instance] [varchar](125) not null,
+	[login_name] [varchar](125) not null,
+	[is_sysadmin] [bit] NULL,
+	[password_last_set_time] [datetime] NULL,
+	[password_expiration] [datetime] NULL,
+	[is_expired] [bit] NULL,
+	[is_locked] [bit] NULL,
+	[days_until_expiration] [int] NULL,
+	[login_owner_group_email] [varchar](4000) NULL,
+	[server_owner_email] [varchar](2000) NULL,
+	[app_team_emails] [varchar](2000) NULL,
+	[application_owner_emails] [varchar](2000) NULL
+
+	,index CI_all_server_login_expiry_info_dashboard unique clustered (sql_instance, login_name)
+);
+go
+
+
+/* ***** 21) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance] ***************************** */
+--drop table dbo.sma_servers_logs
+create table dbo.sma_servers_logs
+(	id int identity(1,1) not null,
+	sql_instance varchar(125) not null,
+	start_time datetime2 not null default sysdatetime(),
+	status varchar(125) default 'start',
+	remarks varchar(2000) null
+
+	,constraint pk_sma_servers_logs primary key clustered (id)
+	,index sql_instance nonclustered (sql_instance, start_time)
+);
+go
+
+
+
+
 
 /*
 -- SQLMonitor core table

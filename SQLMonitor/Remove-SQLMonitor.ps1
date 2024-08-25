@@ -31,155 +31,218 @@ Param (
     [String]$DataCollectorSetName = 'DBA',
 
     [Parameter(Mandatory=$false)]
-    [ValidateSet("1__RemoveJob_CheckSQLAgentJobs", "2__RemoveJob_CollectAgHealthState", "3__RemoveJob_CollectDiskSpace",
-                "4__RemoveJob_CollectOSProcesses", "5__RemoveJob_CollectPerfmonData", "6__RemoveJob_CollectPrivilegedInfo",
-                "7__RemoveJob_CollectWaitStats", "8__RemoveJob_CollectXEvents", "9__RemoveJob_PartitionsMaintenance",
-                "10__RemoveJob_PurgeTables", "11__RemoveJob_RemoveXEventFiles", "12__RemoveJob_RunWhoIsActive",
-                "13__RemoveJob_CollectFileIOStats", "14__RemoveJob_CollectMemoryClerks", "15__RemoveJob_RunBlitzIndex",
-                "16__RemoveJob_RunBlitz", "17__RemoveJob_RunLogSaver", "18__RemoveJob_RunTempDbSaver",
-                "19__RemoveJob_UpdateSqlServerVersions", "20__RemoveJob_CheckInstanceAvailability", "21__RemoveJob_GetAllServerInfo",
-                "22__RemoveJob_GetAllServerCollectedData", "23__DropProc_UspExtendedResults", "24__DropProc_UspCollectWaitStats",
-                "25__DropProc_UspRunWhoIsActive", "26__DropProc_UspCollectXEventsXEventMetrics", "27__DropProc_UspPartitionMaintenance",
-                "28__DropProc_UspPurgeTables", "29__DropProc_SpWhatIsRunning", "30__DropProc_UspActiveRequestsCount",
-                "31__DropProc_UspCollectFileIOStats", "32__DropProc_UspEnablePageCompression", "33__DropProc_UspWaitsPerCorePerMinute",
-                "34__DropProc_UspCollectMemoryClerks", "35__DropProc_UspWrapperGetAllServerInfo", "36__DropProc_UspPopulateAllServerVolatileInfoHistory",
-                "37__DropProc_UspGetAllServerInfo", "38__DropView_VwPerformanceCounters", "39__DropView_VwOsTaskList",
-                "40__DropView_VwWaitStatsDeltas", "41__DropView_vw_file_io_stats_deltas", "42__DropView_vw_xevent_metrics",
-                "43__DropView_vw_disk_space", "44__DropView_vw_all_server_info", "45__DropXEvent_XEventMetrics",
-                "46__DropLinkedServer", "47__DropLogin_Grafana", "48__DropTable_XEventMetrics",
-                "49__DropTable_xevent_metrics_queries", "50__DropTable_XEventMetricsProcessedXELFiles", "51__DropTable_WhoIsActive_Staging",
-                "52__DropTable_WhoIsActive", "53__DropTable_PerformanceCounters", "54__DropTable_PurgeTable",
-                "55__DropTable_PerfmonFiles", "56__DropTable_InstanceDetails", "57__DropTable_InstanceHosts",
-                "58__DropTable_OsTaskList", "59__DropTable_BlitzWho", "60__DropTable_BlitzCache",
-                "61__DropTable_ConnectionHistory", "62__DropTable_BlitzFirst", "63__DropTable_BlitzFirstFileStats",
-                "64__DropTable_DiskSpace", "65__DropTable_BlitzFirstPerfmonStats", "66__DropTable_BlitzFirstWaitStats",
-                "67__DropTable_BlitzFirstWaitStatsCategories", "68__DropTable_WaitStats", "69__DropTable_BlitzIndex",
-                "70__DropTable_Blitz", "71__DropTable_FileIOStats", "72__DropTable_MemoryClerks",
-                "73__DropTable_AgHealthState", "74__DropTable_LogSpaceConsumers", "75__DropTable_PrivilegedInfo",
-                "76__DropTable_SqlAgentJobStats", "77__DropTable_SqlAgentJobThresholds", "78__DropTable_TempdbSpaceConsumers",
-                "79__DropTable_TempdbSpaceUsage", "80__DropTable_AllServerCollectionLatencyInfo", "81__DropTable_AllServerVolatileInfoHistory",
-                "82__DropTable_AllServerVolatileInfo", "83__DropTable_AllServerStableInfo", "84__DropTable_DiskSpaceAllServersStaging",
-                "85__DropTable_DiskSpaceAllServers", "86__DropTable_LogSpaceConsumersAllServers", "87__DropTable_LogSpaceConsumersAllServersStaging",
-                "88__DropTable_SqlAgentJobsAllServers", "89__DropTable_SqlAgentJobsAllServersStaging", "90__DropTable_TempdbSpaceUsageAllServers",
-                "91__DropTable_TempdbSpaceUsageAllServersStaging", "92__DropTable_AgHealthStateAllServers", "93__DropTable_AgHealthStateAllServersStaging",
-                "94__DropTable_AllServerVolatileInfoHistory", "95__DropTable_DiskSpaceAllServersStaging", "96__RemovePerfmonFilesFromDisk",
-                "97__RemoveXEventFilesFromDisk", "98__DropProxy", "99__DropCredential",
-                "100__RemoveInstanceFromInventory")]
+    [ValidateSet("1__Remove_SQLAgentAlerts", "2__RemoveJob_CaptureAlertMessages", "3__RemoveJob_CheckSQLAgentJobs",
+                "4__RemoveJob_CollectAgHealthState", "5__RemoveJob_CollectDiskSpace", "6__RemoveJob_CollectOSProcesses",
+                "7__RemoveJob_CollectPerfmonData", "8__RemoveJob_CollectPrivilegedInfo", "9__RemoveJob_CollectWaitStats",
+                "10__RemoveJob_CollectXEvents", "11__RemoveJob_PartitionsMaintenance", "12__RemoveJob_PurgeTables",
+                "13__RemoveJob_RemoveXEventFiles", "14__RemoveJob_RunWhoIsActive", "15__RemoveJob_CollectFileIOStats",
+                "16__RemoveJob_CollectMemoryClerks", "17__RemoveJob_RunBlitz", "18__RemoveJob_RunBlitzIndex",
+                "19__RemoveJob_RunLogSaver", "20__RemoveJob_RunTempDbSaver", "21__RemoveJob_UpdateSqlServerVersions",
+                "22__RemoveJob_CheckInstanceAvailability", "23__RemoveJob_GetAllServerInfo", "24__RemoveJob_GetAllServerCollectedData",
+                "25__RemoveJob_CollectLoginExpirationInfo", "26__RemoveJob_CollectAllServerAlertMessages", "27__RemoveJob_GetAllServerDashboardMail",
+                "28__RemoveJob_PopulateInventoryTables", "29__RemoveJob_SendLoginExpiryEMails", "30__RemoveJob_StopStuckSQLMonitorJobs",
+                "31__DropProc_UspExtendedResults", "32__DropProc_UspCollectWaitStats", "33__DropProc_UspRunWhoIsActive",
+                "34__DropProc_UspCollectXEventsXEventMetrics", "35__DropProc_UspPartitionMaintenance", "36__DropProc_UspPurgeTables",
+                "37__DropProc_SpWhatIsRunning", "38__DropProc_UspActiveRequestsCount", "39__DropProc_UspCollectFileIOStats",
+                "40__DropProc_UspEnablePageCompression", "41__DropProc_UspWaitsPerCorePerMinute", "42__DropProc_UspCollectMemoryClerks",
+                "43__DropProc_UspAvgDiskWaitMs", "44__DropProc_UspCaptureAlertMessages", "45__DropProc_UspCheckSqlAgentJobs",
+                "46__DropProc_UspCollectAgHealthState", "47__DropProc_UspCollectPrivilegedInfo", "48__DropProc_UspCollectXEventMetrics",
+                "49__DropProc_UspCreateAgentAlerts", "50__DropProc_UspLogSaver", "51__DropProc_UspTempDbSaver",
+                "52__DropProc_UspWrapperCollectPriviledgedInfo", "53__DropProc_UspWrapperGetAllServerInfo", "54__DropProc_UspPopulateAllServerVolatileInfoHistory",
+                "55__DropProc_UspGetAllServerInfo", "56__DropProc_UspCheckJobStatus", "57__DropProc_UspCollectAlertMessages",
+                "58__DropProc_UspCollectAllServerLoginExpirationInfo", "59__DropProc_UspGetAllServerCollectedData", "60__DropProc_UspGetAllServerDashboardMail",
+                "61__DropProc_UspPopulateSmaSqlInstance", "62__DropProc_UspSendLoginExpiryEmails", "63__DropProc_UspWrapperGetAllServerCollectedData",
+                "64__DropProc_UspWrapperPopulateSmaSqlInstance", "65__DropView_VwPerformanceCounters", "66__DropView_VwOsTaskList",
+                "67__DropView_VwWaitStatsDeltas", "68__DropView_vw_file_io_stats_deltas", "69__DropView_vw_xevent_metrics",
+                "70__DropView_vw_disk_space", "71__DropView_vw_all_server_info", "72__DropView_SmaSqlServers",
+                "73__DropView_SmaSqlServersIncludingOffline", "74__DropXEvent_XEventMetrics", "75__DropLinkedServer",
+                "76__DropLogin_Grafana", "77__DropTable_XEventMetrics", "78__DropTable_xevent_metrics_queries",
+                "79__DropTable_XEventMetricsProcessedXELFiles", "81__DropTable_WhoIsActive_Staging", "81__DropTable_WhoIsActive",
+                "82__DropTable_PerformanceCounters", "83__DropTable_PurgeTable", "84__DropTable_PerfmonFiles",
+                "85__DropTable_InstanceDetails", "86__DropTable_InstanceDetailsHistory", "87__DropTable_InstanceHosts",
+                "88__DropTable_Blitz", "89__DropTable_OsTaskList", "90__DropTable_BlitzWho",
+                "91__DropTable_BlitzCache", "92__DropTable_ConnectionHistory", "93__DropTable_BlitzFirst",
+                "94__DropTable_BlitzFirstFileStats", "95__DropTable_DiskSpace", "96__DropTable_BlitzFirstPerfmonStats",
+                "97__DropTable_BlitzFirstWaitStats", "98__DropTable_BlitzFirstWaitStatsCategories", "99__DropTable_WaitStats",
+                "100__DropTable_BlitzIndex", "101__DropTable_FileIOStats", "102__DropTable_MemoryClerks",
+                "103__DropTable_AgHealthState", "104__DropTable_LogSpaceConsumers", "105__DropTable_PrivilegedInfo",
+                "106__DropTable_SqlAgentJobStats", "107__DropTable_SqlAgentJobThresholds", "108__DropTable_TempdbSpaceConsumers",
+                "109__DropTable_TempdbSpaceUsage", "110__DropTable_AllServerCollectionLatencyInfo", "112__DropTable_AllServerVolatileInfoHistory",
+                "112__DropTable_AllServerVolatileInfo", "113__DropTable_AllServerStableInfo", "114__DropTable_DiskSpaceAllServers",
+                "115__DropTable_LogSpaceConsumersAllServers", "116__DropTable_LogSpaceConsumersAllServersStaging", "117__DropTable_SqlAgentJobsAllServers",
+                "118__DropTable_SqlAgentJobsAllServersStaging", "119__DropTable_TempdbSpaceUsageAllServers", "120__DropTable_TempdbSpaceUsageAllServersStaging",
+                "121__DropTable_AgHealthStateAllServers", "122__DropTable_AgHealthStateAllServersStaging", "123__DropTable_AllServerVolatileInfoHistory",
+                "124__DropTable_DiskSpaceAllServersStaging", "125__DropTable_AlertCategories", "126__DropTable_AlertHistory",
+                "127__DropTable_AlertHistoryAllServers", "128__DropTable_AlertHistoryAllServersLastActioned", "129__DropTable_AllServerLoginExpiryInfo",
+                "130__DropTable_AllServerLoginExpiryInfoDashboard", "131__DropTable_ServerLoginExpiryCollectionComputed", "132__DropTable_BackupsAllServers",
+                "133__DropTable_BackupsAllServersStaging", "134__DropTable_LoginEmailMapping", "135__DropTable_SentAlertHistoryAllServers",
+                "136__DropTable_ServicesAllServers", "137__DropTable_ServicesAllServersStaging", "138__DropTable_ErrorLog",
+                "139__DropTable_SmaServersLog", "140__DropTable_SmaSqlServerHostsWrapper", "141__RemovePerfmonFilesFromDisk",
+                "142__RemoveXEventFilesFromDisk", "143__DropProxy", "144__DropCredential",
+                "145__RemoveInstanceFromInventory")]
     [String[]]$OnlySteps,
 
     [Parameter(Mandatory=$false)]
-    [ValidateSet("1__RemoveJob_CheckSQLAgentJobs", "2__RemoveJob_CollectAgHealthState", "3__RemoveJob_CollectDiskSpace",
-                "4__RemoveJob_CollectOSProcesses", "5__RemoveJob_CollectPerfmonData", "6__RemoveJob_CollectPrivilegedInfo",
-                "7__RemoveJob_CollectWaitStats", "8__RemoveJob_CollectXEvents", "9__RemoveJob_PartitionsMaintenance",
-                "10__RemoveJob_PurgeTables", "11__RemoveJob_RemoveXEventFiles", "12__RemoveJob_RunWhoIsActive",
-                "13__RemoveJob_CollectFileIOStats", "14__RemoveJob_CollectMemoryClerks", "15__RemoveJob_RunBlitzIndex",
-                "16__RemoveJob_RunBlitz", "17__RemoveJob_RunLogSaver", "18__RemoveJob_RunTempDbSaver",
-                "19__RemoveJob_UpdateSqlServerVersions", "20__RemoveJob_CheckInstanceAvailability", "21__RemoveJob_GetAllServerInfo",
-                "22__RemoveJob_GetAllServerCollectedData", "23__DropProc_UspExtendedResults", "24__DropProc_UspCollectWaitStats",
-                "25__DropProc_UspRunWhoIsActive", "26__DropProc_UspCollectXEventsXEventMetrics", "27__DropProc_UspPartitionMaintenance",
-                "28__DropProc_UspPurgeTables", "29__DropProc_SpWhatIsRunning", "30__DropProc_UspActiveRequestsCount",
-                "31__DropProc_UspCollectFileIOStats", "32__DropProc_UspEnablePageCompression", "33__DropProc_UspWaitsPerCorePerMinute",
-                "34__DropProc_UspCollectMemoryClerks", "35__DropProc_UspWrapperGetAllServerInfo", "36__DropProc_UspPopulateAllServerVolatileInfoHistory",
-                "37__DropProc_UspGetAllServerInfo", "38__DropView_VwPerformanceCounters", "39__DropView_VwOsTaskList",
-                "40__DropView_VwWaitStatsDeltas", "41__DropView_vw_file_io_stats_deltas", "42__DropView_vw_xevent_metrics",
-                "43__DropView_vw_disk_space", "44__DropView_vw_all_server_info", "45__DropXEvent_XEventMetrics",
-                "46__DropLinkedServer", "47__DropLogin_Grafana", "48__DropTable_XEventMetrics",
-                "49__DropTable_xevent_metrics_queries", "50__DropTable_XEventMetricsProcessedXELFiles", "51__DropTable_WhoIsActive_Staging",
-                "52__DropTable_WhoIsActive", "53__DropTable_PerformanceCounters", "54__DropTable_PurgeTable",
-                "55__DropTable_PerfmonFiles", "56__DropTable_InstanceDetails", "57__DropTable_InstanceHosts",
-                "58__DropTable_OsTaskList", "59__DropTable_BlitzWho", "60__DropTable_BlitzCache",
-                "61__DropTable_ConnectionHistory", "62__DropTable_BlitzFirst", "63__DropTable_BlitzFirstFileStats",
-                "64__DropTable_DiskSpace", "65__DropTable_BlitzFirstPerfmonStats", "66__DropTable_BlitzFirstWaitStats",
-                "67__DropTable_BlitzFirstWaitStatsCategories", "68__DropTable_WaitStats", "69__DropTable_BlitzIndex",
-                "70__DropTable_Blitz", "71__DropTable_FileIOStats", "72__DropTable_MemoryClerks",
-                "73__DropTable_AgHealthState", "74__DropTable_LogSpaceConsumers", "75__DropTable_PrivilegedInfo",
-                "76__DropTable_SqlAgentJobStats", "77__DropTable_SqlAgentJobThresholds", "78__DropTable_TempdbSpaceConsumers",
-                "79__DropTable_TempdbSpaceUsage", "80__DropTable_AllServerCollectionLatencyInfo", "81__DropTable_AllServerVolatileInfoHistory",
-                "82__DropTable_AllServerVolatileInfo", "83__DropTable_AllServerStableInfo", "84__DropTable_DiskSpaceAllServersStaging",
-                "85__DropTable_DiskSpaceAllServers", "86__DropTable_LogSpaceConsumersAllServers", "87__DropTable_LogSpaceConsumersAllServersStaging",
-                "88__DropTable_SqlAgentJobsAllServers", "89__DropTable_SqlAgentJobsAllServersStaging", "90__DropTable_TempdbSpaceUsageAllServers",
-                "91__DropTable_TempdbSpaceUsageAllServersStaging", "92__DropTable_AgHealthStateAllServers", "93__DropTable_AgHealthStateAllServersStaging",
-                "94__DropTable_AllServerVolatileInfoHistory", "95__DropTable_DiskSpaceAllServersStaging", "96__RemovePerfmonFilesFromDisk",
-                "97__RemoveXEventFilesFromDisk", "98__DropProxy", "99__DropCredential",
-                "100__RemoveInstanceFromInventory")]
-    [String]$StartAtStep = "1__RemoveJob_CheckSQLAgentJobs",
+    [ValidateSet("1__Remove_SQLAgentAlerts", "2__RemoveJob_CaptureAlertMessages", "3__RemoveJob_CheckSQLAgentJobs",
+                "4__RemoveJob_CollectAgHealthState", "5__RemoveJob_CollectDiskSpace", "6__RemoveJob_CollectOSProcesses",
+                "7__RemoveJob_CollectPerfmonData", "8__RemoveJob_CollectPrivilegedInfo", "9__RemoveJob_CollectWaitStats",
+                "10__RemoveJob_CollectXEvents", "11__RemoveJob_PartitionsMaintenance", "12__RemoveJob_PurgeTables",
+                "13__RemoveJob_RemoveXEventFiles", "14__RemoveJob_RunWhoIsActive", "15__RemoveJob_CollectFileIOStats",
+                "16__RemoveJob_CollectMemoryClerks", "17__RemoveJob_RunBlitz", "18__RemoveJob_RunBlitzIndex",
+                "19__RemoveJob_RunLogSaver", "20__RemoveJob_RunTempDbSaver", "21__RemoveJob_UpdateSqlServerVersions",
+                "22__RemoveJob_CheckInstanceAvailability", "23__RemoveJob_GetAllServerInfo", "24__RemoveJob_GetAllServerCollectedData",
+                "25__RemoveJob_CollectLoginExpirationInfo", "26__RemoveJob_CollectAllServerAlertMessages", "27__RemoveJob_GetAllServerDashboardMail",
+                "28__RemoveJob_PopulateInventoryTables", "29__RemoveJob_SendLoginExpiryEMails", "30__RemoveJob_StopStuckSQLMonitorJobs",
+                "31__DropProc_UspExtendedResults", "32__DropProc_UspCollectWaitStats", "33__DropProc_UspRunWhoIsActive",
+                "34__DropProc_UspCollectXEventsXEventMetrics", "35__DropProc_UspPartitionMaintenance", "36__DropProc_UspPurgeTables",
+                "37__DropProc_SpWhatIsRunning", "38__DropProc_UspActiveRequestsCount", "39__DropProc_UspCollectFileIOStats",
+                "40__DropProc_UspEnablePageCompression", "41__DropProc_UspWaitsPerCorePerMinute", "42__DropProc_UspCollectMemoryClerks",
+                "43__DropProc_UspAvgDiskWaitMs", "44__DropProc_UspCaptureAlertMessages", "45__DropProc_UspCheckSqlAgentJobs",
+                "46__DropProc_UspCollectAgHealthState", "47__DropProc_UspCollectPrivilegedInfo", "48__DropProc_UspCollectXEventMetrics",
+                "49__DropProc_UspCreateAgentAlerts", "50__DropProc_UspLogSaver", "51__DropProc_UspTempDbSaver",
+                "52__DropProc_UspWrapperCollectPriviledgedInfo", "53__DropProc_UspWrapperGetAllServerInfo", "54__DropProc_UspPopulateAllServerVolatileInfoHistory",
+                "55__DropProc_UspGetAllServerInfo", "56__DropProc_UspCheckJobStatus", "57__DropProc_UspCollectAlertMessages",
+                "58__DropProc_UspCollectAllServerLoginExpirationInfo", "59__DropProc_UspGetAllServerCollectedData", "60__DropProc_UspGetAllServerDashboardMail",
+                "61__DropProc_UspPopulateSmaSqlInstance", "62__DropProc_UspSendLoginExpiryEmails", "63__DropProc_UspWrapperGetAllServerCollectedData",
+                "64__DropProc_UspWrapperPopulateSmaSqlInstance", "65__DropView_VwPerformanceCounters", "66__DropView_VwOsTaskList",
+                "67__DropView_VwWaitStatsDeltas", "68__DropView_vw_file_io_stats_deltas", "69__DropView_vw_xevent_metrics",
+                "70__DropView_vw_disk_space", "71__DropView_vw_all_server_info", "72__DropView_SmaSqlServers",
+                "73__DropView_SmaSqlServersIncludingOffline", "74__DropXEvent_XEventMetrics", "75__DropLinkedServer",
+                "76__DropLogin_Grafana", "77__DropTable_XEventMetrics", "78__DropTable_xevent_metrics_queries",
+                "79__DropTable_XEventMetricsProcessedXELFiles", "81__DropTable_WhoIsActive_Staging", "81__DropTable_WhoIsActive",
+                "82__DropTable_PerformanceCounters", "83__DropTable_PurgeTable", "84__DropTable_PerfmonFiles",
+                "85__DropTable_InstanceDetails", "86__DropTable_InstanceDetailsHistory", "87__DropTable_InstanceHosts",
+                "88__DropTable_Blitz", "89__DropTable_OsTaskList", "90__DropTable_BlitzWho",
+                "91__DropTable_BlitzCache", "92__DropTable_ConnectionHistory", "93__DropTable_BlitzFirst",
+                "94__DropTable_BlitzFirstFileStats", "95__DropTable_DiskSpace", "96__DropTable_BlitzFirstPerfmonStats",
+                "97__DropTable_BlitzFirstWaitStats", "98__DropTable_BlitzFirstWaitStatsCategories", "99__DropTable_WaitStats",
+                "100__DropTable_BlitzIndex", "101__DropTable_FileIOStats", "102__DropTable_MemoryClerks",
+                "103__DropTable_AgHealthState", "104__DropTable_LogSpaceConsumers", "105__DropTable_PrivilegedInfo",
+                "106__DropTable_SqlAgentJobStats", "107__DropTable_SqlAgentJobThresholds", "108__DropTable_TempdbSpaceConsumers",
+                "109__DropTable_TempdbSpaceUsage", "110__DropTable_AllServerCollectionLatencyInfo", "112__DropTable_AllServerVolatileInfoHistory",
+                "112__DropTable_AllServerVolatileInfo", "113__DropTable_AllServerStableInfo", "114__DropTable_DiskSpaceAllServers",
+                "115__DropTable_LogSpaceConsumersAllServers", "116__DropTable_LogSpaceConsumersAllServersStaging", "117__DropTable_SqlAgentJobsAllServers",
+                "118__DropTable_SqlAgentJobsAllServersStaging", "119__DropTable_TempdbSpaceUsageAllServers", "120__DropTable_TempdbSpaceUsageAllServersStaging",
+                "121__DropTable_AgHealthStateAllServers", "122__DropTable_AgHealthStateAllServersStaging", "123__DropTable_AllServerVolatileInfoHistory",
+                "124__DropTable_DiskSpaceAllServersStaging", "125__DropTable_AlertCategories", "126__DropTable_AlertHistory",
+                "127__DropTable_AlertHistoryAllServers", "128__DropTable_AlertHistoryAllServersLastActioned", "129__DropTable_AllServerLoginExpiryInfo",
+                "130__DropTable_AllServerLoginExpiryInfoDashboard", "131__DropTable_ServerLoginExpiryCollectionComputed", "132__DropTable_BackupsAllServers",
+                "133__DropTable_BackupsAllServersStaging", "134__DropTable_LoginEmailMapping", "135__DropTable_SentAlertHistoryAllServers",
+                "136__DropTable_ServicesAllServers", "137__DropTable_ServicesAllServersStaging", "138__DropTable_ErrorLog",
+                "139__DropTable_SmaServersLog", "140__DropTable_SmaSqlServerHostsWrapper", "141__RemovePerfmonFilesFromDisk",
+                "142__RemoveXEventFilesFromDisk", "143__DropProxy", "144__DropCredential",
+                "145__RemoveInstanceFromInventory")]
+    [String]$StartAtStep,
 
     [Parameter(Mandatory=$false)]
-    [ValidateSet("1__RemoveJob_CheckSQLAgentJobs", "2__RemoveJob_CollectAgHealthState", "3__RemoveJob_CollectDiskSpace",
-                "4__RemoveJob_CollectOSProcesses", "5__RemoveJob_CollectPerfmonData", "6__RemoveJob_CollectPrivilegedInfo",
-                "7__RemoveJob_CollectWaitStats", "8__RemoveJob_CollectXEvents", "9__RemoveJob_PartitionsMaintenance",
-                "10__RemoveJob_PurgeTables", "11__RemoveJob_RemoveXEventFiles", "12__RemoveJob_RunWhoIsActive",
-                "13__RemoveJob_CollectFileIOStats", "14__RemoveJob_CollectMemoryClerks", "15__RemoveJob_RunBlitzIndex",
-                "16__RemoveJob_RunBlitz", "17__RemoveJob_RunLogSaver", "18__RemoveJob_RunTempDbSaver",
-                "19__RemoveJob_UpdateSqlServerVersions", "20__RemoveJob_CheckInstanceAvailability", "21__RemoveJob_GetAllServerInfo",
-                "22__RemoveJob_GetAllServerCollectedData", "23__DropProc_UspExtendedResults", "24__DropProc_UspCollectWaitStats",
-                "25__DropProc_UspRunWhoIsActive", "26__DropProc_UspCollectXEventsXEventMetrics", "27__DropProc_UspPartitionMaintenance",
-                "28__DropProc_UspPurgeTables", "29__DropProc_SpWhatIsRunning", "30__DropProc_UspActiveRequestsCount",
-                "31__DropProc_UspCollectFileIOStats", "32__DropProc_UspEnablePageCompression", "33__DropProc_UspWaitsPerCorePerMinute",
-                "34__DropProc_UspCollectMemoryClerks", "35__DropProc_UspWrapperGetAllServerInfo", "36__DropProc_UspPopulateAllServerVolatileInfoHistory",
-                "37__DropProc_UspGetAllServerInfo", "38__DropView_VwPerformanceCounters", "39__DropView_VwOsTaskList",
-                "40__DropView_VwWaitStatsDeltas", "41__DropView_vw_file_io_stats_deltas", "42__DropView_vw_xevent_metrics",
-                "43__DropView_vw_disk_space", "44__DropView_vw_all_server_info", "45__DropXEvent_XEventMetrics",
-                "46__DropLinkedServer", "47__DropLogin_Grafana", "48__DropTable_XEventMetrics",
-                "49__DropTable_xevent_metrics_queries", "50__DropTable_XEventMetricsProcessedXELFiles", "51__DropTable_WhoIsActive_Staging",
-                "52__DropTable_WhoIsActive", "53__DropTable_PerformanceCounters", "54__DropTable_PurgeTable",
-                "55__DropTable_PerfmonFiles", "56__DropTable_InstanceDetails", "57__DropTable_InstanceHosts",
-                "58__DropTable_OsTaskList", "59__DropTable_BlitzWho", "60__DropTable_BlitzCache",
-                "61__DropTable_ConnectionHistory", "62__DropTable_BlitzFirst", "63__DropTable_BlitzFirstFileStats",
-                "64__DropTable_DiskSpace", "65__DropTable_BlitzFirstPerfmonStats", "66__DropTable_BlitzFirstWaitStats",
-                "67__DropTable_BlitzFirstWaitStatsCategories", "68__DropTable_WaitStats", "69__DropTable_BlitzIndex",
-                "70__DropTable_Blitz", "71__DropTable_FileIOStats", "72__DropTable_MemoryClerks",
-                "73__DropTable_AgHealthState", "74__DropTable_LogSpaceConsumers", "75__DropTable_PrivilegedInfo",
-                "76__DropTable_SqlAgentJobStats", "77__DropTable_SqlAgentJobThresholds", "78__DropTable_TempdbSpaceConsumers",
-                "79__DropTable_TempdbSpaceUsage", "80__DropTable_AllServerCollectionLatencyInfo", "81__DropTable_AllServerVolatileInfoHistory",
-                "82__DropTable_AllServerVolatileInfo", "83__DropTable_AllServerStableInfo", "84__DropTable_DiskSpaceAllServersStaging",
-                "85__DropTable_DiskSpaceAllServers", "86__DropTable_LogSpaceConsumersAllServers", "87__DropTable_LogSpaceConsumersAllServersStaging",
-                "88__DropTable_SqlAgentJobsAllServers", "89__DropTable_SqlAgentJobsAllServersStaging", "90__DropTable_TempdbSpaceUsageAllServers",
-                "91__DropTable_TempdbSpaceUsageAllServersStaging", "92__DropTable_AgHealthStateAllServers", "93__DropTable_AgHealthStateAllServersStaging",
-                "94__DropTable_AllServerVolatileInfoHistory", "95__DropTable_DiskSpaceAllServersStaging", "96__RemovePerfmonFilesFromDisk",
-                "97__RemoveXEventFilesFromDisk", "98__DropProxy", "99__DropCredential",
-                "100__RemoveInstanceFromInventory")]
+    [ValidateSet("1__Remove_SQLAgentAlerts", "2__RemoveJob_CaptureAlertMessages", "3__RemoveJob_CheckSQLAgentJobs",
+                "4__RemoveJob_CollectAgHealthState", "5__RemoveJob_CollectDiskSpace", "6__RemoveJob_CollectOSProcesses",
+                "7__RemoveJob_CollectPerfmonData", "8__RemoveJob_CollectPrivilegedInfo", "9__RemoveJob_CollectWaitStats",
+                "10__RemoveJob_CollectXEvents", "11__RemoveJob_PartitionsMaintenance", "12__RemoveJob_PurgeTables",
+                "13__RemoveJob_RemoveXEventFiles", "14__RemoveJob_RunWhoIsActive", "15__RemoveJob_CollectFileIOStats",
+                "16__RemoveJob_CollectMemoryClerks", "17__RemoveJob_RunBlitz", "18__RemoveJob_RunBlitzIndex",
+                "19__RemoveJob_RunLogSaver", "20__RemoveJob_RunTempDbSaver", "21__RemoveJob_UpdateSqlServerVersions",
+                "22__RemoveJob_CheckInstanceAvailability", "23__RemoveJob_GetAllServerInfo", "24__RemoveJob_GetAllServerCollectedData",
+                "25__RemoveJob_CollectLoginExpirationInfo", "26__RemoveJob_CollectAllServerAlertMessages", "27__RemoveJob_GetAllServerDashboardMail",
+                "28__RemoveJob_PopulateInventoryTables", "29__RemoveJob_SendLoginExpiryEMails", "30__RemoveJob_StopStuckSQLMonitorJobs",
+                "31__DropProc_UspExtendedResults", "32__DropProc_UspCollectWaitStats", "33__DropProc_UspRunWhoIsActive",
+                "34__DropProc_UspCollectXEventsXEventMetrics", "35__DropProc_UspPartitionMaintenance", "36__DropProc_UspPurgeTables",
+                "37__DropProc_SpWhatIsRunning", "38__DropProc_UspActiveRequestsCount", "39__DropProc_UspCollectFileIOStats",
+                "40__DropProc_UspEnablePageCompression", "41__DropProc_UspWaitsPerCorePerMinute", "42__DropProc_UspCollectMemoryClerks",
+                "43__DropProc_UspAvgDiskWaitMs", "44__DropProc_UspCaptureAlertMessages", "45__DropProc_UspCheckSqlAgentJobs",
+                "46__DropProc_UspCollectAgHealthState", "47__DropProc_UspCollectPrivilegedInfo", "48__DropProc_UspCollectXEventMetrics",
+                "49__DropProc_UspCreateAgentAlerts", "50__DropProc_UspLogSaver", "51__DropProc_UspTempDbSaver",
+                "52__DropProc_UspWrapperCollectPriviledgedInfo", "53__DropProc_UspWrapperGetAllServerInfo", "54__DropProc_UspPopulateAllServerVolatileInfoHistory",
+                "55__DropProc_UspGetAllServerInfo", "56__DropProc_UspCheckJobStatus", "57__DropProc_UspCollectAlertMessages",
+                "58__DropProc_UspCollectAllServerLoginExpirationInfo", "59__DropProc_UspGetAllServerCollectedData", "60__DropProc_UspGetAllServerDashboardMail",
+                "61__DropProc_UspPopulateSmaSqlInstance", "62__DropProc_UspSendLoginExpiryEmails", "63__DropProc_UspWrapperGetAllServerCollectedData",
+                "64__DropProc_UspWrapperPopulateSmaSqlInstance", "65__DropView_VwPerformanceCounters", "66__DropView_VwOsTaskList",
+                "67__DropView_VwWaitStatsDeltas", "68__DropView_vw_file_io_stats_deltas", "69__DropView_vw_xevent_metrics",
+                "70__DropView_vw_disk_space", "71__DropView_vw_all_server_info", "72__DropView_SmaSqlServers",
+                "73__DropView_SmaSqlServersIncludingOffline", "74__DropXEvent_XEventMetrics", "75__DropLinkedServer",
+                "76__DropLogin_Grafana", "77__DropTable_XEventMetrics", "78__DropTable_xevent_metrics_queries",
+                "79__DropTable_XEventMetricsProcessedXELFiles", "81__DropTable_WhoIsActive_Staging", "81__DropTable_WhoIsActive",
+                "82__DropTable_PerformanceCounters", "83__DropTable_PurgeTable", "84__DropTable_PerfmonFiles",
+                "85__DropTable_InstanceDetails", "86__DropTable_InstanceDetailsHistory", "87__DropTable_InstanceHosts",
+                "88__DropTable_Blitz", "89__DropTable_OsTaskList", "90__DropTable_BlitzWho",
+                "91__DropTable_BlitzCache", "92__DropTable_ConnectionHistory", "93__DropTable_BlitzFirst",
+                "94__DropTable_BlitzFirstFileStats", "95__DropTable_DiskSpace", "96__DropTable_BlitzFirstPerfmonStats",
+                "97__DropTable_BlitzFirstWaitStats", "98__DropTable_BlitzFirstWaitStatsCategories", "99__DropTable_WaitStats",
+                "100__DropTable_BlitzIndex", "101__DropTable_FileIOStats", "102__DropTable_MemoryClerks",
+                "103__DropTable_AgHealthState", "104__DropTable_LogSpaceConsumers", "105__DropTable_PrivilegedInfo",
+                "106__DropTable_SqlAgentJobStats", "107__DropTable_SqlAgentJobThresholds", "108__DropTable_TempdbSpaceConsumers",
+                "109__DropTable_TempdbSpaceUsage", "110__DropTable_AllServerCollectionLatencyInfo", "112__DropTable_AllServerVolatileInfoHistory",
+                "112__DropTable_AllServerVolatileInfo", "113__DropTable_AllServerStableInfo", "114__DropTable_DiskSpaceAllServers",
+                "115__DropTable_LogSpaceConsumersAllServers", "116__DropTable_LogSpaceConsumersAllServersStaging", "117__DropTable_SqlAgentJobsAllServers",
+                "118__DropTable_SqlAgentJobsAllServersStaging", "119__DropTable_TempdbSpaceUsageAllServers", "120__DropTable_TempdbSpaceUsageAllServersStaging",
+                "121__DropTable_AgHealthStateAllServers", "122__DropTable_AgHealthStateAllServersStaging", "123__DropTable_AllServerVolatileInfoHistory",
+                "124__DropTable_DiskSpaceAllServersStaging", "125__DropTable_AlertCategories", "126__DropTable_AlertHistory",
+                "127__DropTable_AlertHistoryAllServers", "128__DropTable_AlertHistoryAllServersLastActioned", "129__DropTable_AllServerLoginExpiryInfo",
+                "130__DropTable_AllServerLoginExpiryInfoDashboard", "131__DropTable_ServerLoginExpiryCollectionComputed", "132__DropTable_BackupsAllServers",
+                "133__DropTable_BackupsAllServersStaging", "134__DropTable_LoginEmailMapping", "135__DropTable_SentAlertHistoryAllServers",
+                "136__DropTable_ServicesAllServers", "137__DropTable_ServicesAllServersStaging", "138__DropTable_ErrorLog",
+                "139__DropTable_SmaServersLog", "140__DropTable_SmaSqlServerHostsWrapper", "141__RemovePerfmonFilesFromDisk",
+                "142__RemoveXEventFilesFromDisk", "143__DropProxy", "144__DropCredential",
+                "145__RemoveInstanceFromInventory")]
     [String[]]$SkipSteps,
 
     [Parameter(Mandatory=$false)]
-    [ValidateSet("1__RemoveJob_CheckSQLAgentJobs", "2__RemoveJob_CollectAgHealthState", "3__RemoveJob_CollectDiskSpace",
-                "4__RemoveJob_CollectOSProcesses", "5__RemoveJob_CollectPerfmonData", "6__RemoveJob_CollectPrivilegedInfo",
-                "7__RemoveJob_CollectWaitStats", "8__RemoveJob_CollectXEvents", "9__RemoveJob_PartitionsMaintenance",
-                "10__RemoveJob_PurgeTables", "11__RemoveJob_RemoveXEventFiles", "12__RemoveJob_RunWhoIsActive",
-                "13__RemoveJob_CollectFileIOStats", "14__RemoveJob_CollectMemoryClerks", "15__RemoveJob_RunBlitzIndex",
-                "16__RemoveJob_RunBlitz", "17__RemoveJob_RunLogSaver", "18__RemoveJob_RunTempDbSaver",
-                "19__RemoveJob_UpdateSqlServerVersions", "20__RemoveJob_CheckInstanceAvailability", "21__RemoveJob_GetAllServerInfo",
-                "22__RemoveJob_GetAllServerCollectedData", "23__DropProc_UspExtendedResults", "24__DropProc_UspCollectWaitStats",
-                "25__DropProc_UspRunWhoIsActive", "26__DropProc_UspCollectXEventsXEventMetrics", "27__DropProc_UspPartitionMaintenance",
-                "28__DropProc_UspPurgeTables", "29__DropProc_SpWhatIsRunning", "30__DropProc_UspActiveRequestsCount",
-                "31__DropProc_UspCollectFileIOStats", "32__DropProc_UspEnablePageCompression", "33__DropProc_UspWaitsPerCorePerMinute",
-                "34__DropProc_UspCollectMemoryClerks", "35__DropProc_UspWrapperGetAllServerInfo", "36__DropProc_UspPopulateAllServerVolatileInfoHistory",
-                "37__DropProc_UspGetAllServerInfo", "38__DropView_VwPerformanceCounters", "39__DropView_VwOsTaskList",
-                "40__DropView_VwWaitStatsDeltas", "41__DropView_vw_file_io_stats_deltas", "42__DropView_vw_xevent_metrics",
-                "43__DropView_vw_disk_space", "44__DropView_vw_all_server_info", "45__DropXEvent_XEventMetrics",
-                "46__DropLinkedServer", "47__DropLogin_Grafana", "48__DropTable_XEventMetrics",
-                "49__DropTable_xevent_metrics_queries", "50__DropTable_XEventMetricsProcessedXELFiles", "51__DropTable_WhoIsActive_Staging",
-                "52__DropTable_WhoIsActive", "53__DropTable_PerformanceCounters", "54__DropTable_PurgeTable",
-                "55__DropTable_PerfmonFiles", "56__DropTable_InstanceDetails", "57__DropTable_InstanceHosts",
-                "58__DropTable_OsTaskList", "59__DropTable_BlitzWho", "60__DropTable_BlitzCache",
-                "61__DropTable_ConnectionHistory", "62__DropTable_BlitzFirst", "63__DropTable_BlitzFirstFileStats",
-                "64__DropTable_DiskSpace", "65__DropTable_BlitzFirstPerfmonStats", "66__DropTable_BlitzFirstWaitStats",
-                "67__DropTable_BlitzFirstWaitStatsCategories", "68__DropTable_WaitStats", "69__DropTable_BlitzIndex",
-                "70__DropTable_Blitz", "71__DropTable_FileIOStats", "72__DropTable_MemoryClerks",
-                "73__DropTable_AgHealthState", "74__DropTable_LogSpaceConsumers", "75__DropTable_PrivilegedInfo",
-                "76__DropTable_SqlAgentJobStats", "77__DropTable_SqlAgentJobThresholds", "78__DropTable_TempdbSpaceConsumers",
-                "79__DropTable_TempdbSpaceUsage", "80__DropTable_AllServerCollectionLatencyInfo", "81__DropTable_AllServerVolatileInfoHistory",
-                "82__DropTable_AllServerVolatileInfo", "83__DropTable_AllServerStableInfo", "84__DropTable_DiskSpaceAllServersStaging",
-                "85__DropTable_DiskSpaceAllServers", "86__DropTable_LogSpaceConsumersAllServers", "87__DropTable_LogSpaceConsumersAllServersStaging",
-                "88__DropTable_SqlAgentJobsAllServers", "89__DropTable_SqlAgentJobsAllServersStaging", "90__DropTable_TempdbSpaceUsageAllServers",
-                "91__DropTable_TempdbSpaceUsageAllServersStaging", "92__DropTable_AgHealthStateAllServers", "93__DropTable_AgHealthStateAllServersStaging",
-                "94__DropTable_AllServerVolatileInfoHistory", "95__DropTable_DiskSpaceAllServersStaging", "96__RemovePerfmonFilesFromDisk",
-                "97__RemoveXEventFilesFromDisk", "98__DropProxy", "99__DropCredential",
-                "100__RemoveInstanceFromInventory")]
+    [ValidateSet("1__Remove_SQLAgentAlerts", "2__RemoveJob_CaptureAlertMessages", "3__RemoveJob_CheckSQLAgentJobs",
+                "4__RemoveJob_CollectAgHealthState", "5__RemoveJob_CollectDiskSpace", "6__RemoveJob_CollectOSProcesses",
+                "7__RemoveJob_CollectPerfmonData", "8__RemoveJob_CollectPrivilegedInfo", "9__RemoveJob_CollectWaitStats",
+                "10__RemoveJob_CollectXEvents", "11__RemoveJob_PartitionsMaintenance", "12__RemoveJob_PurgeTables",
+                "13__RemoveJob_RemoveXEventFiles", "14__RemoveJob_RunWhoIsActive", "15__RemoveJob_CollectFileIOStats",
+                "16__RemoveJob_CollectMemoryClerks", "17__RemoveJob_RunBlitz", "18__RemoveJob_RunBlitzIndex",
+                "19__RemoveJob_RunLogSaver", "20__RemoveJob_RunTempDbSaver", "21__RemoveJob_UpdateSqlServerVersions",
+                "22__RemoveJob_CheckInstanceAvailability", "23__RemoveJob_GetAllServerInfo", "24__RemoveJob_GetAllServerCollectedData",
+                "25__RemoveJob_CollectLoginExpirationInfo", "26__RemoveJob_CollectAllServerAlertMessages", "27__RemoveJob_GetAllServerDashboardMail",
+                "28__RemoveJob_PopulateInventoryTables", "29__RemoveJob_SendLoginExpiryEMails", "30__RemoveJob_StopStuckSQLMonitorJobs",
+                "31__DropProc_UspExtendedResults", "32__DropProc_UspCollectWaitStats", "33__DropProc_UspRunWhoIsActive",
+                "34__DropProc_UspCollectXEventsXEventMetrics", "35__DropProc_UspPartitionMaintenance", "36__DropProc_UspPurgeTables",
+                "37__DropProc_SpWhatIsRunning", "38__DropProc_UspActiveRequestsCount", "39__DropProc_UspCollectFileIOStats",
+                "40__DropProc_UspEnablePageCompression", "41__DropProc_UspWaitsPerCorePerMinute", "42__DropProc_UspCollectMemoryClerks",
+                "43__DropProc_UspAvgDiskWaitMs", "44__DropProc_UspCaptureAlertMessages", "45__DropProc_UspCheckSqlAgentJobs",
+                "46__DropProc_UspCollectAgHealthState", "47__DropProc_UspCollectPrivilegedInfo", "48__DropProc_UspCollectXEventMetrics",
+                "49__DropProc_UspCreateAgentAlerts", "50__DropProc_UspLogSaver", "51__DropProc_UspTempDbSaver",
+                "52__DropProc_UspWrapperCollectPriviledgedInfo", "53__DropProc_UspWrapperGetAllServerInfo", "54__DropProc_UspPopulateAllServerVolatileInfoHistory",
+                "55__DropProc_UspGetAllServerInfo", "56__DropProc_UspCheckJobStatus", "57__DropProc_UspCollectAlertMessages",
+                "58__DropProc_UspCollectAllServerLoginExpirationInfo", "59__DropProc_UspGetAllServerCollectedData", "60__DropProc_UspGetAllServerDashboardMail",
+                "61__DropProc_UspPopulateSmaSqlInstance", "62__DropProc_UspSendLoginExpiryEmails", "63__DropProc_UspWrapperGetAllServerCollectedData",
+                "64__DropProc_UspWrapperPopulateSmaSqlInstance", "65__DropView_VwPerformanceCounters", "66__DropView_VwOsTaskList",
+                "67__DropView_VwWaitStatsDeltas", "68__DropView_vw_file_io_stats_deltas", "69__DropView_vw_xevent_metrics",
+                "70__DropView_vw_disk_space", "71__DropView_vw_all_server_info", "72__DropView_SmaSqlServers",
+                "73__DropView_SmaSqlServersIncludingOffline", "74__DropXEvent_XEventMetrics", "75__DropLinkedServer",
+                "76__DropLogin_Grafana", "77__DropTable_XEventMetrics", "78__DropTable_xevent_metrics_queries",
+                "79__DropTable_XEventMetricsProcessedXELFiles", "81__DropTable_WhoIsActive_Staging", "81__DropTable_WhoIsActive",
+                "82__DropTable_PerformanceCounters", "83__DropTable_PurgeTable", "84__DropTable_PerfmonFiles",
+                "85__DropTable_InstanceDetails", "86__DropTable_InstanceDetailsHistory", "87__DropTable_InstanceHosts",
+                "88__DropTable_Blitz", "89__DropTable_OsTaskList", "90__DropTable_BlitzWho",
+                "91__DropTable_BlitzCache", "92__DropTable_ConnectionHistory", "93__DropTable_BlitzFirst",
+                "94__DropTable_BlitzFirstFileStats", "95__DropTable_DiskSpace", "96__DropTable_BlitzFirstPerfmonStats",
+                "97__DropTable_BlitzFirstWaitStats", "98__DropTable_BlitzFirstWaitStatsCategories", "99__DropTable_WaitStats",
+                "100__DropTable_BlitzIndex", "101__DropTable_FileIOStats", "102__DropTable_MemoryClerks",
+                "103__DropTable_AgHealthState", "104__DropTable_LogSpaceConsumers", "105__DropTable_PrivilegedInfo",
+                "106__DropTable_SqlAgentJobStats", "107__DropTable_SqlAgentJobThresholds", "108__DropTable_TempdbSpaceConsumers",
+                "109__DropTable_TempdbSpaceUsage", "110__DropTable_AllServerCollectionLatencyInfo", "112__DropTable_AllServerVolatileInfoHistory",
+                "112__DropTable_AllServerVolatileInfo", "113__DropTable_AllServerStableInfo", "114__DropTable_DiskSpaceAllServers",
+                "115__DropTable_LogSpaceConsumersAllServers", "116__DropTable_LogSpaceConsumersAllServersStaging", "117__DropTable_SqlAgentJobsAllServers",
+                "118__DropTable_SqlAgentJobsAllServersStaging", "119__DropTable_TempdbSpaceUsageAllServers", "120__DropTable_TempdbSpaceUsageAllServersStaging",
+                "121__DropTable_AgHealthStateAllServers", "122__DropTable_AgHealthStateAllServersStaging", "123__DropTable_AllServerVolatileInfoHistory",
+                "124__DropTable_DiskSpaceAllServersStaging", "125__DropTable_AlertCategories", "126__DropTable_AlertHistory",
+                "127__DropTable_AlertHistoryAllServers", "128__DropTable_AlertHistoryAllServersLastActioned", "129__DropTable_AllServerLoginExpiryInfo",
+                "130__DropTable_AllServerLoginExpiryInfoDashboard", "131__DropTable_ServerLoginExpiryCollectionComputed", "132__DropTable_BackupsAllServers",
+                "133__DropTable_BackupsAllServersStaging", "134__DropTable_LoginEmailMapping", "135__DropTable_SentAlertHistoryAllServers",
+                "136__DropTable_ServicesAllServers", "137__DropTable_ServicesAllServersStaging", "138__DropTable_ErrorLog",
+                "139__DropTable_SmaServersLog", "140__DropTable_SmaSqlServerHostsWrapper", "141__RemovePerfmonFilesFromDisk",
+                "142__RemoveXEventFilesFromDisk", "143__DropProxy", "144__DropCredential",
+                "145__RemoveInstanceFromInventory")]
     [String]$StopAtStep,
 
     [Parameter(Mandatory=$false)]
     [bool]$SkipDropTable = $false,
+
+    [Parameter(Mandatory=$false)]
+    [bool]$SkipDropTablesForInventory = $false,
 
     [Parameter(Mandatory=$false)]
     [bool]$SkipRemoveTsqlJobs = $false,
@@ -195,6 +258,9 @@ Param (
 
     [Parameter(Mandatory=$false)]
     [bool]$SkipRDPSessionSteps = $false,
+
+    [Parameter(Mandatory=$false)]
+    [bool]$SkipAllInventorySteps = $false,
 
     [Parameter(Mandatory=$false)]
     [ValidateSet("Delete","Update")]
@@ -216,16 +282,20 @@ Param (
     [String]$PreQuery,
 
     [Parameter(Mandatory=$false)]
-    [String]$PostQuery
+    [String]$PostQuery,
+
+    [Parameter(Mandatory=$false)]
+    [String]$SkipLogFileRemoval = $true
 )
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-03-31'
-$sqlmonitorVersionDate = '2024-Mar-31'
+$sqlmonitorVersion = '2024-08-25'
+$sqlmonitorVersionDate = '2024-Aug-25'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 <#
-    v1.6.0 - 2023-Dec-31
+    v2024-Sep-30
+        -> Issue#51 - Updated objects for Inventory Infra
         -> Issue#13 - Capture sp_Blitz & Create Dashboard
         -> Issue#12 - Compatibility with new dbatools version
         -> Issue#3 - Remove-SQLMonitor - Save InstanceDetails are until the Instance is Removed Full
@@ -237,59 +307,125 @@ $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 #>
 
 
+$verbose = $false;
+if ($PSBoundParameters.ContainsKey('Verbose')) { # Command line specifies -Verbose[:$false]
+    $verbose = $PSBoundParameters.Get_Item('Verbose')
+}
+
+$debug = $false;
+if ($PSBoundParameters.ContainsKey('Debug')) { # Command line specifies -Debug[:$false]
+    $debug = $PSBoundParameters.Get_Item('Debug')
+}
+
+
 # All Steps
-$AllSteps = @(  "1__RemoveJob_CheckSQLAgentJobs", "2__RemoveJob_CollectAgHealthState", "3__RemoveJob_CollectDiskSpace",
-                "4__RemoveJob_CollectOSProcesses", "5__RemoveJob_CollectPerfmonData", "6__RemoveJob_CollectPrivilegedInfo",
-                "7__RemoveJob_CollectWaitStats", "8__RemoveJob_CollectXEvents", "9__RemoveJob_PartitionsMaintenance",
-                "10__RemoveJob_PurgeTables", "11__RemoveJob_RemoveXEventFiles", "12__RemoveJob_RunWhoIsActive",
-                "13__RemoveJob_CollectFileIOStats", "14__RemoveJob_CollectMemoryClerks", "15__RemoveJob_RunBlitzIndex",
-                "16__RemoveJob_RunBlitz", "17__RemoveJob_RunLogSaver", "18__RemoveJob_RunTempDbSaver",
-                "19__RemoveJob_UpdateSqlServerVersions", "20__RemoveJob_CheckInstanceAvailability", "21__RemoveJob_GetAllServerInfo",
-                "22__RemoveJob_GetAllServerCollectedData", "23__DropProc_UspExtendedResults", "24__DropProc_UspCollectWaitStats",
-                "25__DropProc_UspRunWhoIsActive", "26__DropProc_UspCollectXEventsXEventMetrics", "27__DropProc_UspPartitionMaintenance",
-                "28__DropProc_UspPurgeTables", "29__DropProc_SpWhatIsRunning", "30__DropProc_UspActiveRequestsCount",
-                "31__DropProc_UspCollectFileIOStats", "32__DropProc_UspEnablePageCompression", "33__DropProc_UspWaitsPerCorePerMinute",
-                "34__DropProc_UspCollectMemoryClerks", "35__DropProc_UspWrapperGetAllServerInfo", "36__DropProc_UspPopulateAllServerVolatileInfoHistory",
-                "37__DropProc_UspGetAllServerInfo", "38__DropView_VwPerformanceCounters", "39__DropView_VwOsTaskList",
-                "40__DropView_VwWaitStatsDeltas", "41__DropView_vw_file_io_stats_deltas", "42__DropView_vw_xevent_metrics",
-                "43__DropView_vw_disk_space", "44__DropView_vw_all_server_info", "45__DropXEvent_XEventMetrics",
-                "46__DropLinkedServer", "47__DropLogin_Grafana", "48__DropTable_XEventMetrics",
-                "49__DropTable_xevent_metrics_queries", "50__DropTable_XEventMetricsProcessedXELFiles", "51__DropTable_WhoIsActive_Staging",
-                "52__DropTable_WhoIsActive", "53__DropTable_PerformanceCounters", "54__DropTable_PurgeTable",
-                "55__DropTable_PerfmonFiles", "56__DropTable_InstanceDetails", "57__DropTable_InstanceHosts",
-                "58__DropTable_OsTaskList", "59__DropTable_BlitzWho", "60__DropTable_BlitzCache",
-                "61__DropTable_ConnectionHistory", "62__DropTable_BlitzFirst", "63__DropTable_BlitzFirstFileStats",
-                "64__DropTable_DiskSpace", "65__DropTable_BlitzFirstPerfmonStats", "66__DropTable_BlitzFirstWaitStats",
-                "67__DropTable_BlitzFirstWaitStatsCategories", "68__DropTable_WaitStats", "69__DropTable_BlitzIndex",
-                "70__DropTable_Blitz", "71__DropTable_FileIOStats", "72__DropTable_MemoryClerks",
-                "73__DropTable_AgHealthState", "74__DropTable_LogSpaceConsumers", "75__DropTable_PrivilegedInfo",
-                "76__DropTable_SqlAgentJobStats", "77__DropTable_SqlAgentJobThresholds", "78__DropTable_TempdbSpaceConsumers",
-                "79__DropTable_TempdbSpaceUsage", "80__DropTable_AllServerCollectionLatencyInfo", "81__DropTable_AllServerVolatileInfoHistory",
-                "82__DropTable_AllServerVolatileInfo", "83__DropTable_AllServerStableInfo", "84__DropTable_DiskSpaceAllServersStaging",
-                "85__DropTable_DiskSpaceAllServers", "86__DropTable_LogSpaceConsumersAllServers", "87__DropTable_LogSpaceConsumersAllServersStaging",
-                "88__DropTable_SqlAgentJobsAllServers", "89__DropTable_SqlAgentJobsAllServersStaging", "90__DropTable_TempdbSpaceUsageAllServers",
-                "91__DropTable_TempdbSpaceUsageAllServersStaging", "92__DropTable_AgHealthStateAllServers", "93__DropTable_AgHealthStateAllServersStaging",
-                "94__DropTable_AllServerVolatileInfoHistory", "95__DropTable_DiskSpaceAllServersStaging", "96__RemovePerfmonFilesFromDisk",
-                "97__RemoveXEventFilesFromDisk", "98__DropProxy", "99__DropCredential",
-                "100__RemoveInstanceFromInventory"
+$AllSteps = @(  "1__Remove_SQLAgentAlerts", "2__RemoveJob_CaptureAlertMessages", "3__RemoveJob_CheckSQLAgentJobs",
+                "4__RemoveJob_CollectAgHealthState", "5__RemoveJob_CollectDiskSpace", "6__RemoveJob_CollectOSProcesses",
+                "7__RemoveJob_CollectPerfmonData", "8__RemoveJob_CollectPrivilegedInfo", "9__RemoveJob_CollectWaitStats",
+                "10__RemoveJob_CollectXEvents", "11__RemoveJob_PartitionsMaintenance", "12__RemoveJob_PurgeTables",
+                "13__RemoveJob_RemoveXEventFiles", "14__RemoveJob_RunWhoIsActive", "15__RemoveJob_CollectFileIOStats",
+                "16__RemoveJob_CollectMemoryClerks", "17__RemoveJob_RunBlitz", "18__RemoveJob_RunBlitzIndex",
+                "19__RemoveJob_RunLogSaver", "20__RemoveJob_RunTempDbSaver", "21__RemoveJob_UpdateSqlServerVersions",
+                "22__RemoveJob_CheckInstanceAvailability", "23__RemoveJob_GetAllServerInfo", "24__RemoveJob_GetAllServerCollectedData",
+                "25__RemoveJob_CollectLoginExpirationInfo", "26__RemoveJob_CollectAllServerAlertMessages", "27__RemoveJob_GetAllServerDashboardMail",
+                "28__RemoveJob_PopulateInventoryTables", "29__RemoveJob_SendLoginExpiryEMails", "30__RemoveJob_StopStuckSQLMonitorJobs",
+                "31__DropProc_UspExtendedResults", "32__DropProc_UspCollectWaitStats", "33__DropProc_UspRunWhoIsActive",
+                "34__DropProc_UspCollectXEventsXEventMetrics", "35__DropProc_UspPartitionMaintenance", "36__DropProc_UspPurgeTables",
+                "37__DropProc_SpWhatIsRunning", "38__DropProc_UspActiveRequestsCount", "39__DropProc_UspCollectFileIOStats",
+                "40__DropProc_UspEnablePageCompression", "41__DropProc_UspWaitsPerCorePerMinute", "42__DropProc_UspCollectMemoryClerks",
+                "43__DropProc_UspAvgDiskWaitMs", "44__DropProc_UspCaptureAlertMessages", "45__DropProc_UspCheckSqlAgentJobs",
+                "46__DropProc_UspCollectAgHealthState", "47__DropProc_UspCollectPrivilegedInfo", "48__DropProc_UspCollectXEventMetrics",
+                "49__DropProc_UspCreateAgentAlerts", "50__DropProc_UspLogSaver", "51__DropProc_UspTempDbSaver",
+                "52__DropProc_UspWrapperCollectPriviledgedInfo", "53__DropProc_UspWrapperGetAllServerInfo", "54__DropProc_UspPopulateAllServerVolatileInfoHistory",
+                "55__DropProc_UspGetAllServerInfo", "56__DropProc_UspCheckJobStatus", "57__DropProc_UspCollectAlertMessages",
+                "58__DropProc_UspCollectAllServerLoginExpirationInfo", "59__DropProc_UspGetAllServerCollectedData", "60__DropProc_UspGetAllServerDashboardMail",
+                "61__DropProc_UspPopulateSmaSqlInstance", "62__DropProc_UspSendLoginExpiryEmails", "63__DropProc_UspWrapperGetAllServerCollectedData",
+                "64__DropProc_UspWrapperPopulateSmaSqlInstance", "65__DropView_VwPerformanceCounters", "66__DropView_VwOsTaskList",
+                "67__DropView_VwWaitStatsDeltas", "68__DropView_vw_file_io_stats_deltas", "69__DropView_vw_xevent_metrics",
+                "70__DropView_vw_disk_space", "71__DropView_vw_all_server_info", "72__DropView_SmaSqlServers",
+                "73__DropView_SmaSqlServersIncludingOffline", "74__DropXEvent_XEventMetrics", "75__DropLinkedServer",
+                "76__DropLogin_Grafana", "77__DropTable_XEventMetrics", "78__DropTable_xevent_metrics_queries",
+                "79__DropTable_XEventMetricsProcessedXELFiles", "81__DropTable_WhoIsActive_Staging", "81__DropTable_WhoIsActive",
+                "82__DropTable_PerformanceCounters", "83__DropTable_PurgeTable", "84__DropTable_PerfmonFiles",
+                "85__DropTable_InstanceDetails", "86__DropTable_InstanceDetailsHistory", "87__DropTable_InstanceHosts",
+                "88__DropTable_Blitz", "89__DropTable_OsTaskList", "90__DropTable_BlitzWho",
+                "91__DropTable_BlitzCache", "92__DropTable_ConnectionHistory", "93__DropTable_BlitzFirst",
+                "94__DropTable_BlitzFirstFileStats", "95__DropTable_DiskSpace", "96__DropTable_BlitzFirstPerfmonStats",
+                "97__DropTable_BlitzFirstWaitStats", "98__DropTable_BlitzFirstWaitStatsCategories", "99__DropTable_WaitStats",
+                "100__DropTable_BlitzIndex", "101__DropTable_FileIOStats", "102__DropTable_MemoryClerks",
+                "103__DropTable_AgHealthState", "104__DropTable_LogSpaceConsumers", "105__DropTable_PrivilegedInfo",
+                "106__DropTable_SqlAgentJobStats", "107__DropTable_SqlAgentJobThresholds", "108__DropTable_TempdbSpaceConsumers",
+                "109__DropTable_TempdbSpaceUsage", "110__DropTable_AllServerCollectionLatencyInfo", "112__DropTable_AllServerVolatileInfoHistory",
+                "112__DropTable_AllServerVolatileInfo", "113__DropTable_AllServerStableInfo", "114__DropTable_DiskSpaceAllServers",
+                "115__DropTable_LogSpaceConsumersAllServers", "116__DropTable_LogSpaceConsumersAllServersStaging", "117__DropTable_SqlAgentJobsAllServers",
+                "118__DropTable_SqlAgentJobsAllServersStaging", "119__DropTable_TempdbSpaceUsageAllServers", "120__DropTable_TempdbSpaceUsageAllServersStaging",
+                "121__DropTable_AgHealthStateAllServers", "122__DropTable_AgHealthStateAllServersStaging", "123__DropTable_AllServerVolatileInfoHistory",
+                "124__DropTable_DiskSpaceAllServersStaging", "125__DropTable_AlertCategories", "126__DropTable_AlertHistory",
+                "127__DropTable_AlertHistoryAllServers", "128__DropTable_AlertHistoryAllServersLastActioned", "129__DropTable_AllServerLoginExpiryInfo",
+                "130__DropTable_AllServerLoginExpiryInfoDashboard", "131__DropTable_ServerLoginExpiryCollectionComputed", "132__DropTable_BackupsAllServers",
+                "133__DropTable_BackupsAllServersStaging", "134__DropTable_LoginEmailMapping", "135__DropTable_SentAlertHistoryAllServers",
+                "136__DropTable_ServicesAllServers", "137__DropTable_ServicesAllServersStaging", "138__DropTable_ErrorLog",
+                "139__DropTable_SmaServersLog", "140__DropTable_SmaSqlServerHostsWrapper", "141__RemovePerfmonFilesFromDisk",
+                "142__RemoveXEventFilesFromDisk", "143__DropProxy", "144__DropCredential",
+                "145__RemoveInstanceFromInventory"
                 )
 
 # TSQL Jobs
 $TsqlJobSteps = @(
-                "1__RemoveJob_CheckSQLAgentJobs", "2__RemoveJob_CollectAgHealthState", "6__RemoveJob_CollectPrivilegedInfo",
-                "7__RemoveJob_CollectWaitStats", "8__RemoveJob_CollectXEvents", "9__RemoveJob_PartitionsMaintenance",
-                "10__RemoveJob_PurgeTables", "11__RemoveJob_RemoveXEventFiles", "12__RemoveJob_RunWhoIsActive",
-                "13__RemoveJob_CollectFileIOStats", "14__RemoveJob_CollectMemoryClerks", "15__RemoveJob_RunBlitzIndex",
-                "16__RemoveJob_RunBlitz", "17__RemoveJob_RunLogSaver", "18__RemoveJob_RunTempDbSaver", 
-                "21__RemoveJob_GetAllServerInfo", "22__RemoveJob_GetAllServerCollectedData" )
+                "2__RemoveJob_CaptureAlertMessages", "3__RemoveJob_CheckSQLAgentJobs", "4__RemoveJob_CollectAgHealthState",
+                "8__RemoveJob_CollectPrivilegedInfo", "9__RemoveJob_CollectWaitStats", "10__RemoveJob_CollectXEvents",
+                "11__RemoveJob_PartitionsMaintenance", "12__RemoveJob_PurgeTables", "13__RemoveJob_RemoveXEventFiles",
+                "14__RemoveJob_RunWhoIsActive", "15__RemoveJob_CollectFileIOStats", "16__RemoveJob_CollectMemoryClerks",
+                "17__RemoveJob_RunBlitz", "18__RemoveJob_RunBlitzIndex", "19__RemoveJob_RunLogSaver",
+                "20__RemoveJob_RunTempDbSaver", "23__RemoveJob_GetAllServerInfo", "24__RemoveJob_GetAllServerCollectedData"
+                )
 
 # PowerShell Jobs
 $PowerShellJobSteps = @(
-                "3__RemoveJob_CollectDiskSpace", "4__RemoveJob_CollectOSProcesses", "5__RemoveJob_CollectPerfmonData",
-                "19__RemoveJob_UpdateSqlServerVersions", "20__RemoveJob_CheckInstanceAvailability")
+                "5__RemoveJob_CollectDiskSpace", "6__RemoveJob_CollectOSProcesses", "7__RemoveJob_CollectPerfmonData",
+                "21__RemoveJob_UpdateSqlServerVersions", "22__RemoveJob_CheckInstanceAvailability")
 
 # RDPSessionSteps
-$RDPSessionSteps = @("96__RemovePerfmonFilesFromDisk", "97__RemoveXEventFilesFromDisk")
+$RDPSessionSteps = @("141__RemovePerfmonFilesFromDisk", "142__RemoveXEventFilesFromDisk")
+
+# InventoryJobsSteps
+$InventoryJobsSteps = @( "21__RemoveJob_UpdateSqlServerVersions", "22__RemoveJob_CheckInstanceAvailability", "23__RemoveJob_GetAllServerInfo",
+                "24__RemoveJob_GetAllServerCollectedData", "25__RemoveJob_CollectLoginExpirationInfo", "26__RemoveJob_CollectAllServerAlertMessages",
+                "27__RemoveJob_GetAllServerDashboardMail", "28__RemoveJob_PopulateInventoryTables", "29__RemoveJob_SendLoginExpiryEMails",
+                "30__RemoveJob_StopStuckSQLMonitorJobs"
+                )
+
+# InventoryProceduresSteps
+$InventoryProceduresSteps = @("52__DropProc_UspWrapperCollectPriviledgedInfo", "53__DropProc_UspWrapperGetAllServerInfo", "54__DropProc_UspPopulateAllServerVolatileInfoHistory",
+                "55__DropProc_UspGetAllServerInfo", "58__DropProc_UspCollectAllServerLoginExpirationInfo", "59__DropProc_UspGetAllServerCollectedData",
+                "60__DropProc_UspGetAllServerDashboardMail", "61__DropProc_UspPopulateSmaSqlInstance", "62__DropProc_UspSendLoginExpiryEmails",
+                "63__DropProc_UspWrapperGetAllServerCollectedData", "64__DropProc_UspWrapperPopulateSmaSqlInstance"
+                )
+
+# InventoryViewsSteps
+$InventoryViewsSteps = @("71__DropView_vw_all_server_info", "72__DropView_SmaSqlServers", "73__DropView_SmaSqlServersIncludingOffline")
+
+# InventoryTablesSteps
+$InventoryTablesSteps = @("86__DropTable_InstanceDetailsHistory", "110__DropTable_AllServerCollectionLatencyInfo", "112__DropTable_AllServerVolatileInfoHistory",
+                "112__DropTable_AllServerVolatileInfo", "113__DropTable_AllServerStableInfo", "114__DropTable_DiskSpaceAllServers",
+                "115__DropTable_LogSpaceConsumersAllServers", "116__DropTable_LogSpaceConsumersAllServersStaging", "117__DropTable_SqlAgentJobsAllServers",
+                "118__DropTable_SqlAgentJobsAllServersStaging", "119__DropTable_TempdbSpaceUsageAllServers", "120__DropTable_TempdbSpaceUsageAllServersStaging",
+                "121__DropTable_AgHealthStateAllServers", "122__DropTable_AgHealthStateAllServersStaging", "123__DropTable_AllServerVolatileInfoHistory",
+                "124__DropTable_DiskSpaceAllServersStaging", "127__DropTable_AlertHistoryAllServers", "128__DropTable_AlertHistoryAllServersLastActioned",
+                "129__DropTable_AllServerLoginExpiryInfo", "130__DropTable_AllServerLoginExpiryInfoDashboard", "131__DropTable_ServerLoginExpiryCollectionComputed",
+                "132__DropTable_BackupsAllServers", "133__DropTable_BackupsAllServersStaging", "134__DropTable_LoginEmailMapping",
+                "135__DropTable_SentAlertHistoryAllServers", "136__DropTable_ServicesAllServers", "137__DropTable_ServicesAllServersStaging",
+                "138__DropTable_ErrorLog", "139__DropTable_SmaServersLog", "140__DropTable_SmaSqlServerHostsWrapper"
+                )
+
+# If inventory server, and the core tables should be considered inventory tables
+if($SqlInstanceToBaseline -eq $InventoryServer) {
+    $InventoryTablesSteps = $InventoryTablesSteps + @("83__DropTable_InstanceDetails", "84__DropTable_InstanceHosts")
+}
+
+# AllInventorySteps
+$AllInventorySteps = $InventoryJobsSteps + $InventoryProceduresSteps + $InventoryViewsSteps + $InventoryTablesSteps
+
 
 # For "Update" operation, Parameter OnlySteps is mandatory
 if ($ActionType -eq 'Update' -and $OnlySteps.Count -eq 0) {
@@ -304,19 +440,36 @@ if ($ActionType -eq 'Delete' -and $OnlySteps.Count -gt 0) {
 }
 
 
-# Add $PowerShellJobSteps to Skip Jobs
+# Add $PowerShellJobSteps to Skip PowerShell Jobs
+if($SqlInstanceToBaseline -ne $SqlInstanceAsDataDestination) {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceToBaseline is not same as `$SqlInstanceAsDataDestination. So skipping `$PowerShellJobSteps.." | Write-Host -ForegroundColor Red
+    $SkipRemovePowerShellJobs = $true
+    $additionalSkipSteps = @("141__RemovePerfmonFilesFromDisk")
+    $SkipSteps = $SkipSteps + $($additionalSkipSteps | % {if($_ -notin $SkipSteps){$_}});
+}
+
 if($SkipRemovePowerShellJobs) {
     $SkipSteps = $SkipSteps + $($PowerShellJobSteps | % {if($_ -notin $SkipSteps){$_}});
 }
 
-# Add $RDPSessionSteps to Skip Jobs
+# Add $RDPSessionSteps to Skip RDP steps
 if($SkipRDPSessionSteps) {
     $SkipSteps = $SkipSteps + $($RDPSessionSteps | % {if($_ -notin $SkipSteps){$_}});
 }
 
-# Add $TsqlJobSteps to Skip Jobs
+# Add $TsqlJobSteps to Skip TSQL Jobs
 if($SkipRemoveTsqlJobs) {
     $SkipSteps = $SkipSteps + $($TsqlJobSteps | % {if($_ -notin $SkipSteps){$_}});
+}
+
+# Add $InventoryTablesSteps to Skip Inventory tables
+if($SkipDropTablesForInventory) {
+    $SkipSteps = $SkipSteps + $($InventoryTablesSteps | % {if($_ -notin $SkipSteps){$_}});
+}
+
+# Add $AllInventorySteps to Skip all inventory specific objects
+if($SkipAllInventorySteps) {
+    $SkipSteps = $SkipSteps + $($AllInventorySteps | % {if($_ -notin $SkipSteps){$_}});
 }
 
 # For backward compatability
@@ -358,7 +511,7 @@ $SqlCredential | ft -AutoSize
 $WindowsCredential | ft -AutoSize
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Import dbatools module.."
-Import-Module dbatools
+Import-Module dbatools -Verbose:$false -Debug:$false
 #Import-Module SqlServer
 
 # Compute steps to execute
@@ -426,7 +579,7 @@ try {
     if($InventoryServer -ne $SqlInstanceToBaseline) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] Create connection for '$InventoryServer'.."
         $conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database master -ClientName "Wrapper-RemoveSQLMonitor.ps1" `
-                                                    -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                    -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
     } else {
         $conInventoryServer = $conSqlInstanceToBaseline
     }
@@ -450,6 +603,8 @@ if($SqlInstanceToBaseline -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
     $Port4SqlInstanceToBaseline = $Matches['PortNo']
     $SqlInstanceToBaselineWithOutPort = $Matches['SqlInstance']
 }
+
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceToBaselineWithOutPort = '$SqlInstanceToBaselineWithOutPort'"
 
 # Get dbo.instance_details info
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetching info from [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details].."
@@ -486,10 +641,10 @@ catch {
 
 # Setup SQL Connections
 $conSqlInstanceToBaseline = Connect-DbaInstance -SqlInstance $SqlInstanceToBaseline -Database master -ClientName "Wrapper-RemoveSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 if($InventoryServer -ne $SqlInstanceToBaseline) {
     $conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 } else {
     $conInventoryServer = $conSqlInstanceToBaseline
 }
@@ -546,16 +701,29 @@ catch {
 }
 
 # Extract domain & isClustered property
+$SqlInstanceToBaselineWithOutPort_Stripped = $SqlInstanceToBaselineWithOutPort -replace '\\', '_'
 [bool]$isClustered = $dbServiceInfo.is_clustered
 [string]$domain = $dbServiceInfo.domain_reg
 if([String]::IsNullOrEmpty($domain)) {
     $domain = $dbServiceInfo.domain+'.com'
 }
 
+
+# Evaluate path of SQLMonitor folder
+if(-not [String]::IsNullOrEmpty($PSScriptRoot)) {
+    $SQLMonitorPath = $(Split-Path $PSScriptRoot -Parent)
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SQLMonitorPath = '$SQLMonitorPath'"
+    if(-not (Test-Path "$SQLMonitorPath\Work-Logs")) {
+        New-Item "$SQLMonitorPath\Work-Logs" -ItemType Directory -Verbose:$verbose
+    }
+    $instanceDetailsFilePath = "$SQLMonitorPath\Work-Logs\$SqlInstanceToBaselineWithOutPort_Stripped"
+}
+else {
+    $instanceDetailsFilePath = "$($env:TEMP)\$SqlInstanceToBaselineWithOutPort_Stripped"
+}
+
 # Get dbo.instance_details info
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetching info from [dbo].[instance_details].."
-
-$instanceDetailsFilePath = "$($env:TEMP)\$SqlInstanceToBaselineWithOutPort"
 if([String]::IsNullOrEmpty($HostName)) {
     $sqlInstanceDetails = "select * from dbo.instance_details where sql_instance = '$SqlInstanceToBaselineWithOutPort'"
 }
@@ -567,14 +735,23 @@ else {
 $instanceDetailsFilePath = "$instanceDetailsFilePath.xml"
 try {
     $instanceDetails = @()
+    if($verbose) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Executing following query to fetch instance_details.."
+        $sqlInstanceDetails | Write-Host -ForegroundColor Cyan
+    }
     $instanceDetails += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlInstanceDetails
     if($instanceDetails.Count -eq 0) {
+        if($verbose) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "instance_details not found in [$InventoryServer]. So Trying [$SqlInstanceToBaseline].."
+        }
         $instanceDetails += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlInstanceDetails -EnableException
     }
 
     # If Instance Details file does not exists
     if( -not (Test-Path $instanceDetailsFilePath) ) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "'$instanceDetailsFilePath' does not exist. So creating.."
         $instanceDetails | Export-Clixml -Path $instanceDetailsFilePath
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$instanceDetailsFilePath created containing instance details."
     }
     else {
         # If Instance Details file exists
@@ -682,19 +859,19 @@ if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
     $conSqlInstanceAsDataDestination = $conSqlInstanceToBaseline
 } else {
     $conSqlInstanceAsDataDestination = Connect-DbaInstance -SqlInstance $SqlInstanceAsDataDestination -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 }
 if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs)) {
     $conSqlInstanceForTsqlJobs = $conSqlInstanceToBaseline
 } else {
     $conSqlInstanceForTsqlJobs = Connect-DbaInstance -SqlInstance $SqlInstanceForTsqlJobs -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 }
 if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) {
     $conSqlInstanceForPowershellJobs = $conSqlInstanceToBaseline
 } else {
     $conSqlInstanceForPowershellJobs = Connect-DbaInstance -SqlInstance $SqlInstanceForPowershellJobs -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 }
 
 
@@ -772,7 +949,7 @@ if( (-not $SkipRDPSessionSteps) ) #-and ($HostName -ne $env:COMPUTERNAME)
 
 
 # Check No of SQL Services on HostName
-if( (($SkipRemovePowerShellJobs -eq $false) -or ('11__RemoveJob_RemoveXEventFiles' -in $Steps2Execute)) -and ($SkipRDPSessionSteps -eq $false) )
+if( (($SkipRemovePowerShellJobs -eq $false) -or ('13__RemoveJob_RemoveXEventFiles' -in $Steps2Execute)) -and ($SkipRDPSessionSteps -eq $false) )
 {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Check for number of SQLServices on [$HostName].."
 
@@ -962,29 +1139,197 @@ if(-not [String]::IsNullOrEmpty($PreQuery)) {
     $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $PreQuery -EnableException
 }
 
+# Check if PortNo is specified for TSQL Jobs Server
+$Port4SqlInstanceForTsqlJobs = $null
+$SqlInstanceForTsqlJobsWithOutPort = $SqlInstanceForTsqlJobs
+if($SqlInstanceForTsqlJobs -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceForTsqlJobs = $Matches['PortNo']
+    $SqlInstanceForTsqlJobsWithOutPort = $Matches['SqlInstance']
+}
 
-# 1__RemoveJob_CheckSQLAgentJobs
-$stepName = '1__RemoveJob_CheckSQLAgentJobs'
+# Check if PortNo is specified for PowerShell Jobs Server
+$Port4SqlInstanceForPowershellJobs = $null
+$SqlInstanceForPowershellJobsWithOutPort = $SqlInstanceForPowershellJobs
+if($SqlInstanceForPowershellJobs -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceForPowershellJobs = $Matches['PortNo']
+    $SqlInstanceForPowershellJobsWithOutPort = $Matches['SqlInstance']
+}
+
+# Check if PortNo is specified for Data Destination Server
+$Port4SqlInstanceAsDataDestination = $null
+$SqlInstanceAsDataDestinationWithOutPort = $SqlInstanceAsDataDestination
+if($SqlInstanceAsDataDestination -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceAsDataDestination = $Matches['PortNo']
+    $SqlInstanceAsDataDestinationWithOutPort = $Matches['SqlInstance']
+}
+
+
+# 1__Remove_SQLAgentAlerts
+$stepName = '1__Remove_SQLAgentAlerts'
 if ($stepName -in $Steps2Execute) {
-  $objName = '(dba) Check-SQLAgentJobs'
-  $objType = 'job'
-  $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
   "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
   if ($DryRun) {
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove all SQLMonitor created SQLAgent alerts.."
   }
   else {
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove all SQLMonitor created SQLAgent alerts.."
   }
 
-  # Append HostName if Job Server is different    
-  $objNameNew = $objName
-  if ( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
-    $objNameNew = "$objName - $HostName"
-  }
+  $sqlRemoveObject = @"
+if OBJECT_ID('dbo.alert_categories') is not null
+begin
+	declare @c_alert_name varchar(125);
+	declare @_error_message nvarchar(200);
 
-  if ( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) {
+	declare cursor_alerts cursor local forward_only for
+		select ac.alert_name
+		from dbo.alert_categories ac
+		join msdb.dbo.sysalerts a on a.name = ac.alert_name;
+
+	open cursor_alerts;
+	fetch next from cursor_alerts into @c_alert_name;
+	while @@FETCH_STATUS = 0
+	begin
+		print 'Removing alert '+quotename(@c_alert_name)+'..'
+		begin try 
+			EXEC msdb.dbo.sp_delete_alert @name=@c_alert_name;
+		end try
+		begin catch
+			set @_error_message = ERROR_MESSAGE();
+
+			print 'Error occurred. '+@_error_message;
+		end catch
+
+		fetch next from cursor_alerts into @c_alert_name;
+	end
+
+	close cursor_alerts;
+	deallocate cursor_alerts;
+
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+
+"@
+    if($verbose) {
+        "`n$sqlRemoveObject`n" | Write-Host -ForegroundColor Cyan
+    }
+  
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException -MessagesToOutput:$verbose
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "SQLAgent alerts found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "SQLAgentAlerts not found."
+        }
+    }
+  
+}
+
+
+# 2__RemoveJob_CaptureAlertMessages
+$stepName = '2__RemoveJob_CaptureAlertMessages'
+if ($stepName -in $Steps2Execute) {
+    $objName = '(dba) Capture-AlertMessages'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+
+    # Append SQLInstance Name if TSQLJob server is different 
+    $objNameNew = $objName
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+      $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if ($DryRun) {
+      "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+      "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
+    }
+
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+  else { # If non-Express edition
+    $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+    if ($resultRemoveObject.Count -gt 0) {
+      $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+      if ($result -eq 1) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+      }
+      else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+      }
+    }
+  }    
+}
+
+
+# 3__RemoveJob_CheckSQLAgentJobs
+$stepName = '3__RemoveJob_CheckSQLAgentJobs'
+if ($stepName -in $Steps2Execute) 
+{
+    $objName = '(dba) Check-SQLAgentJobs'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+
+    # Append SQLInstance Name if TSQLJob server is different 
+    $objNameNew = $objName
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+      $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) {
     # If Job Server is Express edition
         
     $taskPath = '\DBA\'
@@ -1021,7 +1366,7 @@ else
     select 0 as object_exists;
 "@
     $resultRemoveObject = @()
-    $resultRemoveObject += $conSqlInstanceForPowershellJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+    $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
     if ($resultRemoveObject.Count -gt 0) {
       $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
       if ($result -eq 1) {
@@ -1035,28 +1380,30 @@ else
 }
 
 
-# 2__RemoveJob_CollectAgHealthState
-$stepName = '2__RemoveJob_CollectAgHealthState'
-if ($stepName -in $Steps2Execute) {
-  $objName = '(dba) Collect-AgHealthState'
-  $objType = 'job'
-  $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+# 4__RemoveJob_CollectAgHealthState
+$stepName = '4__RemoveJob_CollectAgHealthState'
+if ($stepName -in $Steps2Execute) 
+{
+    $objName = '(dba) Collect-AgHealthState'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
-  "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-  if ($DryRun) {
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-  }
-  else {
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-  }
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
 
-  # Append HostName if Job Server is different    
-  $objNameNew = $objName
-  if ( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
-    $objNameNew = "$objName - $HostName"
-  }
+    # Append SQLInstance Name if TSQLJob server is different 
+    $objNameNew = $objName
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+      $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
 
-  if ( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) {
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) {
     # If Job Server is Express edition
         
     $taskPath = '\DBA\'
@@ -1093,7 +1440,7 @@ else
     select 0 as object_exists;
 "@
     $resultRemoveObject = @()
-    $resultRemoveObject += $conSqlInstanceForPowershellJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+    $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
     if ($resultRemoveObject.Count -gt 0) {
       $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
       if ($result -eq 1) {
@@ -1107,25 +1454,26 @@ else
 }
 
 
-# 3__RemoveJob_CollectDiskSpace
-$stepName = '3__RemoveJob_CollectDiskSpace'
+# 5__RemoveJob_CollectDiskSpace
+$stepName = '5__RemoveJob_CollectDiskSpace'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Collect-DiskSpace'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append HostName if Job Server is different    
     $objNameNew = $objName
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
         $objNameNew = "$objName - $HostName"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
 
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -1181,25 +1529,26 @@ else
 }
 
 
-# 4__RemoveJob_CollectOSProcesses
-$stepName = '4__RemoveJob_CollectOSProcesses'
+# 6__RemoveJob_CollectOSProcesses
+$stepName = '6__RemoveJob_CollectOSProcesses'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Collect-OSProcesses'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append HostName if Job Server is different    
     $objNameNew = $objName
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
         $objNameNew = "$objName - $HostName"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -1255,25 +1604,26 @@ else
 }
 
 
-# 5__RemoveJob_CollectPerfmonData
-$stepName = '5__RemoveJob_CollectPerfmonData'
+# 7__RemoveJob_CollectPerfmonData
+$stepName = '7__RemoveJob_CollectPerfmonData'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Collect-PerfmonData'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append HostName if Job Server is different    
     $objNameNew = $objName
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
         $objNameNew = "$objName - $HostName"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -1329,28 +1679,30 @@ else
 }
 
 
-# 6__RemoveJob_CollectPrivilegedInfo
-$stepName = '6__RemoveJob_CollectPrivilegedInfo'
-if ($stepName -in $Steps2Execute) {
+# 8__RemoveJob_CollectPrivilegedInfo
+$stepName = '8__RemoveJob_CollectPrivilegedInfo'
+if ($stepName -in $Steps2Execute) 
+{
   $objName = '(dba) Collect-PrivilegedInfo'
   $objType = 'job'
   $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
   "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-  if ($DryRun) {
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-  }
-  else {
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+
+  # Append SQLInstance Name if TSQLJob server is different 
+  $objNameNew = $objName
+  if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+      $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
   }
 
-  # Append HostName if Job Server is different    
-  $objNameNew = $objName
-  if ( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
-    $objNameNew = "$objName - $HostName"
+  if ($DryRun) {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+  }
+  else {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
   }
         
-  if ( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) {
+  if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) {
     # If Job Server is Express edition
         
     $taskPath = '\DBA\'
@@ -1387,7 +1739,7 @@ else
     select 0 as object_exists;
 "@
     $resultRemoveObject = @()
-    $resultRemoveObject += $conSqlInstanceForPowershellJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+    $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
     if ($resultRemoveObject.Count -gt 0) {
       $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
       if ($result -eq 1) {
@@ -1401,25 +1753,26 @@ else
 }
 
 
-# 7__RemoveJob_CollectWaitStats
-$stepName = '7__RemoveJob_CollectWaitStats'
+# 9__RemoveJob_CollectWaitStats
+$stepName = '9__RemoveJob_CollectWaitStats'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Collect-WaitStats'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -1475,25 +1828,26 @@ else
 }
 
 
-# 8__RemoveJob_CollectXEvents
-$stepName = '8__RemoveJob_CollectXEvents'
+# 10__RemoveJob_CollectXEvents
+$stepName = '10__RemoveJob_CollectXEvents'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Collect-XEvents'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -1550,25 +1904,26 @@ else
 }
 
 
-# 9__RemoveJob_PartitionsMaintenance
-$stepName = '9__RemoveJob_PartitionsMaintenance'
+# 11__RemoveJob_PartitionsMaintenance
+$stepName = '11__RemoveJob_PartitionsMaintenance'
 if( $stepName -in $Steps2Execute ) {
     $objName = '(dba) Partitions-Maintenance'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -1625,25 +1980,26 @@ else
 }
 
 
-# 10__RemoveJob_PurgeTables
-$stepName = '10__RemoveJob_PurgeTables'
+# 12__RemoveJob_PurgeTables
+$stepName = '12__RemoveJob_PurgeTables'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Purge-Tables'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -1700,25 +2056,26 @@ else
 }
 
 
-# 11__RemoveJob_RemoveXEventFiles
-$stepName = '11__RemoveJob_RemoveXEventFiles'
+# 13__RemoveJob_RemoveXEventFiles
+$stepName = '13__RemoveJob_RemoveXEventFiles'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Remove-XEventFiles'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) ) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) ) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     #if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -1775,25 +2132,26 @@ else
 }
 
 
-# 12__RemoveJob_RunWhoIsActive
-$stepName = '12__RemoveJob_RunWhoIsActive'
+# 14__RemoveJob_RunWhoIsActive
+$stepName = '14__RemoveJob_RunWhoIsActive'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Run-WhoIsActive'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -1850,25 +2208,26 @@ else
 }
 
 
-# 13__RemoveJob_CollectFileIOStats
-$stepName = '13__RemoveJob_CollectFileIOStats'
+# 15__RemoveJob_CollectFileIOStats
+$stepName = '15__RemoveJob_CollectFileIOStats'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Collect-FileIOStats'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -1925,25 +2284,26 @@ else
 }
 
 
-# 14__RemoveJob_CollectMemoryClerks
-$stepName = '14__RemoveJob_CollectMemoryClerks'
+# 16__RemoveJob_CollectMemoryClerks
+$stepName = '16__RemoveJob_CollectMemoryClerks'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Collect-MemoryClerks'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -2000,29 +2360,105 @@ else
 }
 
 
-# 15__RemoveJob_RunBlitzIndex
-$stepName = '15__RemoveJob_RunBlitzIndex'
+# 17__RemoveJob_RunBlitz
+$stepName = '17__RemoveJob_RunBlitz'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Run-Blitz'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 18__RemoveJob_RunBlitzIndex
+$stepName = '18__RemoveJob_RunBlitzIndex'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Run-BlitzIndex'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
 
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
-    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
     { # If Job Server is Express edition
         
         $taskPath = '\DBA\'
@@ -2050,11 +2486,24 @@ if($stepName -in $Steps2Execute) {
     }
     else # If non-Express edition
     {
+        $objNameNewWeekly = $objNameNew.Replace("$objName",  "$objName - Weekly")
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNewWeekly'.."
+
         $sqlRemoveObject = @"
-if exists (select * from msdb.dbo.sysjobs_view where name like '$objNameNew%')
+if exists (select * from msdb.dbo.sysjobs_view where name = '$objNameNew' or name = '$objNameNewWeekly')
 begin
-	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
-  $(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew - Weekly', @delete_unused_schedule=1;
+    if exists (select * from msdb.dbo.sysjobs_view where name like '$objNameNew%')
+    begin
+	    $(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+        print 'Job [$objNameNew] deleted.'
+    end
+
+    if exists (select * from msdb.dbo.sysjobs_view where name like '$objNameNewWeekly%')
+    begin
+	    $(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNewWeekly', @delete_unused_schedule=1;
+        print 'Job [$objNameNewWeekly] deleted.'
+    end
+    
     select 1 as object_exists;
 
 end
@@ -2062,7 +2511,7 @@ else
     select 0 as object_exists;
 "@
         $resultRemoveObject = @()
-        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException #-MessagesToOutput:$verbose
         if($resultRemoveObject.Count -gt 0) 
         {
             $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
@@ -2077,100 +2526,26 @@ else
 }
 
 
-# 16__RemoveJob_RunBlitz
-$stepName = '16__RemoveJob_RunBlitz'
-if($stepName -in $Steps2Execute) {
-    $objName = '(dba) Run-Blitz'
-    $objType = 'job'
-    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
-
-    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
-
-    # Append SQLInstance if Job Server is different    
-    $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
-    }
-        
-    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
-    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
-    { # If Job Server is Express edition
-        
-        $taskPath = '\DBA\'
-        $parameters = @{
-            Session = $ssn4PerfmonSetup
-            ScriptBlock = {
-                Param ($jobName, $taskPath)
-
-                $taskObj = @()
-                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
-                catch { "Some Error" | Out-Null }
-
-                if($taskObj.Count -gt 0) {                    
-                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
-                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
-                }
-                else {
-                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
-                }
-            }
-            ArgumentList = $objNameNew, $taskPath
-        }
-
-        Invoke-Command @parameters -ErrorAction Stop
-    }
-    else # If non-Express edition
-    {
-        $sqlRemoveObject = @"
-if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
-begin
-	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
-    select 1 as object_exists;
-end
-else
-    select 0 as object_exists;
-"@
-        $resultRemoveObject = @()
-        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
-        if($resultRemoveObject.Count -gt 0) 
-        {
-            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
-            if($result -eq 1) {
-                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
-            }
-            else {
-                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
-            }
-        }
-    }
-}
-
-
-# 17__RemoveJob_RunLogSaver
-$stepName = '17__RemoveJob_RunLogSaver'
+# 19__RemoveJob_RunLogSaver
+$stepName = '19__RemoveJob_RunLogSaver'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Run-LogSaver'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -2227,25 +2602,26 @@ else
 }
 
 
-# 18__RemoveJob_RunTempDbSaver
-$stepName = '18__RemoveJob_RunTempDbSaver'
+# 20__RemoveJob_RunTempDbSaver
+$stepName = '20__RemoveJob_RunTempDbSaver'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Run-TempDbSaver'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -2303,25 +2679,26 @@ else
 
 
 
-# 19__RemoveJob_UpdateSqlServerVersions
-$stepName = '19__RemoveJob_UpdateSqlServerVersions'
+# 21__RemoveJob_UpdateSqlServerVersions
+$stepName = '21__RemoveJob_UpdateSqlServerVersions'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Update-SqlServerVersions'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append HostName if Job Server is different    
     $objNameNew = $objName
     if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
         $objNameNew = "$objName - $HostName"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     #if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -2378,25 +2755,26 @@ else
 }
 
 
-# 20__RemoveJob_CheckInstanceAvailability
-$stepName = '20__RemoveJob_CheckInstanceAvailability'
+# 22__RemoveJob_CheckInstanceAvailability
+$stepName = '22__RemoveJob_CheckInstanceAvailability'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Check-InstanceAvailability'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append HostName if Job Server is different    
     $objNameNew = $objName
     if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
         $objNameNew = "$objName - $HostName"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     #if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -2453,25 +2831,26 @@ else
 }
 
 
-# 21__RemoveJob_GetAllServerInfo
-$stepName = '21__RemoveJob_GetAllServerInfo'
+# 23__RemoveJob_GetAllServerInfo
+$stepName = '23__RemoveJob_GetAllServerInfo'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Get-AllServerInfo'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -2528,25 +2907,26 @@ else
 }
 
 
-# 22__RemoveJob_GetAllServerCollectedData
-$stepName = '22__RemoveJob_GetAllServerCollectedData'
+# 24__RemoveJob_GetAllServerCollectedData
+$stepName = '24__RemoveJob_GetAllServerCollectedData'
 if($stepName -in $Steps2Execute) {
     $objName = '(dba) Get-AllServerCollectedData'
     $objType = 'job'
     $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
 
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $objNameNew = "$objName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
     }
         
     if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
@@ -2603,8 +2983,464 @@ else
 }
 
 
-# 23__DropProc_UspExtendedResults
-$stepName = '23__DropProc_UspExtendedResults'
+# 25__RemoveJob_CollectLoginExpirationInfo
+$stepName = '25__RemoveJob_CollectLoginExpirationInfo'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Collect Login Expiration Info'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 26__RemoveJob_CollectAllServerAlertMessages
+$stepName = '26__RemoveJob_CollectAllServerAlertMessages'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Collect-AllServerAlertMessages'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 27__RemoveJob_GetAllServerDashboardMail
+$stepName = '27__RemoveJob_GetAllServerDashboardMail'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Get-AllServerDashboardMail'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 28__RemoveJob_PopulateInventoryTables
+$stepName = '28__RemoveJob_PopulateInventoryTables'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Populate Inventory Tables'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 29__RemoveJob_SendLoginExpiryEMails
+$stepName = '29__RemoveJob_SendLoginExpiryEMails'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Send Login Expiry EMails'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 30__RemoveJob_StopStuckSQLMonitorJobs
+$stepName = '30__RemoveJob_StopStuckSQLMonitorJobs'
+if($stepName -in $Steps2Execute) {
+    $objName = '(dba) Stop-StuckSQLMonitorJobs'
+    $objType = 'job'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase($objType)
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+
+    # Append SQLInstance if Job Server is different    
+    $objNameNew = $objName
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
+    }
+
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objNameNew'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
+    }
+        
+    if( ($SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    #if( ($SqlInstanceToBaseline -eq $SqlInstanceForPowershellJobs) -and ($jobServerDbServiceInfo.Edition -like 'Express*' -or $hasTaskSchedulerJobs) -and ($DryRun -eq $false) ) 
+    { # If Job Server is Express edition
+        
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $taskPath)
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                if($taskObj.Count -gt 0) {                    
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job '$($taskPath)$($jobName)' found and removed."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Job '$($taskPath)$($jobName)' could not be found."
+                }
+            }
+            ArgumentList = $objNameNew, $taskPath
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+    }
+    else # If non-Express edition
+    {
+        $sqlRemoveObject = @"
+if exists (select * from msdb.dbo.sysjobs_view where name = N'$objNameNew')
+begin
+	$(if($DryRun){'--'})EXEC msdb.dbo.sp_delete_job @job_name=N'$objNameNew', @delete_unused_schedule=1;
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+        $resultRemoveObject = @()
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        if($resultRemoveObject.Count -gt 0) 
+        {
+            $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+            if($result -eq 1) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objNameNew' found and removed."
+            }
+            else {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objNameNew' not found."
+            }
+        }
+    }
+}
+
+
+# 31__DropProc_UspExtendedResults
+$stepName = '31__DropProc_UspExtendedResults'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_extended_results'
     $objType = 'procedure'
@@ -2642,8 +3478,8 @@ else
 }
 
 
-# 24__DropProc_UspCollectWaitStats
-$stepName = '24__DropProc_UspCollectWaitStats'
+# 32__DropProc_UspCollectWaitStats
+$stepName = '32__DropProc_UspCollectWaitStats'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_collect_wait_stats'
     $objType = 'procedure'
@@ -2681,8 +3517,8 @@ else
 }
 
 
-# 25__DropProc_UspRunWhoIsActive
-$stepName = '25__DropProc_UspRunWhoIsActive'
+# 33__DropProc_UspRunWhoIsActive
+$stepName = '33__DropProc_UspRunWhoIsActive'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_run_WhoIsActive'
     $objType = 'procedure'
@@ -2720,8 +3556,8 @@ else
 }
 
 
-# 26__DropProc_UspCollectXEventsXEventMetrics
-$stepName = '26__DropProc_UspCollectXEventsXEventMetrics'
+# 34__DropProc_UspCollectXEventsXEventMetrics
+$stepName = '34__DropProc_UspCollectXEventsXEventMetrics'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_collect_xevents_xevent_metrics'
     $objType = 'procedure'
@@ -2759,8 +3595,8 @@ else
 }
 
 
-# 27__DropProc_UspPartitionMaintenance
-$stepName = '27__DropProc_UspPartitionMaintenance'
+# 35__DropProc_UspPartitionMaintenance
+$stepName = '35__DropProc_UspPartitionMaintenance'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_partition_maintenance'
     $objType = 'procedure'
@@ -2798,8 +3634,8 @@ else
 }
 
 
-# 28__DropProc_UspPurgeTables
-$stepName = '28__DropProc_UspPurgeTables'
+# 36__DropProc_UspPurgeTables
+$stepName = '36__DropProc_UspPurgeTables'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_purge_tables'
     $objType = 'procedure'
@@ -2837,8 +3673,8 @@ else
 }
 
 
-# 29__DropProc_SpWhatIsRunning
-$stepName = '29__DropProc_SpWhatIsRunning'
+# 37__DropProc_SpWhatIsRunning
+$stepName = '37__DropProc_SpWhatIsRunning'
 if($stepName -in $Steps2Execute) {
     $objName = 'sp_WhatIsRunning'
     $objType = 'procedure'
@@ -2876,8 +3712,8 @@ else
 }
 
 
-# 30__DropProc_UspActiveRequestsCount
-$stepName = '30__DropProc_UspActiveRequestsCount'
+# 38__DropProc_UspActiveRequestsCount
+$stepName = '38__DropProc_UspActiveRequestsCount'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_active_requests_count'
     $objType = 'procedure'
@@ -2915,8 +3751,8 @@ else
 }
 
 
-# 31__DropProc_UspCollectFileIOStats
-$stepName = '31__DropProc_UspCollectFileIOStats'
+# 39__DropProc_UspCollectFileIOStats
+$stepName = '39__DropProc_UspCollectFileIOStats'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_collect_file_io_stats'
     $objType = 'procedure'
@@ -2954,8 +3790,8 @@ else
 }
 
 
-# 32__DropProc_UspEnablePageCompression
-$stepName = '32__DropProc_UspEnablePageCompression'
+# 40__DropProc_UspEnablePageCompression
+$stepName = '40__DropProc_UspEnablePageCompression'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_enable_page_compression'
     $objType = 'procedure'
@@ -2993,8 +3829,8 @@ else
 }
 
 
-# 33__DropProc_UspWaitsPerCorePerMinute
-$stepName = '33__DropProc_UspWaitsPerCorePerMinute'
+# 41__DropProc_UspWaitsPerCorePerMinute
+$stepName = '41__DropProc_UspWaitsPerCorePerMinute'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_waits_per_core_per_minute'
     $objType = 'procedure'
@@ -3032,8 +3868,8 @@ else
 }
 
 
-# 34__DropProc_UspCollectMemoryClerks
-$stepName = '34__DropProc_UspCollectMemoryClerks'
+# 42__DropProc_UspCollectMemoryClerks
+$stepName = '42__DropProc_UspCollectMemoryClerks'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_collect_memory_clerks'
     $objType = 'procedure'
@@ -3071,8 +3907,398 @@ else
 }
 
 
-# 35__DropProc_UspWrapperGetAllServerInfo
-$stepName = '35__DropProc_UspWrapperGetAllServerInfo'
+# 43__DropProc_UspAvgDiskWaitMs
+$stepName = '43__DropProc_UspAvgDiskWaitMs'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_avg_disk_wait_ms'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 44__DropProc_UspCaptureAlertMessages
+$stepName = '44__DropProc_UspCaptureAlertMessages'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_capture_alert_messages'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 45__DropProc_UspCheckSqlAgentJobs
+$stepName = '45__DropProc_UspCheckSqlAgentJobs'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_check_sql_agent_jobs'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 46__DropProc_UspCollectAgHealthState
+$stepName = '46__DropProc_UspCollectAgHealthState'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_collect_ag_health_state'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 47__DropProc_UspCollectPrivilegedInfo
+$stepName = '47__DropProc_UspCollectPrivilegedInfo'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_collect_privileged_info'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 48__DropProc_UspCollectXEventMetrics
+$stepName = '48__DropProc_UspCollectXEventMetrics'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_collect_xevent_metrics'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 49__DropProc_UspCreateAgentAlerts
+$stepName = '49__DropProc_UspCreateAgentAlerts'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_create_agent_alerts'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 50__DropProc_UspLogSaver
+$stepName = '50__DropProc_UspLogSaver'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_LogSaver'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 51__DropProc_UspTempDbSaver
+$stepName = '51__DropProc_UspTempDbSaver'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_TempDbSaver'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 52__DropProc_UspWrapperCollectPriviledgedInfo
+$stepName = '52__DropProc_UspWrapperCollectPriviledgedInfo'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_wrapper_CollectPrivilegedInfo'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 53__DropProc_UspWrapperGetAllServerInfo
+$stepName = '53__DropProc_UspWrapperGetAllServerInfo'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_wrapper_GetAllServerInfo'
     $objType = 'procedure'
@@ -3110,8 +4336,8 @@ else
 }
 
 
-# 36__DropProc_UspPopulateAllServerVolatileInfoHistory
-$stepName = '36__DropProc_UspPopulateAllServerVolatileInfoHistory'
+# 54__DropProc_UspPopulateAllServerVolatileInfoHistory
+$stepName = '54__DropProc_UspPopulateAllServerVolatileInfoHistory'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_populate__all_server_volatile_info_history'
     $objType = 'procedure'
@@ -3149,8 +4375,8 @@ else
 }
 
 
-# 37__DropProc_UspGetAllServerInfo
-$stepName = '37__DropProc_UspGetAllServerInfo'
+# 55__DropProc_UspGetAllServerInfo
+$stepName = '55__DropProc_UspGetAllServerInfo'
 if($stepName -in $Steps2Execute) {
     $objName = 'usp_GetAllServerInfo'
     $objType = 'procedure'
@@ -3188,8 +4414,359 @@ else
 }
 
 
-# 38__DropView_VwPerformanceCounters
-$stepName = '38__DropView_VwPerformanceCounters'
+# 56__DropProc_UspCheckJobStatus
+$stepName = '56__DropProc_UspCheckJobStatus'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_check_job_status'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 57__DropProc_UspCollectAlertMessages
+$stepName = '57__DropProc_UspCollectAlertMessages'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_collect_alert_messages'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 58__DropProc_UspCollectAllServerLoginExpirationInfo
+$stepName = '58__DropProc_UspCollectAllServerLoginExpirationInfo'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_collect_all_server_login_expiration_info'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 59__DropProc_UspGetAllServerCollectedData
+$stepName = '59__DropProc_UspGetAllServerCollectedData'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_GetAllServerCollectedData'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 60__DropProc_UspGetAllServerDashboardMail
+$stepName = '60__DropProc_UspGetAllServerDashboardMail'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_GetAllServerDashboardMail'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 61__DropProc_UspPopulateSmaSqlInstance
+$stepName = '61__DropProc_UspPopulateSmaSqlInstance'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_populate_sma_sql_instance'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 62__DropProc_UspSendLoginExpiryEmails
+$stepName = '62__DropProc_UspSendLoginExpiryEmails'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_send_login_expiry_emails'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 63__DropProc_UspWrapperGetAllServerCollectedData
+$stepName = '63__DropProc_UspWrapperGetAllServerCollectedData'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_wrapper_GetAllServerCollectedData'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 64__DropProc_UspWrapperPopulateSmaSqlInstance
+$stepName = '64__DropProc_UspWrapperPopulateSmaSqlInstance'
+if($stepName -in $Steps2Execute) {
+    $objName = 'usp_wrapper_populate_sma_sql_instance'
+    $objType = 'procedure'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP PROCEDURE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 65__DropView_VwPerformanceCounters
+$stepName = '65__DropView_VwPerformanceCounters'
 if($stepName -in $Steps2Execute) {
     $objName = 'vw_performance_counters'
     $objType = 'view'
@@ -3227,8 +4804,8 @@ else
 }
 
 
-# 39__DropView_VwOsTaskList
-$stepName = '39__DropView_VwOsTaskList'
+# 66__DropView_VwOsTaskList
+$stepName = '66__DropView_VwOsTaskList'
 if($stepName -in $Steps2Execute) {
     $objName = 'vw_os_task_list'
     $objType = 'view'
@@ -3266,8 +4843,8 @@ else
 }
 
 
-# 40__DropView_VwWaitStatsDeltas
-$stepName = '40__DropView_VwWaitStatsDeltas'
+# 67__DropView_VwWaitStatsDeltas
+$stepName = '67__DropView_VwWaitStatsDeltas'
 if($stepName -in $Steps2Execute) {
     $objName = 'vw_wait_stats_deltas'
     $objType = 'view'
@@ -3305,8 +4882,8 @@ else
 }
 
 
-# 41__DropView_vw_file_io_stats_deltas
-$stepName = '41__DropView_vw_file_io_stats_deltas'
+# 68__DropView_vw_file_io_stats_deltas
+$stepName = '68__DropView_vw_file_io_stats_deltas'
 if($stepName -in $Steps2Execute) {
     $objName = 'vw_file_io_stats_deltas'
     $objType = 'view'
@@ -3344,8 +4921,8 @@ else
 }
 
 
-# 42__DropView_vw_xevent_metrics
-$stepName = '42__DropView_vw_xevent_metrics'
+# 69__DropView_vw_xevent_metrics
+$stepName = '69__DropView_vw_xevent_metrics'
 if($stepName -in $Steps2Execute) {
     $objName = 'vw_xevent_metrics'
     $objType = 'view'
@@ -3383,8 +4960,8 @@ else
 }
 
 
-# 43__DropView_vw_disk_space
-$stepName = '43__DropView_vw_disk_space'
+# 70__DropView_vw_disk_space
+$stepName = '70__DropView_vw_disk_space'
 if($stepName -in $Steps2Execute) {
     $objName = 'vw_disk_space'
     $objType = 'view'
@@ -3422,8 +4999,8 @@ else
 }
 
 
-# 44__DropView_vw_all_server_info
-$stepName = '44__DropView_vw_all_server_info'
+# 71__DropView_vw_all_server_info
+$stepName = '71__DropView_vw_all_server_info'
 if($stepName -in $Steps2Execute) {
     $objName = 'vw_all_server_info'
     $objType = 'view'
@@ -3461,8 +5038,86 @@ else
 }
 
 
-# 45__DropXEvent_XEventMetrics
-$stepName = '45__DropXEvent_XEventMetrics'
+# 72__DropView_SmaSqlServers
+$stepName = '72__DropView_SmaSqlServers'
+if($stepName -in $Steps2Execute) {
+    $objName = 'sma_sql_servers'
+    $objType = 'view'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP VIEW [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 73__DropView_SmaSqlServersIncludingOffline
+$stepName = '73__DropView_SmaSqlServersIncludingOffline'
+if($stepName -in $Steps2Execute) {
+    $objName = 'sma_sql_servers_including_offline'
+    $objType = 'view'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP VIEW [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 74__DropXEvent_XEventMetrics
+$stepName = '74__DropXEvent_XEventMetrics'
 if($stepName -in $Steps2Execute) {
     $objName = 'xevent_metrics'
     $objType = 'xevent'
@@ -3517,8 +5172,8 @@ end
 }
 
 
-# 46__DropLinkedServer
-$stepName = '46__DropLinkedServer'
+# 75__DropLinkedServer
+$stepName = '75__DropLinkedServer'
 if($stepName -in $Steps2Execute) 
 {    
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
@@ -3606,8 +5261,8 @@ if($stepName -in $Steps2Execute)
 }
 
 
-# 47__DropLogin_Grafana
-$stepName = '47__DropLogin_Grafana'
+# 76__DropLogin_Grafana
+$stepName = '76__DropLogin_Grafana'
 if($stepName -in $Steps2Execute) {
     $objName = 'grafana'
     $objType = 'login'
@@ -3620,7 +5275,11 @@ if($stepName -in $Steps2Execute) {
     else {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
     }
-        
+    
+    # Remove grafana logins by killing existing sessions
+    Remove-DbaLogin -SqlInstance $conSqlInstanceToBaseline -Login @('grafana') -Confirm:$false -Force
+
+
     $sqlRemoveObject = @"
 if exists (select 1 from sys.server_principals where name = '$objName')
 begin
@@ -3645,8 +5304,8 @@ else
 }
 
 
-# 48__DropTable_XEventMetrics
-$stepName = '48__DropTable_XEventMetrics'
+# 77__DropTable_XEventMetrics
+$stepName = '77__DropTable_XEventMetrics'
 if($stepName -in $Steps2Execute) {
     $objName = 'xevent_metrics'
     $objType = 'table'
@@ -3684,8 +5343,8 @@ else
 }
 
 
-# 49__DropTable_xevent_metrics_queries
-$stepName = '49__DropTable_xevent_metrics_queries'
+# 78__DropTable_xevent_metrics_queries
+$stepName = '78__DropTable_xevent_metrics_queries'
 if($stepName -in $Steps2Execute) {
     $objName = 'xevent_metrics_queries'
     $objType = 'table'
@@ -3723,8 +5382,8 @@ else
 }
 
 
-# 50__DropTable_XEventMetricsProcessedXELFiles
-$stepName = '50__DropTable_XEventMetricsProcessedXELFiles'
+# 79__DropTable_XEventMetricsProcessedXELFiles
+$stepName = '79__DropTable_XEventMetricsProcessedXELFiles'
 if($stepName -in $Steps2Execute) {
     $objName = 'xevent_metrics_Processed_XEL_Files'
     $objType = 'table'
@@ -3762,8 +5421,8 @@ else
 }
 
 
-# 52__DropTable_WhoIsActive_Staging
-$stepName = '52__DropTable_WhoIsActive_Staging'
+# 81__DropTable_WhoIsActive_Staging
+$stepName = '81__DropTable_WhoIsActive_Staging'
 if($stepName -in $Steps2Execute) {
     $objName = 'WhoIsActive_Staging'
     $objType = 'table'
@@ -3801,8 +5460,8 @@ else
 }
 
 
-# 52__DropTable_WhoIsActive
-$stepName = '52__DropTable_WhoIsActive'
+# 81__DropTable_WhoIsActive
+$stepName = '81__DropTable_WhoIsActive'
 if($stepName -in $Steps2Execute) {
     $objName = 'WhoIsActive'
     $objType = 'table'
@@ -3840,8 +5499,8 @@ else
 }
 
 
-# 53__DropTable_PerformanceCounters
-$stepName = '53__DropTable_PerformanceCounters'
+# 82__DropTable_PerformanceCounters
+$stepName = '82__DropTable_PerformanceCounters'
 if($stepName -in $Steps2Execute) {
     $objName = 'performance_counters'
     $objType = 'table'
@@ -3879,8 +5538,8 @@ else
 }
 
 
-# 54__DropTable_PurgeTable
-$stepName = '54__DropTable_PurgeTable'
+# 83__DropTable_PurgeTable
+$stepName = '83__DropTable_PurgeTable'
 if($stepName -in $Steps2Execute) {
     $objName = 'purge_table'
     $objType = 'table'
@@ -3918,8 +5577,8 @@ else
 }
 
 
-# 55__DropTable_PerfmonFiles
-$stepName = '55__DropTable_PerfmonFiles'
+# 84__DropTable_PerfmonFiles
+$stepName = '84__DropTable_PerfmonFiles'
 if($stepName -in $Steps2Execute) {
     $objName = 'perfmon_files'
     $objType = 'table'
@@ -3957,8 +5616,8 @@ else
 }
 
 
-# 56__DropTable_InstanceDetails
-$stepName = '56__DropTable_InstanceDetails'
+# 85__DropTable_InstanceDetails
+$stepName = '85__DropTable_InstanceDetails'
 if( ($stepName -in $Steps2Execute) -and ($ActionType -eq 'Delete') ) {
     $objName = 'instance_details'
     $objType = 'table'
@@ -3996,8 +5655,47 @@ else
 }
 
 
-# 57__DropTable_InstanceHosts
-$stepName = '57__DropTable_InstanceHosts'
+# 86__DropTable_InstanceDetailsHistory
+$stepName = '86__DropTable_InstanceDetailsHistory'
+if( ($stepName -in $Steps2Execute) -and ($ActionType -eq 'Delete') ) {
+    $objName = 'instance_details_history'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 87__DropTable_InstanceHosts
+$stepName = '87__DropTable_InstanceHosts'
 if( ($stepName -in $Steps2Execute) -and ($ActionType -eq 'Delete') ) {
     $objName = 'instance_hosts'
     $objType = 'table'
@@ -4035,8 +5733,47 @@ else
 }
 
 
-# 58__DropTable_OsTaskList
-$stepName = '58__DropTable_OsTaskList'
+# 88__DropTable_Blitz
+$stepName = '88__DropTable_Blitz'
+if($stepName -in $Steps2Execute) {
+    $objName = 'Blitz'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 89__DropTable_OsTaskList
+$stepName = '89__DropTable_OsTaskList'
 if($stepName -in $Steps2Execute) {
     $objName = 'os_task_list'
     $objType = 'table'
@@ -4074,8 +5811,8 @@ else
 }
 
 
-# 59__DropTable_BlitzWho
-$stepName = '59__DropTable_BlitzWho'
+# 90__DropTable_BlitzWho
+$stepName = '90__DropTable_BlitzWho'
 if($stepName -in $Steps2Execute) {
     $objName = 'BlitzWho'
     $objType = 'table'
@@ -4113,8 +5850,8 @@ else
 }
 
 
-# 60__DropTable_BlitzCache
-$stepName = '60__DropTable_BlitzCache'
+# 91__DropTable_BlitzCache
+$stepName = '91__DropTable_BlitzCache'
 if($stepName -in $Steps2Execute) {
     $objName = 'BlitzCache'
     $objType = 'table'
@@ -4152,8 +5889,8 @@ else
 }
 
 
-# 61__DropTable_ConnectionHistory
-$stepName = '61__DropTable_ConnectionHistory'
+# 92__DropTable_ConnectionHistory
+$stepName = '92__DropTable_ConnectionHistory'
 if($stepName -in $Steps2Execute) {
     $objName = 'connection_history'
     $objType = 'table'
@@ -4191,8 +5928,8 @@ else
 }
 
 
-# 62__DropTable_BlitzFirst
-$stepName = '62__DropTable_BlitzFirst'
+# 93__DropTable_BlitzFirst
+$stepName = '93__DropTable_BlitzFirst'
 if($stepName -in $Steps2Execute) {
     $objName = 'BlitzFirst'
     $objType = 'table'
@@ -4230,8 +5967,8 @@ else
 }
 
 
-# 63__DropTable_BlitzFirstFileStats
-$stepName = '63__DropTable_BlitzFirstFileStats'
+# 94__DropTable_BlitzFirstFileStats
+$stepName = '94__DropTable_BlitzFirstFileStats'
 if($stepName -in $Steps2Execute) {
     $objName = 'BlitzFirst_FileStats'
     $objType = 'table'
@@ -4269,8 +6006,8 @@ else
 }
 
 
-# 64__DropTable_DiskSpace
-$stepName = '64__DropTable_DiskSpace'
+# 95__DropTable_DiskSpace
+$stepName = '95__DropTable_DiskSpace'
 if($stepName -in $Steps2Execute) {
     $objName = 'disk_space'
     $objType = 'table'
@@ -4308,8 +6045,8 @@ else
 }
 
 
-# 65__DropTable_BlitzFirstPerfmonStats
-$stepName = '65__DropTable_BlitzFirstPerfmonStats'
+# 96__DropTable_BlitzFirstPerfmonStats
+$stepName = '96__DropTable_BlitzFirstPerfmonStats'
 if($stepName -in $Steps2Execute) {
     $objName = 'BlitzFirst_PerfmonStats'
     $objType = 'table'
@@ -4347,8 +6084,8 @@ else
 }
 
 
-# 66__DropTable_BlitzFirstWaitStats
-$stepName = '66__DropTable_BlitzFirstWaitStats'
+# 97__DropTable_BlitzFirstWaitStats
+$stepName = '97__DropTable_BlitzFirstWaitStats'
 if($stepName -in $Steps2Execute) {
     $objName = 'BlitzFirst_WaitStats'
     $objType = 'table'
@@ -4386,8 +6123,8 @@ else
 }
 
 
-# 67__DropTable_BlitzFirstWaitStatsCategories
-$stepName = '67__DropTable_BlitzFirstWaitStatsCategories'
+# 98__DropTable_BlitzFirstWaitStatsCategories
+$stepName = '98__DropTable_BlitzFirstWaitStatsCategories'
 if($stepName -in $Steps2Execute) {
     $objName = 'BlitzFirst_WaitStats_Categories'
     $objType = 'table'
@@ -4425,8 +6162,8 @@ else
 }
 
 
-# 68__DropTable_WaitStats
-$stepName = '68__DropTable_WaitStats'
+# 99__DropTable_WaitStats
+$stepName = '99__DropTable_WaitStats'
 if($stepName -in $Steps2Execute) {
     $objName = 'wait_stats'
     $objType = 'table'
@@ -4465,8 +6202,8 @@ else
 
 
 
-# 69__DropTable_BlitzIndex
-$stepName = '69__DropTable_BlitzIndex'
+# 100__DropTable_BlitzIndex
+$stepName = '100__DropTable_BlitzIndex'
 if($stepName -in $Steps2Execute) {
     $objName = 'BlitzIndex'
     $objType = 'tables'
@@ -4531,47 +6268,8 @@ else
 }
 
 
-# 70__DropTable_Blitz
-$stepName = '70__DropTable_Blitz'
-if($stepName -in $Steps2Execute) {
-    $objName = 'Blitz'
-    $objType = 'table'
-    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
-
-    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
-    if($DryRun) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
-    }
-        
-    $sqlRemoveObject = @"
-if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
-begin
-	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
-    select 1 as object_exists;
-end
-else
-    select 0 as object_exists;
-"@
-    $resultRemoveObject = @()
-    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
-    if($resultRemoveObject.Count -gt 0) 
-    {
-        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
-        if($result -eq 1) {
-            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
-        }
-        else {
-            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
-        }
-    }
-}
-
-
-# 71__DropTable_FileIOStats
-$stepName = '71__DropTable_FileIOStats'
+# 101__DropTable_FileIOStats
+$stepName = '101__DropTable_FileIOStats'
 if($stepName -in $Steps2Execute) {
     $objName = 'file_io_stats'
     $objType = 'table'
@@ -4609,8 +6307,8 @@ else
 }
 
 
-# 72__DropTable_MemoryClerks
-$stepName = '72__DropTable_MemoryClerks'
+# 102__DropTable_MemoryClerks
+$stepName = '102__DropTable_MemoryClerks'
 if($stepName -in $Steps2Execute) {
     $objName = 'memory_clerks'
     $objType = 'table'
@@ -4648,8 +6346,8 @@ else
 }
 
 
-# 73__DropTable_AgHealthState
-$stepName = '73__DropTable_AgHealthState'
+# 103__DropTable_AgHealthState
+$stepName = '103__DropTable_AgHealthState'
 if($stepName -in $Steps2Execute) {
     $objName = 'ag_health_state'
     $objType = 'table'
@@ -4687,8 +6385,8 @@ else
 }
 
 
-# 74__DropTable_LogSpaceConsumers
-$stepName = '74__DropTable_LogSpaceConsumers'
+# 104__DropTable_LogSpaceConsumers
+$stepName = '104__DropTable_LogSpaceConsumers'
 if($stepName -in $Steps2Execute) {
     $objName = 'log_space_consumers'
     $objType = 'table'
@@ -4726,8 +6424,8 @@ else
 }
 
 
-# 75__DropTable_PrivilegedInfo
-$stepName = '75__DropTable_PrivilegedInfo'
+# 105__DropTable_PrivilegedInfo
+$stepName = '105__DropTable_PrivilegedInfo'
 if($stepName -in $Steps2Execute) {
     $objName = 'server_privileged_info'
     $objType = 'table'
@@ -4765,8 +6463,8 @@ else
 }
 
 
-# 76__DropTable_SqlAgentJobStats
-$stepName = '76__DropTable_SqlAgentJobStats'
+# 106__DropTable_SqlAgentJobStats
+$stepName = '106__DropTable_SqlAgentJobStats'
 if($stepName -in $Steps2Execute) {
     $objName = 'sql_agent_job_stats'
     $objType = 'table'
@@ -4804,8 +6502,8 @@ else
 }
 
 
-# 77__DropTable_SqlAgentJobThresholds
-$stepName = '77__DropTable_SqlAgentJobThresholds'
+# 107__DropTable_SqlAgentJobThresholds
+$stepName = '107__DropTable_SqlAgentJobThresholds'
 if($stepName -in $Steps2Execute) {
     $objName = 'sql_agent_job_thresholds'
     $objType = 'table'
@@ -4843,8 +6541,8 @@ else
 }
 
 
-# 78__DropTable_TempdbSpaceConsumers
-$stepName = '78__DropTable_TempdbSpaceConsumers'
+# 108__DropTable_TempdbSpaceConsumers
+$stepName = '108__DropTable_TempdbSpaceConsumers'
 if($stepName -in $Steps2Execute) {
     $objName = 'tempdb_space_consumers'
     $objType = 'table'
@@ -4882,8 +6580,8 @@ else
 }
 
 
-# 79__DropTable_TempdbSpaceUsage
-$stepName = '79__DropTable_TempdbSpaceUsage'
+# 109__DropTable_TempdbSpaceUsage
+$stepName = '109__DropTable_TempdbSpaceUsage'
 if($stepName -in $Steps2Execute) {
     $objName = 'tempdb_space_usage'
     $objType = 'table'
@@ -4921,8 +6619,8 @@ else
 }
 
 
-# 80__DropTable_AllServerCollectionLatencyInfo
-$stepName = '80__DropTable_AllServerCollectionLatencyInfo'
+# 110__DropTable_AllServerCollectionLatencyInfo
+$stepName = '110__DropTable_AllServerCollectionLatencyInfo'
 if($stepName -in $Steps2Execute) {
     $objName = 'all_server_collection_latency_info'
     $objType = 'table'
@@ -4960,8 +6658,8 @@ else
 }
 
 
-# 82__DropTable_AllServerVolatileInfoHistory
-$stepName = '82__DropTable_AllServerVolatileInfoHistory'
+# 112__DropTable_AllServerVolatileInfoHistory
+$stepName = '112__DropTable_AllServerVolatileInfoHistory'
 if($stepName -in $Steps2Execute) {
     $objName = 'all_server_volatile_info_history'
     $objType = 'table'
@@ -4999,8 +6697,8 @@ else
 }
 
 
-# 82__DropTable_AllServerVolatileInfoHistory
-$stepName = '82__DropTable_AllServerVolatileInfoHistory'
+# 112__DropTable_AllServerVolatileInfoHistory
+$stepName = '112__DropTable_AllServerVolatileInfoHistory'
 if($stepName -in $Steps2Execute) {
     $objName = 'all_server_volatile_info_history'
     $objType = 'table'
@@ -5038,8 +6736,8 @@ else
 }
 
 
-# 82__DropTable_AllServerVolatileInfo
-$stepName = '82__DropTable_AllServerVolatileInfo'
+# 112__DropTable_AllServerVolatileInfo
+$stepName = '112__DropTable_AllServerVolatileInfo'
 if($stepName -in $Steps2Execute) {
     $objName = 'all_server_volatile_info'
     $objType = 'table'
@@ -5077,8 +6775,8 @@ else
 }
 
 
-# 83__DropTable_AllServerStableInfo
-$stepName = '83__DropTable_AllServerStableInfo'
+# 113__DropTable_AllServerStableInfo
+$stepName = '113__DropTable_AllServerStableInfo'
 if($stepName -in $Steps2Execute) {
     $objName = 'all_server_stable_info'
     $objType = 'table'
@@ -5116,8 +6814,8 @@ else
 }
 
 
-# 85__DropTable_DiskSpaceAllServersStaging
-$stepName = '85__DropTable_DiskSpaceAllServersStaging'
+# 114__DropTable_DiskSpaceAllServersStaging
+$stepName = '114__DropTable_DiskSpaceAllServersStaging'
 if($stepName -in $Steps2Execute) {
     $objName = 'disk_space_all_servers__staging'
     $objType = 'table'
@@ -5155,8 +6853,8 @@ else
 }
 
 
-# 85__DropTable_DiskSpaceAllServers
-$stepName = '85__DropTable_DiskSpaceAllServers'
+# 114__DropTable_DiskSpaceAllServers
+$stepName = '114__DropTable_DiskSpaceAllServers'
 if($stepName -in $Steps2Execute) {
     $objName = 'disk_space_all_servers'
     $objType = 'table'
@@ -5194,8 +6892,8 @@ else
 }
 
 
-# 86__DropTable_LogSpaceConsumersAllServers
-$stepName = '86__DropTable_LogSpaceConsumersAllServers'
+# 115__DropTable_LogSpaceConsumersAllServers
+$stepName = '115__DropTable_LogSpaceConsumersAllServers'
 if($stepName -in $Steps2Execute) {
     $objName = 'log_space_consumers_all_servers'
     $objType = 'table'
@@ -5233,8 +6931,8 @@ else
 }
 
 
-# 87__DropTable_LogSpaceConsumersAllServersStaging
-$stepName = '87__DropTable_LogSpaceConsumersAllServersStaging'
+# 116__DropTable_LogSpaceConsumersAllServersStaging
+$stepName = '116__DropTable_LogSpaceConsumersAllServersStaging'
 if($stepName -in $Steps2Execute) {
     $objName = 'log_space_consumers_all_servers__staging'
     $objType = 'table'
@@ -5272,8 +6970,8 @@ else
 }
 
 
-# 88__DropTable_SqlAgentJobsAllServers
-$stepName = '88__DropTable_SqlAgentJobsAllServers'
+# 117__DropTable_SqlAgentJobsAllServers
+$stepName = '117__DropTable_SqlAgentJobsAllServers'
 if($stepName -in $Steps2Execute) {
     $objName = 'sql_agent_jobs_all_servers'
     $objType = 'table'
@@ -5311,8 +7009,8 @@ else
 }
 
 
-# 89__DropTable_SqlAgentJobsAllServersStaging
-$stepName = '89__DropTable_SqlAgentJobsAllServersStaging'
+# 118__DropTable_SqlAgentJobsAllServersStaging
+$stepName = '118__DropTable_SqlAgentJobsAllServersStaging'
 if($stepName -in $Steps2Execute) {
     $objName = 'sql_agent_jobs_all_servers__staging'
     $objType = 'table'
@@ -5350,8 +7048,8 @@ else
 }
 
 
-# 90__DropTable_TempdbSpaceUsageAllServers
-$stepName = '90__DropTable_TempdbSpaceUsageAllServers'
+# 119__DropTable_TempdbSpaceUsageAllServers
+$stepName = '119__DropTable_TempdbSpaceUsageAllServers'
 if($stepName -in $Steps2Execute) {
     $objName = 'tempdb_space_usage_all_servers'
     $objType = 'table'
@@ -5389,8 +7087,8 @@ else
 }
 
 
-# 91__DropTable_TempdbSpaceUsageAllServersStaging
-$stepName = '91__DropTable_TempdbSpaceUsageAllServersStaging'
+# 120__DropTable_TempdbSpaceUsageAllServersStaging
+$stepName = '120__DropTable_TempdbSpaceUsageAllServersStaging'
 if($stepName -in $Steps2Execute) {
     $objName = 'tempdb_space_usage_all_servers__staging'
     $objType = 'table'
@@ -5428,8 +7126,8 @@ else
 }
 
 
-# 92__DropTable_AgHealthStateAllServers
-$stepName = '92__DropTable_AgHealthStateAllServers'
+# 121__DropTable_AgHealthStateAllServers
+$stepName = '121__DropTable_AgHealthStateAllServers'
 if($stepName -in $Steps2Execute) {
     $objName = 'ag_health_state_all_servers'
     $objType = 'table'
@@ -5467,8 +7165,8 @@ else
 }
 
 
-# 93__DropTable_AgHealthStateAllServersStaging
-$stepName = '93__DropTable_AgHealthStateAllServersStaging'
+# 122__DropTable_AgHealthStateAllServersStaging
+$stepName = '122__DropTable_AgHealthStateAllServersStaging'
 if($stepName -in $Steps2Execute) {
     $objName = 'ag_health_state_all_servers__staging'
     $objType = 'table'
@@ -5506,8 +7204,8 @@ else
 }
 
 
-# 94__DropTable_AllServerVolatileInfoHistory
-$stepName = '94__DropTable_AllServerVolatileInfoHistory'
+# 123__DropTable_AllServerVolatileInfoHistory
+$stepName = '123__DropTable_AllServerVolatileInfoHistory'
 if($stepName -in $Steps2Execute) {
     $objName = 'all_server_volatile_info_history'
     $objType = 'table'
@@ -5545,8 +7243,8 @@ else
 }
 
 
-# 95__DropTable_DiskSpaceAllServersStaging
-$stepName = '95__DropTable_DiskSpaceAllServersStaging'
+# 124__DropTable_DiskSpaceAllServersStaging
+$stepName = '124__DropTable_DiskSpaceAllServersStaging'
 if($stepName -in $Steps2Execute) {
     $objName = 'disk_space_all_servers__staging'
     $objType = 'table'
@@ -5584,8 +7282,632 @@ else
 }
 
 
-# 96__RemovePerfmonFilesFromDisk
-$stepName = '96__RemovePerfmonFilesFromDisk'
+# 125__DropTable_AlertCategories
+$stepName = '125__DropTable_AlertCategories'
+if($stepName -in $Steps2Execute) {
+    $objName = 'alert_categories'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 126__DropTable_AlertHistory
+$stepName = '126__DropTable_AlertHistory'
+if($stepName -in $Steps2Execute) {
+    $objName = 'alert_history'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 127__DropTable_AlertHistoryAllServers
+$stepName = '127__DropTable_AlertHistoryAllServers'
+if($stepName -in $Steps2Execute) {
+    $objName = 'alert_history_all_servers'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 128__DropTable_AlertHistoryAllServersLastActioned
+$stepName = '128__DropTable_AlertHistoryAllServersLastActioned'
+if($stepName -in $Steps2Execute) {
+    $objName = 'alert_history_all_servers_last_actioned'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 129__DropTable_AllServerLoginExpiryInfo
+$stepName = '129__DropTable_AllServerLoginExpiryInfo'
+if($stepName -in $Steps2Execute) {
+    $objName = 'all_server_login_expiry_info'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 130__DropTable_AllServerLoginExpiryInfoDashboard
+$stepName = '130__DropTable_AllServerLoginExpiryInfoDashboard'
+if($stepName -in $Steps2Execute) {
+    $objName = 'all_server_login_expiry_info_dashboard'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 131__DropTable_ServerLoginExpiryCollectionComputed
+$stepName = '131__DropTable_ServerLoginExpiryCollectionComputed'
+if($stepName -in $Steps2Execute) {
+    $objName = 'server_login_expiry_collection_computed'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 132__DropTable_BackupsAllServers
+$stepName = '132__DropTable_BackupsAllServers'
+if($stepName -in $Steps2Execute) {
+    $objName = 'backups_all_servers'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 133__DropTable_BackupsAllServersStaging
+$stepName = '133__DropTable_BackupsAllServersStaging'
+if($stepName -in $Steps2Execute) {
+    $objName = 'backups_all_servers__staging'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 134__DropTable_LoginEmailMapping
+$stepName = '134__DropTable_LoginEmailMapping'
+if($stepName -in $Steps2Execute) {
+    $objName = 'login_email_mapping'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 135__DropTable_SentAlertHistoryAllServers
+$stepName = '135__DropTable_SentAlertHistoryAllServers'
+if($stepName -in $Steps2Execute) {
+    $objName = 'sent_alert_history_all_servers'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 136__DropTable_ServicesAllServers
+$stepName = '136__DropTable_ServicesAllServers'
+if($stepName -in $Steps2Execute) {
+    $objName = 'services_all_servers'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 137__DropTable_ServicesAllServersStaging
+$stepName = '137__DropTable_ServicesAllServersStaging'
+if($stepName -in $Steps2Execute) {
+    $objName = 'services_all_servers__staging'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 138__DropTable_ErrorLog
+$stepName = '138__DropTable_ErrorLog'
+if($stepName -in $Steps2Execute) {
+    $objName = 'sma_errorlog'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 139__DropTable_SmaServersLog
+$stepName = '139__DropTable_SmaServersLog'
+if($stepName -in $Steps2Execute) {
+    $objName = 'sma_servers_logs'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 140__DropTable_SmaSqlServerHostsWrapper
+$stepName = '140__DropTable_SmaSqlServerHostsWrapper'
+if($stepName -in $Steps2Execute) {
+    $objName = 'sma_sql_server_hosts_wrapper'
+    $objType = 'table'
+    $objTypeTitleCase = (Get-Culture).TextInfo.ToTitleCase("$objType")
+
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    if($DryRun) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DRY RUN:', "Find & remove $objType '$objName'.."
+    }
+    else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
+    }
+        
+    $sqlRemoveObject = @"
+if exists (select * from sys.objects where is_ms_shipped= 0 and name = N'$objName')
+begin
+	$(if($DryRun){'--'})DROP TABLE [dbo].[$objName]
+    select 1 as object_exists;
+end
+else
+    select 0 as object_exists;
+"@
+    $resultRemoveObject = @()
+    $resultRemoveObject += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlRemoveObject -EnableException
+    if($resultRemoveObject.Count -gt 0) 
+    {
+        $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;
+        if($result -eq 1) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$objTypeTitleCase '$objName' found and removed."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "$objTypeTitleCase '$objName' not found."
+        }
+    }
+}
+
+
+# 141__RemovePerfmonFilesFromDisk
+$stepName = '141__RemovePerfmonFilesFromDisk'
 if($stepName -in $Steps2Execute) 
 {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
@@ -5672,8 +7994,8 @@ if($stepName -in $Steps2Execute)
 
 
 
-# 97__RemoveXEventFilesFromDisk
-$stepName = '97__RemoveXEventFilesFromDisk'
+# 142__RemoveXEventFilesFromDisk
+$stepName = '142__RemoveXEventFilesFromDisk'
 if($stepName -in $Steps2Execute) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
 
@@ -5742,16 +8064,16 @@ if($stepName -in $Steps2Execute) {
 }
 
 
-# 98__DropProxy
-$stepName = '98__DropProxy'
+# 143__DropProxy
+$stepName = '143__DropProxy'
 
 
-# 99__DropCredential
-$stepName = '99__DropCredential'
+# 144__DropCredential
+$stepName = '144__DropCredential'
 
 
-# 100__RemoveInstanceFromInventory
-$stepName = '100__RemoveInstanceFromInventory'
+# 145__RemoveInstanceFromInventory
+$stepName = '145__RemoveInstanceFromInventory'
 if( ($stepName -in $Steps2Execute) -and ($SqlInstanceToBaseline -ne $InventoryServer) -and ($ActionType -eq 'Delete') ) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
 
@@ -5823,7 +8145,7 @@ if(-not [String]::IsNullOrEmpty($PostQuery)) {
 
 
 # If SQLMonitor Unistall is successful, then remove the instance_details file
-if(Test-Path $instanceDetailsFilePath) {
+if( (Test-Path $instanceDetailsFilePath) -and ($SkipLogFileRemoval -eq $false) ) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Removing the file '$instanceDetailsFilePath'.."
     Remove-Item $instanceDetailsFilePath | Out-Null
 }
@@ -5907,7 +8229,7 @@ $params = @{
     #WindowsCredential = $DomainCredential
     #SkipSteps = @("43__RemovePerfmonFilesFromDisk")
     #StartAtStep = '22__DropLogin_Grafana'
-    #StopAtStep = '19__RemoveJob_UpdateSqlServerVersions'
+    #StopAtStep = '21__RemoveJob_UpdateSqlServerVersions'
     SkipDropTable = $true
     #SkipRemoveJob = $true
     #SkipDropProc = $true
@@ -5925,3 +8247,4 @@ Owner Ajay Kumar Dwivedi (ajay.dwivedi2007@gmail.com)
     https://ajaydwivedi.com/blog/sqlmonitor
     https://ajaydwivedi.com/youtube/sqlmonitor
 #>
+

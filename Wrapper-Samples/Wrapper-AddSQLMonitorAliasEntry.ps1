@@ -7,18 +7,19 @@ cls
 import-module dbatools
 
 # Parameters
-$AliasSqlInstance = '192.168.1.12'
+$AliasSqlInstance = '192.168.100.109'
 #$SourceSqlInstance = ''
 $params = @{
     AliasSqlInstance = $AliasSqlInstance
     SourceSqlInstance = $SourceSqlInstance
-    InventoryServer = 'OfficeInventory'
-    InventoryDatabase = 'DBA_Admin'
+    InventoryServer = 'SQLMonitor'
+    InventoryDatabase = 'DBA'
     SqlCredential = $personal
     #DropCreateLinkedServer = $true
     #ReturnInlineErrorMessage = $true
     Move2NextStepOnFailure = $true
 }
 
-D:\GitHub-Personal\SQLMonitor\SQLMonitor\Add-SQLMonitorAliasEntry.ps1 @params #-Debug
+
+E:\GitHub\SQLMonitor\SQLMonitor\Add-SQLMonitorAliasEntry.ps1 @params #-Debug
 

@@ -18,6 +18,12 @@ begin
 
 		exec dbo.usp_wrapper_populate_sma_sql_instance @send_mail = 0, @verbose = 2, @truncate_log_table = 0
 
+		exec dbo.usp_wrapper_populate_sma_sql_instance
+					@dba_team_email_id = 'sqlagentservice@gmail.com',
+					@dba_manager_email_id = 'sqlagentservice@gmail.com',
+					@sre_vp_email_id = 'sqlagentservice@gmail.com',
+					@send_mail = 1, @verbose = 2, @truncate_log_table = 0
+
 */
 	set nocount on;
 
@@ -46,6 +52,10 @@ begin
 				@_errorState int,
 				@_errorLine int,
 				@_errorMessage nvarchar(4000);
+
+	if object_id('tempdb..#vw_all_server_info') is not null
+		drop table #vw_all_server_info;
+	select * into #vw_all_server_info from dbo.vw_all_server_info asi;
 
 	if ('Populate-Inventory-Tables' = 'Populate-Inventory-Tables')
 	begin
@@ -320,6 +330,7 @@ begin
 										@copy_recipients = @_copy_recipients,
 										@subject = @_mail_subject,
 										@body = @_mail_html,
+										@importance = 'High',
 										@body_format = 'HTML';
 				end
 			end
@@ -366,7 +377,7 @@ begin
 					id.collector_tsql_jobs_server, 
 					id.data_destination_sql_instance
 			from master.sys.servers s
-			cross apply (select top 1 * from DBA_Admin.dbo.instance_details id
+			cross apply (select top 1 * from dbo.instance_details id
 							where id.sql_instance = s.name
 							and id.is_enabled = 1
 							and id.is_alias = 0
@@ -444,7 +455,8 @@ begin
 										@recipients = @_recepient,
 										@copy_recipients = @_copy_recipients,
 										@subject = @_mail_subject,
-										@body = @_mail_html,
+										@body = @_mail_html,										
+										@importance = 'High',
 										@body_format = 'HTML';
 				end
 			end
@@ -512,7 +524,7 @@ begin
 								end
 		into #hosts
 		from t_hosts h
-		outer apply (select * from dbo.vw_all_server_info asi where asi.srv_name = h.server) asi
+		outer apply (select * from #vw_all_server_info asi where asi.srv_name = h.server) asi
 		outer apply (select top 1 * from dbo.instance_details id where is_enabled = 1 and is_alias = 0 and id.sql_instance = h.server) c
 		where 1=1
 		and (	(	h.source = 'sma_sql_server_hosts'
@@ -607,6 +619,7 @@ begin
 											@copy_recipients = @_copy_recipients,
 											@subject = @_mail_subject,
 											@body = @_mail_html,
+											@importance = 'High',
 											@body_format = 'HTML';
 					end
 				end
@@ -729,6 +742,7 @@ begin
 										@copy_recipients = @_copy_recipients,
 										@subject = @_mail_subject,
 										@body = @_mail_html,
+										@importance = 'High',
 										@body_format = 'HTML';
 				end
 			end
@@ -870,6 +884,7 @@ begin
 											@copy_recipients = @_copy_recipients,
 											@subject = @_mail_subject,
 											@body = @_mail_html,
+											@importance = 'High',
 											@body_format = 'HTML';
 					end
 				end
@@ -1015,6 +1030,7 @@ begin
 											@copy_recipients = @_copy_recipients,
 											@subject = @_mail_subject,
 											@body = @_mail_html,
+											@importance = 'High',
 											@body_format = 'HTML';
 					end
 				end
@@ -1138,27 +1154,17 @@ begin
 			on s.server = ag.server
 		where 1=1;
 	end -- 'Update-Hadr-AG'
-
-
-/*
-drop table dbo.sma_servers_logs
-create table dbo.sma_servers_logs
-(	id int identity(1,1) not null,
-	sql_instance varchar(125) not null,
-	start_time datetime2 not null default sysdatetime(),
-	status varchar(125) default 'start',
-	remarks varchar(2000) null
-
-	,constraint pk_sma_servers_logs primary key clustered (id)
-	,index sql_instance nonclustered (sql_instance, start_time)
-);
-*/
 end
 go
 
 
-exec dbo.usp_wrapper_populate_sma_sql_instance @send_mail = 0, @verbose = 2, @truncate_log_table = 0
+--exec dbo.usp_wrapper_populate_sma_sql_instance
+--					@dba_team_email_id = 'sqlagentservice@gmail.com',
+--					@dba_manager_email_id = 'sqlagentservice@gmail.com',
+--					@sre_vp_email_id = 'sqlagentservice@gmail.com',
+--					@send_mail = 1, @verbose = 2, @truncate_log_table = 0
 go
+
 
 -- select * from dbo.sma_servers_logs l;
 go

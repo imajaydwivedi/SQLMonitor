@@ -1,8 +1,8 @@
-use msdb
-go
+USE [msdb]
+GO
 
-IF EXISTS (SELECT * FROM msdb.dbo.sysjobs_view WHERE name = N'(dba) Get-AllServerDashboardMail')
-	EXEC msdb.dbo.sp_delete_job @job_name='(dba) Get-AllServerDashboardMail', @delete_unused_schedule=1
+IF EXISTS (SELECT * FROM msdb.dbo.sysjobs_view WHERE name = N'(dba) Collect Login Expiration Info')
+	EXEC msdb.dbo.sp_delete_job @job_name=N'(dba) Collect Login Expiration Info', @delete_unused_schedule=1
 GO
 
 BEGIN TRANSACTION
@@ -17,20 +17,20 @@ IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 END
 
 DECLARE @jobId BINARY(16)
-EXEC @ReturnCode =  msdb.dbo.sp_add_job @job_name=N'(dba) Get-AllServerDashboardMail', 
+EXEC @ReturnCode =  msdb.dbo.sp_add_job @job_name=N'(dba) Collect Login Expiration Info', 
 		@enabled=1, 
 		@notify_level_eventlog=0, 
 		@notify_level_email=0, 
 		@notify_level_netsend=0, 
 		@notify_level_page=0, 
 		@delete_level=0, 
-		@description=N'Send Mail for All Critical Metrics Every 8 Hours', 
+		@description=N'This job collects all info about SQL Server logins that are active on all servers, and populates them on dbo.all_server_login_expiry_info', 
 		@category_name=N'(dba) SQLMonitor', 
 		--@owner_login_name=N'sa', 
 		@job_id = @jobId OUTPUT
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
-EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_GetAllServerDashboardMail', 
+EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_collect_all_server_login_expiration_info', 
 		@step_id=1, 
 		@cmdexec_success_code=0, 
 		@on_success_action=1, 
@@ -39,26 +39,25 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_
 		@on_fail_step_id=0, 
 		@retry_attempts=0, 
 		@retry_interval=0, 
-		@os_run_priority=0, 
-		@subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerDashboardMail" -d DBA -Q "EXEC dbo.usp_GetAllServerDashboardMail @recipients = ''some_dba_mail_id@gmail.com'', @only_threshold_validated = 1, @send_mail = 1, @verbose = 0;"', 
+		@os_run_priority=0, @subsystem=N'CmdExec', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Collect Login Expiration Info" -d DBA -Q "EXEC dbo.usp_collect_all_server_login_expiration_info @execute = 1, @verbose = 0;"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
-EXEC @ReturnCode = msdb.dbo.sp_add_jobschedule @job_id=@jobId, @name=N'(dba) Get-AllServerDashboardMail', 
+EXEC @ReturnCode = msdb.dbo.sp_add_jobschedule @job_id=@jobId, @name=N'(dba) Collect Login Expiration Info', 
 		@enabled=1, 
 		@freq_type=4, 
 		@freq_interval=1, 
-		@freq_subday_type=8, 
-		@freq_subday_interval=8,
+		@freq_subday_type=1, 
+		@freq_subday_interval=0, 
 		@freq_relative_interval=0, 
 		@freq_recurrence_factor=0, 
-		@active_start_date=20240102, 
+		@active_start_date=20240721, 
 		@active_end_date=99991231, 
-		@active_start_time=0, 
+		@active_start_time=80000, 
 		@active_end_time=235959 
-
+		--,@schedule_uid=N'ac8e6451-c54f-47ba-8ee0-08ce7ea0e257'
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_add_jobserver @job_id = @jobId, @server_name = N'(local)'
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
@@ -69,6 +68,5 @@ QuitWithRollback:
 EndSave:
 GO
 
-EXEC msdb.dbo.sp_start_job @job_name='(dba) Get-AllServerDashboardMail'
+EXEC msdb.dbo.sp_start_job @job_name='(dba) Collect Login Expiration Info'
 go
-

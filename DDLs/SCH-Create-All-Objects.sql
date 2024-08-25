@@ -1260,7 +1260,8 @@ if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 
 set nocount on;
 declare @is_partitioned bit = 1;
-if @is_partitioned = 1
+declare @is_upgrade bit = 0;
+if @is_partitioned = 1 and @is_upgrade = 0
 begin
 	declare @current_boundary_value datetime2;
 	declare @target_boundary_value datetime2; /* last day of new quarter */
@@ -1302,7 +1303,8 @@ if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 
 set nocount on;
 declare @is_partitioned bit = 1;
-if @is_partitioned = 1
+declare @is_upgrade bit = 0;
+if @is_partitioned = 1 and @is_upgrade = 0
 begin
 	declare @partition_boundary datetime2;
 	declare @target_boundary_value datetime2; /* 3 months back date */

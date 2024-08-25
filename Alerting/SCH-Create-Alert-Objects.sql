@@ -2,8 +2,8 @@ use DBA
 go
 
 /*
-	Version -> 2024-05-25
-	2024-04-26 - #10 - Setup Alert Engine Using Python+SQLServer
+	Version -> 2024-08-20
+	2024-08-20 - #10 - Setup Alert Engine Using Python+SQLServer
 	-----------------
 
 	https://github.com/imajaydwivedi/SQLMonitor/issues/10
@@ -15,88 +15,22 @@ go
 
 	*** Steps in this Script ****
 	-----------------------------
-	1) Create table dbo.sma_inventory
-	2) Create table dbo.sma_oncall_teams
-	3) Create table dbo.sma_oncall_schedule
-	4) Create table dbo.sma_errorlog
-	5) Create table dbo.sma_alert_rules
-	6) Create sequence object dbo.sma_alert_sequence
-	7) Create table dbo.sma_alert	
-	8) Create table dbo.sma_alert_history
-	9) Create table dbo.sma_alert_affected_servers
+	1) Create table dbo.sma_oncall_teams
+	2) Create table dbo.sma_oncall_schedule
+	3) Create table dbo.sma_alert_rules
+	4) Create sequence object dbo.sma_alert_sequence
+	5) Create table dbo.sma_alert
+	6) Create table dbo.sma_alert_history
+	7) Create table dbo.sma_alert_affected_servers
+	8) Create table dbo.sma_process_logs
+
 */
 
 IF DB_NAME() = 'master'
 	raiserror ('Kindly execute all queries in [DBA] database', 20, -1) with log;
 go
 
-/* ***** 1) Create table dbo.sma_inventory ***************************** */
-	/*
-		ALTER TABLE dbo.sma_inventory SET ( SYSTEM_VERSIONING = OFF)
-		go
-		drop table dbo.sma_inventory
-		go
-		drop table dbo.sma_inventory_history
-		go
-	*/
-create table [dbo].[sma_inventory]
-(	
-	[sql_instance] varchar(125) not null,
-	[sql_instance_port] varchar(10) null,
-	[host_name] varchar(125) not null,
-	[host_ip] varchar(15) null,
-	[friendly_name] varchar(125) null,
-	[stability] varchar(20) not null default 'dev',
-	[priority] tinyint not null default '2',
-	[server_type] varchar(20) not null default 'windows',
-	[has_hadr] bit not null default 0,
-	[is_monitoring_enabled] bit not null default 1,
-	[is_decommissioned] bit not null default 0,
-	[backup_strategy] varchar(255) not null default 'native-backup',
-	[rpo_worst_case_minutes] int not null,
-	[rto_minutes] int not null,
-	[created_date_utc] datetime2 not null default getutcdate(),
-	[updated_date_utc] datetime2 not null default getutcdate(),
-	[updated_by] varchar(255) not null default suser_name(),
-	[server_owner] varchar(255) null,
-	[server_owner_email] varchar(500) null,
-	[data_center] varchar(255) null,
-	[application] varchar(500) null,
-	[application_email_contacts] varchar(2000) null,
-	[purpose] varchar(2000) null,
-	[dependency] varchar(2000) null,	
-	[avg_utilization] varchar(1000) null,	
-	[rdp_credential] varchar(125) null,
-	[sql_credential] varchar(125) null,
-	[other_details] varchar(2000) null,
-	[wsfc_cluster_name] varchar(255) null,
-	[wsfc_cluster_ip] varchar(15) null,
-	[sql_cluster_name] varchar(255) null,
-	[sql_cluster_ip] varchar(15) null,
-	[sql_cluster_preferred_role] varchar(30) null,
-	[sql_cluster_current_role] varchar(30) null,
-	[ag_listener_name] varchar(255) null,
-	[ag_listener_ip] varchar(15) null,
-	[ag_preferred_role] varchar(30) null,
-	[ag_current_role] varchar(30) null,
-	[mirroring_partner] varchar(255) null,
-	[availability_zone] varchar(125) null,
-	[known_challenges] varchar(2000) null
-
-	,[valid_from] DATETIME2 GENERATED ALWAYS AS ROW START HIDDEN NOT NULL
-    ,[valid_to] DATETIME2 GENERATED ALWAYS AS ROW END HIDDEN NOT NULL
-    ,PERIOD FOR SYSTEM_TIME ([valid_from],[valid_to])
-
-	,constraint [pk_sma_inventory] primary key clustered ([sql_instance], [host_name])
-	,constraint [chk_sma_inventory__stability] check ( [stability] in ('dev', 'uat', 'qa', 'stg', 'prod') )
-	,constraint [chk_priority] check ([priority] in (1,2,3,4,5))
-	,constraint [chk_server_type] check ([server_type] in ('windows','linux','container'))
-)
-WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.sma_inventory_history))
-go
-
-
-/* ***** 2) Create table dbo.sma_oncall_teams ***************************** */
+/* ***** 1) Create table dbo.sma_oncall_teams ***************************** */
 	/*
 		ALTER TABLE dbo.sma_oncall_teams SET ( SYSTEM_VERSIONING = OFF)
 		go
@@ -130,12 +64,13 @@ WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.sma_oncall_teams_history))
 go
 
 
-/* ***** 3) Create table dbo.sma_oncall_schedule ***************************** */
+/* ***** 2) Create table dbo.sma_oncall_schedule ***************************** */
 -- drop table [dbo].[sma_oncall_schedule]
 create table [dbo].[sma_oncall_schedule]
 (
 	[team_name] varchar(125) not null,
 	[oncall_role] varchar(50) not null default 'primary', -- primary, secondary
+	[oncall_person_name] varchar(125) null,
 	[oncall_email] varchar(125) null,
 	[oncall_slack_account] varchar(125) null,
 	[oncall_start_time] datetime2 not null,
@@ -152,23 +87,7 @@ create table [dbo].[sma_oncall_schedule]
 )
 go
 
-
-/* ***** 4) Create table dbo.sma_errorlog ***************************** */
--- drop table [dbo].[sma_errorlog]
-create table [dbo].[sma_errorlog]
-( 	[collection_time_utc] datetime2 not null default getutcdate(), 
-	[sql_instance] varchar(125) null,
-    [function_name] varchar(125) not null, 
-	[function_call_arguments] varchar(1000) null, 
-	[error] varchar(1000) not null, 
-    [remark] varchar(1000) null
-
-	,index [ci_sma_errorlog] clustered (collection_time_utc)
-)
-go
-
-
-/* ***** 5) Create table dbo.sma_alert_rules ***************************** */
+/* ***** 3) Create table dbo.sma_alert_rules ***************************** */
 	/*
 		ALTER TABLE dbo.sma_alert_rules SET ( SYSTEM_VERSIONING = OFF)
 		go
@@ -178,8 +97,8 @@ go
 		go
 	*/
 create table dbo.sma_alert_rules
-(	[sql_instance] varchar(125) not null,
-	[alert_key] varchar(255) not null,	
+(	[alert_key] varchar(255) not null,	
+	[sql_instance] varchar(125) not null, -- Use '*' when no server needed
 	[host_name] varchar(125) null,
 	[database_name] varchar(125) null,
 	client_app_name varchar(255) null,
@@ -207,27 +126,21 @@ create table dbo.sma_alert_rules
     ,valid_to DATETIME2 GENERATED ALWAYS AS ROW END HIDDEN NOT NULL
     ,PERIOD FOR SYSTEM_TIME (valid_from,valid_to)
 
-	,constraint pk_sma_alert_rules primary key ([sql_instance],[alert_key])
+	,constraint pk_sma_alert_rules primary key clustered ([alert_key],[sql_instance])
 	,constraint chk_sma_alert_rules__severity check ( [severity] in ('Critical', 'High', 'Medium', 'Low') )
 
 )
 WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.sma_alert_rules_history));
 go
---create unique nonclustered index nci_uq_sma_alert_rules__alert_key__plus on dbo.sma_alert_rules 
---    (alert_key, server_friendly_name, [database_name], client_app_name, login_name, client_host_name, severity) where is_active = 1;
---go
---alter table dbo.sma_alert_rules add constraint chk_sma_alert_rules__group_by check ( server_friendly_name is null or server_owner is null )
---go
 
-
-/* ***** 6) Create sequence object dbo.sma_alert_sequence ***************************** */
+/* ***** 4) Create sequence object dbo.sma_alert_sequence ***************************** */
 -- drop sequence dbo.sma_alert_sequence  
 create sequence dbo.sma_alert_sequence  
     AS bigint start with 1 increment by 1 cycle cache 500;
 go
 
 
-/* ***** 7) Create table dbo.sma_alert ***************************** */
+/* ***** 5) Create table dbo.sma_alert ***************************** */
 -- drop table [dbo].[sma_alert]
 create table [dbo].[sma_alert]
 (	[id] bigint not null constraint DF__sma_alert__id default next value for dbo.sma_alert_sequence,
@@ -236,6 +149,7 @@ create table [dbo].[sma_alert]
 	[alert_owner_team] varchar(125) not null, -- 'DBA'
 	[state] varchar(15) not null default 'Active', -- 'Active','Suppressed','Cleared', 'Resolved'
 	[severity] varchar(15) not null default 'High', -- 'Critical', 'High', 'Medium', 'Low'
+	[slack_ts_value] varchar(125) null, -- Used for slack converstation in threads
 	[suppress_start_date_utc] datetime null,
 	[suppress_end_date_utc] datetime null
 
@@ -253,6 +167,7 @@ create table [dbo].[sma_alert]
 	--,index ix_sma_alert__state__active ([state]) where [state] in ('Active','Suppressed')
 ) on ps_dba_bigint_10part (id_part_no)
 go
+
 create index ix_sma_alert__alert_key__active on [dbo].[sma_alert]
 	(alert_key) 
 	include ([state]) 
@@ -260,27 +175,27 @@ create index ix_sma_alert__alert_key__active on [dbo].[sma_alert]
 go
 
 
-/* ***** 8) Create table dbo.sma_alert_history ***************************** */
+/* ***** 6) Create table dbo.sma_alert_history ***************************** */
 -- drop table [dbo].[sma_alert_history]
 create table [dbo].[sma_alert_history]
-(	[log_time] datetime2 not null default sysutcdatetime(),
+(	[log_time_utc] datetime2 not null default sysutcdatetime(),
 	[alert_id] bigint not null,
-	[alert_id_part_no] bigint not null,
+	--[alert_id_part_no] bigint not null,
+	[alert_id_part_no] as [alert_id] % 10 persisted,
 	[logger] varchar(125) not null,
 	[header] varchar(500) not null,
 	[description] nvarchar(max) null
 
-	,index ci_sma_alert_history clustered ([log_time]) on ps_dba_datetime2_daily ([log_time])
-	,index [alert_id__log_time] ([alert_id], [log_time]) on ps_dba_datetime2_daily ([log_time])
+	,index ci_sma_alert_history clustered ([log_time_utc]) on ps_dba_datetime2_daily ([log_time_utc])
+	,index [alert_id__log_time] ([alert_id], [log_time_utc]) on ps_dba_datetime2_daily ([log_time_utc])
 	
 	--,constraint fk_alert_id foreign key ([alert_id],[alert_id_part_no]) references [dbo].[sma_alert] (id, id_part_no)
 ) 
-on ps_dba_datetime2_daily ([log_time])
+on ps_dba_datetime2_daily ([log_time_utc])
 go
 
 
-
-/* ***** 9) Create table dbo.sma_alert_affected_servers ***************************** */
+/* ***** 7) Create table dbo.sma_alert_affected_servers ***************************** */
 -- drop table dbo.sma_alert_affected_servers
 create table [dbo].[sma_alert_affected_servers]
 (
@@ -293,4 +208,21 @@ create table [dbo].[sma_alert_affected_servers]
 go
 
 
+/* ***** 8) Create table dbo.sma_process_logs ***************************** */
+-- drop table dbo.sma_process_logs
+create table [dbo].[sma_process_logs]
+(
+	[process_start_time_utc] datetime2 not null default sysutcdatetime(),
+	[process_name] varchar(255) not null, 
+	[process_call_arguments] varchar(1000) null, 
+	[process_unique_key] varchar(255) null,
+	[server] varchar(125) null,
+    [remark] varchar(1000) null,
+	[executed_by] varchar(125) not null default SUSER_NAME(),
+	[executor_program_name] varchar(125) not null default program_name(),
+	[process_end_time_utc] datetime2
 
+	,index [ci_sma_process_logs] clustered ([process_start_time_utc])
+	,index [process_name] nonclustered ([process_name],[process_start_time_utc])
+)
+go

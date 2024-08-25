@@ -95,6 +95,11 @@ if ($resultGetAllStuckJobsFiltered.Count -eq 0) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "No action required to be taken."
 }
 
+$sqlAddErrorLogEntry = @"
+insert dbo.sma_errorlog
+(function_name, function_call_arguments, server, error, executor_program_name)
+select @function_name, @function_call_arguments, @server, @error, @executor_program_name
+"@
 foreach($srvDtls in $resultGetAllStuckJobsServers)
 {
     $sqlInstance = $srvDtls.sql_instance
@@ -122,6 +127,16 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
         $failedJobs.Add($errObj) | Out-Null
 
         $errMessage | Write-Host -ForegroundColor Red
+
+        $errorParams = @{
+            function_name = 'Stop-SQLMonitorJobs-On-AllServers-With-Issues.ps1'
+            function_call_arguments = 'Connect-DbaInstance'
+            server = $sqlInstance
+            error = $errMessage
+            executor_program_name = '(dba) Stop-StuckSQLMonitorJobs'
+        }
+        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddErrorLogEntry `
+                    -EnableException -ErrorAction Stop -SqlParameter $errorParams
         "`n"
     }
 
@@ -174,6 +189,16 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
                     $failedJobs.Add($errObj) | Out-Null
 
                     $errMessage | Write-Host -ForegroundColor Red
+
+                    $errorParams = @{
+                        function_name = 'Stop-SQLMonitorJobs-On-AllServers-With-Issues.ps1'
+                        function_call_arguments = "Stop job [$jobName]"
+                        server = $sqlInstance
+                        error = $errMessage
+                        executor_program_name = '(dba) Stop-StuckSQLMonitorJobs'
+                    }
+                    $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddErrorLogEntry `
+                                -EnableException -ErrorAction Stop -SqlParameter $errorParams
                     "`n"
                 }
             }
@@ -208,6 +233,16 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
                     $failedJobs.Add($errObj) | Out-Null
 
                     $errMessage | Write-Host -ForegroundColor Red
+
+                    $errorParams = @{
+                        function_name = 'Stop-SQLMonitorJobs-On-AllServers-With-Issues.ps1'
+                        function_call_arguments = "Stop job [$jobName]"
+                        server = $sqlInstance
+                        error = $errMessage
+                        executor_program_name = '(dba) Stop-StuckSQLMonitorJobs'
+                    }
+                    $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddErrorLogEntry `
+                                -EnableException -ErrorAction Stop -SqlParameter $errorParams
                     "`n"
                 }
             }

@@ -5,6 +5,7 @@
 cls
 Import-Module dbatools;
 $SqlInstanceToBaseline = 'Workstation'
+$SqlInstanceAsDataDestination = $SqlInstanceToBaseline
 #$SqlInstanceAsDataDestination = 'Workstation'
 #$SqlInstanceForPowershellJobs = 'Workstation'
 #$SqlInstanceForTsqlJobs = 'Workstation'
@@ -37,18 +38,23 @@ $params = @{
                 "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
                 "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
                 "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
-                "40__WhoIsActivePartition", "41__BlitzIndexPartition", "42__BlitzPartition",
-                "43__EnablePageCompression", "44__GrafanaLogin", "45__LinkedServerOnInventory",
-                "46__LinkedServerForDataDestinationInstance", "47__AlterViewsForDataDestinationInstance")
+                "40__CreateJobCollectLoginExpirationInfo", "41__CreateJobPopulateInventoryTables", "42__CreateJobSendLoginExpiryEmails",
+                "43__WhoIsActivePartition", "44__BlitzIndexPartition", "45__BlitzPartition",
+                "46__EnablePageCompression", "47__GrafanaLogin", "48__LinkedServerOnInventory",
+                "49__LinkedServerForDataDestinationInstance", "50__AlterViewsForDataDestinationInstance")
     #>
     #OnlySteps = @( "2__AllDatabaseObjects" )
     #StartAtStep = '1__sp_WhoIsActive'
     #StopAtStep = '47__AlterViewsForDataDestinationInstance'
     #DropCreatePowerShellJobs = $true
+    #DropCreateLinkedServerOnInventory = $true
+    #DropCreateLinkedServerForDataDestinationServer = $true
     #DryRun = $false
     #SkipRDPSessionSteps = $true
     #SkipPowerShellJobs = $true
     #SkipTsqlJobs = $true
+    #SkipInventorySteps = $true
+    #SkipMultiMailJobSteps = $false
     #SkipMailProfileCheck = $true
     #skipCollationCheck = $true
     #SkipWindowsAdminAccessTest = $true
@@ -56,7 +62,7 @@ $params = @{
     #SkipPingCheck = $true
     #SkipMultiServerviewsUpgrade = $false
     #ForceSetupOfTaskSchedulerJobs = $true
-    #SqlInstanceAsDataDestination = $SqlInstanceAsDataDestination
+    SqlInstanceAsDataDestination = $SqlInstanceAsDataDestination
     #SqlInstanceForPowershellJobs = $SqlInstanceForPowershellJobs
     #SqlInstanceForTsqlJobs = $SqlInstanceForTsqlJobs
     #ConfirmValidationOfMultiInstance = $true
@@ -70,6 +76,8 @@ $params = @{
     #JobsExecutionWaitTimeoutMinutes = 15
     #MemoryOptimizedObjectsUsage = $false
     #ReturnInlineErrorMessage = $true
+    #ForceTSQLStepType4TsqlJobs = $true
+    #$GrafanaDashboardPortal = 'https://sqlmonitor.ajaydwivedi.com:3000/'
 }
 
 #$preSQL = "EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = 'sqlagentservice@gmail.com', @drop_recreate = 1"
@@ -181,7 +189,9 @@ Set-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
 Enter-PSSession -ComputerName '192.168.56.31' -Credential $localAdmin -Authentication Negotiate
 Test-WSMan '192.168.56.31' -Credential $localAdmin -Authentication Negotiate
 
-Get-ChildItem C:\SQLMonitor -Recurse -File | Unblock-File -Verbose
+Get-ChildItem "C:\SQLMonitor" -Recurse -File | Unblock-File -Verbose
+Get-ChildItem "C:\Program Files\WindowsPowerShell\Modules\dbatools" -Recurse -File | Unblock-File -Verbose
+Get-ChildItem "C:\Program Files\WindowsPowerShell\Modules\dbatools.library" -Recurse -File | Unblock-File -Verbose
 #>
 
 <#

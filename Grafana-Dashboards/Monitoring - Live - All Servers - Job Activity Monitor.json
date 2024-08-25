@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_SQLSERVER",
-      "label": "SqlServer",
+      "name": "DS_SQLMONITOR",
+      "label": "SQLMonitor",
       "description": "",
       "type": "datasource",
       "pluginId": "mssql",
@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.1.0"
+      "version": "11.1.4"
     },
     {
       "type": "datasource",
@@ -67,13 +67,13 @@
         "y": 0
       },
       "id": 8,
-      "title": "Overall Status",
+      "title": "Overall Status @ ${collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -223,12 +223,12 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "editorMode": "code",
           "format": "table",
@@ -260,7 +260,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -368,12 +368,12 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "editorMode": "code",
           "format": "table",
@@ -405,7 +405,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -525,12 +525,12 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "editorMode": "code",
           "format": "table",
@@ -562,7 +562,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -682,12 +682,12 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.4",
       "targets": [
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "editorMode": "code",
           "format": "table",
@@ -729,7 +729,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -749,7 +749,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -764,6 +765,7 @@
           },
           "id": 2,
           "options": {
+            "cellHeight": "sm",
             "footer": {
               "countRows": false,
               "enablePagination": true,
@@ -775,12 +777,12 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "9.2.2",
+          "pluginVersion": "11.1.4",
           "targets": [
             {
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -806,18 +808,17 @@
               }
             }
           ],
-          "title": "All Servers - Job Activity Monitor - FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}",
+          "title": "All Servers - Job Activity Monitor - FILTERED @ ${server_collection_time_utc:date:YYYY-MM-DD HH.mm} - Paginated - Page No {$page_no} - Page Size {$page_size}",
           "type": "table"
         }
       ],
-      "title": "All Servers - Job Activity Monitor - FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}",
+      "title": "All Servers - Job Activity Monitor - FILTERED @ ${server_collection_time_utc:date:YYYY-MM-DD HH.mm} - Paginated - Page No {$page_no} - Page Size {$page_size}",
       "type": "row"
     }
   ],
-  "refresh": "",
+  "refresh": "5s",
   "revision": 1,
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -826,11 +827,7 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "SqlServer",
-          "value": "ygPVA4snk"
-        },
+        "current": {},
         "hide": 2,
         "includeAll": false,
         "label": "SQLMonitor Data Source",
@@ -839,7 +836,7 @@
         "options": [],
         "query": "mssql",
         "refresh": 1,
-        "regex": "",
+        "regex": "SQLMonitor",
         "skipUrlSync": false,
         "type": "datasource"
       },
@@ -847,7 +844,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\nselect distinct srvname = sql_instance from dbo.instance_details\nwhere is_available = 1 and is_enabled =1\nunion all\nselect '__All__' as srvname \n\torder by srvname\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "hide": 0,
@@ -867,7 +864,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "SELECT DB_NAME() as [db_name]",
         "hide": 2,
@@ -887,7 +884,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select top 1 collection_time_utc = CollectionTimeUTC\nfrom dbo.sql_agent_jobs_all_servers",
         "hide": 2,
@@ -897,7 +894,7 @@
         "name": "collection_time_utc",
         "options": [],
         "query": "select top 1 collection_time_utc = CollectionTimeUTC\nfrom dbo.sql_agent_jobs_all_servers",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -907,7 +904,27 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
+        },
+        "definition": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\n\nset @_sql_instance = '${server}';\nset @_params = N'@_sql_instance varchar(125)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect max(UpdatedDateUTC)\nfrom dbo.sql_agent_jobs_all_servers saj\nwhere 1=1\n\"+(case when @_sql_instance = '__ALL__' then '--' else '' end)+\"and saj.sql_instance in (select case when id.source_sql_instance is not null then id.source_sql_instance else id.sql_instance end from dbo.instance_details id where id.sql_instance = @_sql_instance or id.source_sql_instance = @_sql_instance)\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance;\n",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Server Collection Time UTC",
+        "multi": false,
+        "name": "server_collection_time_utc",
+        "options": [],
+        "query": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\n\nset @_sql_instance = '${server}';\nset @_params = N'@_sql_instance varchar(125)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect max(UpdatedDateUTC)\nfrom dbo.sql_agent_jobs_all_servers saj\nwhere 1=1\n\"+(case when @_sql_instance = '__ALL__' then '--' else '' end)+\"and saj.sql_instance in (select case when id.source_sql_instance is not null then id.source_sql_instance else id.sql_instance end from dbo.instance_details id where id.sql_instance = @_sql_instance or id.source_sql_instance = @_sql_instance)\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance;\n",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\ndeclare @_job_category varchar(255);\ndeclare @_job_name varchar(255);\ndeclare @_only_enabled_jobs bit = 1;\ndeclare @_next_clock_hours int;\ndeclare @_prev_clock_hours int;\ndeclare @_execution_duration_minutes int;\ndeclare @_is_blocked bit;\ndeclare @_success_ratio_threshold decimal(12,2);\ndeclare @_job_status varchar(20);\n\nset @_params = N'@_sql_instance varchar(125), @_job_category varchar(255), @_job_name varchar(255), @_only_enabled_jobs bit = 1, @_next_clock_hours int, @_prev_clock_hours int, @_execution_duration_minutes int, @_is_blocked bit, @_success_ratio_threshold decimal(12,2), @_job_status varchar(20)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect '__ALL__'\nunion all\nselect [JobCategory]\nfrom dbo.sql_agent_jobs_all_servers saj\ngroup by [JobCategory]\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance, @_job_category, @_job_name, @_only_enabled_jobs, @_next_clock_hours, @_prev_clock_hours, @_execution_duration_minutes, @_is_blocked, @_success_ratio_threshold, @_job_status;\n\n\n",
         "hide": 0,
@@ -927,7 +944,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\ndeclare @_job_category varchar(255);\ndeclare @_job_name varchar(255);\ndeclare @_only_enabled_jobs bit = 1;\ndeclare @_next_clock_hours int;\ndeclare @_prev_clock_hours int;\ndeclare @_execution_duration_minutes int;\ndeclare @_is_blocked bit;\ndeclare @_success_ratio_threshold decimal(12,2);\ndeclare @_job_status varchar(20);\n\nset @_params = N'@_sql_instance varchar(125), @_job_category varchar(255), @_job_name varchar(255), @_only_enabled_jobs bit = 1, @_next_clock_hours int, @_prev_clock_hours int, @_execution_duration_minutes int, @_is_blocked bit, @_success_ratio_threshold decimal(12,2), @_job_status varchar(20)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect '__ALL__' as [JobName]\nunion all\nselect [JobName]\nfrom dbo.sql_agent_jobs_all_servers saj\ngroup by [JobName]\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance, @_job_category, @_job_name, @_only_enabled_jobs, @_next_clock_hours, @_prev_clock_hours, @_execution_duration_minutes, @_is_blocked, @_success_ratio_threshold, @_job_status;\n\n\n",
         "hide": 0,
@@ -1157,9 +1174,9 @@
       },
       {
         "current": {
-          "selected": true,
-          "text": "__All__",
-          "value": "__All__"
+          "selected": false,
+          "text": "Running",
+          "value": "Running"
         },
         "hide": 0,
         "includeAll": false,
@@ -1168,12 +1185,12 @@
         "name": "status",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "__All__",
             "value": "__All__"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "Running",
             "value": "Running"
           },
@@ -1190,7 +1207,7 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "__ALL__",
           "value": "__ALL__"
         },
@@ -1466,6 +1483,6 @@
   "timezone": "",
   "title": "Monitoring - Live - All Servers - Job Activity Monitor",
   "uid": "job_activity_monitor",
-  "version": 13,
+  "version": 8,
   "weekStart": ""
 }

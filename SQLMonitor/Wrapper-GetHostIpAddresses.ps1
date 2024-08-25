@@ -1,23 +1,33 @@
 ﻿<#
     Purpose: Run sql script on multiple servers, and process result
 #>
-#$personal = Get-Credential -UserName 'dba.adwivedi' -Message 'Credential Manager Server SQL Login'
 
-cls
 
-# Parameters
-$InventoryServer = localhost
-$InventoryDatabase = 'DBA'
-$CredentialManagerDatabase = 'DBA'
-$AllServerLogin = 'sa'
-$WorkFolder = "C:\SQLMonitor\Work-Attachments"
-$RemoveLog = $true
+[CmdletBinding()]
+Param (
+    [Parameter(Mandatory=$false)]
+    [String]$InventoryServer = 'localhost',
+    [Parameter(Mandatory=$false)]
+    [String]$InventoryDatabase = 'DBA',
+    [Parameter(Mandatory=$false)]
+    [String]$CredentialManagerDatabase = 'DBA',
+    [Parameter(Mandatory=$false)]
+    [String]$AllServerLogin,
+    [Parameter(Mandatory=$false)]
+    [String]$WorkFolder = "C:\SQLMonitor\Work-Attachments",
+    [Parameter(Mandatory=$false)]
+    [bool]$RemoveLog = $true
+)
 
 $startTime = Get-Date
 $startTimeString = Get-Date -Format yyyyMMMdd_HHmm
 
 $AppName = "Wrapper-GetHostIpAddresses.ps1"
 $outputFile ="$WorkFolder\$AppName-$startTimeString.txt"
+
+if (-not (Test-Path $outputFile)) {
+    New-Item -Path $outputFile -Force -Confirm:$false | Out-Null
+}
 
 Set-DbatoolsConfig -FullName 'sql.connection.trustcert' -Value $true -Register
 
@@ -26,8 +36,11 @@ Set-DbatoolsConfig -FullName 'sql.connection.trustcert' -Value $true -Register
 $conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database $InventoryDatabase -ClientName $AppName `
                                                     -TrustServerCertificate -EncryptConnection -ErrorAction Stop
 
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetch [$AllServerLogin] password from Credential Manager [$InventoryServer].[$CredentialManagerDatabase].."
-$getCredential = @"
+# If AllServerLogin is provided, then fetch its credential from Credential manager
+if ( -not [String]::IsNullOrEmpty($AllServerLogin) )
+{
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetch [$AllServerLogin] password from Credential Manager [$InventoryServer].[$CredentialManagerDatabase].."
+    $getCredential = @"
 /* Fetch Credentials */
 declare @password varchar(256);
 exec dbo.usp_get_credential 
@@ -36,26 +49,23 @@ exec dbo.usp_get_credential
 		@password = @password output;
 select @password as [password];
 "@
-[string]$allServerLoginPassword = $conInventoryServer | Invoke-DbaQuery -Database $CredentialManagerDatabase `
-                            -Query $getCredential -SqlParameter @{all_server_login = $AllServerLogin} | 
-                                    Select-Object -ExpandProperty password -First 1
+    [string]$allServerLoginPassword = $conInventoryServer | Invoke-DbaQuery -Database $CredentialManagerDatabase `
+                                -Query $getCredential -SqlParameter @{all_server_login = $AllServerLogin} | 
+                                        Select-Object -ExpandProperty password -First 1
 
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Create [$AllServerLogin] credential from fetched password.."
-[securestring]$secStringPassword = ConvertTo-SecureString $allServerLoginPassword -AsPlainText -Force
-[pscredential]$allServerLoginCredential = New-Object System.Management.Automation.PSCredential $AllServerLogin, $secStringPassword
-
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Create [$AllServerLogin] credential from fetched password.."
+    [securestring]$secStringPassword = ConvertTo-SecureString $allServerLoginPassword -AsPlainText -Force
+    [pscredential]$allServerLoginCredential = New-Object System.Management.Automation.PSCredential $AllServerLogin, $secStringPassword
+}
+else {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Since [`$AllServerLogin] is not provided, script would proceed with Windows Authentication."
+}
 
 # Get Hosts List without IPs
 $qryGetHostsWithoutIPs = @"
 select	[sql_instance] = h.server, id.sql_instance_port, [inventory_host_name] = h.host_name, 
 		s.domain, s.hadr_strategy, [asi_host_name] = asi.host_name, [asi_machine_name] = asi.machine_name,
-		[host_fqdn] = case when asi.domain = 'ANGELONE' then h.host_name+'.angelone.in'
-							when asi.domain = 'ANGELTRADE' then h.host_name+'.angeltrade.com'
-							when asi.domain = 'ANGELBROKING' then h.host_name+'.angelbroking.com'
-							when asi.domain = 'INTERNAL' then h.host_name+'.internal.angelone.in'
-							when asi.domain is null then h.host_name
-							else h.host_name
-						end
+		[host_fqdn] = coalesce(h.host_name+'.'+asi.domain+'.com', h.host_name)
 from dbo.sma_sql_server_hosts h
 join dbo.sma_servers s
 	on s.server = h.server
@@ -134,29 +144,6 @@ if($findIPAddress)
             $successServers.Add([PSCustomObject]@{sql_instance=$srvName; host_name = $host_name}) | Out-Null
             continue
         }
-
-
-        <#
-        $sqlDisableLogin = "USE [master]; ALTER LOGIN [$login_name] DISABLE; select [sql_instance] = @sql_instance;"        
-        try {
-            $srvObj = Connect-DbaInstance -SqlInstance $srv -Database master -ClientName $AppName `
-                                                        -SqlCredential $allServerLoginCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop
-
-            "`tDisabling login [$login_name].." | Tee-Object $outputFile -Append | Write-Host
-            #$srvObj | Invoke-DbaQuery -Database master -Query $sqlAccessQuery -SqlParameter @{ sql_instance = $srv } -EnableException -MessagesToOutput | Tee-Object $outputFile -Append
-
-            $srvObj | Invoke-DbaQuery -Database master -Query $sqlDisableLogin -EnableException `
-                        -SqlParameter @{ sql_instance = $srv } `
-                        -As PSObject | % {$queryResult.Add($_)|Out-Null}
-                        
-            $successServers.Add($srv) | Out-Null
-        }
-        catch {
-            $errMsg = $_.Exception.Message
-            $failedServers.Add([PSCustomObject]@{server = $srv; error = $errMsg}) | Out-Null
-            "`n`tError: $errMsg" | Write-Host -ForegroundColor Red
-        }
-        #>
     }
 
     $failedServers | ogv

@@ -59,9 +59,10 @@ Param (
                 "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
                 "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
                 "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
-                "40__WhoIsActivePartition", "41__BlitzIndexPartition", "42__BlitzPartition",
-                "43__EnablePageCompression", "44__GrafanaLogin", "45__LinkedServerOnInventory",
-                "46__LinkedServerForDataDestinationInstance", "47__AlterViewsForDataDestinationInstance")]
+                "40__CreateJobCollectLoginExpirationInfo", "41__CreateJobPopulateInventoryTables", "42__CreateJobSendLoginExpiryEmails",
+                "43__WhoIsActivePartition", "44__BlitzIndexPartition", "45__BlitzPartition",
+                "46__EnablePageCompression", "47__GrafanaLogin", "48__LinkedServerOnInventory",
+                "49__LinkedServerForDataDestinationInstance", "50__AlterViewsForDataDestinationInstance")]
     [String]$StartAtStep = "1__sp_WhoIsActive",
 
     [Parameter(Mandatory=$false)]
@@ -78,9 +79,10 @@ Param (
                 "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
                 "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
                 "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
-                "40__WhoIsActivePartition", "41__BlitzIndexPartition", "42__BlitzPartition",
-                "43__EnablePageCompression", "44__GrafanaLogin", "45__LinkedServerOnInventory",
-                "46__LinkedServerForDataDestinationInstance", "47__AlterViewsForDataDestinationInstance")]
+                "40__CreateJobCollectLoginExpirationInfo", "41__CreateJobPopulateInventoryTables", "42__CreateJobSendLoginExpiryEmails",
+                "43__WhoIsActivePartition", "44__BlitzIndexPartition", "45__BlitzPartition",
+                "46__EnablePageCompression", "47__GrafanaLogin", "48__LinkedServerOnInventory",
+                "49__LinkedServerForDataDestinationInstance", "50__AlterViewsForDataDestinationInstance")]
     [String[]]$SkipSteps,
 
     [Parameter(Mandatory=$false)]
@@ -97,9 +99,10 @@ Param (
                 "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
                 "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
                 "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
-                "40__WhoIsActivePartition", "41__BlitzIndexPartition", "42__BlitzPartition",
-                "43__EnablePageCompression", "44__GrafanaLogin", "45__LinkedServerOnInventory",
-                "46__LinkedServerForDataDestinationInstance", "47__AlterViewsForDataDestinationInstance")]
+                "40__CreateJobCollectLoginExpirationInfo", "41__CreateJobPopulateInventoryTables", "42__CreateJobSendLoginExpiryEmails",
+                "43__WhoIsActivePartition", "44__BlitzIndexPartition", "45__BlitzPartition",
+                "46__EnablePageCompression", "47__GrafanaLogin", "48__LinkedServerOnInventory",
+                "49__LinkedServerForDataDestinationInstance", "50__AlterViewsForDataDestinationInstance")]
     [String]$StopAtStep,
 
     [Parameter(Mandatory=$false)]
@@ -116,9 +119,10 @@ Param (
                 "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
                 "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
                 "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
-                "40__WhoIsActivePartition", "41__BlitzIndexPartition", "42__BlitzPartition",
-                "43__EnablePageCompression", "44__GrafanaLogin", "45__LinkedServerOnInventory",
-                "46__LinkedServerForDataDestinationInstance", "47__AlterViewsForDataDestinationInstance")]
+                "40__CreateJobCollectLoginExpirationInfo", "41__CreateJobPopulateInventoryTables", "42__CreateJobSendLoginExpiryEmails",
+                "43__WhoIsActivePartition", "44__BlitzIndexPartition", "45__BlitzPartition",
+                "46__EnablePageCompression", "47__GrafanaLogin", "48__LinkedServerOnInventory",
+                "49__LinkedServerForDataDestinationInstance", "50__AlterViewsForDataDestinationInstance")]
     [String[]]$OnlySteps,
 
     [Parameter(Mandatory=$false)]
@@ -137,6 +141,12 @@ Param (
     [bool]$DropCreateWhoIsActiveTable = $false,
 
     [Parameter(Mandatory=$false)]
+    [bool]$DropCreateLinkedServerOnInventory = $false,
+
+    [Parameter(Mandatory=$false)]
+    [bool]$DropCreateLinkedServerForDataDestinationServer = $false,
+
+    [Parameter(Mandatory=$false)]
     [bool]$SkipPowerShellJobs = $false,
 
     [Parameter(Mandatory=$false)]
@@ -147,6 +157,12 @@ Param (
 
     [Parameter(Mandatory=$false)]
     [bool]$SkipRDPSessionSteps = $false,
+
+    [Parameter(Mandatory=$false)]
+    [bool]$SkipInventorySteps = $false,
+
+    [Parameter(Mandatory=$false)]
+    [bool]$SkipMultiMailJobSteps = $true,
 
     [Parameter(Mandatory=$false)]
     [bool]$SkipWindowsAdminAccessTest = $false,
@@ -168,6 +184,9 @@ Param (
 
     [Parameter(Mandatory=$false)]
     [bool]$HasCustomizedTsqlJobs = $false,
+
+    [Parameter(Mandatory=$false)]
+    [bool]$ForceTSQLStepType4TsqlJobs = $false,
 
     [Parameter(Mandatory=$false)]
     [bool]$HasCustomizedPowerShellJobs = $false,
@@ -209,16 +228,22 @@ Param (
     [String]$PostQuery,
 
     [Parameter(Mandatory=$false)]
-    [bool]$ReturnInlineErrorMessage = $false
+    [bool]$ReturnInlineErrorMessage = $false,
+
+    [Parameter(Mandatory=$false)]
+    [String]$GrafanaDashboardPortal = 'https://sqlmonitor.ajaydwivedi.com:3000/'
 )
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-08-07'
-$sqlmonitorVersionDate = '2024-Aug-07'
+$sqlmonitorVersion = '2024-08-25'
+$sqlmonitorVersionDate = '2024-Aug-25'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 <#
     v2024-Sep-30
+        -> Issue#51 - Integrate inventory objects
+        -> Issue#10 - Work on SQLMonitor Alerting
+        -> Issue#50 - Add switch to create tsql script jobs as TSQL Step type
         -> Issue#44 - Copy grafana login from Inventory to keep same SID
         -> Issue$43 - Add avg_disk_wait_ms
         -> Issue#38 - Add Infra to Track AG State Change
@@ -278,6 +303,7 @@ if ($PSBoundParameters.ContainsKey('Debug')) { # Command line specifies -Debug[:
 [String]$WhatIsRunningFileName = "SCH-sp_WhatIsRunning.sql"
 [String]$UspGetAllServerInfoFileName = "SCH-usp_GetAllServerInfo.sql"
 [String]$UspCheckInstanceAvailabilityFileName = "SCH-usp_check_instance_availability.sql"
+[String]$UspGetAllServerDashboardMailFileName = "SCH-usp_GetAllServerDashboardMail.sql"
 [String]$UspGetAllServerCollectedDataFileName = "SCH-usp_GetAllServerCollectedData.sql"
 [String]$UspWrapperGetAllServerInfoFileName = "SCH-usp_wrapper_GetAllServerInfo.sql"
 [String]$UspWrapperGetAllServerCollectedDataFileName = "SCH-usp_wrapper_GetAllServerCollectedData.sql"
@@ -292,15 +318,18 @@ if ($PSBoundParameters.ContainsKey('Debug')) { # Command line specifies -Debug[:
 [String]$UspPurgeTablesFileName = "SCH-usp_purge_tables.sql"
 [String]$UspRunWhoIsActiveFileName = "SCH-usp_run_WhoIsActive.sql"
 [String]$UspActiveRequestsCountFileName = "SCH-usp_active_requests_count.sql"
-[String]$UspWaitsPerCorePerMinuteFileName = "SCH-usp_waits_per_core_per_minute.sql"
 [String]$UspAvgDiskWaitMsFileName = "SCH-usp_avg_disk_wait_ms.sql"
 [String]$UspEnablePageCompressionFileName = "SCH-usp_enable_page_compression.sql"
+[String]$UspCollectAllServerLoginExpirationInfoFileName = "SCH-usp_collect_all_server_login_expiration_info.sql"
 [String]$UspCollectMemoryClerksFileName = "SCH-usp_collect_memory_clerks.sql"
 [String]$UspCollectAgHealthStateFileName = "SCH-usp_collect_ag_health_state.sql"
 [String]$UspCheckSQLAgentJobsFileName = "SCH-usp_check_sql_agent_jobs.sql"
 [String]$UspLogSaverFileName = "SCH-usp_LogSaver.sql"
+[String]$UspPopulateSmaServersFileName = "SCH-usp_populate_sma_servers.sql"
+[String]$UspSendLoginExpiryEmailsFileName = "SCH-usp_send_login_expiry_emails.sql"
 [String]$UspTempDbSaverFileName = "SCH-usp_TempDbSaver.sql"
-[String]$UspGetAllServerDashboardMailFileName = "SCH-usp_GetAllServerDashboardMail.sql"
+[String]$UspWaitsPerCorePerMinuteFileName = "SCH-usp_waits_per_core_per_minute.sql"
+[String]$UspWrapperPopulateSmaSqlInstanceFileName = "SCH-usp_wrapper_populate_sma_sql_instance.sql"
 [String]$WhoIsActivePartitionFileName = "SCH-WhoIsActive-Partitioning.sql"
 [String]$BlitzIndexPartitionFileName = "SCH-BlitzIndex-Partitioning.sql"
 [String]$BlitzIndexMode0PartitionFileName = "SCH-BlitzIndex_Mode0-Partitioning.sql"
@@ -308,8 +337,12 @@ if ($PSBoundParameters.ContainsKey('Debug')) { # Command line specifies -Debug[:
 [String]$BlitzIndexMode4PartitionFileName = "SCH-BlitzIndex_Mode4-Partitioning.sql"
 [String]$BlitzPartitionFileName = "SCH-Blitz-Partitioning.sql"
 [String]$GrafanaLoginFileName = "grafana-login.sql"
-[String]$CheckInstanceAvailabilityJobFileName = "SCH-Job-[(dba) Check-InstanceAvailability].sql"
+
+# Jobs present on All Servers
 [String]$CaptureAlertMessagesJobFileName = "SCH-Job-[(dba) Capture-AlertMessages].sql"
+[String]$CheckSQLAgentJobsJobFileName = "SCH-Job-[(dba) Check-SQLAgentJobs].sql"
+[String]$CollectMemoryClerksJobFileName = "SCH-Job-[(dba) Collect-MemoryClerks].sql"
+[String]$CollectAgHealthStateJobFileName = "SCH-Job-[(dba) Collect-AgHealthState].sql"
 [String]$CollectDiskSpaceJobFileName = "SCH-Job-[(dba) Collect-DiskSpace].sql"
 [String]$CollectOSProcessesJobFileName = "SCH-Job-[(dba) Collect-OSProcesses].sql"
 [String]$CollectPerfmonDataJobFileName = "SCH-Job-[(dba) Collect-PerfmonData].sql"
@@ -320,24 +353,27 @@ if ($PSBoundParameters.ContainsKey('Debug')) { # Command line specifies -Debug[:
 [String]$PartitionsMaintenanceJobFileName = "SCH-Job-[(dba) Partitions-Maintenance].sql"
 [String]$PurgeTablesJobFileName = "SCH-Job-[(dba) Purge-Tables].sql"
 [String]$RemoveXEventFilesJobFileName = "SCH-Job-[(dba) Remove-XEventFiles].sql"
+[String]$RunBlitzIndexJobFileName = "SCH-Job-[(dba) Run-BlitzIndex].sql"
+[String]$RunBlitzIndexWeeklyJobFileName = "SCH-Job-[(dba) Run-BlitzIndex - Weekly].sql"
+[String]$RunBlitzJobFileName = "SCH-Job-[(dba) Run-Blitz].sql"
 [String]$RunLogSaverJobFileName = "SCH-Job-[(dba) Run-LogSaver].sql"
 [String]$RunTempDbSaverJobFileName = "SCH-Job-[(dba) Run-TempDbSaver].sql"
 [String]$RunWhoIsActiveJobFileName = "SCH-Job-[(dba) Run-WhoIsActive].sql"
-[String]$UpdateSqlServerVersionsJobFileName = "SCH-Job-[(dba) Update-SqlServerVersions].sql"
+
+# Jobs present on Inventory Only
+[String]$CheckInstanceAvailabilityJobFileName = "SCH-Job-[(dba) Check-InstanceAvailability].sql"
+[String]$CollectLoginExpirationInfoJobFileName = "SCH-Job-[(dba) Collect Login Expiration Info].sql"
 [String]$GetAllServerInfoJobFileName = "SCH-Job-[(dba) Get-AllServerInfo].sql"
 [String]$GetAllServerCollectedDataJobFileName = "SCH-Job-[(dba) Get-AllServerCollectedData].sql"
 [String]$GetAllServerDashboardMailJobFileName = "SCH-Job-[(dba) Get-AllServerDashboardMail].sql"
 [String]$InventorySpecificObjectsFileName = "SCH-Create-Inventory-Specific-Objects.sql"
 [String]$LinkedServerOnInventoryFileName = "SCH-Linked-Servers-Sample.sql"
-[String]$TestWindowsAdminAccessJobFileName = "SCH-Job-[(dba) Test-WindowsAdminAccess].sql"
-[String]$RunBlitzIndexJobFileName = "SCH-Job-[(dba) Run-BlitzIndex].sql"
-[String]$RunBlitzIndexWeeklyJobFileName = "SCH-Job-[(dba) Run-BlitzIndex - Weekly].sql"
-[String]$RunBlitzJobFileName = "SCH-Job-[(dba) Run-Blitz].sql"
+[String]$PopulateInventoryTablesJobFileName = "SCH-Job-[(dba) Populate Inventory Tables].sql"
+[String]$SendLoginExpiryEmailsJobFileName = "SCH-Job-[(dba) Send Login Expiry EMails].sql"
 [String]$StopStuckSQLMonitorJobsJobFileName = "SCH-Job-[(dba) Stop-StuckSQLMonitorJobs].sql"
-[String]$CollectMemoryClerksJobFileName = "SCH-Job-[(dba) Collect-MemoryClerks].sql"
-[String]$CollectAgHealthStateJobFileName = "SCH-Job-[(dba) Collect-AgHealthState].sql"
-[String]$CheckSQLAgentJobsJobFileName = "SCH-Job-[(dba) Check-SQLAgentJobs].sql"
+[String]$TestWindowsAdminAccessJobFileName = "SCH-Job-[(dba) Test-WindowsAdminAccess].sql"
 [String]$UpdateSQLAgentJobsThresholdFileName = "Update-SQLAgentJobsThreshold.sql"
+[String]$UpdateSqlServerVersionsJobFileName = "SCH-Job-[(dba) Update-SqlServerVersions].sql"
 
 # Check if PortNo is specified
 $Port4SqlInstanceToBaseline = $null
@@ -383,9 +419,10 @@ $AllSteps = @(  "1__sp_WhoIsActive", "2__AllDatabaseObjects", "3__XEventSession"
                 "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
                 "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
                 "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
-                "40__WhoIsActivePartition", "41__BlitzIndexPartition", "42__BlitzPartition",
-                "43__EnablePageCompression", "44__GrafanaLogin", "45__LinkedServerOnInventory",
-                "46__LinkedServerForDataDestinationInstance", "47__AlterViewsForDataDestinationInstance")
+                "40__CreateJobCollectLoginExpirationInfo", "41__CreateJobPopulateInventoryTables", "42__CreateJobSendLoginExpiryEmails",
+                "43__WhoIsActivePartition", "44__BlitzIndexPartition", "45__BlitzPartition",
+                "46__EnablePageCompression", "47__GrafanaLogin", "48__LinkedServerOnInventory",
+                "49__LinkedServerForDataDestinationInstance", "50__AlterViewsForDataDestinationInstance")
 
 # TSQL Jobs
 $TsqlJobSteps = @(
@@ -395,15 +432,27 @@ $TsqlJobSteps = @(
                 "25__CreateJobRunBlitzIndex", "26__CreateJobRunBlitz", "27__CreateJobRunBlitzIndexWeekly", 
                 "28__CreateJobCollectMemoryClerks", "29__CreateJobCollectPrivilegedInfo", "30__CreateJobCollectAgHealthState", 
                 "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "36__CreateJobGetAllServerInfo", 
-                "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail")
+                "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "40__CreateJobCollectLoginExpirationInfo", 
+                "41__CreateJobPopulateInventoryTables", "42__CreateJobSendLoginExpiryEmails")
 
 # PowerShell Jobs
 $PowerShellJobSteps = @(
                 "13__CreateJobCollectDiskSpace", "14__CreateJobCollectOSProcesses", "15__CreateJobCollectPerfmonData",
-                "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "39__CreateJobStopStuckSQLMonitorJobs")
+                "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "39__CreateJobStopStuckSQLMonitorJobs",
+                "41__CreateJobPopulateInventoryTables")
 
 # RDPSessionSteps
 $RDPSessionSteps = @("9__CopyDbaToolsModule2Host", "10__CopyPerfmonFolder2Host", "11__SetupPerfmonDataCollector")
+
+# Jobs Only created on Inventory Server
+$InventorySteps = @("8__usp_GetAllServerInfo", "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", 
+                "36__CreateJobGetAllServerInfo", "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail",
+                "39__CreateJobStopStuckSQLMonitorJobs", "40__CreateJobCollectLoginExpirationInfo", "41__CreateJobPopulateInventoryTables",
+                "42__CreateJobSendLoginExpiryEmails")
+
+# Jobs that send mail notification to others apart from DBA team
+$MultiMailJobSteps = @("38__CreateJobGetAllServerDashboardMail", "42__CreateJobSendLoginExpiryEmails")
+
 
 
 # Validate to ensure either of Skip Or Only Steps are provided
@@ -434,9 +483,16 @@ if($SkipRDPSessionSteps) {
     $SkipSteps = $SkipSteps + $($RDPSessionSteps | % {if($_ -notin $SkipSteps){$_}});
 }
 
+# Add $InventorySteps to Skip Jobs
+if($SkipInventorySteps) {
+    $SkipSteps = $SkipSteps + $($InventorySteps | % {if($_ -notin $SkipSteps){$_}});
+}
+
 # Print Job Step names
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$PowerShellJobSteps => `n`n`t`t`t`t$($PowerShellJobSteps -join "`n`t`t`t`t")`n"
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$RDPSessionSteps => `n`n`t`t`t`t$($RDPSessionSteps -join "`n`t`t`t`t")`n"
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$InventorySteps => `n`n`t`t`t`t$($InventorySteps -join "`n`t`t`t`t")`n"
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$MultiMailJobSteps => `n`n`t`t`t`t$($MultiMailJobSteps -join "`n`t`t`t`t")`n"
 
 # Add $TsqlJobSteps to Skip Jobs
 if($SkipTsqlJobs) {
@@ -444,8 +500,8 @@ if($SkipTsqlJobs) {
 }
 
 # Skip Compression
-if($SkipPageCompression -and ('43__EnablePageCompression' -notin $SkipSteps)) {
-    $SkipSteps += @('43__EnablePageCompression')
+if($SkipPageCompression -and ('46__EnablePageCompression' -notin $SkipSteps)) {
+    $SkipSteps += @('46__EnablePageCompression')
 }
 
 # For backward compatability
@@ -512,6 +568,7 @@ $ddlPath = Join-Path $SQLMonitorPath "DDLs"
 $psScriptPath = Join-Path $SQLMonitorPath "SQLMonitor"
 $isUpgradeScenario = $false
 $SkipPowerShellJobs4SQLCluster = $false
+$SkipPowerShellJobs4Host = $false
 
 $mailProfileFilePath = "$ddlPath\$MailProfileFileName"
 $WhoIsActiveFilePath = "$ddlPath\$WhoIsActiveFileName"
@@ -538,11 +595,15 @@ $UspActiveRequestsCountFilePath = "$ddlPath\$UspActiveRequestsCountFileName"
 $UspWaitsPerCorePerMinuteFilePath = "$ddlPath\$UspWaitsPerCorePerMinuteFileName"
 $UspAvgDiskWaitMsFilePath = "$ddlPath\$UspAvgDiskWaitMsFileName"
 $UspEnablePageCompressionFilePath = "$ddlPath\$UspEnablePageCompressionFileName"
+$UspCollectAllServerLoginExpirationInfoFilePath = "$ddlPath\$UspCollectAllServerLoginExpirationInfoFileName"
 $UspCollectMemoryClerksFilePath = "$ddlPath\$UspCollectMemoryClerksFileName"
 $UspCollectAgHealthStateFilePath = "$ddlPath\$UspCollectAgHealthStateFileName"
 $UspCheckSQLAgentJobsFilePath = "$ddlPath\$UspCheckSQLAgentJobsFileName"
 $UspLogSaverFilePath = "$ddlPath\$UspLogSaverFileName"
+$UspPopulateSmaServersFilePath = "$ddlPath\$UspPopulateSmaServersFileName"
+$UspSendLoginExpiryEmailsFilePath = "$ddlPath\$UspSendLoginExpiryEmailsFileName"
 $UspTempDbSaverFilePath = "$ddlPath\$UspTempDbSaverFileName"
+$UspWrapperPopulateSmaSqlInstanceFilePath = "$ddlPath\$UspWrapperPopulateSmaSqlInstanceFileName"
 $WhoIsActivePartitionFilePath = "$ddlPath\$WhoIsActivePartitionFileName"
 $BlitzIndexPartitionFilePath = "$ddlPath\$BlitzIndexPartitionFileName"
 $BlitzPartitionFilePath = "$ddlPath\$BlitzPartitionFileName"
@@ -550,7 +611,9 @@ $BlitzIndexMode0PartitionFilePath = "$ddlPath\$BlitzIndexMode0PartitionFileName"
 $BlitzIndexMode1PartitionFilePath = "$ddlPath\$BlitzIndexMode1PartitionFileName"
 $BlitzIndexMode4PartitionFilePath = "$ddlPath\$BlitzIndexMode4PartitionFileName"
 $GrafanaLoginFilePath = "$ddlPath\$GrafanaLoginFileName"
-$CheckInstanceAvailabilityJobFilePath = "$ddlPath\$CheckInstanceAvailabilityJobFileName"
+$UspCollectPrivilegedInfoFilePath = "$ddlPath\$UspCollectPrivilegedInfoFileName"
+
+# Jobs for All Servers
 $CaptureAlertMessagesJobFilePath = "$ddlPath\$CaptureAlertMessagesJobFileName"
 $CollectDiskSpaceJobFilePath = "$ddlPath\$CollectDiskSpaceJobFileName"
 $CollectOSProcessesJobFilePath = "$ddlPath\$CollectOSProcessesJobFileName"
@@ -559,9 +622,6 @@ $CollectWaitStatsJobFilePath = "$ddlPath\$CollectWaitStatsJobFileName"
 $CollectFileIOStatsJobFilePath = "$ddlPath\$CollectFileIOStatsJobFileName"
 $CollectXEventsJobFilePath = "$ddlPath\$CollectXEventsJobFileName"
 $CollectPrivilegedInfoJobFilePath = "$ddlPath\$CollectPrivilegedInfoJobFileName"
-$UspCollectPrivilegedInfoFilePath = "$ddlPath\$UspCollectPrivilegedInfoFileName"
-$GetAllServerInfoJobFilePath = "$ddlPath\$GetAllServerInfoJobFileName"
-$GetAllServerCollectedDataJobFilePath = "$ddlPath\$GetAllServerCollectedDataJobFileName"
 $PartitionsMaintenanceJobFilePath = "$ddlPath\$PartitionsMaintenanceJobFileName"
 $PurgeTablesJobFilePath = "$ddlPath\$PurgeTablesJobFileName"
 $RemoveXEventFilesJobFilePath = "$ddlPath\$RemoveXEventFilesJobFileName"
@@ -574,19 +634,27 @@ $RunBlitzJobFilePath = "$ddlPath\$RunBlitzJobFileName"
 $CollectMemoryClerksJobFilePath = "$ddlPath\$CollectMemoryClerksJobFileName"
 $CollectAgHealthStateJobFilePath = "$ddlPath\$CollectAgHealthStateJobFileName"
 $CheckSQLAgentJobsJobFilePath = "$ddlPath\$CheckSQLAgentJobsJobFileName"
-$UpdateSqlServerVersionsJobFilePath = "$ddlPath\$UpdateSqlServerVersionsJobFileName"
-$GetAllServerDashboardMailJobFilePath = "$ddlPath\$GetAllServerDashboardMailJobFileName"
-$StopStuckSQLMonitorJobsJobFilePath = "$ddlPath\$StopStuckSQLMonitorJobsJobFileName"
 $LinkedServerOnInventoryFilePath = "$ddlPath\$LinkedServerOnInventoryFileName"
 $TestWindowsAdminAccessJobFilePath = "$ddlPath\$TestWindowsAdminAccessJobFileName"
+
+# Jobs for Inventory Server
+$GetAllServerDashboardMailJobFilePath = "$ddlPath\$GetAllServerDashboardMailJobFileName"
+$GetAllServerInfoJobFilePath = "$ddlPath\$GetAllServerInfoJobFileName"
+$GetAllServerCollectedDataJobFilePath = "$ddlPath\$GetAllServerCollectedDataJobFileName"
+$CheckInstanceAvailabilityJobFilePath = "$ddlPath\$CheckInstanceAvailabilityJobFileName"
 $UpdateSQLAgentJobsThresholdFilePath = "$ddlPath\$UpdateSQLAgentJobsThresholdFileName"
+$CollectLoginExpirationInfoJobFilePath = "$ddlPath\$CollectLoginExpirationInfoJobFileName"
+$PopulateInventoryTablesJobFilePath = "$ddlPath\$PopulateInventoryTablesJobFileName"
+$SendLoginExpiryEmailsJobFilePath = "$ddlPath\$SendLoginExpiryEmailsJobFileName"
+$StopStuckSQLMonitorJobsJobFilePath = "$ddlPath\$StopStuckSQLMonitorJobsJobFileName"
+$UpdateSqlServerVersionsJobFilePath = "$ddlPath\$UpdateSqlServerVersionsJobFileName"
 
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$ddlPath = '$ddlPath'"
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$psScriptPath = '$psScriptPath'"
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Import dbatools module.."
-Import-Module dbatools
+Import-Module dbatools -Verbose:$false -Debug:$false
 
 # Compute steps to execute
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Compute Steps to execute.."
@@ -637,7 +705,7 @@ try {
     #if($InventoryServer -ne $SqlInstanceToBaseline) {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] Create connection for InventoryServer '$InventoryServer'.."
     $conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                    -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop
+                                        -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
     #} else {
         #$conInventoryServer = $conSqlInstanceToBaseline
     #}
@@ -679,7 +747,7 @@ else {
     $sqlInstanceDetails = "select * from dbo.instance_details where sql_instance = '$SqlInstanceToBaselineWithOutPort' and [host_name] = '$HostName'"
 }
 try {
-    $instanceDetails += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlInstanceDetails
+    $instanceDetails += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlInstanceDetails -Verbose:$false -Debug:$false
 
     if($instanceDetails.Count -eq 1) 
     {
@@ -708,7 +776,7 @@ try {
     if ($SqlInstanceToBaseline -ne $InventoryServer) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] Create connection for '$SqlInstanceToBaseline'.."
         $conSqlInstanceToBaseline = Connect-DbaInstance -SqlInstance $SqlInstanceToBaseline -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                        -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop
+                                                        -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
     }
     else {
         $conSqlInstanceToBaseline = $conInventoryServer
@@ -773,7 +841,7 @@ where servicename like 'SQL Server (%)'
 or servicename like 'SQL Server Agent (%)'
 "@
 try {
-    $resultServerInfo = $conSqlInstanceToBaseline | Invoke-DbaQuery -Query $sqlServerInfo -EnableException
+    $resultServerInfo = $conSqlInstanceToBaseline | Invoke-DbaQuery -Query $sqlServerInfo -EnableException -Verbose:$false -Debug:$false
     $dbServiceInfo = $resultServerInfo | Where-Object {$_.service_name_str -like "SQL Server (*)"}
     $agentServiceInfo = $resultServerInfo | Where-Object {$_.service_name_str -like "SQL Server Agent (*)"}
     $resultServerInfo | Format-Table -AutoSize
@@ -861,9 +929,9 @@ else {
     $sqlInstanceDetails = "select * from dbo.instance_details where sql_instance = '$SqlInstanceToBaselineWithOutPort' and [host_name] = '$HostName'"
 }
 try {
-    $instanceDetails += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlInstanceDetails
+    $instanceDetails += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlInstanceDetails -Verbose:$false -Debug:$false
     if($instanceDetails.Count -eq 0) {
-        $instanceDetails += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlInstanceDetails -EnableException
+        $instanceDetails += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlInstanceDetails -EnableException -Verbose:$false -Debug:$false
     }
 }
 catch {
@@ -1039,6 +1107,15 @@ if ( $instanceDetails.Count -gt 0 )
 # If fresh install, then set SkipMultiServerviewsUpgrade to False
 if(-not $isUpgradeScenario) {
     $SkipMultiServerviewsUpgrade = $false
+
+    $SkipMultiMailJobSteps = $false
+}
+
+# Remove jobs that have multiple emails for Upgrade Scenario unless Skip if False
+if($SkipMultiMailJobSteps) {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Skipping jobs (`$MultiMailJobSteps) that have mail notification for other folks apart from DBA.." | Write-Host -ForegroundColor Yellow
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "To avoid this skipping, kindly set SkipMultiMailJobSteps to false.." | Write-Host -ForegroundColor Yellow
+    $Steps2Execute = $Steps2Execute | ForEach-Object {if($_ -notin $MultiMailJobSteps){$_}}
 }
 
 if($DbaGroupMailId -eq 'some_dba_mail_id@gmail.com') {
@@ -1312,7 +1389,7 @@ if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination) -or ($SqlInstanceAsDat
 } else {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] Create connection for '$SqlInstanceAsDataDestination'.."
     $conSqlInstanceAsDataDestination = Connect-DbaInstance -SqlInstance $SqlInstanceAsDataDestination -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -Verbose:$false -Debug:$false
 }
 
 if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs) -or ($SqlInstanceForTsqlJobs -eq $SqlInstanceToBaseline)) {
@@ -1320,7 +1397,7 @@ if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs) -or ($SqlInstanceForTsqlJobs
 } else {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] Create connection for '$SqlInstanceForTsqlJobs'.."
     $conSqlInstanceForTsqlJobs = Connect-DbaInstance -SqlInstance $SqlInstanceForTsqlJobs -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -Verbose:$false -Debug:$false
 }
 
 if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs) -or ($SqlInstanceForPowershellJobs -eq $SqlInstanceToBaseline)) {
@@ -1328,7 +1405,7 @@ if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs) -or ($SqlInstanceForPo
 } else {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] Create connection for '$SqlInstanceForPowershellJobs'.."
     $conSqlInstanceForPowershellJobs = Connect-DbaInstance -SqlInstance $SqlInstanceForPowershellJobs -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -Verbose:$false -Debug:$false
 }
 
 
@@ -1348,7 +1425,7 @@ end
 "@
     $resultPerfmonRecord = @()
     try {
-        $resultPerfmonRecord += $conSqlInstanceAsDataDestination | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlPerfmonRecord -EnableException
+        $resultPerfmonRecord += $conSqlInstanceAsDataDestination | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlPerfmonRecord -EnableException -Verbose:$false -Debug:$false
     }
     catch {
         $errMessage = $_.Exception.Message
@@ -1420,7 +1497,7 @@ where collation_name not in ('SQL_Latin1_General_CP1_CI_AS')
 and name in ('master','msdb','tempdb','$DbaDatabase')
 "@
     $dbCollationResult = @()
-    $dbCollationResult += $conSqlInstanceToBaseline | Invoke-DbaQuery -Query $sqlDbCollation -EnableException
+    $dbCollationResult += $conSqlInstanceToBaseline | Invoke-DbaQuery -Query $sqlDbCollation -EnableException -Verbose:$false -Debug:$false
     if($dbCollationResult.Count -ne 0) {
         if ($ReturnInlineErrorMessage) 
         {
@@ -1429,7 +1506,8 @@ and name in ('master','msdb','tempdb','$DbaDatabase')
 	    else {            
 		    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Collation of below databases is not [SQL_Latin1_General_CP1_CI_AS]." | Write-Host -ForegroundColor Red
             "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly rectify this collation problem, or Using SkipCollationCheck parameter." | Write-Host -ForegroundColor Red
-            $dbCollationResult | Format-Table -AutoSize #| Write-Host -ForegroundColor Red
+            $dbCollationResult | Format-Table -AutoSize | Out-String | Write-Host -ForegroundColor Red
+            Start-Sleep -Seconds 1
             Write-Error "Stop here. Fix above issue."
         }
     }
@@ -1441,7 +1519,7 @@ if($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs)
 {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetching basic info for `$SqlInstanceForPowershellJobs => [$SqlInstanceForPowershellJobs].."
     try {
-        $jobServerServicesInfo = $conSqlInstanceForPowershellJobs | Invoke-DbaQuery -Query $sqlServerInfo -EnableException
+        $jobServerServicesInfo = $conSqlInstanceForPowershellJobs | Invoke-DbaQuery -Query $sqlServerInfo -EnableException -Verbose:$false -Debug:$false
         $jobServerDbServiceInfo = $jobServerServicesInfo | Where-Object {$_.service_name_str -like "SQL Server (*)"}
         $jobServerAgentServiceInfo = $jobServerServicesInfo | Where-Object {$_.service_name_str -like "SQL Server Agent (*)"}
         $jobServerServicesInfo | Format-Table -AutoSize
@@ -1583,7 +1661,7 @@ if($SkipWindowsAdminAccessTest -eq $false)
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$TestWindowsAdminAccessJobFilePath = '$TestWindowsAdminAccessJobFilePath'"
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating & executing job [(dba) Test-WindowsAdminAccess] on [$SqlInstanceForPowershellJobs].."
         $sqlTestWindowsAdminAccessFilePath = [System.IO.File]::ReadAllText($TestWindowsAdminAccessJobFilePath)
-        $conSqlInstanceForPowershellJobs | Invoke-DbaQuery -Database msdb -Query $sqlTestWindowsAdminAccessFilePath -EnableException
+        $conSqlInstanceForPowershellJobs | Invoke-DbaQuery -Database msdb -Query $sqlTestWindowsAdminAccessFilePath -EnableException -Verbose:$false -Debug:$false
 
         $testWindowsAdminAccessJobHistory = @()
         $loopStartTime = Get-Date
@@ -1627,7 +1705,7 @@ if($SkipWindowsAdminAccessTest -eq $false)
         }
 
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Remove test job [(dba) Test-WindowsAdminAccess].."
-        $conSqlInstanceForPowershellJobs | Invoke-DbaQuery -Database msdb -Query "EXEC msdb.dbo.sp_delete_job @job_name=N'(dba) Test-WindowsAdminAccess'" -EnableException
+        $conSqlInstanceForPowershellJobs | Invoke-DbaQuery -Database msdb -Query "EXEC msdb.dbo.sp_delete_job @job_name=N'(dba) Test-WindowsAdminAccess'" -EnableException -Verbose:$false -Debug:$false
 
 
         $requireProxy = $(-not $hasWindowsAdminAccess)
@@ -1667,7 +1745,7 @@ JOIN msdb.dbo.sysmail_server s ON a.account_id = s.account_id
 WHERE pp.is_default = 1
 "@
     $mailProfile = @()
-    $mailProfile += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database msdb -Query $sqlMailProfile -EnableException
+    $mailProfile += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database msdb -Query $sqlMailProfile -EnableException -Verbose:$false -Debug:$false
     if($mailProfile.Count -lt 1) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Kindly create default global mail profile." | Write-Host -ForegroundColor Red
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Kindly utilize '$mailProfileFilePath." | Write-Host -ForegroundColor Red
@@ -1702,7 +1780,7 @@ $(if($SkipDriveCheck){'--'})and physical_name not like 'C:\%'
 order by file_id;
 "@
 $resultDbaDatabasePath = @()
-$resultDbaDatabasePath += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database master -Query $sqlDbaDatabasePath -EnableException
+$resultDbaDatabasePath += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database master -Query $sqlDbaDatabasePath -EnableException -Verbose:$false -Debug:$false
 if($resultDbaDatabasePath.Count -eq 0) {
     if ($ReturnInlineErrorMessage) {
 		"Seems either [$DbaDatabase] does not exists, or the data/log files are present in C:\ drive. `n`t Kindly rectify this issue." | Write-Error
@@ -1721,7 +1799,7 @@ else {
 # Execute PreQuery
 if(-not [String]::IsNullOrEmpty($PreQuery)) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Executing PreQuery on [$SqlInstanceToBaseline].." | Write-Host -ForegroundColor Cyan
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $PreQuery -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $PreQuery -EnableException -Verbose:$false -Debug:$false
 }
 
 
@@ -1739,15 +1817,17 @@ if( ((-not [String]::IsNullOrEmpty($WindowsCredential)) -or ($ssnHostName -eq $e
 }
 
 
-# Get dbo.instance_details info by HostName to figure out if PowerShell jobs to be created is Server is a SQLCluster
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetching host related info from [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details].."
+# Get dbo.instance_details info by HostName
+    # This helps to figure out if OS Jobs already exists for same host with other sql instance
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetch entries for same host from [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details].."
 $instanceHostDetails = @()
 if(-not [String]::IsNullOrEmpty($HostName)) {
     $sqlInstanceHostDetails = @"
-select distinct collector_powershell_jobs_server, host_name, data_destination_sql_instance
-from dbo.instance_details 
-where is_enabled = 1 and is_alias = 0 and [host_name] = '$HostName'
-and collector_powershell_jobs_server <> '$SqlInstanceForPowershellJobs'
+    select	sql_instance_with_port = coalesce(sql_instance+','+sql_instance_port,sql_instance), 
+		    collector_powershell_jobs_server, host_name, data_destination_sql_instance
+    from dbo.instance_details 
+    where is_enabled = 1 and is_alias = 0 
+    and [host_name] = '$HostName'
 "@
 }
 
@@ -1756,17 +1836,82 @@ if($verbose) {
 }
 
 try {
-    $instanceHostDetails += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlInstanceHostDetails
+    $instanceHostDetails += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlInstanceHostDetails -Verbose:$false -Debug:$false
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Host related info fetched."
 
-    #"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$isClustered = $isClustered"
-    if($instanceHostDetails.Count -gt 0 -and $isClustered -eq $true) {
-        $SkipPowerShellJobs4SQLCluster = $true
+    if($verbose) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$instanceHostDetails =>`n"
+        $instanceHostDetails | Format-Table -AutoSize
     }
+
+    if($instanceHostDetails.Count -gt 0)
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Same host entries already present."    
+
+        $hostEntryForCurrentCombination = @()
+        $hostEntryForCurrentCombination += $instanceHostDetails | `
+                Where-Object {$_.sql_instance_with_port -eq $SqlInstanceToBaseline -and $_.data_destination_sql_instance -eq $SqlInstanceAsDataDestination}
+        
+        $hostEntryOwnedBySqlInstance = @()
+        $hostEntryOwnedBySqlInstance += $instanceHostDetails | `
+                Where-Object {$_.sql_instance_with_port -eq $SqlInstanceToBaseline -and $_.sql_instance_with_port -eq $_.data_destination_sql_instance}
+
+        $hostEntryOwnedByOtherServer = @()
+        $hostEntryOwnedByOtherServer += $instanceHostDetails | `
+                Where-Object {$_.sql_instance_with_port -ne $SqlInstanceToBaseline -and $_.sql_instance_with_port -eq $_.data_destination_sql_instance} | `
+                Select-Object data_destination_sql_instance -Unique
+
+        if($verbose) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$hostEntryForCurrentCombination =>`n"
+            $hostEntryForCurrentCombination | Format-Table -AutoSize
+
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$hostEntryOwnedBySqlInstance =>`n"
+            $hostEntryOwnedBySqlInstance | Format-Table -AutoSize
+
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$hostEntryOwnedByOtherServer =>`n"
+            $hostEntryOwnedByOtherServer | Format-Table -AutoSize
+        }
+
+        if($hostEntryOwnedByOtherServer.Count -gt 0) {
+            $SkipPowerShellJobs4Host = $true
+            $hostOwnerServer = $hostEntryOwnedByOtherServer | Select-Object -ExpandProperty data_destination_sql_instance -First 1
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "OS Jobs for host [$HostName] are owned by [$hostOwnerServer] Server. So skipping `$PowerShellJobSteps." | Write-Host -ForegroundColor Yellow            
+        }
+    }
+
+    #if($instanceHostDetails.Count -gt 0 -and $isClustered -eq $true) {
+        #$SkipPowerShellJobs4SQLCluster = $true
+    #}
 }
 catch {
     $errMessage = $_
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Could not fetch host related details from [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details] info."
+}
+
+
+# Check if PortNo is specified for TSQL Jobs Server
+$Port4SqlInstanceForTsqlJobs = $null
+$SqlInstanceForTsqlJobsWithOutPort = $SqlInstanceForTsqlJobs
+if($SqlInstanceForTsqlJobs -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceForTsqlJobs = $Matches['PortNo']
+    $SqlInstanceForTsqlJobsWithOutPort = $Matches['SqlInstance']
+}
+
+# Check if PortNo is specified for PowerShell Jobs Server
+$Port4SqlInstanceForPowershellJobs = $null
+$SqlInstanceForPowershellJobsWithOutPort = $SqlInstanceForPowershellJobs
+if($SqlInstanceForPowershellJobs -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceForPowershellJobs = $Matches['PortNo']
+    $SqlInstanceForPowershellJobsWithOutPort = $Matches['SqlInstance']
+}
+
+# Check if PortNo is specified for Data Destination Server
+$Port4SqlInstanceAsDataDestination = $null
+$SqlInstanceAsDataDestinationWithOutPort = $SqlInstanceAsDataDestination
+if($SqlInstanceAsDataDestination -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceAsDataDestination = $Matches['PortNo']
+    $SqlInstanceAsDataDestinationWithOutPort = $Matches['SqlInstance']
 }
 
 
@@ -1776,14 +1921,14 @@ if($stepName -in $Steps2Execute) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$WhoIsActiveFilePath = '$WhoIsActiveFilePath'"
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating sp_WhoIsActive in [master] database.."
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database master -File $WhoIsActiveFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database master -File $WhoIsActiveFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Checking if sp_WhoIsActive is present in [$DbaDatabase] also.."
     $sqlCheckWhoIsActiveExistence = "select [is_existing] = case when OBJECT_ID('dbo.sp_WhoIsActive') is null then 0 else 1 end;"
-    $existsWhoIsActive = $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlCheckWhoIsActiveExistence -EnableException | Select-Object -ExpandProperty is_existing;
+    $existsWhoIsActive = $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlCheckWhoIsActiveExistence -EnableException -Verbose:$false -Debug:$false | Select-Object -ExpandProperty is_existing;
     if($existsWhoIsActive -eq 1) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Update sp_WhoIsActive definition in [$DbaDatabase] also.."
-        $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $WhoIsActiveFilePath -EnableException
+        $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $WhoIsActiveFilePath -EnableException -Verbose:$false -Debug:$false
     }
 }
 
@@ -1818,6 +1963,13 @@ if($stepName -in $Steps2Execute)
         $AllDatabaseObjectsFileContent = $AllDatabaseObjectsFileContent.Replace(' on ps_dba', ' --on ps_dba')
     }
 
+    # Modify content if upgrade scenario
+    if($isUpgradeScenario) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "For upgrade scenario, don't touch partitioning."
+
+        $AllDatabaseObjectsFileContent = $AllDatabaseObjectsFileContent.Replace('declare @is_upgrade bit = 0;', 'declare @is_upgrade bit = 1;')
+    }
+
     # Modify AllDatabaseObjectsFileContent if MemoryOptimized Objects are NOT to be used
     if($MemoryOptimizedObjectsUsage -eq $false) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$MemoryOptimizedObjectsUsage is false. So use disk-based objects."
@@ -1831,10 +1983,10 @@ if($stepName -in $Steps2Execute)
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$AllDatabaseObjectsFilePath = '$tempAllDatabaseObjectsFilePath'"
     try {
         if($verbose -or $debug) {
-            $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $tempAllDatabaseObjectsFilePath -EnableException -MessagesToOutput | Write-Verbose
+            $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $tempAllDatabaseObjectsFilePath -EnableException -MessagesToOutput -Verbose:$false -Debug:$false | Write-Verbose
         }
         else {
-            $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $tempAllDatabaseObjectsFilePath -EnableException
+            $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $tempAllDatabaseObjectsFilePath -EnableException -Verbose:$false -Debug:$false
         }
     }
     catch {
@@ -1860,78 +2012,90 @@ if($stepName -in $Steps2Execute)
     # Update InventoryServer Objects
     if($InventoryServer -eq $SqlInstanceToBaseline)
     {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Update objects on Inventory Server.."
-        $InventorySpecificObjectsFileText = [System.IO.File]::ReadAllText($InventorySpecificObjectsFilePath)
-
-        # Modify AllDatabaseObjectsFileContent if MemoryOptimized Objects are NOT to be used
-        if($MemoryOptimizedObjectsUsage -eq $false) {
-            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$MemoryOptimizedObjectsUsage is false. So use disk-based objects for Inventory objects."
-            $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('@MemoryOptimizedObjectUsage bit = 1', '@MemoryOptimizedObjectUsage bit = 0')
+        if($SkipInventorySteps) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Skip Update of Objects on Inventory Server as `$SkipInventorySteps is true.."
         }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Update objects on Inventory Server.."
+            $InventorySpecificObjectsFileText = [System.IO.File]::ReadAllText($InventorySpecificObjectsFilePath)
 
-        $dbaDatabaseParentPath = Split-Path $dbaDatabasePath -Parent
-        $memoryOptimizedFilePath = if($dbaDatabaseParentPath -notmatch '\\$') { "$dbaDatabaseParentPath\MemoryOptimized.ndf" } else { "$($dabaDatabaseParentPath)MemoryOptimized.ndf" }
-        #$InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('E:\Data\MemoryOptimized.ndf', "$(Join-Path $dbaDatabaseParentPath 'MemoryOptimized.ndf')")
-        $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('E:\Data\MemoryOptimized.ndf', $memoryOptimizedFilePath)
-        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $InventorySpecificObjectsFileText -EnableException
+            # Modify AllDatabaseObjectsFileContent if MemoryOptimized Objects are NOT to be used
+            if($MemoryOptimizedObjectsUsage -eq $false) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$MemoryOptimizedObjectsUsage is false. So use disk-based objects for Inventory objects."
+                $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('@MemoryOptimizedObjectUsage bit = 1', '@MemoryOptimizedObjectUsage bit = 0')
+            }
+
+            $dbaDatabaseParentPath = Split-Path $dbaDatabasePath -Parent
+            $memoryOptimizedFilePath = if($dbaDatabaseParentPath -notmatch '\\$') { "$dbaDatabaseParentPath\MemoryOptimized.ndf" } else { "$($dabaDatabaseParentPath)MemoryOptimized.ndf" }
+            #$InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('E:\Data\MemoryOptimized.ndf', "$(Join-Path $dbaDatabaseParentPath 'MemoryOptimized.ndf')")
+            $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('E:\Data\MemoryOptimized.ndf', $memoryOptimizedFilePath)
+        
+
+            if($verbose -or $debug) {
+                $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $InventorySpecificObjectsFileText -EnableException -MessagesToOutput -Verbose:$false -Debug:$false | Write-Verbose
+            }
+            else {
+                $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $InventorySpecificObjectsFileText -EnableException -Verbose:$false -Debug:$false
+            }
+        }
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCaptureAlertMessagesFilePath = '$UspCaptureAlertMessagesFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCaptureAlertMessagesFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCaptureAlertMessagesFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCreateAgentAlertsFilePath = '$UspCreateAgentAlertsFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCreateAgentAlertsFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCreateAgentAlertsFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCollectWaitStatsFilePath = '$UspCollectWaitStatsFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectWaitStatsFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectWaitStatsFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCollectXeventMetricsFilePath = '$UspCollectXeventMetricsFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectXeventMetricsFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectXeventMetricsFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCollectPrivilegedInfoFilePath = '$UspCollectPrivilegedInfoFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectPrivilegedInfoFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectPrivilegedInfoFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspLogSaverFilePath = '$UspLogSaverFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspLogSaverFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspLogSaverFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspTempDbSaverFilePath = '$UspTempDbSaverFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspTempDbSaverFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspTempDbSaverFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspPartitionMaintenanceFilePath = '$UspPartitionMaintenanceFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspPartitionMaintenanceFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspPartitionMaintenanceFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspPurgeTablesFilePath = '$UspPurgeTablesFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspPurgeTablesFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspPurgeTablesFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspActiveRequestsCountFilePath = '$UspActiveRequestsCountFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspActiveRequestsCountFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspActiveRequestsCountFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspWaitsPerCorePerMinuteFilePath = '$UspWaitsPerCorePerMinuteFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspWaitsPerCorePerMinuteFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspWaitsPerCorePerMinuteFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspAvgDiskWaitMsFilePath = '$UspAvgDiskWaitMsFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspAvgDiskWaitMsFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspAvgDiskWaitMsFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspEnablePageCompressionFilePath = '$UspEnablePageCompressionFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspEnablePageCompressionFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspEnablePageCompressionFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspRunWhoIsActiveFilePath = '$UspRunWhoIsActiveFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspRunWhoIsActiveFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspRunWhoIsActiveFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCollectFileIOStatsFilePath = '$UspCollectFileIOStatsFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectFileIOStatsFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectFileIOStatsFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCollectMemoryClerksFilePath = '$UspCollectMemoryClerksFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectMemoryClerksFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectMemoryClerksFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCollectAgHealthStateFilePath = '$UspCollectAgHealthStateFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectAgHealthStateFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCollectAgHealthStateFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCheckSQLAgentJobsFilePath = '$UspCheckSQLAgentJobsFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCheckSQLAgentJobsFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspCheckSQLAgentJobsFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspWrapperCollectPrivilegedInfoFilePath = '$UspWrapperCollectPrivilegedInfoFilePath'"
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspWrapperCollectPrivilegedInfoFilePath -EnableException
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -File $UspWrapperCollectPrivilegedInfoFilePath -EnableException -Verbose:$false -Debug:$false
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Adding entry into [$SqlInstanceToBaseline].[$DbaDatabase].[dbo].[instance_hosts].."
     $sqlAddInstanceHost = @"
@@ -1944,18 +2108,18 @@ if($stepName -in $Steps2Execute)
         end
 "@
     # Populate $SqlInstanceToBaseline
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHost -EnableException | Format-Table -AutoSize
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHost -EnableException -Verbose:$false -Debug:$false | Format-Table -AutoSize
 
     # Populate $SqlInstanceAsDataDestination
     if( ($SqlInstanceAsDataDestination -ne $SqlInstanceToBaseline) -and ($InventoryServer -ne $SqlInstanceAsDataDestination) ) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Adding entry into [$SqlInstanceAsDataDestination].[$DbaDatabase].[dbo].[instance_hosts].."
-        $conSqlInstanceAsDataDestination | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHost -EnableException | Format-Table -AutoSize
+        $conSqlInstanceAsDataDestination | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHost -EnableException -Verbose:$false -Debug:$false | Format-Table -AutoSize
     }
 
     # Populate $InventoryServer
     if($InventoryServer -ne $SqlInstanceToBaseline) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Adding entry into [$InventoryServer].[$InventoryDatabase].[dbo].[instance_hosts].."
-        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddInstanceHost -EnableException | Format-Table -AutoSize
+        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddInstanceHost -EnableException -Verbose:$false -Debug:$false | Format-Table -AutoSize
     }    
 
 
@@ -1983,18 +2147,18 @@ if($stepName -in $Steps2Execute)
 "@
     
     # Populate $SqlInstanceToBaseline
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHostMapping -EnableException | Format-Table -AutoSize
+    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHostMapping -EnableException -Verbose:$false -Debug:$false | Format-Table -AutoSize
 
     # Populate $SqlInstanceAsDataDestination
     if( ($SqlInstanceAsDataDestination -ne $SqlInstanceToBaseline) -and ($InventoryServer -ne $SqlInstanceAsDataDestination) ) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Adding entry into [$SqlInstanceAsDataDestination].[$DbaDatabase].[dbo].[instance_details].."
-        $conSqlInstanceAsDataDestination | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHostMapping -EnableException | Format-Table -AutoSize
+        $conSqlInstanceAsDataDestination | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlAddInstanceHostMapping -EnableException -Verbose:$false -Debug:$false | Format-Table -AutoSize
     }
 
     # Populate $InventoryServer
     if($InventoryServer -ne $SqlInstanceToBaseline) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Adding entry into [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details].."
-        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddInstanceHostMapping -EnableException | Format-Table -AutoSize
+        $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddInstanceHostMapping -EnableException -Verbose:$false -Debug:$false | Format-Table -AutoSize
     }
 
     if($isExpressEdition -or (-not [String]::IsNullOrEmpty($RetentionDays)) ) 
@@ -2031,11 +2195,15 @@ and created_date >= DATEADD(hour,-2,getdate())
     }
 }
 
+
 # Save additional settings in [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details].[more_info] as JSON
+$stepName = 'Post_Step2_Block_Update_moreInfo'
 if( ($ForceSetupOfTaskSchedulerJobs -or $HasCustomizedTsqlJobs -or $HasCustomizedPowerShellJobs) `
     -and ($isUpgradeScenario -or ($Steps2Execute -contains '2__AllDatabaseObjects'))
   )
 {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working on [$stepName].."
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Save additional settings in more_info columns.."
     $moreInfo = New-Object psobject -Property @{
         ForceSetupOfTaskSchedulerJobs = $ForceSetupOfTaskSchedulerJobs
         HasCustomizedTsqlJobs = $HasCustomizedTsqlJobs
@@ -2055,19 +2223,34 @@ if( ($ForceSetupOfTaskSchedulerJobs -or $HasCustomizedTsqlJobs -or $HasCustomize
     $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddMoreInfo -EnableException | ft -AutoSize
 }
 
-[System.Collections.ArrayList]$newList = $Steps2Execute
+$stepName = 'Post_Step2_Block_Initialize_newList'
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working on [$stepName].."
+if($Steps2Execute -is [array]) {
+    [System.Collections.ArrayList]$newList = $Steps2Execute
+}
+else {
+    [System.Collections.ArrayList]$newList = @()
+    $newList.Add($Steps2Execute) | Out-Null
+}
+
+$stepName = 'Post_Step2_Block_HasCustomizedTsqlJobs'
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working on [$stepName].."
 if($HasCustomizedTsqlJobs) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "*****Based on `$HasCustomizedTsqlJobs, skipping TSQL Jobs.." | Write-Host -ForegroundColor Yellow
     foreach($tsqJobStepName in $TsqlJobSteps) {
         $newList.Remove($tsqJobStepName) | Out-Null
     }
 }
+
+$stepName = 'Post_Step2_Block_HasCustomizedPowerShellJobs'
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working on [$stepName].."
 if($HasCustomizedPowerShellJobs) {
     "$(if(-not $HasCustomizedTsqlJobs){"`n"})$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}`n" -f 'WARNING:', "*****Based on `$HasCustomizedPowerShellJobs, skipping PowerShell Jobs.." | Write-Host -ForegroundColor Yellow
     foreach($psJobStepName in $PowerShellJobSteps) {
         $newList.Remove($psJobStepName) | Out-Null
     }
 }
+
 $Steps2Execute = $newList
 
 
@@ -2209,6 +2392,23 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCheckInstanceAvailabilityFilePath = '$UspCheckInstanceAvailabilityFilePath'"
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating usp_check_instance_availability procedure in [$InventoryServer].[$DbaDatabase] database.."
     $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -File $GetAllServerInfoFilePath
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspCollectAllServerLoginExpirationInfoFilePath = '$UspCollectAllServerLoginExpirationInfoFilePath'"
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating usp_collect_all_server_login_expiration_info procedure in [$InventoryServer].[$DbaDatabase] database.."
+    $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -File $UspCollectAllServerLoginExpirationInfoFilePath
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspPopulateSmaServersFilePath = '$UspPopulateSmaServersFilePath'"
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating usp_populate_sma_sql_instance procedure in [$InventoryServer].[$DbaDatabase] database.."
+    $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -File $UspPopulateSmaServersFilePath
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspSendLoginExpiryEmailsFilePath = '$UspSendLoginExpiryEmailsFilePath'"
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating usp_send_login_expiry_emails procedure in [$InventoryServer].[$DbaDatabase] database.."
+    $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -File $UspSendLoginExpiryEmailsFilePath
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$UspWrapperPopulateSmaSqlInstanceFilePath = '$UspWrapperPopulateSmaSqlInstanceFilePath'"
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating usp_wrapper_populate_sma_sql_instance procedure in [$InventoryServer].[$DbaDatabase] database.."
+    $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -File $UspWrapperPopulateSmaSqlInstanceFilePath
+
 }
 
 
@@ -2377,6 +2577,8 @@ if($stepName -in $Steps2Execute) {
 }
 
 # If non-domain server, then added HostName in credential name
+$stepName = 'Post_Step11_Block_CredentialName_Formatter'
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working on [$stepName].."
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Add hostname in Credential name if non-domain server.."
 if(-not [String]::IsNullOrEmpty($WindowsCredential))
 {
@@ -2415,13 +2617,12 @@ if( $requireProxy -and ($stepName -in $Steps2Execute) )
 # 13__CreateJobCollectDiskSpace
 $stepName = '13__CreateJobCollectDiskSpace'
 if($stepName -in $Steps2Execute) {
-    if ($SkipPowerShellJobs4SQLCluster) {
-        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "*****Skipping step '$stepName'.."
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Required DiskSpace Collection job already exists on following server.."
-        $instanceHostDetails | Format-Table -AutoSize
+    if ($SkipPowerShellJobs4Host) {
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Skipping step '$stepName'.."
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Required DiskSpace Collection job for host [$HostName] should already be present on [$hostOwnerServer] server."
     }
 }
-if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4SQLCluster -eq $false) 
+if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4Host -eq $false) 
 {
     $jobName = '(dba) Collect-DiskSpace'
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
@@ -2431,7 +2632,7 @@ if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4SQLCluster -eq $false)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceAsDataDestinationWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceAsDataDestination"
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
         $jobNameNew = "$jobName - $HostName"
         #$sqlInstanceOnJobStep = $SqlInstanceAsDataDestination
     }    
@@ -2540,13 +2741,12 @@ if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4SQLCluster -eq $false)
 # 14__CreateJobCollectOSProcesses
 $stepName = '14__CreateJobCollectOSProcesses'
 if($stepName -in $Steps2Execute) {
-    if ($SkipPowerShellJobs4SQLCluster) {
-        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "*****Skipping step '$stepName'.."
-        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Required OSProcesses Collection job already exists on following server.."
-        $instanceHostDetails | Format-Table -AutoSize
+    if ($SkipPowerShellJobs4Host) {
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Skipping step '$stepName'.."
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Required OSProcesses Collection job for host [$HostName] should already be present on [$hostOwnerServer] server."
     }
 }
-if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4SQLCluster -eq $false) 
+if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4Host -eq $false) 
 {
     $jobName = '(dba) Collect-OSProcesses'
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
@@ -2556,7 +2756,7 @@ if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4SQLCluster -eq $false)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceAsDataDestinationWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceAsDataDestination"
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
         $jobNameNew = "$jobName - $HostName"
         #$sqlInstanceOnJobStep = $SqlInstanceAsDataDestination
     }   
@@ -2664,13 +2864,12 @@ if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4SQLCluster -eq $false)
 # 15__CreateJobCollectPerfmonData
 $stepName = '15__CreateJobCollectPerfmonData'
 if($stepName -in $Steps2Execute) {
-    if ($SkipPowerShellJobs4SQLCluster) {
-        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "*****Skipping step '$stepName'.."
-        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Required Perfmon Data Collection job already exists on following server.."
-        $instanceHostDetails | Format-Table -AutoSize
+    if ($SkipPowerShellJobs4Host) {
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Skipping step '$stepName'.."
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Required Perfmon Data Collection job for host [$HostName] should already be present on [$hostOwnerServer] server."
     }
 }
-if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4SQLCluster -eq $false) 
+if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4Host -eq $false) 
 {
     $jobName = '(dba) Collect-PerfmonData'
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
@@ -2680,7 +2879,7 @@ if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4SQLCluster -eq $false)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceAsDataDestinationWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceAsDataDestination"
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
         $jobNameNew = "$jobName - $HostName"
         #$sqlInstanceOnJobStep = $SqlInstanceAsDataDestination
     }
@@ -2797,16 +2996,38 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
+    Write-Debug "Fixing Job Name"
+
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCollectWaitStats = [System.IO.File]::ReadAllText($CollectWaitStatsJobFilePath)
+
+    if($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) 
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCollectWaitStats)
+        #$sqlCreateJobCollectWaitStats = $flagsPattern.Replace($sqlCreateJobCollectWaitStats, "@flags=`${flagsValue}, @database_name=N'$DbaDatabase'")
+        $sqlCreateJobCollectWaitStats = $flagsPattern.Replace($sqlCreateJobCollectWaitStats, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while($cmdPattern.IsMatch($sqlCreateJobCollectWaitStats)) {
+            #$Matches = $cmdPattern.Match($testJobStepSQL)
+            #$Matches.Groups
+            $sqlCreateJobCollectWaitStats = $cmdPattern.Replace($sqlCreateJobCollectWaitStats, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+   
     if($jobNameNew -ne $jobName) {
         $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace($jobName, $jobNameNew)
     }
@@ -2899,13 +3120,32 @@ if($stepName -in $Steps2Execute)
     # Append HostName if Job Server is different    
     $jobNameNew = $jobName
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCollectXEvents = [System.IO.File]::ReadAllText($CollectXEventsJobFilePath)
+
+    if($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) 
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCollectXEvents = $sqlCreateJobCollectXEvents.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCollectXEvents)
+        #$sqlCreateJobCollectXEvents = $flagsPattern.Replace($sqlCreateJobCollectXEvents, "@flags=`${flagsValue}, @database_name=N'$DbaDatabase'")
+        $sqlCreateJobCollectXEvents = $flagsPattern.Replace($sqlCreateJobCollectXEvents, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while($cmdPattern.IsMatch($sqlCreateJobCollectXEvents)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobCollectXEvents)
+            #$Matches.Groups
+            $sqlCreateJobCollectXEvents = $cmdPattern.Replace($sqlCreateJobCollectXEvents, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCollectXEvents = $sqlCreateJobCollectXEvents.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectXEvents = $sqlCreateJobCollectXEvents.Replace('-d DBA', "-d `"$DbaDatabase`"")
     if($jobNameNew -ne $jobName) {
@@ -3001,13 +3241,31 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobFileIOStats = [System.IO.File]::ReadAllText($CollectFileIOStatsJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobFileIOStats)
+        #$sqlCreateJobFileIOStats = $flagsPattern.Replace($sqlCreateJobFileIOStats, "@flags=`${flagsValue}, @database_name=N'$DbaDatabase'")
+        $sqlCreateJobFileIOStats = $flagsPattern.Replace($sqlCreateJobFileIOStats, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobFileIOStats)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobFileIOStats)
+            #$Matches.Groups
+            $sqlCreateJobFileIOStats = $cmdPattern.Replace($sqlCreateJobFileIOStats, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -3104,13 +3362,31 @@ if($stepName -in $Steps2Execute -and $IsNonPartitioned -eq $false)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlPartitionsMaintenance = [System.IO.File]::ReadAllText($PartitionsMaintenanceJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlPartitionsMaintenance = $sqlPartitionsMaintenance.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlPartitionsMaintenance)
+        #$sqlPartitionsMaintenance = $flagsPattern.Replace($sqlPartitionsMaintenance, "@flags=`${flagsValue}, @database_name=N'$DbaDatabase'")
+        $sqlPartitionsMaintenance = $flagsPattern.Replace($sqlPartitionsMaintenance, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlPartitionsMaintenance)) {
+            #$Matches = $cmdPattern.Match($sqlPartitionsMaintenance)
+            #$Matches.Groups
+            $sqlPartitionsMaintenance = $cmdPattern.Replace($sqlPartitionsMaintenance, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlPartitionsMaintenance = $sqlPartitionsMaintenance.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlPartitionsMaintenance = $sqlPartitionsMaintenance.Replace('-d DBA', "-d `"$DbaDatabase`"")
     if($jobNameNew -ne $jobName) {
@@ -3207,13 +3483,30 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlPurgeDbaMetrics = [System.IO.File]::ReadAllText($PurgeTablesJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlPurgeDbaMetrics = $sqlPurgeDbaMetrics.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlPurgeDbaMetrics)
+        $sqlPurgeDbaMetrics = $flagsPattern.Replace($sqlPurgeDbaMetrics, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlPurgeDbaMetrics)) {
+            #$Matches = $cmdPattern.Match($sqlPurgeDbaMetrics)
+            #$Matches.Groups
+            $sqlPurgeDbaMetrics = $cmdPattern.Replace($sqlPurgeDbaMetrics, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlPurgeDbaMetrics = $sqlPurgeDbaMetrics.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlPurgeDbaMetrics = $sqlPurgeDbaMetrics.Replace('-d DBA', "-d `"$DbaDatabase`"")
     if($jobNameNew -ne $jobName) {
@@ -3310,13 +3603,14 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) ) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) ) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForPowershellJobs].."
     $sqlCreateJobRemoveXEventFiles = [System.IO.File]::ReadAllText($RemoveXEventFilesJobFilePath)
+
     $sqlCreateJobRemoveXEventFiles = $sqlCreateJobRemoveXEventFiles.Replace('-SqlInstance localhost', "-SqlInstance ''$sqlInstanceOnJobStep''")
     $sqlCreateJobRemoveXEventFiles = $sqlCreateJobRemoveXEventFiles.Replace('-Database DBA', "-Database `"$DbaDatabase`"")
     if($jobNameNew -ne $jobName) {
@@ -3427,13 +3721,30 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobRunLogSaver = [System.IO.File]::ReadAllText($RunLogSaverJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobRunLogSaver)
+        $sqlCreateJobRunLogSaver = $flagsPattern.Replace($sqlCreateJobRunLogSaver, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobRunLogSaver)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobRunLogSaver)
+            #$Matches.Groups
+            $sqlCreateJobRunLogSaver = $cmdPattern.Replace($sqlCreateJobRunLogSaver, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -3530,13 +3841,30 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobRunTempDbSaver = [System.IO.File]::ReadAllText($RunTempDbSaverJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobRunTempDbSaver)
+        $sqlCreateJobRunTempDbSaver = $flagsPattern.Replace($sqlCreateJobRunTempDbSaver, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobRunTempDbSaver)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobRunTempDbSaver)
+            #$Matches.Groups
+            $sqlCreateJobRunTempDbSaver = $cmdPattern.Replace($sqlCreateJobRunTempDbSaver, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -3633,13 +3961,30 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlRunWhoIsActive = [System.IO.File]::ReadAllText($RunWhoIsActiveJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlRunWhoIsActive)
+        $sqlRunWhoIsActive = $flagsPattern.Replace($sqlRunWhoIsActive, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlRunWhoIsActive)) {
+            #$Matches = $cmdPattern.Match($sqlRunWhoIsActive)
+            #$Matches.Groups
+            $sqlRunWhoIsActive = $cmdPattern.Replace($sqlRunWhoIsActive, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -3740,13 +4085,30 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlRunBlitzIndexJob = [System.IO.File]::ReadAllText($RunBlitzIndexJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlRunBlitzIndexJob)
+        $sqlRunBlitzIndexJob = $flagsPattern.Replace($sqlRunBlitzIndexJob, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlRunBlitzIndexJob)) {
+            #$Matches = $cmdPattern.Match($sqlRunBlitzIndexJob)
+            #$Matches.Groups
+            $sqlRunBlitzIndexJob = $cmdPattern.Replace($sqlRunBlitzIndexJob, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace("''DBA''", "''$DbaDatabase''" )
@@ -3846,13 +4208,30 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlRunBlitzJob = [System.IO.File]::ReadAllText($RunBlitzJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlRunBlitzJob = $sqlRunBlitzJob.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlRunBlitzJob)
+        $sqlRunBlitzJob = $flagsPattern.Replace($sqlRunBlitzJob, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlRunBlitzJob)) {
+            #$Matches = $cmdPattern.Match($sqlRunBlitzJob)
+            #$Matches.Groups
+            $sqlRunBlitzJob = $cmdPattern.Replace($sqlRunBlitzJob, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlRunBlitzJob = $sqlRunBlitzJob.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlRunBlitzJob = $sqlRunBlitzJob.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlRunBlitzJob = $sqlRunBlitzJob.Replace("''DBA''", "''$DbaDatabase''" )
@@ -3952,13 +4331,30 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlRunBlitzIndexWeeklyJob = [System.IO.File]::ReadAllText($RunBlitzIndexWeeklyJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlRunBlitzIndexWeeklyJob)
+        $sqlRunBlitzIndexWeeklyJob = $flagsPattern.Replace($sqlRunBlitzIndexWeeklyJob, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlRunBlitzIndexWeeklyJob)) {
+            #$Matches = $cmdPattern.Match($sqlRunBlitzIndexWeeklyJob)
+            #$Matches.Groups
+            $sqlRunBlitzIndexWeeklyJob = $cmdPattern.Replace($sqlRunBlitzIndexWeeklyJob, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace('-S "localhost"', "-S `"$sqlInstanceOnJobStep`"")
     $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace('-d DBA', "-d `"$DbaDatabase`"")
@@ -4065,13 +4461,30 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCollectMemoryClerks = [System.IO.File]::ReadAllText($CollectMemoryClerksJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCollectMemoryClerks)
+        $sqlCreateJobCollectMemoryClerks = $flagsPattern.Replace($sqlCreateJobCollectMemoryClerks, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobCollectMemoryClerks)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobCollectMemoryClerks)
+            #$Matches.Groups
+            $sqlCreateJobCollectMemoryClerks = $cmdPattern.Replace($sqlCreateJobCollectMemoryClerks, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4169,13 +4582,30 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCollectPrivilegedInfo = [System.IO.File]::ReadAllText($CollectPrivilegedInfoJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCollectPrivilegedInfo)
+        $sqlCreateJobCollectPrivilegedInfo = $flagsPattern.Replace($sqlCreateJobCollectPrivilegedInfo, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobCollectPrivilegedInfo)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobCollectPrivilegedInfo)
+            #$Matches.Groups
+            $sqlCreateJobCollectPrivilegedInfo = $cmdPattern.Replace($sqlCreateJobCollectPrivilegedInfo, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4272,13 +4702,30 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCollectAgHealthState = [System.IO.File]::ReadAllText($CollectAgHealthStateJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCollectAgHealthState)
+        $sqlCreateJobCollectAgHealthState = $flagsPattern.Replace($sqlCreateJobCollectAgHealthState, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobCollectAgHealthState)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobCollectAgHealthState)
+            #$Matches.Groups
+            $sqlCreateJobCollectAgHealthState = $cmdPattern.Replace($sqlCreateJobCollectAgHealthState, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4366,7 +4813,7 @@ if($stepName -in $Steps2Execute)
 
 # 31__CreateJobCheckSQLAgentJobs
 $stepName = '31__CreateJobCheckSQLAgentJobs'
-if($stepName -in $Steps2Execute) 
+if($stepName -in $Steps2Execute -and $isExpressEdition -eq $false) 
 {
     $jobName = '(dba) Check-SQLAgentJobs'
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
@@ -4376,13 +4823,30 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCheckSQLAgentJobs = [System.IO.File]::ReadAllText($CheckSQLAgentJobsJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlCreateJobCheckSQLAgentJobs)
+        $sqlCreateJobCheckSQLAgentJobs = $flagsPattern.Replace($sqlCreateJobCheckSQLAgentJobs, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCreateJobCheckSQLAgentJobs)) {
+            #$Matches = $cmdPattern.Match($sqlCreateJobCheckSQLAgentJobs)
+            #$Matches.Groups
+            $sqlCreateJobCheckSQLAgentJobs = $cmdPattern.Replace($sqlCreateJobCheckSQLAgentJobs, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4465,6 +4929,11 @@ if($stepName -in $Steps2Execute)
         $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlCreateJobCheckSQLAgentJobs -EnableException
     }
 }
+else {
+    if($isExpressEdition) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Step [$stepName] is skipped as not valid for SQLServer Express Edition."
+    }
+}
 
 
 
@@ -4481,8 +4950,8 @@ if($stepName -in $Steps2Execute)
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline" 
     
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs -and $stepName -ne '32__CreateJobCaptureAlertMessages') {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort -and $stepName -ne '32__CreateJobCaptureAlertMessages') {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
@@ -4513,8 +4982,14 @@ $stepName = '33__CreateSQLAgentAlerts'
 if($stepName -in $Steps2Execute -and $IsNonPartitioned -eq $false) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
 
-    $sqlCreateAgentAlerts = "exec dbo.usp_create_agent_alerts; "
-    $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlCreateAgentAlerts -EnableException
+    if($isExpressEdition) {
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Skipping SQLAgent Alerts creation for SQLExpress edition.."    
+    }
+    else {
+        $sqlCreateAgentAlerts = "exec dbo.usp_create_agent_alerts; "
+        $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlCreateAgentAlerts -EnableException
+        "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "SQLAgent Alerts created using dbo.usp_create_agent_alerts.."    
+    }
 }
 
 
@@ -4731,13 +5206,30 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlGetAllServerInfoJobFileText = [System.IO.File]::ReadAllText($GetAllServerInfoJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlGetAllServerInfoJobFileText)
+        $sqlGetAllServerInfoJobFileText = $flagsPattern.Replace($sqlGetAllServerInfoJobFileText, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlGetAllServerInfoJobFileText)) {
+            #$Matches = $cmdPattern.Match($sqlGetAllServerInfoJobFileText)
+            #$Matches.Groups
+            $sqlGetAllServerInfoJobFileText = $cmdPattern.Replace($sqlGetAllServerInfoJobFileText, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4844,13 +5336,30 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlGetAllServerCollectedDataJobFileText = [System.IO.File]::ReadAllText($GetAllServerCollectedDataJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlGetAllServerCollectedDataJobFileText)
+        $sqlGetAllServerCollectedDataJobFileText = $flagsPattern.Replace($sqlGetAllServerCollectedDataJobFileText, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlGetAllServerCollectedDataJobFileText)) {
+            #$Matches = $cmdPattern.Match($sqlGetAllServerCollectedDataJobFileText)
+            #$Matches.Groups
+            $sqlGetAllServerCollectedDataJobFileText = $cmdPattern.Replace($sqlGetAllServerCollectedDataJobFileText, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -4957,13 +5466,30 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
-        $jobNameNew = "$jobName - $SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlGetAllServerDashboardMailJobFileText = [System.IO.File]::ReadAllText($GetAllServerDashboardMailJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlGetAllServerDashboardMailJobFileText)
+        $sqlGetAllServerDashboardMailJobFileText = $flagsPattern.Replace($sqlGetAllServerDashboardMailJobFileText, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlGetAllServerDashboardMailJobFileText)) {
+            #$Matches = $cmdPattern.Match($sqlGetAllServerDashboardMailJobFileText)
+            #$Matches.Groups
+            $sqlGetAllServerDashboardMailJobFileText = $cmdPattern.Replace($sqlGetAllServerDashboardMailJobFileText, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
     $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
@@ -5067,6 +5593,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$StopStuckSQLMonitorJobsJobFilePath = '$StopStuckSQLMonitorJobsJobFilePath'"
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobName] on [$SqlInstanceToBaseline].."
     $sqlStopStuckSQLMonitorJobs = [System.IO.File]::ReadAllText($StopStuckSQLMonitorJobsJobFilePath)
+
     $sqlStopStuckSQLMonitorJobs = $sqlStopStuckSQLMonitorJobs.Replace('-InventoryServer localhost', "-InventoryServer `"$SqlInstanceToBaselineWithOutPort`"")
     $sqlStopStuckSQLMonitorJobs = $sqlStopStuckSQLMonitorJobs.Replace('-InventoryDatabase DBA', "-InventoryDatabase `"$InventoryDatabase`"")
     $sqlStopStuckSQLMonitorJobs = $sqlStopStuckSQLMonitorJobs.Replace('-CredentialManagerDatabase DBA', "-CredentialManagerDatabase `"$InventoryDatabase`"")
@@ -5163,8 +5690,424 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
 }
 
 
-# 40__WhoIsActivePartition
-$stepName = '40__WhoIsActivePartition'
+# 40__CreateJobCollectLoginExpirationInfo
+$stepName = '40__CreateJobCollectLoginExpirationInfo'
+if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer) 
+{
+    $jobName = '(dba) Collect Login Expiration Info'
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$CollectLoginExpirationInfoJobFilePath = '$CollectLoginExpirationInfoJobFilePath'"
+
+    # Append HostName if Job Server is different    
+    $jobNameNew = $jobName
+    #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
+    $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
+        #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
+    }
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
+    $sqlCollectLoginExpirationInfoJobFile = [System.IO.File]::ReadAllText($CollectLoginExpirationInfoJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlGetAllServerDashboardMailJobFileText)
+        $sqlCollectLoginExpirationInfoJobFile = $flagsPattern.Replace($sqlCollectLoginExpirationInfoJobFile, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlCollectLoginExpirationInfoJobFile)) {
+            #$Matches = $cmdPattern.Match($sqlGetAllServerDashboardMailJobFileText)
+            #$Matches.Groups
+            $sqlCollectLoginExpirationInfoJobFile = $cmdPattern.Replace($sqlCollectLoginExpirationInfoJobFile, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
+    $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
+    $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace('-S Localhost', "-S `"$sqlInstanceOnJobStep`"")
+    $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace('-S "localhost"', "-S `"$sqlInstanceOnJobStep`"")
+    $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace('-d DBA', "-d `"$DbaDatabase`"")
+    $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace('-d "DBA"', "-d `"$DbaDatabase`"")
+    $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    if($jobNameNew -ne $jobName) {
+        $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace($jobName, $jobNameNew)
+    }
+
+
+    # If Express edition, and Task scheduler jobs are required
+    if( ((-not [String]::IsNullOrEmpty($WindowsCredential)) -or ($ssnHostName -eq $env:COMPUTERNAME)) `
+        -and ($isExpressEdition -or $ForceSetupOfTaskSchedulerJobs) -and ($ConfirmSetupOfTaskSchedulerJobs -or $ForceSetupOfTaskSchedulerJobs) )
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Extract Job command from '$CollectLoginExpirationInfoJobFilePath'.."
+        [System.Collections.ArrayList]$jobArguments = @()
+        foreach($line in $($sqlCollectLoginExpirationInfoJobFile -split "`n")) 
+        {
+            if($line -match "@command=N'sqlcmd (?'arguments'.*)',") {
+                $command = $Matches['arguments']
+                $command = $command.Replace("''","'").Replace(";;",";")
+                $jobArguments.Add($command) | Out-Null
+            }
+        }
+
+        if($jobArguments.Count -eq 0) {
+            if ($ReturnInlineErrorMessage) {
+		        "Failure in extracting Job command in '$stepName'." | Write-Error
+	        }
+	        else {            
+		        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Failure in extracting Job command in '$stepName'." | Write-Host -ForegroundColor Red
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly Resolve above error." | Write-Error
+            }
+        }
+
+        $jobDescription = "Run Job [$jobName] daily every 8 hours"
+        $timeIntervalMinutes = "08:00"
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $jobDescription, $jobArguments, $timeIntervalMinutes, $taskPath, $logsPath, $SkipTsqlJobs)
+
+                $currentTime = Get-Date
+                $durationString = ($currentTime.AddMinutes(1)).ToString('HH:mm')
+
+                $doStuff = @()
+                $counter = 1
+                foreach($command in $jobArguments) {
+                    $doStuff += $(New-ScheduledTaskAction -Execute 'sqlcmd' -Argument "$command -o `"$logsPath\$jobName-$counter.txt`"")
+                    $counter += 1
+                }
+                $timeToDoStuff = New-ScheduledTaskTrigger -Daily -DaysInterval 1 -RandomDelay "08:00" -At $durationString
+                $timeToDoStuff.Repetition = $(New-ScheduledTaskTrigger -Once -RandomDelay "08:00" -At $durationString -RepetitionDuration "23:59" -RepetitionInterval $timeIntervalMinutes).Repetition
+                $settingsForTheStuff = New-ScheduledTaskSettingsSet
+                $runAsUser = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+                $finalBuildOfTheStuff = New-ScheduledTask -Action $doStuff -Trigger $timeToDoStuff -Settings $settingsForTheStuff -Principal $runAsUser -Description $jobDescription
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                $isCreated = $false
+                if([String]::IsNullOrEmpty($taskObj)) {
+                    Register-ScheduledTask -TaskName $jobName -InputObject $finalBuildOfTheStuff -TaskPath $taskPath | Out-Null
+                    $isCreated = $true
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job [$jobName] created in Windows Task Scheduler."
+                }
+                elseif ($SkipTsqlJobs -eq $false) {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Drop/Recreate Job [$jobName] in Windows Task Scheduler.."
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    Register-ScheduledTask -TaskName $jobName -InputObject $finalBuildOfTheStuff -TaskPath $taskPath | Out-Null
+                    $isCreated = $true
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job [$jobName] dropped & recreated in Windows Task Scheduler."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job [$jobName] already exists in Windows Task Scheduler."
+                }
+
+                if($isCreated) {
+                    Start-ScheduledTask -TaskName $jobName -TaskPath $taskPath | Out-Null
+                }
+            }
+            ArgumentList = $jobName, $jobDescription, $jobArguments, $timeIntervalMinutes, $taskPath, $logsPath, $SkipTsqlJobs
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Kindly ensure windows Task Scheduler job [$($taskPath)$($jobName)] is running without Error."
+    }
+    else # If not express edition
+    {
+        $conSqlInstanceToBaseline | Invoke-DbaQuery -Database msdb -Query $sqlCollectLoginExpirationInfoJobFile -EnableException
+    }
+}
+
+
+# 41__CreateJobPopulateInventoryTables
+$stepName = '41__CreateJobPopulateInventoryTables'
+if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer) 
+{
+    $jobName = '(dba) Populate Inventory Tables'
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$PopulateInventoryTablesJobFilePath = '$PopulateInventoryTablesJobFilePath'"
+
+    # Append HostName if Job Server is different    
+    $jobNameNew = $jobName
+    #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
+    $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
+        #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
+    }
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
+    $sqlPopulateInventoryTablesJobFileText = [System.IO.File]::ReadAllText($PopulateInventoryTablesJobFilePath)
+
+    # For TSQL Type, extract TSQL Query if required
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlPopulateInventoryTablesJobFileText)
+        $sqlPopulateInventoryTablesJobFileText = $flagsPattern.Replace($sqlPopulateInventoryTablesJobFileText, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlPopulateInventoryTablesJobFileText)) {
+            #$Matches = $cmdPattern.Match($sqlGetAllServerDashboardMailJobFileText)
+            #$Matches.Groups
+            $sqlPopulateInventoryTablesJobFileText = $cmdPattern.Replace($sqlPopulateInventoryTablesJobFileText, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
+    # Since the job has 2 steps. One TSQL Type & Another PowerShell type
+        # Update PowerShell parameters
+    $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-InventoryServer localhost', "-InventoryServer `"$SqlInstanceToBaselineWithOutPort`"")
+    $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-InventoryDatabase DBA', "-InventoryDatabase `"$InventoryDatabase`"")
+    $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-CredentialManagerDatabase DBA', "-CredentialManagerDatabase `"$InventoryDatabase`"")
+    if($sqlPopulateInventoryTablesJobFileText -ne 'C:\SQLMonitor') {
+        $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('C:\SQLMonitor', $RemoteSQLMonitorPath)
+    }
+
+    # Update TSQL parameters
+    $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
+    $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-S Localhost', "-S `"$sqlInstanceOnJobStep`"")
+    $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-S "localhost"', "-S `"$sqlInstanceOnJobStep`"")
+    $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
+    $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-d "DBA"', "-d `"$DbaDatabase`"")
+    $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+
+    if($jobNameNew -ne $jobName) {
+        $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace($jobName, $jobNameNew)
+    }
+
+
+    # If Express edition, and Task scheduler jobs are required
+    if( ((-not [String]::IsNullOrEmpty($WindowsCredential)) -or ($ssnHostName -eq $env:COMPUTERNAME)) `
+        -and ($isExpressEdition -or $ForceSetupOfTaskSchedulerJobs) -and ($ConfirmSetupOfTaskSchedulerJobs -or $ForceSetupOfTaskSchedulerJobs) )
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Extract Job command from '$PopulateInventoryTablesJobFilePath'.."
+        [System.Collections.ArrayList]$jobArguments = @()
+        foreach($line in $($sqlPopulateInventoryTablesJobFileText -split "`n")) 
+        {
+            if($line -match "@command=N'sqlcmd (?'arguments'.*)',") {
+                $command = $Matches['arguments']
+                $command = $command.Replace("''","'").Replace(";;",";")
+                $jobArguments.Add($command) | Out-Null
+            }
+        }
+
+        if($jobArguments.Count -eq 0) {
+            if ($ReturnInlineErrorMessage) {
+		        "Failure in extracting Job command in '$stepName'." | Write-Error
+	        }
+	        else {            
+		        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Failure in extracting Job command in '$stepName'." | Write-Host -ForegroundColor Red
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly Resolve above error." | Write-Error
+            }
+        }
+
+        $jobDescription = "Run Job [$jobName] daily every 8 hours"
+        $timeIntervalMinutes = "08:00"
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $jobDescription, $jobArguments, $timeIntervalMinutes, $taskPath, $logsPath, $SkipTsqlJobs)
+
+                $currentTime = Get-Date
+                $durationString = ($currentTime.AddMinutes(1)).ToString('HH:mm')
+
+                $doStuff = @()
+                $counter = 1
+                foreach($command in $jobArguments) {
+                    $doStuff += $(New-ScheduledTaskAction -Execute 'sqlcmd' -Argument "$command -o `"$logsPath\$jobName-$counter.txt`"")
+                    $counter += 1
+                }
+                $timeToDoStuff = New-ScheduledTaskTrigger -Daily -DaysInterval 1 -RandomDelay "08:00" -At $durationString
+                $timeToDoStuff.Repetition = $(New-ScheduledTaskTrigger -Once -RandomDelay "08:00" -At $durationString -RepetitionDuration "23:59" -RepetitionInterval $timeIntervalMinutes).Repetition
+                $settingsForTheStuff = New-ScheduledTaskSettingsSet
+                $runAsUser = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+                $finalBuildOfTheStuff = New-ScheduledTask -Action $doStuff -Trigger $timeToDoStuff -Settings $settingsForTheStuff -Principal $runAsUser -Description $jobDescription
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                $isCreated = $false
+                if([String]::IsNullOrEmpty($taskObj)) {
+                    Register-ScheduledTask -TaskName $jobName -InputObject $finalBuildOfTheStuff -TaskPath $taskPath | Out-Null
+                    $isCreated = $true
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job [$jobName] created in Windows Task Scheduler."
+                }
+                elseif ($SkipTsqlJobs -eq $false) {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Drop/Recreate Job [$jobName] in Windows Task Scheduler.."
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    Register-ScheduledTask -TaskName $jobName -InputObject $finalBuildOfTheStuff -TaskPath $taskPath | Out-Null
+                    $isCreated = $true
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job [$jobName] dropped & recreated in Windows Task Scheduler."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job [$jobName] already exists in Windows Task Scheduler."
+                }
+
+                if($isCreated) {
+                    Start-ScheduledTask -TaskName $jobName -TaskPath $taskPath | Out-Null
+                }
+            }
+            ArgumentList = $jobName, $jobDescription, $jobArguments, $timeIntervalMinutes, $taskPath, $logsPath, $SkipTsqlJobs
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Kindly ensure windows Task Scheduler job [$($taskPath)$($jobName)] is running without Error."
+    }
+    else # If not express edition
+    {
+        $conInventoryServer | Invoke-DbaQuery -Database msdb -Query $sqlPopulateInventoryTablesJobFileText -EnableException
+    }
+}
+
+
+# 42__CreateJobSendLoginExpiryEmails
+$stepName = '42__CreateJobSendLoginExpiryEmails'
+if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer) 
+{
+    $jobName = '(dba) Send Login Expiry EMails'
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SendLoginExpiryEmailsJobFilePath = '$SendLoginExpiryEmailsJobFilePath'"
+
+    # Append HostName if Job Server is different    
+    $jobNameNew = $jobName
+    #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
+    $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
+        $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
+        #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
+    }
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
+    $sqlSendLoginExpiryEmailsJobFileText = [System.IO.File]::ReadAllText($SendLoginExpiryEmailsJobFilePath)
+
+    if ($ForceTSQLStepType4TsqlJobs -and $SqlInstanceToBaseline -eq $SqlInstanceForTsqlJobs) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Parameter ForceTSQLStepType4TsqlJobs is set to true. So creating TSQL step type job.."
+        $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace("@subsystem=N'CmdExec'", "@subsystem=N'TSQL'")
+
+        [regex]$flagsPattern = "@flags=(?<flagsValue>\d+)[^,]"
+        #$flagsPattern.IsMatch($sqlSendLoginExpiryEmailsJobFileText)
+        $sqlSendLoginExpiryEmailsJobFileText = $flagsPattern.Replace($sqlSendLoginExpiryEmailsJobFileText, "@flags=12, @database_name=N'$DbaDatabase'")
+
+        [regex]$cmdPattern = "@command=N'(?<CommandText>sqlcmd.* -Q `"(?<JobStepTsqlCode>.*)`")',"
+        while ($cmdPattern.IsMatch($sqlSendLoginExpiryEmailsJobFileText)) {
+            #$Matches = $cmdPattern.Match($sqlSendLoginExpiryEmailsJobFileText)
+            #$Matches.Groups
+            $sqlSendLoginExpiryEmailsJobFileText = $cmdPattern.Replace($sqlSendLoginExpiryEmailsJobFileText, "@command=N'`${JobStepTsqlCode}',", 1)
+        }
+    }
+
+    $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
+    $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace('-S Localhost', "-S `"$sqlInstanceOnJobStep`"")
+    $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace('-S "localhost"', "-S `"$sqlInstanceOnJobStep`"")
+    $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
+    $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace('-d "DBA"', "-d `"$DbaDatabase`"")
+    $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    if(-not $GrafanaDashboardPortal.EndsWith('/')) {
+        $GrafanaDashboardPortal = "$GrafanaDashboardPortal/"
+    }
+    $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace("https://sqlmonitor.ajaydwivedi.com:3000/", "$GrafanaDashboardPortal" )
+
+    if($jobNameNew -ne $jobName) {
+        $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace($jobName, $jobNameNew)
+    }
+
+
+    # If Express edition, and Task scheduler jobs are required
+    if( ((-not [String]::IsNullOrEmpty($WindowsCredential)) -or ($ssnHostName -eq $env:COMPUTERNAME)) `
+        -and ($isExpressEdition -or $ForceSetupOfTaskSchedulerJobs) -and ($ConfirmSetupOfTaskSchedulerJobs -or $ForceSetupOfTaskSchedulerJobs) )
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Extract Job command from '$SendLoginExpiryEmailsJobFilePath'.."
+        [System.Collections.ArrayList]$jobArguments = @()
+        foreach($line in $($sqlSendLoginExpiryEmailsJobFileText -split "`n")) 
+        {
+            if($line -match "@command=N'sqlcmd (?'arguments'.*)',") {
+                $command = $Matches['arguments']
+                $command = $command.Replace("''","'").Replace(";;",";")
+                $jobArguments.Add($command) | Out-Null
+            }
+        }
+
+        if($jobArguments.Count -eq 0) {
+            if ($ReturnInlineErrorMessage) {
+		        "Failure in extracting Job command in '$stepName'." | Write-Error
+	        }
+	        else {            
+		        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Failure in extracting Job command in '$stepName'." | Write-Host -ForegroundColor Red
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly Resolve above error." | Write-Error
+            }
+        }
+
+        $jobDescription = "Run Job [$jobName] daily every 8 hours"
+        $timeIntervalMinutes = "08:00"
+        $taskPath = '\DBA\'
+        $parameters = @{
+            Session = $ssn4PerfmonSetup
+            ScriptBlock = {
+                Param ($jobName, $jobDescription, $jobArguments, $timeIntervalMinutes, $taskPath, $logsPath, $SkipTsqlJobs)
+
+                $currentTime = Get-Date
+                $durationString = ($currentTime.AddMinutes(1)).ToString('HH:mm')
+
+                $doStuff = @()
+                $counter = 1
+                foreach($command in $jobArguments) {
+                    $doStuff += $(New-ScheduledTaskAction -Execute 'sqlcmd' -Argument "$command -o `"$logsPath\$jobName-$counter.txt`"")
+                    $counter += 1
+                }
+                $timeToDoStuff = New-ScheduledTaskTrigger -Daily -DaysInterval 1 -RandomDelay "08:00" -At $durationString
+                $timeToDoStuff.Repetition = $(New-ScheduledTaskTrigger -Once -RandomDelay "08:00" -At $durationString -RepetitionDuration "23:59" -RepetitionInterval $timeIntervalMinutes).Repetition
+                $settingsForTheStuff = New-ScheduledTaskSettingsSet
+                $runAsUser = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+                $finalBuildOfTheStuff = New-ScheduledTask -Action $doStuff -Trigger $timeToDoStuff -Settings $settingsForTheStuff -Principal $runAsUser -Description $jobDescription
+
+                $taskObj = @()
+                try { $taskObj += Get-ScheduledTask -TaskName $jobName -TaskPath $taskPath -ErrorAction SilentlyContinue }
+                catch { "Some Error" | Out-Null }
+
+                $isCreated = $false
+                if([String]::IsNullOrEmpty($taskObj)) {
+                    Register-ScheduledTask -TaskName $jobName -InputObject $finalBuildOfTheStuff -TaskPath $taskPath | Out-Null
+                    $isCreated = $true
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job [$jobName] created in Windows Task Scheduler."
+                }
+                elseif ($SkipTsqlJobs -eq $false) {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Drop/Recreate Job [$jobName] in Windows Task Scheduler.."
+                    $taskObj | Unregister-ScheduledTask -Confirm:$false | Out-Null
+                    Register-ScheduledTask -TaskName $jobName -InputObject $finalBuildOfTheStuff -TaskPath $taskPath | Out-Null
+                    $isCreated = $true
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job [$jobName] dropped & recreated in Windows Task Scheduler."
+                }
+                else {
+                    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Job [$jobName] already exists in Windows Task Scheduler."
+                }
+
+                if($isCreated) {
+                    Start-ScheduledTask -TaskName $jobName -TaskPath $taskPath | Out-Null
+                }
+            }
+            ArgumentList = $jobName, $jobDescription, $jobArguments, $timeIntervalMinutes, $taskPath, $logsPath, $SkipTsqlJobs
+        }
+
+        Invoke-Command @parameters -ErrorAction Stop
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Kindly ensure windows Task Scheduler job [$($taskPath)$($jobName)] is running without Error."
+    }
+    else # If not express edition
+    {
+        $conSqlInstanceToBaseline | Invoke-DbaQuery -Database msdb -Query $sqlSendLoginExpiryEmailsJobFileText -EnableException
+    }
+}
+
+
+# 43__WhoIsActivePartition
+$stepName = '43__WhoIsActivePartition'
 if($stepName -in $Steps2Execute -and $IsNonPartitioned -eq $false) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$WhoIsActivePartitionFilePath = '$WhoIsActivePartitionFilePath'"
@@ -5206,8 +6149,8 @@ if($stepName -in $Steps2Execute -and $IsNonPartitioned -eq $false) {
 }
 
 
-# 41__BlitzIndexPartition
-$stepName = '41__BlitzIndexPartition'
+# 44__BlitzIndexPartition
+$stepName = '44__BlitzIndexPartition'
 #if($stepName -in $Steps2Execute -and $IsNonPartitioned -eq $false) {
 if($stepName -in $Steps2Execute) 
 {
@@ -5399,8 +6342,8 @@ if($stepName -in $Steps2Execute)
 }
 
 
-# 42__BlitzPartition
-$stepName = '42__BlitzPartition'
+# 45__BlitzPartition
+$stepName = '45__BlitzPartition'
 #if($stepName -in $Steps2Execute -and $IsNonPartitioned -eq $false) {
 if($stepName -in $Steps2Execute) 
 {
@@ -5454,8 +6397,8 @@ if($stepName -in $Steps2Execute)
 }
 
 
-# 43__EnablePageCompression
-$stepName = '43__EnablePageCompression'
+# 46__EnablePageCompression
+$stepName = '46__EnablePageCompression'
 if( ($stepName -in $Steps2Execute) -and ($SkipPageCompression -eq $false) -and $IsCompressionSupported) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
 
@@ -5464,9 +6407,8 @@ if( ($stepName -in $Steps2Execute) -and ($SkipPageCompression -eq $false) -and $
     $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlExecuteUspEnablePageCompression -EnableException
 }
 
-
-# 44__GrafanaLogin
-$stepName = '44__GrafanaLogin'
+# 47__GrafanaLogin
+$stepName = '47__GrafanaLogin'
 if($stepName -in $Steps2Execute) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$GrafanaLoginFilePath = '$GrafanaLoginFilePath'"
@@ -5489,8 +6431,8 @@ if($stepName -in $Steps2Execute) {
 }
 
 
-# 45__LinkedServerOnInventory
-$stepName = '45__LinkedServerOnInventory'
+# 48__LinkedServerOnInventory
+$stepName = '48__LinkedServerOnInventory'
 if($stepName -in $Steps2Execute -and $SqlInstanceToBaselineWithOutPort -ne $InventoryServerWithOutPort) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$LinkedServerOnInventoryFilePath = '$LinkedServerOnInventoryFilePath'"
@@ -5505,16 +6447,36 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaselineWithOutPort -ne $Inve
     
     $dbaLinkedServer = @()
     $dbaLinkedServer += Get-DbaLinkedServer -SqlInstance $conInventoryServer -LinkedServer $SqlInstanceToBaselineWithOutPort
-    if($dbaLinkedServer.Count -eq 0) {
-        $conInventoryServer | Invoke-DbaQuery -Database master -Query $sqlLinkedServerOnInventory -EnableException
-    } else {
+
+    # Take action if Linked Server exists on Inventory
+    if($dbaLinkedServer.Count -ne 0) 
+    {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Linked server for [$SqlInstanceToBaseline] on [$InventoryServer] already exists.."
+
+        if($DropCreateLinkedServerOnInventory) 
+        {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Drop/Create linked server for [$SqlInstanceToBaseline] on [$InventoryServer].."
+            $sqlDropCreateLinkedServerOnInventory = "EXEC master.dbo.sp_dropserver @server=N'$SqlInstanceToBaselineWithOutPort', @droplogins='droplogins'"
+            try {
+                $conInventoryServer | Invoke-DbaQuery -Database master -Query $sqlDropCreateLinkedServerOnInventory -EnableException -MessagesToOutput:$verbose
+            }
+            catch {
+                $errMessage = $_.Exception.Message
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Error occurred while dropping linked server [$SqlInstanceToBaselineWithOutPort] on Inventory.`n`n$errMessage" | Write-Host -ForegroundColor Red
+                Start-Sleep -Seconds 1
+                "STOP here, and fix above issue." | Write-Error
+            }
+        }
+    }
+
+    if( ($dbaLinkedServer.Count -eq 0) -or ($DropCreateLinkedServerOnInventory) ) {
+        $conInventoryServer | Invoke-DbaQuery -Database master -Query $sqlLinkedServerOnInventory -EnableException
     }
 }
 
 
-# 46__LinkedServerForDataDestinationInstance
-$stepName = '46__LinkedServerForDataDestinationInstance'
+# 49__LinkedServerForDataDestinationInstance
+$stepName = '49__LinkedServerForDataDestinationInstance'
 if( ($stepName -in $Steps2Execute) -and ($SqlInstanceToBaseline -ne $SqlInstanceAsDataDestination) )
 {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
@@ -5530,14 +6492,34 @@ if( ($stepName -in $Steps2Execute) -and ($SqlInstanceToBaseline -ne $SqlInstance
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Checking if linked server already exists.."
     $dbaLinkedServer = @()
     $dbaLinkedServer += Get-DbaLinkedServer -SqlInstance $conSqlInstanceToBaseline -LinkedServer $SqlInstanceAsDataDestinationWithOutPort -EnableException
-    if($dbaLinkedServer.Count -eq 0) {
+
+    # Take action if Linked Server exists for DataDestinationServer
+    if($dbaLinkedServer.Count -ne 0) 
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Linked server for [SqlInstanceAsDataDestination] on [$SqlInstanceToBaseline] already exists.."
+
+        if($DropCreateLinkedServerForDataDestinationServer) 
+        {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Drop/Create linked server for [$SqlInstanceAsDataDestination] on [$SqlInstanceToBaseline].."
+            $sqlDropCreateLinkedServerForDataDestination = "EXEC master.dbo.sp_dropserver @server=N'$SqlInstanceAsDataDestinationWithOutPort', @droplogins='droplogins'"
+            try {
+                $conSqlInstanceToBaseline | Invoke-DbaQuery -Database master -Query $sqlDropCreateLinkedServerForDataDestination -EnableException -MessagesToOutput:$verbose
+            }
+            catch {
+                $errMessage = $_.Exception.Message
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Error occurred while dropping linked server [$SqlInstanceAsDataDestinationWithOutPort] on [$SqlInstanceToBaseline].`n`n$errMessage" | Write-Host -ForegroundColor Red
+                Start-Sleep -Seconds 1
+                "STOP here, and fix above issue." | Write-Error
+            }
+        }
+    }
+
+    if( ($dbaLinkedServer.Count -eq 0) -or ($DropCreateLinkedServerForDataDestinationServer) ) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating linked server named [$SqlInstanceAsDataDestination] on [$SqlInstanceToBaseline].."
         $conSqlInstanceToBaseline | Invoke-DbaQuery -Database master -Query $sqlLinkedServerForDataDestinationInstance -EnableException
-    } else {
-        if ($ReturnInlineErrorMessage) {
-		    "Linked server named [$SqlInstanceAsDataDestination] already exists on [$SqlInstanceToBaseline].`nKindly validate if linked server is able to access data of [$SqlInstanceAsDataDestination].[$DbaDatabase] database." | Write-Error
-	    }
-	    else {            
+    } else 
+    {
+        if( ($dbaLinkedServer.Count -ne 0) -and ($DropCreateLinkedServerForDataDestinationServer -eq $false) ) {
 		    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Linked server named [$SqlInstanceAsDataDestination] already exists on [$SqlInstanceToBaseline]." | Write-Host -ForegroundColor Red
             "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly validate if linked server is able to access data of [$SqlInstanceAsDataDestination].[$DbaDatabase] database." | Write-Host -ForegroundColor Red
             "STOP and check above error message" | Write-Error
@@ -5545,8 +6527,8 @@ if( ($stepName -in $Steps2Execute) -and ($SqlInstanceToBaseline -ne $SqlInstance
     }
 }
 
-# 47__AlterViewsForDataDestinationInstance
-$stepName = '47__AlterViewsForDataDestinationInstance'
+# 50__AlterViewsForDataDestinationInstance
+$stepName = '50__AlterViewsForDataDestinationInstance'
 if( ($stepName -in $Steps2Execute) -and ($SqlInstanceToBaseline -ne $SqlInstanceAsDataDestination) )
 {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
@@ -5824,6 +6806,8 @@ $timeTaken = New-TimeSpan -Start $startTime -End $(Get-Date)
     When enabled, ping operation is not done for connectivity validation
     .PARAMETER HasCustomizedTsqlJobs
     When enabled, assumption is that SQL Agent jobs running sqlcmd/tsql queries have modified version. This flag ensures that these jobs/steps are skipped in upgrades unless OverrideCustomizedTsqlJobs parameter is used
+    .PARAMETER ForceTSQLStepType4TsqlJobs
+    When enabled, TSQL jobs running tsql queries are created as TSQL step type. Default is disabled. When disabled, then jobs are created as CmdExec step type running sqlcmd utility.
     .PARAMETER HasCustomizedPowerShellJobs
     When enabled, assumption is that SQL Agent jobs running powershell scripts have modified version. This flag ensures that these jobs/steps are skipped in upgrades unless OverrideCustomizedPowerShellJobs parameter is used
     .PARAMETER OverrideCustomizedTsqlJobs
@@ -5861,7 +6845,7 @@ $params = @{
     #SqlCredential = $saAdmin
     #WindowsCredential = $LabCredential
     #SkipSteps = @("11__SetupPerfmonDataCollector", "12__CreateJobCollectOSProcesses","13__CreateJobCollectPerfmonData")
-    #StartAtStep = '44__GrafanaLogin'
+    #StartAtStep = '47__GrafanaLogin'
     #StopAtStep = '21__WhoIsActivePartition'
     #DropCreatePowerShellJobs = $true
     #DryRun = $false
@@ -5888,7 +6872,7 @@ $params = @{
     SqlCredential = $saAdmin
     WindowsCredential = $LabCredential
     #SkipSteps = @("11__SetupPerfmonDataCollector", "12__CreateJobCollectOSProcesses","13__CreateJobCollectPerfmonData")
-    #StartAtStep = '44__GrafanaLogin'
+    #StartAtStep = '47__GrafanaLogin'
     #StopAtStep = '21__WhoIsActivePartition'
     #DropCreatePowerShellJobs = $true
     #DryRun = $false
@@ -5906,5 +6890,8 @@ Owner Ajay Kumar Dwivedi (ajay.dwivedi2007@gmail.com)
     https://ajaydwivedi.com/youtube/sqlmonitor
     https://ajaydwivedi.com/blog/sqlmonitor    
 #>
+
+
+
 
 

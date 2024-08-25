@@ -60,6 +60,12 @@ BEGIN
 	DECLARE @_job_name nvarchar(500);
 	DECLARE @_continous_failures tinyint = 0;
 	DECLARE @_send_mail bit = 0;
+	DECLARE @_caller_program nvarchar(255);
+
+	set @_caller_program = case when HOST_NAME() like '(dba) Get-AllServerInfo%'
+								then HOST_NAME()
+								else PROGRAM_NAME()
+								end;
 
 	SET @_job_name = '(dba) '+@alert_key;
 
@@ -161,6 +167,16 @@ exec dbo.usp_populate__all_server_volatile_info_history';
 			PRINT '@_errorMessage => '+@_errorMessage;
 			PRINT CHAR(13);
 		END
+
+		set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+							'. State: '+convert(varchar,isnull(@_errorState,'')) +
+							'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+							'. Error Message::: '+ @_errorMessage;
+		insert [dbo].[sma_errorlog]
+		([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+		select	[collection_time] = @_collection_time, [function_name] = 'usp_wrapper_GetAllServerInfo', 
+				[function_call_arguments] = @step_name, [server] = null, [error] = @_errorMessage, 
+				[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
 		IF OBJECT_ID('tempdb..#CommandLog') IS NOT NULL
 			TRUNCATE TABLE #CommandLog;

@@ -39,6 +39,12 @@ BEGIN
 			@_errorState int,
 			@_errorLine int,
 			@_errorMessage nvarchar(4000);
+	DECLARE @_caller_program nvarchar(255);
+
+	set @_caller_program = case when HOST_NAME() like '(dba) Get-AllServerInfo%'
+								then HOST_NAME()
+								else PROGRAM_NAME()
+								end;
 
 	if @verbose >= 1
 		print 'Declare variables..'
@@ -53,7 +59,7 @@ BEGIN
 		drop table #servers;
 	;with t_servers as (
 		select distinct id.sql_instance 
-		from DBA_Admin.dbo.instance_details id 
+		from dbo.instance_details id 
 		where id.is_enabled = 1 and id.is_available = 1 and id.is_alias = 0
 	)
 	select * into #servers from t_servers
@@ -151,7 +157,7 @@ BEGIN
 			([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
 			select	[collection_time] = @_start_time, [function_name] = 'usp_collect_all_server_login_expiration_info', 
 					[function_call_arguments] = '', [server] = @_sql_Instance, [error] = @_errorMessage, 
-					[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = program_name();
+					[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 		END CATCH
 
 		FETCH NEXT FROM curServers INTO @_sql_Instance;
@@ -163,7 +169,7 @@ BEGIN
 	if @execute = 1
 		UPDATE LE SET owner_group_email = LM.owner_group_email 
 		FROM dbo.all_server_login_expiry_info LE 
-		INNER JOIN dba_admin.dbo.login_email_mapping LM 
+		INNER JOIN dbo.login_email_mapping LM 
 			ON LE.sql_instance = LM.sql_instance_ip 
 			AND LE.login_name = LM.login_name
 
@@ -178,35 +184,8 @@ BEGIN
 			select RunningQuery = '[dbo].[sma_errorlog]', * 
 			from [dbo].[sma_errorlog] where collection_time = @_start_time;		
 	end
-
-/*
-	-- drop table dbo.all_server_login_expiry_info
-	CREATE TABLE dbo.all_server_login_expiry_info
-	(
-		collection_time datetime2 not null default sysdatetime(),
-		sql_instance	varchar(125),
-		[host_name]		varchar(125),	
-		login_name		varchar(125),
-		login_sid 		varbinary(85),
-		create_date		datetime,
-		modify_date		datetime,
-		default_database_name varchar(125),
-		is_policy_checked bit,
-		is_expiration_checked bit,
-		is_sysadmin bit,
-		password_last_set_time	datetime,
-		days_until_expiration	int,
-		password_expiration	datetime,
-		is_expired	bit,
-		is_locked	bit,		
-		owner_group_email varchar(500)		
-
-		,index CI_all_server_login_expiry_info clustered (collection_time, sql_instance)
-	);
-
-
-*/
 END
 GO
+
 
 

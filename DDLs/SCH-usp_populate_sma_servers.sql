@@ -22,7 +22,7 @@ BEGIN
 	Modifications:	2024-07-24 - Ajay - First draft
 
 	Examples:	
-		exec usp_populate_sma_servers @verbose = 2
+		exec usp_populate_sma_sql_instance @server = '21L-LTPABL-1187', @verbose = 2
 */
 	SET NOCOUNT ON;
 
@@ -300,9 +300,9 @@ BEGIN
 				[edition] = asi.edition, [has_PII_data] = 0, [total_physical_memory_kb] = asi.total_physical_memory_kb, 
 				[cpu_count] = asi.cpu_count, [rpo_worst_case_minutes] = null, 
 				[rto_minutes] = null, [data_center] = null, [availability_zone] = null, 
-				[avg_utilization_JSON] = null, [ticket] = null, [purpose] = null, 
+				[avg_utilization] = null, [ticket] = null, [purpose] = null, 
 				[known_challenges] = null, [remarks] = null, 
-				[more_info_JSON] = null
+				[more_info] = null
 		into #sma_sql_server_extended_info
 		from dbo.instance_details id
 		join dbo.vw_all_server_info asi
@@ -322,9 +322,9 @@ BEGIN
 			if not exists (select * from dbo.sma_sql_server_extended_info where server = @server)
 			begin
 				insert dbo.sma_sql_server_extended_info
-				(	[server], [at_server_name], [server_name], [server_ips_CSV], [alias_names], [product_version], [edition], [has_PII_data], [total_physical_memory_kb], [cpu_count], [rpo_worst_case_minutes], [rto_minutes], [data_center], [availability_zone], [avg_utilization_JSON], [ticket], [purpose], [known_challenges], [remarks], [more_info_JSON]
+				(	[server], [at_server_name], [server_name], [server_ips_CSV], [alias_names], [product_version], [edition], [has_PII_data], [total_physical_memory_kb], [cpu_count], [rpo_worst_case_minutes], [rto_minutes], [data_center], [availability_zone], [avg_utilization], [ticket], [purpose], [known_challenges], [remarks], [more_info]
 				)
-				select [server], [at_server_name], [server_name], [server_ips_CSV], [alias_names], [product_version], [edition], [has_PII_data], [total_physical_memory_kb], [cpu_count], [rpo_worst_case_minutes], [rto_minutes], [data_center], [availability_zone], [avg_utilization_JSON], [ticket], [purpose], [known_challenges], [remarks], [more_info_JSON]
+				select [server], [at_server_name], [server_name], [server_ips_CSV], [alias_names], [product_version], [edition], [has_PII_data], [total_physical_memory_kb], [cpu_count], [rpo_worst_case_minutes], [rto_minutes], [data_center], [availability_zone], [avg_utilization], [ticket], [purpose], [known_challenges], [remarks], [more_info]
 				from #sma_sql_server_extended_info;
 			end
 			else
@@ -353,7 +353,7 @@ BEGIN
 				[wsfc_ip2] = null, 
 				[is_quarantined] = 0, 
 				[is_decommissioned] = 0, 
-				[more_info_JSON] = null
+				[more_info] = null
 		into #sma_sql_server_hosts
 		from	#dm_os_cluster_nodes cn
 		full outer join cte_instance_details id
@@ -374,10 +374,10 @@ BEGIN
 			begin
 				insert dbo.sma_sql_server_hosts
 				(	[server], [host_name], [host_ips], [host_distribution], [processor_name], [ram_mb], 
-					[cpu_count], [wsfc_name], [wsfc_ip1], [wsfc_ip2], [is_quarantined], [is_decommissioned], [more_info_JSON] )
+					[cpu_count], [wsfc_name], [wsfc_ip1], [wsfc_ip2], [is_quarantined], [is_decommissioned], [more_info] )
 				select t.[server], t.[host_name], t.[host_ips], t.[host_distribution], t.[processor_name], 
 						t.[ram_mb], t.[cpu_count], t.[wsfc_name], t.[wsfc_ip1], t.[wsfc_ip2], t.[is_quarantined], 
-						t.[is_decommissioned], t.[more_info_JSON]
+						t.[is_decommissioned], t.[more_info]
 				from #sma_sql_server_hosts t left join dbo.sma_sql_server_hosts h 
 					on t.server = h.server and t.host_name = h.host_name 
 				where h.host_name is null;
