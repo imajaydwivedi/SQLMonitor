@@ -579,7 +579,7 @@ try {
     if($InventoryServer -ne $SqlInstanceToBaseline) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] Create connection for '$InventoryServer'.."
         $conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database master -ClientName "Wrapper-RemoveSQLMonitor.ps1" `
-                                                    -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                    -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
     } else {
         $conInventoryServer = $conSqlInstanceToBaseline
     }
@@ -641,10 +641,10 @@ catch {
 
 # Setup SQL Connections
 $conSqlInstanceToBaseline = Connect-DbaInstance -SqlInstance $SqlInstanceToBaseline -Database master -ClientName "Wrapper-RemoveSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 if($InventoryServer -ne $SqlInstanceToBaseline) {
     $conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 } else {
     $conInventoryServer = $conSqlInstanceToBaseline
 }
@@ -707,7 +707,6 @@ $SqlInstanceToBaselineWithOutPort_Stripped = $SqlInstanceToBaselineWithOutPort -
 if([String]::IsNullOrEmpty($domain)) {
     $domain = $dbServiceInfo.domain+'.com'
 }
-
 
 
 # Evaluate path of SQLMonitor folder
@@ -778,8 +777,6 @@ catch {
         Write-Error "Stop here. Fix above issue."
     }
 }
-
- Write-Debug "Checking issue"
 
 # If no instance details found, then throw error
 if ( $instanceDetails.Count -eq 0 ) {
@@ -862,19 +859,19 @@ if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
     $conSqlInstanceAsDataDestination = $conSqlInstanceToBaseline
 } else {
     $conSqlInstanceAsDataDestination = Connect-DbaInstance -SqlInstance $SqlInstanceAsDataDestination -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 }
 if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs)) {
     $conSqlInstanceForTsqlJobs = $conSqlInstanceToBaseline
 } else {
     $conSqlInstanceForTsqlJobs = Connect-DbaInstance -SqlInstance $SqlInstanceForTsqlJobs -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 }
 if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) {
     $conSqlInstanceForPowershellJobs = $conSqlInstanceToBaseline
 } else {
     $conSqlInstanceForPowershellJobs = Connect-DbaInstance -SqlInstance $SqlInstanceForPowershellJobs -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection
+                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 }
 
 
@@ -1142,7 +1139,29 @@ if(-not [String]::IsNullOrEmpty($PreQuery)) {
     $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $PreQuery -EnableException
 }
 
+# Check if PortNo is specified for TSQL Jobs Server
+$Port4SqlInstanceForTsqlJobs = $null
+$SqlInstanceForTsqlJobsWithOutPort = $SqlInstanceForTsqlJobs
+if($SqlInstanceForTsqlJobs -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceForTsqlJobs = $Matches['PortNo']
+    $SqlInstanceForTsqlJobsWithOutPort = $Matches['SqlInstance']
+}
 
+# Check if PortNo is specified for PowerShell Jobs Server
+$Port4SqlInstanceForPowershellJobs = $null
+$SqlInstanceForPowershellJobsWithOutPort = $SqlInstanceForPowershellJobs
+if($SqlInstanceForPowershellJobs -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceForPowershellJobs = $Matches['PortNo']
+    $SqlInstanceForPowershellJobsWithOutPort = $Matches['SqlInstance']
+}
+
+# Check if PortNo is specified for Data Destination Server
+$Port4SqlInstanceAsDataDestination = $null
+$SqlInstanceAsDataDestinationWithOutPort = $SqlInstanceAsDataDestination
+if($SqlInstanceAsDataDestination -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceAsDataDestination = $Matches['PortNo']
+    $SqlInstanceAsDataDestinationWithOutPort = $Matches['SqlInstance']
+}
 
 
 # 1__Remove_SQLAgentAlerts
@@ -1225,7 +1244,7 @@ if ($stepName -in $Steps2Execute) {
 
     # Append SQLInstance Name if TSQLJob server is different 
     $objNameNew = $objName
-    if ( $SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
       $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -1299,7 +1318,7 @@ if ($stepName -in $Steps2Execute)
 
     # Append SQLInstance Name if TSQLJob server is different 
     $objNameNew = $objName
-    if ( $SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
       $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -1373,7 +1392,7 @@ if ($stepName -in $Steps2Execute)
 
     # Append SQLInstance Name if TSQLJob server is different 
     $objNameNew = $objName
-    if ( $SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
       $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -1446,7 +1465,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append HostName if Job Server is different    
     $objNameNew = $objName
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
         $objNameNew = "$objName - $HostName"
     }
 
@@ -1521,7 +1540,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append HostName if Job Server is different    
     $objNameNew = $objName
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
         $objNameNew = "$objName - $HostName"
     }
 
@@ -1596,7 +1615,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append HostName if Job Server is different    
     $objNameNew = $objName
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -and ($HostName -ne $jobServerDbServiceInfo.host_name) ) {
         $objNameNew = "$objName - $HostName"
     }
 
@@ -1672,7 +1691,7 @@ if ($stepName -in $Steps2Execute)
 
   # Append SQLInstance Name if TSQLJob server is different 
   $objNameNew = $objName
-  if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+  if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
       $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
   }
 
@@ -1745,7 +1764,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -1820,7 +1839,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -1896,7 +1915,7 @@ if( $stepName -in $Steps2Execute ) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -1972,7 +1991,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -2048,7 +2067,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) ) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -2124,7 +2143,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -2200,7 +2219,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -2276,7 +2295,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -2352,7 +2371,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -2428,7 +2447,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -2471,7 +2490,7 @@ if($stepName -in $Steps2Execute) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNewWeekly'.."
 
         $sqlRemoveObject = @"
-if exists (select * from msdb.dbo.sysjobs_view where name like '$objNameNew%' or name like '$objNameNewWeekly%')
+if exists (select * from msdb.dbo.sysjobs_view where name = '$objNameNew' or name = '$objNameNewWeekly')
 begin
     if exists (select * from msdb.dbo.sysjobs_view where name like '$objNameNew%')
     begin
@@ -2518,7 +2537,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -2594,7 +2613,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -2823,7 +2842,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -2899,7 +2918,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -2975,7 +2994,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -3051,7 +3070,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -3127,7 +3146,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -3203,7 +3222,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -3279,7 +3298,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
@@ -3355,7 +3374,7 @@ if($stepName -in $Steps2Execute) {
 
     # Append SQLInstance if Job Server is different    
     $objNameNew = $objName
-    if($SqlInstanceToBaseline -ne $SqlInstanceForTsqlJobs) {
+    if ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForTsqlJobsWithOutPort) {
         $objNameNew = "$objName - $SqlInstanceToBaselineWithOutPort"
     }
 
