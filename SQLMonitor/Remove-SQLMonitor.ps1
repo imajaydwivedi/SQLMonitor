@@ -5256,7 +5256,11 @@ if($stepName -in $Steps2Execute) {
     else {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objName'.."
     }
-        
+    
+    # Remove grafana logins by killing existing sessions
+    Remove-DbaLogin -SqlInstance $conSqlInstanceToBaseline -Login @('grafana') -Confirm:$false -Force
+
+
     $sqlRemoveObject = @"
 if exists (select 1 from sys.server_principals where name = '$objName')
 begin
