@@ -141,6 +141,12 @@ Param (
     [bool]$DropCreateWhoIsActiveTable = $false,
 
     [Parameter(Mandatory=$false)]
+    [bool]$DropCreateLinkedServerOnInventory = $false,
+
+    [Parameter(Mandatory=$false)]
+    [bool]$DropCreateLinkedServerForDataDestinationServer = $false,
+
+    [Parameter(Mandatory=$false)]
     [bool]$SkipPowerShellJobs = $false,
 
     [Parameter(Mandatory=$false)]
@@ -6366,10 +6372,30 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaselineWithOutPort -ne $Inve
     
     $dbaLinkedServer = @()
     $dbaLinkedServer += Get-DbaLinkedServer -SqlInstance $conInventoryServer -LinkedServer $SqlInstanceToBaselineWithOutPort
-    if($dbaLinkedServer.Count -eq 0) {
-        $conInventoryServer | Invoke-DbaQuery -Database master -Query $sqlLinkedServerOnInventory -EnableException
-    } else {
+
+    # Take action if Linked Server exists on Inventory
+    if($dbaLinkedServer.Count -ne 0) 
+    {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Linked server for [$SqlInstanceToBaseline] on [$InventoryServer] already exists.."
+
+        if($DropCreateLinkedServerOnInventory) 
+        {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Drop/Create linked server for [$SqlInstanceToBaseline] on [$InventoryServer].."
+            $sqlDropCreateLinkedServerOnInventory = "EXEC master.dbo.sp_dropserver @server=N'$SqlInstanceToBaselineWithOutPort', @droplogins='droplogins'"
+            try {
+                $conInventoryServer | Invoke-DbaQuery -Database master -Query $sqlDropCreateLinkedServerOnInventory -EnableException -MessagesToOutput:$verbose
+            }
+            catch {
+                $errMessage = $_.Exception.Message
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Error occurred while dropping linked server [$SqlInstanceToBaselineWithOutPort] on Inventory.`n`n$errMessage" | Write-Host -ForegroundColor Red
+                Start-Sleep -Seconds 1
+                "STOP here, and fix above issue." | Write-Error
+            }
+        }
+    }
+
+    if( ($dbaLinkedServer.Count -eq 0) -or ($DropCreateLinkedServerOnInventory) ) {
+        $conInventoryServer | Invoke-DbaQuery -Database master -Query $sqlLinkedServerOnInventory -EnableException
     }
 }
 
@@ -6391,14 +6417,34 @@ if( ($stepName -in $Steps2Execute) -and ($SqlInstanceToBaseline -ne $SqlInstance
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Checking if linked server already exists.."
     $dbaLinkedServer = @()
     $dbaLinkedServer += Get-DbaLinkedServer -SqlInstance $conSqlInstanceToBaseline -LinkedServer $SqlInstanceAsDataDestinationWithOutPort -EnableException
-    if($dbaLinkedServer.Count -eq 0) {
+
+    # Take action if Linked Server exists for DataDestinationServer
+    if($dbaLinkedServer.Count -ne 0) 
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Linked server for [SqlInstanceAsDataDestination] on [$SqlInstanceToBaseline] already exists.."
+
+        if($DropCreateLinkedServerForDataDestinationServer) 
+        {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Drop/Create linked server for [$SqlInstanceAsDataDestination] on [$SqlInstanceToBaseline].."
+            $sqlDropCreateLinkedServerForDataDestination = "EXEC master.dbo.sp_dropserver @server=N'$SqlInstanceAsDataDestinationWithOutPort', @droplogins='droplogins'"
+            try {
+                $conSqlInstanceToBaseline | Invoke-DbaQuery -Database master -Query $sqlDropCreateLinkedServerForDataDestination -EnableException -MessagesToOutput:$verbose
+            }
+            catch {
+                $errMessage = $_.Exception.Message
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Error occurred while dropping linked server [$SqlInstanceAsDataDestinationWithOutPort] on [$SqlInstanceToBaseline].`n`n$errMessage" | Write-Host -ForegroundColor Red
+                Start-Sleep -Seconds 1
+                "STOP here, and fix above issue." | Write-Error
+            }
+        }
+    }
+
+    if( ($dbaLinkedServer.Count -eq 0) -or ($DropCreateLinkedServerForDataDestinationServer) ) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating linked server named [$SqlInstanceAsDataDestination] on [$SqlInstanceToBaseline].."
         $conSqlInstanceToBaseline | Invoke-DbaQuery -Database master -Query $sqlLinkedServerForDataDestinationInstance -EnableException
-    } else {
-        if ($ReturnInlineErrorMessage) {
-		    "Linked server named [$SqlInstanceAsDataDestination] already exists on [$SqlInstanceToBaseline].`nKindly validate if linked server is able to access data of [$SqlInstanceAsDataDestination].[$DbaDatabase] database." | Write-Error
-	    }
-	    else {            
+    } else 
+    {
+        if( ($dbaLinkedServer.Count -ne 0) -and ($DropCreateLinkedServerForDataDestinationServer -eq $false) ) {
 		    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Linked server named [$SqlInstanceAsDataDestination] already exists on [$SqlInstanceToBaseline]." | Write-Host -ForegroundColor Red
             "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly validate if linked server is able to access data of [$SqlInstanceAsDataDestination].[$DbaDatabase] database." | Write-Host -ForegroundColor Red
             "STOP and check above error message" | Write-Error
