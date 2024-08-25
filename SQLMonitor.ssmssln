@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# SQL Server Management Studio Solution File, Format Version 18.00
+# SQL Server Management Studio Solution File, Format Version 20.00
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Alerting", "Alerting\Alerting.ssmssqlproj", "{F85AF121-8497-4D2D-9E7C-F9B04A636F99}"
@@ -42,6 +42,7 @@ Global
 		Default|Default = Default|Default
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A366A381-7B45-4CFE-87BA-4158B80BA78A}.Default|Default.ActiveCfg = Default
 		{F85AF121-8497-4D2D-9E7C-F9B04A636F99}.Default|Default.ActiveCfg = Default
 		{759C6EAC-8635-46B1-8746-6B2DBB75E895}.Default|Default.ActiveCfg = Default
 		{304BEC50-2BB2-4862-8757-C6E01A906360}.Default|Default.ActiveCfg = Default
@@ -57,7 +58,6 @@ Global
 		{A16605EA-D232-40F8-B38D-CE93A4881DC1}.Default|Default.ActiveCfg = Default
 		{A9B34DA5-0EF8-4564-BF37-8F9B8C28763A}.Default|Default.ActiveCfg = Default
 		{7A265B02-D3F6-42C3-86D4-C1BD8BA2111B}.Default|Default.ActiveCfg = Default
-		{60325C81-7D5B-4F8B-9AC6-0F95705FCBE9}.Default|Default.ActiveCfg = Default
 		{1FE38CE5-BCAA-49D3-B365-75D5E3444C04}.Default|Default.ActiveCfg = Default
 		{8CA435C9-FBE2-4D4D-AE50-C005D9875119}.Default|Default.ActiveCfg = Default
 	EndGlobalSection

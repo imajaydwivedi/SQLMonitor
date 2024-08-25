@@ -1889,6 +1889,32 @@ catch {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Could not fetch host related details from [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details] info."
 }
 
+
+# Check if PortNo is specified for TSQL Jobs Server
+$Port4SqlInstanceForTsqlJobs = $null
+$SqlInstanceForTsqlJobsWithOutPort = $SqlInstanceForTsqlJobs
+if($SqlInstanceForTsqlJobs -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceForTsqlJobs = $Matches['PortNo']
+    $SqlInstanceForTsqlJobsWithOutPort = $Matches['SqlInstance']
+}
+
+# Check if PortNo is specified for PowerShell Jobs Server
+$Port4SqlInstanceForPowershellJobs = $null
+$SqlInstanceForPowershellJobsWithOutPort = $SqlInstanceForPowershellJobs
+if($SqlInstanceForPowershellJobs -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceForPowershellJobs = $Matches['PortNo']
+    $SqlInstanceForPowershellJobsWithOutPort = $Matches['SqlInstance']
+}
+
+# Check if PortNo is specified for Data Destination Server
+$Port4SqlInstanceAsDataDestination = $null
+$SqlInstanceAsDataDestinationWithOutPort = $SqlInstanceAsDataDestination
+if($SqlInstanceAsDataDestination -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceAsDataDestination = $Matches['PortNo']
+    $SqlInstanceAsDataDestinationWithOutPort = $Matches['SqlInstance']
+}
+
+
 # 1__sp_WhoIsActive
 $stepName = '1__sp_WhoIsActive'
 if($stepName -in $Steps2Execute) {
@@ -2606,7 +2632,7 @@ if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4Host -eq $false)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceAsDataDestinationWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceAsDataDestination"
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
         $jobNameNew = "$jobName - $HostName"
         #$sqlInstanceOnJobStep = $SqlInstanceAsDataDestination
     }    
@@ -2730,7 +2756,7 @@ if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4Host -eq $false)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceAsDataDestinationWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceAsDataDestination"
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
         $jobNameNew = "$jobName - $HostName"
         #$sqlInstanceOnJobStep = $SqlInstanceAsDataDestination
     }   
@@ -2853,7 +2879,7 @@ if($stepName -in $Steps2Execute -and $SkipPowerShellJobs4Host -eq $false)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceAsDataDestinationWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceAsDataDestination"
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) -or ($HostName -ne $jobServerDbServiceInfo.host_name) -or ($isClustered -eq $true) ) {
         $jobNameNew = "$jobName - $HostName"
         #$sqlInstanceOnJobStep = $SqlInstanceAsDataDestination
     }
@@ -2974,6 +3000,8 @@ if($stepName -in $Steps2Execute)
         $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
+
+    Write-Debug "Fixing Job Name"
 
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating job [$jobNameNew] on [$SqlInstanceForTsqlJobs].."
     $sqlCreateJobCollectWaitStats = [System.IO.File]::ReadAllText($CollectWaitStatsJobFilePath)
@@ -3575,7 +3603,7 @@ if($stepName -in $Steps2Execute)
     $jobNameNew = $jobName
     #$sqlInstanceOnJobStep = "$SqlInstanceToBaselineWithOutPort"
     $sqlInstanceOnJobStep = "$SqlInstanceToBaseline"
-    if( ($SqlInstanceToBaseline -ne $SqlInstanceForPowershellJobs) ) {
+    if( ($SqlInstanceToBaselineWithOutPort -ne $SqlInstanceForPowershellJobsWithOutPort) ) {
         $jobNameNew = "$jobName - $SqlInstanceToBaselineWithOutPort"
         #$sqlInstanceOnJobStep = $SqlInstanceToBaseline
     }
@@ -5841,13 +5869,14 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
         $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('C:\SQLMonitor', $RemoteSQLMonitorPath)
     }
 
-        # Update TSQL parameters
+    # Update TSQL parameters
     $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-S Localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-S "localhost"', "-S `"$sqlInstanceOnJobStep`"")
     $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-d "DBA"', "-d `"$DbaDatabase`"")
     $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+
     if($jobNameNew -ne $jobName) {
         $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace($jobName, $jobNameNew)
     }
