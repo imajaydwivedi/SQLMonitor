@@ -441,6 +441,13 @@ if ($ActionType -eq 'Delete' -and $OnlySteps.Count -gt 0) {
 
 
 # Add $PowerShellJobSteps to Skip PowerShell Jobs
+if($SqlInstanceToBaseline -ne $SqlInstanceAsDataDestination) {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceToBaseline is not same as `$SqlInstanceAsDataDestination. So skipping `$PowerShellJobSteps.." | Write-Host -ForegroundColor Red
+    $SkipRemovePowerShellJobs = $true
+    $additionalSkipSteps = @("141__RemovePerfmonFilesFromDisk")
+    $SkipSteps = $SkipSteps + $($additionalSkipSteps | % {if($_ -notin $SkipSteps){$_}});
+}
+
 if($SkipRemovePowerShellJobs) {
     $SkipSteps = $SkipSteps + $($PowerShellJobSteps | % {if($_ -notin $SkipSteps){$_}});
 }
@@ -849,6 +856,8 @@ if( ($RemoteSQLMonitorPath -ne $instanceDetailsForRemoval.sqlmonitor_script_path
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceForTsqlJobs = [$SqlInstanceForTsqlJobs]"
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceForPowershellJobs = [$SqlInstanceForPowershellJobs]"
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$RemoteSQLMonitorPath = [$RemoteSQLMonitorPath]"
+
+exit
 
 # Get SQL Connections
 if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
@@ -2460,9 +2469,8 @@ if($stepName -in $Steps2Execute) {
     }
     else # If non-Express edition
     {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNew'.."
-
-        $objNameNewWeekly = $objNameNew.Replace("$objName",  "$objName -Weekly")
+        $objNameNewWeekly = $objNameNew.Replace("$objName",  "$objName - Weekly")
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO', "Find & remove $objType '$objNameNewWeekly'.."
 
         $sqlRemoveObject = @"
 if exists (select * from msdb.dbo.sysjobs_view where name like '$objNameNew%' or name like '$objNameNewWeekly%')
@@ -2486,7 +2494,7 @@ else
     select 0 as object_exists;
 "@
         $resultRemoveObject = @()
-        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException
+        $resultRemoveObject += $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlRemoveObject -EnableException #-MessagesToOutput:$verbose
         if($resultRemoveObject.Count -gt 0) 
         {
             $result = $resultRemoveObject | Select-Object -ExpandProperty object_exists;

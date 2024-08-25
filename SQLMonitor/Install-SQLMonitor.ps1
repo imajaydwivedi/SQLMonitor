@@ -4750,7 +4750,7 @@ if($stepName -in $Steps2Execute)
 
 # 31__CreateJobCheckSQLAgentJobs
 $stepName = '31__CreateJobCheckSQLAgentJobs'
-if($stepName -in $Steps2Execute) 
+if($stepName -in $Steps2Execute -and $isExpressEdition -eq $false) 
 {
     $jobName = '(dba) Check-SQLAgentJobs'
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "*****Working on step '$stepName'.."
@@ -4864,6 +4864,11 @@ if($stepName -in $Steps2Execute)
     else # If not express edition
     {
         $conSqlInstanceForTsqlJobs | Invoke-DbaQuery -Database msdb -Query $sqlCreateJobCheckSQLAgentJobs -EnableException
+    }
+}
+else {
+    if($isExpressEdition) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Step [$stepName] is skipped as not valid for SQLServer Express Edition."
     }
 }
 
