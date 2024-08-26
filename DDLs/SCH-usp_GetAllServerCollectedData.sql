@@ -78,6 +78,7 @@ BEGIN
 	DECLARE @_params NVARCHAR(max);
 	DECLARE @_isLocalHost bit = 0;
 	DECLARE @_int_variable int = 0;
+	DECLARE @_counter int = 0;
 
 	DECLARE @_srv_name	nvarchar (125);
 	DECLARE @_at_server_name varchar (125);
@@ -156,10 +157,11 @@ BEGIN
 	--set quoted_identifier off;
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
-		if @verbose = 1
+		if @verbose >= 1
 			print char(10)+'***** Looping through '+quotename(@_srv_name)+' *******';
 		set @_linked_server_failed = 0;
 		set @_at_server_name = NULL;
+		set @_counter += 1
 
 		-- If not local server
 		if ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @_srv_name) 
@@ -235,7 +237,7 @@ where 1=1
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
-			if @verbose >= 1
+			if @verbose >= 2 or (@verbose >= 1 and @_counter = 1)
 				print @_crlf+@_sql+@_crlf;
 		
 			begin try
@@ -289,7 +291,7 @@ and ds.collection_time_utc = (select top 1 l.collection_time_utc from dbo.disk_s
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
-			if @verbose >= 1
+			if @verbose >= 2 or (@verbose >= 1 and @_counter = 1)
 				print @_crlf+@_sql+@_crlf;
 		
 			begin try
@@ -337,7 +339,7 @@ where lsc.collection_time = (select top 1 l.collection_time from dbo.log_space_c
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
-			if @verbose >= 1
+			if @verbose >= 2 or (@verbose >= 1 and @_counter = 1)
 				print @_crlf+@_sql+@_crlf;
 		
 			begin try
@@ -385,7 +387,7 @@ where tsu.collection_time = (select top 1 l.collection_time from dbo.tempdb_spac
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
-			if @verbose >= 1
+			if @verbose >= 2 or (@verbose >= 1 and @_counter = 1)
 				print @_crlf+@_sql+@_crlf;
 		
 			begin try
@@ -439,7 +441,7 @@ END
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
-			if @verbose >= 1
+			if @verbose >= 2 or (@verbose >= 1 and @_counter = 1)
 				print @_crlf+@_sql+@_crlf;
 		
 			begin try
@@ -485,7 +487,9 @@ SET NOCOUNT ON;
 2) Full.LastLSN <= TLog.FirstLSN
 3) Diff.LastLSN <= TLog.FirstLSN
 */
-
+SET NOCOUNT ON; 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+SET LOCK_TIMEOUT 60000; -- 60 seconds  
 ;with t_combined_backups as (
 	SELECT top 1 with ties bs.database_name,
 			backup_type = CASE	WHEN bs.type = ''D'' AND bs.is_copy_only = 0 THEN ''Full Database Backup''
@@ -510,6 +514,7 @@ SET NOCOUNT ON;
 	WHERE 1 = 1
 	AND bs.is_copy_only = 0
 	AND bs.type IN (''D'',''I'')
+	AND bs.backup_start_date >= dateadd(month,-3,getdate())
 	ORDER BY ROW_NUMBER()OVER(PARTITION BY bs.database_name, bs.type ORDER BY bs.backup_start_date DESC)
 )
 , t_full_backups as (
@@ -574,6 +579,7 @@ SET NOCOUNT ON;
 	WHERE 1 = 1
 	AND bs.is_copy_only = 0
 	AND bs.type = ''L''
+	AND bs.backup_start_date >= dateadd(month,-3,getdate())
 )
 ,t_all_latest_backups as (
 	select	lb.database_name, lb.backup_type,
@@ -605,12 +611,13 @@ full outer join
 	t_all_latest_backups b
 	on d.name = b.database_name
 where d.name not in (''tempdb'')
+and d.state_desc not in (''OFFLINE'')
 order by [database_name], [backup_start_date_utc];';
 
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
-			if @verbose >= 1
+			if @verbose >= 2 or (@verbose >= 1 and @_counter = 1)
 				print @_crlf+@_sql+@_crlf;
 		
 			begin try
@@ -673,7 +680,7 @@ and (dm.servicename like 'SQL Server (%)' or dm.servicename like 'SQL Server Age
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
-			if @verbose >= 1
+			if @verbose >= 2 or (@verbose >= 1 and @_counter = 1)
 				print @_crlf+@_sql+@_crlf;
 		
 			begin try
