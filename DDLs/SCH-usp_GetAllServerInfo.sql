@@ -1088,7 +1088,7 @@ FROM (
 		begin
 			delete from @_result;
 			set @_sql =  "
---SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000;
 select count(*) as blocked_counts --, max(wait_time)/1000 as wait_time_s
 from sys.dm_exec_requests r with (nolock) 
 where r.blocking_session_id <> 0
@@ -1134,7 +1134,7 @@ and wait_time >= ("+convert(varchar,@blocked_threshold_seconds)+"*1000) -- Over 
 		begin
 			delete from @_result;
 			set @_sql =  "
---SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000;
 declare @_wait_time_s bigint = 0;
 
 select @_wait_time_s = floor(max(wait_time)/1000) --,count(*) as blocked_counts
@@ -1184,7 +1184,7 @@ select isnull(@_wait_time_s,0) as [blocked_duration_max_seconds];
 		begin
 			delete from @_result;
 			set @_sql =  "
---SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000;
 select	osm.total_physical_memory_kb
 		--,osm.available_physical_memory_kb
 		--,case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]
@@ -1232,7 +1232,7 @@ from sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;
 		begin
 			delete from @_result;
 			set @_sql =  "
---SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000;
 select	--osm.total_physical_memory_kb
 		osm.available_physical_memory_kb
 		--,case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]
@@ -1280,7 +1280,7 @@ from sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;
 		begin
 			delete from @_result;
 			set @_sql =  "
---SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000;
 select	--osm.total_physical_memory_kb
 		--osm.available_physical_memory_kb
 		case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]
@@ -1328,7 +1328,7 @@ from sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;
 		begin
 			delete from @_result;
 			set @_sql =  "
---SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000;
 select	--osm.total_physical_memory_kb
 		--osm.available_physical_memory_kb
 		--,case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]
@@ -1375,7 +1375,7 @@ from sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;
 		begin
 			delete from @_result;
 			set @_sql =  "
---SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000;
 declare @object_name varchar(255);
 set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
 
@@ -1424,7 +1424,7 @@ AND counter_name = N'Memory Grants Pending';
 		begin
 			delete from @_result;
 			set @_sql =  "
---SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000;
 select count(*) as counts from sys.dm_exec_connections with (nolock)
 "
 			-- Decorate for remote query if LinkedServer
@@ -1467,6 +1467,7 @@ select count(*) as counts from sys.dm_exec_connections with (nolock)
 			delete from @_result;
 			set @_sql =  "
 SET NOCOUNT ON;
+SET LOCK_TIMEOUT 60000;
 exec usp_active_requests_count;
 "
 			-- Decorate for remote query if LinkedServer
@@ -1509,6 +1510,7 @@ exec usp_active_requests_count;
 			delete from @_result;
 			set @_sql =  "
 SET NOCOUNT ON;
+SET LOCK_TIMEOUT 60000;
 exec usp_waits_per_core_per_minute;
 "
 			-- Decorate for remote query if LinkedServer
@@ -1551,6 +1553,7 @@ exec usp_waits_per_core_per_minute;
 			delete from @_result;
 			set @_sql =  "
 SET NOCOUNT ON;
+SET LOCK_TIMEOUT 60000;
 exec usp_avg_disk_wait_ms;
 "
 			-- Decorate for remote query if LinkedServer
@@ -1591,7 +1594,7 @@ exec usp_avg_disk_wait_ms;
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'os_start_time_utc') )
 		begin
 			delete from @_result;
-			set @_sql = "select [os_start_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), dateadd(SECOND,-osi.ms_ticks/1000,GETDATE())) from sys.dm_os_sys_info as osi";
+			set @_sql = "SET LOCK_TIMEOUT 60000; select [os_start_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), dateadd(SECOND,-osi.ms_ticks/1000,GETDATE())) from sys.dm_os_sys_info as osi";
 			
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
@@ -1836,7 +1839,9 @@ SELECT	[@server_minor_version_number] = @server_minor_version_number
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'performance_counters__latency_minutes') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
 from 
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.vw_performance_counters
 	where 1=1
@@ -1883,7 +1888,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'xevent_metrics__latency_minutes') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_minutes] = coalesce(xe.latency_minutes,dmy.dummy_latency_minutes)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_minutes] = coalesce(xe.latency_minutes,dmy.dummy_latency_minutes)
 from 
 (	select top 1 latency_minutes = datediff(minute,xe.event_time,getdate()) from dbo.xevent_metrics xe
 	where 1=1
@@ -1930,7 +1937,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'WhoIsActive__latency_minutes') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_minutes] = coalesce(w.latency_minutes,dmy.dummy_latency_minutes)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_minutes] = coalesce(w.latency_minutes,dmy.dummy_latency_minutes)
 from 
 (	select top 1 [latency_minutes] = datediff(minute,w.collection_time,getdate()) from dbo.WhoIsActive w
 	where 1=1
@@ -1976,7 +1985,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'os_task_list__latency_minutes') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
 from 
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.vw_os_task_list
 	where 1=1
@@ -2024,7 +2035,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'disk_space__latency_minutes') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
 from 
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.vw_disk_space
 	where 1=1
@@ -2070,7 +2083,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'file_io_stats__latency_minutes') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
 from 
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.file_io_stats
 	where 1=1
@@ -2115,7 +2130,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'sql_agent_job_stats__latency_minutes') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
 from 
 (	select [latency_minutes] = datediff(minute,max(UpdatedDateUTC),getutcdate()) from dbo.sql_agent_job_stats
 	where 1=1
@@ -2158,7 +2175,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'memory_clerks__latency_minutes') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
 from 
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from [dbo].[memory_clerks]
 	where 1=1
@@ -2203,7 +2222,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'wait_stats__latency_minutes') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
 from 
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.wait_stats
 	where 1=1
@@ -2249,7 +2270,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'BlitzIndex__latency_days') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_days] = coalesce(latency_days,dummy_latency_days)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_days] = coalesce(latency_days,dummy_latency_days)
 from 
 (	select top 1 [latency_days] = datediff(day,run_datetime,getdate()) from dbo.BlitzIndex
 	where 1=1
@@ -2295,7 +2318,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'BlitzIndex_Mode0__latency_days') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_days] = coalesce(latency_days,dummy_latency_days)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_days] = coalesce(latency_days,dummy_latency_days)
 from 
 (	select top 1 [latency_days] = datediff(day,run_datetime,getdate()) from dbo.BlitzIndex_Mode0
 	where 1=1
@@ -2341,7 +2366,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'BlitzIndex_Mode1__latency_days') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_days] = coalesce(latency_days,dummy_latency_days)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_days] = coalesce(latency_days,dummy_latency_days)
 from 
 (	select top 1 [latency_days] = datediff(day,run_datetime,getdate()) from dbo.BlitzIndex_Mode1
 	where 1=1
@@ -2387,7 +2414,9 @@ on 1=1";
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'BlitzIndex_Mode4__latency_days') )
 		begin
 			delete from @_result;
-			set @_sql = "select [latency_days] = coalesce(latency_days,dummy_latency_days)
+			set @_sql = "SET LOCK_TIMEOUT 60000;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+select [latency_days] = coalesce(latency_days,dummy_latency_days)
 from 
 (	select top 1 [latency_days] = datediff(day,run_datetime,getdate()) from dbo.BlitzIndex_Mode4
 	where 1=1

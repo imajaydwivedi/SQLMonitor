@@ -112,7 +112,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.serv
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerCollectedData - dbo.services_all_servers" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerCollectedData @recipients = ''some_dba_mail_id@gmail.com'', @step_name = ''dbo.services_all_servers'', @schedule_minutes = 20, @verbose = 0, @truncate_table = 1, @has_staging_table = 1;"', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerCollectedData - dbo.services_all_servers" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerCollectedData @recipients = ''some_dba_mail_id@gmail.com'', @step_name = ''dbo.services_all_servers'', @schedule_minutes = 30, @verbose = 0, @truncate_table = 1, @has_staging_table = 1;"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
@@ -126,7 +126,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.back
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerCollectedData - dbo.backups_all_servers" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerCollectedData @recipients = ''some_dba_mail_id@gmail.com'', @step_name = ''dbo.backups_all_servers'', @schedule_minutes = 30, @verbose = 0, @truncate_table = 1, @has_staging_table = 1;"', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerCollectedData - dbo.backups_all_servers" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerCollectedData @recipients = ''some_dba_mail_id@gmail.com'', @step_name = ''dbo.backups_all_servers'', @schedule_minutes = 45, @verbose = 0, @truncate_table = 1, @has_staging_table = 1;"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1

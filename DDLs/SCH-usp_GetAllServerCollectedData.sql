@@ -208,6 +208,7 @@ BEGIN
 		begin
 			set @_sql =  "
 SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000; -- 60 seconds
 select  [sql_instance] = '"+@_srv_name+"',
 		jt.[JobName], jt.[JobCategory], jt.IsDisabled,
         [Last_RunTime] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), js.[Last_RunTime] ),
@@ -281,6 +282,7 @@ where 1=1
 		begin
 			set @_sql =  "
 SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000; -- 60 seconds
 select  [sql_instance] = '"+@_srv_name+"',
 		[host_name], [disk_volume], [label], [capacity_mb], [free_mb], [block_size], [filesystem], 
 		[updated_date_utc] = [collection_time_utc]
@@ -327,6 +329,7 @@ and ds.collection_time_utc = (select top 1 l.collection_time_utc from dbo.disk_s
 		begin
 			set @_sql =  "
 SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000; -- 60 seconds
 select  [sql_instance] = '"+@_srv_name+"',
 		[database_name], [recovery_model], [log_reuse_wait_desc], [log_size_mb], [log_used_mb], [exists_valid_autogrowing_file],
 		[log_used_pct], [log_used_pct_threshold], [log_used_gb_threshold], [spid], [transaction_start_time], [login_name], 
@@ -378,6 +381,7 @@ where lsc.collection_time = (select top 1 l.collection_time from dbo.log_space_c
 		begin
 			set @_sql =  "
 SET QUOTED_IDENTIFIER ON;
+SET LOCK_TIMEOUT 60000; -- 60 seconds
 select  [sql_instance] = '"+@_srv_name+"',
 		[data_size_mb], [data_used_mb], [data_used_pct], [log_size_mb], [log_used_mb], [log_used_pct], [version_store_mb], [version_store_pct],
 		[updated_date_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), [collection_time])
@@ -425,6 +429,7 @@ where tsu.collection_time = (select top 1 l.collection_time from dbo.tempdb_spac
 			set @_sql =  "
 SET QUOTED_IDENTIFIER ON;
 SET NOCOUNT ON;
+SET LOCK_TIMEOUT 60000; -- 60 seconds
 IF OBJECT_ID('dbo.ag_health_state') IS NOT NULL
 BEGIN
 	select  [sql_instance] = '"+@_srv_name+"',
@@ -480,16 +485,16 @@ END
 		if @_linked_server_failed = 0 and @result_to_table = 'dbo.backups_all_servers'
 		begin
 			set @_sql =  N'
-SET NOCOUNT ON;
+SET NOCOUNT ON; 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+SET LOCK_TIMEOUT 60000; -- 60 seconds  
 -- https://www.mssqltips.com/sqlservertip/3209/understanding-sql-server-log-sequence-numbers-for-backups/
 /*
 1) Diff.DatabaseBackupLSN = Full.CheckpointLSN
 2) Full.LastLSN <= TLog.FirstLSN
 3) Diff.LastLSN <= TLog.FirstLSN
 */
-SET NOCOUNT ON; 
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-SET LOCK_TIMEOUT 60000; -- 60 seconds  
+
 ;with t_combined_backups as (
 	SELECT top 1 with ties bs.database_name,
 			backup_type = CASE	WHEN bs.type = ''D'' AND bs.is_copy_only = 0 THEN ''Full Database Backup''
@@ -654,6 +659,9 @@ order by [database_name], [backup_start_date_utc];';
 		begin
 			set @_sql =  "
 SET QUOTED_IDENTIFIER ON;
+SET NOCOUNT ON; 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+SET LOCK_TIMEOUT 60000; -- 60 seconds  
 
 declare @ports varchar(2000);
 select @ports = coalesce(@ports+', '+convert(varchar,p.local_tcp_port),convert(varchar,p.local_tcp_port))
