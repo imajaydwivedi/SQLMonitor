@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 42,
+  "id": 44,
   "links": [],
   "panels": [
     {
@@ -1733,7 +1733,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1811,6 +1812,61 @@
                     "value": true
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "is_app_login"
+                },
+                "properties": [
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "login_type"
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "match": "null",
+                          "result": {
+                            "color": "super-light-yellow",
+                            "index": 0
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "true",
+                          "result": {
+                            "color": "yellow",
+                            "index": 1,
+                            "text": "App"
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "false",
+                          "result": {
+                            "color": "super-light-green",
+                            "index": 2,
+                            "text": "Human"
+                          }
+                        },
+                        "type": "special"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
@@ -1844,7 +1900,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server_status varchar(50);\r\ndeclare @is_decommissioned bit;\r\ndeclare @email varchar(255);\r\ndeclare @login varchar(125);\r\ndeclare @host varchar(255);\r\ndeclare @server varchar(125);\r\n\r\nset @server = case when '$server_input' <> '' then '$server_input' else null end;\r\nset @host = case when '$host_input' <> '' then '$host_input' else null end;\r\nset @email = case when '$email' <> '' then '$email' else null end;\r\nset @login = case when '$login_input' <> '' then '$login_input' else null end;\r\n\r\nset @server_status = '$server_status';\r\nset @is_decommissioned = case when @server_status = 'Online' then 0\r\n                              when @server_status = 'Offline' then 1\r\n                              when @server_status = 'All' then null\r\n                              else null\r\n                              end\r\n\r\nset @params = N'@is_decommissioned bit, @host varchar(255), @server varchar(255), @email varchar(255), @login varchar(125)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect\tlei.sql_instance, s.server_port, lei.login_name, lei.is_sysadmin, login_create_date = lei.create_date,\r\n\t\tlei.is_expiration_checked, lei.is_policy_checked, ct.server_owner_email,\r\n\t\t[login_owner_group_email] = coalesce(lem.owner_group_email, dba.owner_group_email), \r\n\t\tlei.collection_time\r\nfrom dbo.server_login_expiry_collection_computed ct\r\ninner join dbo.all_server_login_expiry_info lei\r\n\ton lei.sql_instance = ct.sql_instance and lei.collection_time = ct.collection_time_latest\r\nleft join dbo.login_email_mapping lem\r\n\ton\tlem.sql_instance_ip = lei.sql_instance and lem.login_name = lei.login_name\r\n\t\tand lem.is_deleted = 0\r\nouter apply (select dba.owner_group_email from dbo.login_email_mapping dba \r\n\t\t\t\twhere dba.sql_instance_ip = '*' and login_name = lei.login_name) dba\r\nleft join dbo.sma_servers s\r\n\ton s.server = ct.[sql_instance]\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\" and s.is_decommissioned = @is_decommissioned\r\nwhere 1=1\r\n\"+(case when @server is not null then '' else '--' end)+\"and s.server = @server\r\n\"+(case when @email is not null then '' else '--' end)+\"and (lem.[owner_group_email] = @email or dba.owner_group_email = @email)\r\n\"+(case when @login is not null then '' else '--' end)+\"and lei.[login_name] = @login\r\norder by sql_instance, login_name\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @is_decommissioned, @host, @server, @email, @login;",
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server_status varchar(50);\r\ndeclare @is_decommissioned bit;\r\ndeclare @email varchar(255);\r\ndeclare @login varchar(125);\r\ndeclare @host varchar(255);\r\ndeclare @server varchar(125);\r\n\r\nset @server = case when '$server_input' <> '' then '$server_input' else null end;\r\nset @host = case when '$host_input' <> '' then '$host_input' else null end;\r\nset @email = case when '$email' <> '' then '$email' else null end;\r\nset @login = case when '$login_input' <> '' then '$login_input' else null end;\r\n\r\nset @server_status = '$server_status';\r\nset @is_decommissioned = case when @server_status = 'Online' then 0\r\n                              when @server_status = 'Offline' then 1\r\n                              when @server_status = 'All' then null\r\n                              else null\r\n                              end\r\n\r\nset @params = N'@is_decommissioned bit, @host varchar(255), @server varchar(255), @email varchar(255), @login varchar(125)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect\tlei.sql_instance, s.server_port, lei.login_name, lei.is_sysadmin, \r\n\t\tis_app_login = coalesce(lem.is_app_login, dba.is_app_login),\r\n\t\tlogin_create_date = lei.create_date,\r\n\t\tlei.is_expiration_checked, lei.is_policy_checked, ct.server_owner_email,\r\n\t\t[login_owner_group_email] = coalesce(lem.owner_group_email, dba.owner_group_email), \r\n\t\tlei.collection_time\r\nfrom dbo.server_login_expiry_collection_computed ct\r\ninner join dbo.all_server_login_expiry_info lei\r\n\ton lei.sql_instance = ct.sql_instance and lei.collection_time = ct.collection_time_latest\r\nleft join dbo.login_email_mapping lem\r\n\ton\tlem.sql_instance_ip = lei.sql_instance and lem.login_name = lei.login_name\r\n\t\tand lem.is_deleted = 0\r\nouter apply (select dba.owner_group_email, dba.is_app_login from dbo.login_email_mapping dba \r\n\t\t\t\twhere dba.sql_instance_ip = '*' and login_name = lei.login_name) dba\r\nleft join dbo.sma_servers s\r\n\ton s.server = ct.[sql_instance]\r\n\"+(case when @server_status = 'All' then '--' else '' end)+\" and s.is_decommissioned = @is_decommissioned\r\nwhere 1=1\r\n\"+(case when @server is not null then '' else '--' end)+\"and s.server = @server\r\n\"+(case when @email is not null then '' else '--' end)+\"and (lem.[owner_group_email] = @email or dba.owner_group_email = @email)\r\n\"+(case when @login is not null then '' else '--' end)+\"and lei.[login_name] = @login\r\norder by sql_instance, login_name\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @is_decommissioned, @host, @server, @email, @login;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1951,8 +2007,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "5",
+          "value": "5"
         },
         "datasource": {
           "type": "mssql",
@@ -1975,8 +2031,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "5",
+          "value": "5"
         },
         "datasource": {
           "type": "mssql",
@@ -1999,8 +2055,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "5",
+          "value": "5"
         },
         "datasource": {
           "type": "mssql",
@@ -2023,8 +2079,8 @@
       {
         "current": {
           "selected": false,
-          "text": "0",
-          "value": "0"
+          "text": "2",
+          "value": "2"
         },
         "datasource": {
           "type": "mssql",
@@ -2231,8 +2287,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -2278,8 +2334,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1723813619584",
-          "value": "1723813619584"
+          "text": "1724660594441",
+          "value": "1724660594441"
         },
         "datasource": {
           "type": "mssql",
@@ -2301,8 +2357,8 @@
       {
         "current": {
           "selected": false,
-          "text": "7",
-          "value": "7"
+          "text": "5",
+          "value": "5"
         },
         "datasource": {
           "type": "mssql",
@@ -2356,6 +2412,6 @@
   "timezone": "browser",
   "title": "DBA Inventory",
   "uid": "t__DBA_Inventory",
-  "version": 22,
+  "version": 2,
   "weekStart": ""
 }
