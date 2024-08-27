@@ -19,7 +19,7 @@ ALTER PROCEDURE [dbo].[usp_TempDbSaver]
 	 @data_used_gb_threshold int = null,
 	 @threshold_condition varchar(5) = 'or', /* {and | or} */
 	 @kill_spids bit = 0,	 
-	 @email_recipients varchar(max) = 'some_dba_mail_id@gmail.com',
+	 @email_recipients varchar(max) = 'dba_team@gmail.com',
 	 @send_email bit = 0,
 	 @verbose tinyint = 0, /* 1 => messages, 2 => messages + table results */
 	 @first_x_rows int = 10,

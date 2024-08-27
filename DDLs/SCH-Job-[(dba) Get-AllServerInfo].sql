@@ -46,7 +46,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.all_
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerInfo - dbo.all_server_stable_info" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = ''some_dba_mail_id@gmail.com'', @step_name = ''dbo.all_server_stable_info'', @schedule_minutes = 30, @verbose = 0;"', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerInfo - dbo.all_server_stable_info" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = ''dba_team@gmail.com'', @step_name = ''dbo.all_server_stable_info'', @schedule_minutes = 30, @verbose = 0;"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
@@ -60,7 +60,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.all_
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerInfo - dbo.all_server_volatile_info" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = ''some_dba_mail_id@gmail.com'', @step_name = ''dbo.all_server_volatile_info'', @schedule_minutes = 1, @verbose = 0"', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerInfo - dbo.all_server_volatile_info" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = ''dba_team@gmail.com'', @step_name = ''dbo.all_server_volatile_info'', @schedule_minutes = 1, @verbose = 0"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
@@ -74,7 +74,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.all_
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerInfo - dbo.all_server_collection_latency_info" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = ''some_dba_mail_id@gmail.com'', @step_name = ''dbo.all_server_collection_latency_info'', @schedule_minutes = 15, @verbose = 0;"', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerInfo - dbo.all_server_collection_latency_info" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = ''dba_team@gmail.com'', @step_name = ''dbo.all_server_collection_latency_info'', @schedule_minutes = 15, @verbose = 0;"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
@@ -88,7 +88,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerInfo - dbo.usp_populate__all_server_volatile_info_history" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = ''some_dba_mail_id@gmail.com'', @step_name = ''dbo.usp_populate__all_server_volatile_info_history'', @schedule_minutes = 1, @verbose = 0;"', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerInfo - dbo.usp_populate__all_server_volatile_info_history" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = ''dba_team@gmail.com'', @step_name = ''dbo.usp_populate__all_server_volatile_info_history'', @schedule_minutes = 1, @verbose = 0;"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1

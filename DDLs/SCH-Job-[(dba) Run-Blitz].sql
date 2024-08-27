@@ -41,16 +41,16 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'sp_Blitz
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
 		@command=N'sqlcmd -E -b -S localhost -H "(dba) Run-Blitz" -d DBA -Q "EXEC master.dbo.sp_Blitz @CheckUserDatabaseObjects = 1, @BringThePain = 1, @CheckServerInfo = 1, @OutputDatabaseName = ''DBA'', @OutputSchemaName = ''dbo'', @OutputTableName = ''Blitz'';"', 
-		@flags=8
+		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_add_jobschedule @job_id=@jobId, @name=N'(dba) Run-Blitz', 
 		@enabled=1, 
 		@freq_type=8, 
-		@freq_interval=32, 
+		@freq_interval=64, 
 		@freq_recurrence_factor=1, 
-		@active_start_time=220000
+		@active_start_time=60000
 		--,@schedule_uid=N'cc775d0e-ad80-4318-8894-c58fedcdabb4'
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_add_jobserver @job_id = @jobId, @server_name = N'(local)'

@@ -16,10 +16,9 @@ GO
 
 ALTER PROCEDURE dbo.usp_GetAllServerDashboardMail
 (	@send_mail bit = 1,
-	@recipients varchar(500) = 'some_dba_mail_id@gmail.com', /* Folks who receive the failure mail */
+	@recipients varchar(500) = 'dba_team@gmail.com', /* Folks who receive the failure mail */
 	@mail_subject varchar(500) = 'Monitoring - Live - All Servers', /* Subject of Failure Mail */
 	@job_name varchar(255) = '(dba) Get-AllServerDashboardMail',
-	@dashboard_link varchar(200) = 'https://sqlmonitor.ajaydwivedi.com:3000/d/',
 	@os_cpu_threshold decimal(20,2) = 70,
 	@sql_cpu_threshold decimal(20,2) = 65,
 	@blocked_counts_threshold int = 1,
@@ -69,13 +68,14 @@ BEGIN
 	SET LOCK_TIMEOUT 60000; -- 60 seconds
 
 	/* Derived Parameters */
-	IF (@recipients IS NULL OR @recipients = 'some_dba_mail_id@gmail.com') AND @verbose = 0
+	IF (@recipients IS NULL OR @recipients = 'dba_team@gmail.com') AND @verbose = 0
 		raiserror ('@recipients is mandatory parameter', 20, -1) with log;
 
-	IF @dashboard_link is null
-		set @dashboard_link = 'https://sqlmonitor.ajaydwivedi.com:3000/d/';
+	declare @dashboard_link varchar(200);
+	select @dashboard_link = p.param_value from dbo.sma_params p where p.param_key = 'GrafanaDashboardPortal';
+	
 	IF right(@dashboard_link ,3) <> '/d/'
-		raiserror ('@dashboard_link should be ending with ''/d/''. For example, https://sqlmonitor.ajaydwivedi.com:3000/d/', 20, -1) with log;
+		raiserror ('@dashboard_link should be ending with ''/d/''. For example, https://grafana.somedomain.com:3000/d/', 20, -1) with log;
 
 	-- Local Variables
 	DECLARE @_sql nvarchar(MAX);

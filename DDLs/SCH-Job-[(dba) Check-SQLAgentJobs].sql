@@ -42,7 +42,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'usp_chec
 		@retry_attempts=1, 
 		@retry_interval=1, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Check-SQLAgentJobs" -d DBA -Q "EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = ''some_dba_mail_id@gmail.com'';"', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Check-SQLAgentJobs" -d DBA -Q "EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = ''dba_team@gmail.com'';"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1

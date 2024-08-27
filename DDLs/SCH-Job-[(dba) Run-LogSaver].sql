@@ -42,7 +42,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'usp_LogS
 		@retry_attempts=1, 
 		@retry_interval=1, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Run-LogSaver" -d DBA -Q "EXEC dbo.usp_LogSaver @email_recipients = ''some_dba_mail_id@gmail.com'', @log_used_pct_threshold = 80, @log_used_gb_threshold = 100, @threshold_condition = ''or'', @purge_table = 1, @kill_spids = 0, @send_email = 0, @drop_create_table = 0, @verbose = 0;"', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Run-LogSaver" -d DBA -Q "EXEC dbo.usp_LogSaver @email_recipients = ''dba_team@gmail.com'', @log_used_pct_threshold = 80, @log_used_gb_threshold = 100, @threshold_condition = ''or'', @purge_table = 1, @kill_spids = 0, @send_email = 0, @drop_create_table = 0, @verbose = 0;"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1

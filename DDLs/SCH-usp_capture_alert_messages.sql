@@ -25,7 +25,7 @@ ALTER PROCEDURE dbo.usp_capture_alert_messages
 	@notification_delay_minutes tinyint = 10, /* Send mail only after a gap of x minutes from last mail */ 
 	@is_test_alert bit = 0, /* enable for alert testing */
 	@verbose tinyint = 0, /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
-	@recipients varchar(500) = 'some_dba_mail_id@gmail.com', /* Folks who receive the failure mail */
+	@recipients varchar(500) = 'dba_team@gmail.com', /* Folks who receive the failure mail */
 	@alert_key varchar(100) = 'Capture-AlertMessages', /* Subject of Failure Mail */
 	@send_error_mail bit = 1 /* Send mail on failure */
 )
@@ -44,7 +44,7 @@ BEGIN
 				@error_severity = $(ESCAPE_NONE(A-SEV)), 
 				@error_message = '$(ESCAPE_SQUOTE(A-MSG))', 
 				@host_instance = '$(ESCAPE_SQUOTE(SRVR))',
-				@recipients = 'some_dba_mail_id@gmail.com';
+				@recipients = 'dba_team@gmail.com';
 		
 
 		Additional Requirements
@@ -69,7 +69,7 @@ BEGIN
 
 	SET @_job_name = '(dba) '+@alert_key;
 
-	IF (@recipients IS NULL OR @recipients = 'some_dba_mail_id@gmail.com') AND @verbose = 0
+	IF (@recipients IS NULL OR @recipients = 'dba_team@gmail.com') AND @verbose = 0
 		raiserror ('@recipients is mandatory parameter', 20, -1) with log;
 
 	-- Variables for Try/Catch Block

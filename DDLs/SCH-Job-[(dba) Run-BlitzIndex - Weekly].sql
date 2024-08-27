@@ -41,7 +41,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'sp_Blitz
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
 		@command=N'sqlcmd -E -b -S "localhost" -H "(dba) Run-BlitzIndex - Weekly - @Mode = 0" -d "DBA" -Q "EXEC master.dbo.sp_BlitzIndex @GetAllDatabases = 1, @Mode = 0, @BringThePain = 1, @OutputDatabaseName = ''DBA'', @OutputSchemaName = ''dbo'', @OutputTableName = ''BlitzIndex_Mode0'';"', 
-		@flags=8
+		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
 EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'sp_BlitzIndex @Mode = 1', 
@@ -55,7 +55,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'sp_Blitz
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
 		@command=N'sqlcmd -E -b -S "localhost" -H "(dba) Run-BlitzIndex - Weekly - @Mode = 1" -d "DBA" -Q "EXEC master.dbo.sp_BlitzIndex @GetAllDatabases = 1, @Mode = 1, @BringThePain = 1, @OutputDatabaseName = ''DBA'', @OutputSchemaName = ''dbo'', @OutputTableName = ''BlitzIndex_Mode1'';"', 
-		@flags=8
+		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
 EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'sp_BlitzIndex @Mode = 4', 
@@ -69,7 +69,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'sp_Blitz
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
 		@command=N'sqlcmd -E -b -S "localhost" -H "(dba) Run-BlitzIndex - Weekly - @Mode = 4" -d "DBA" -Q "EXEC master.dbo.sp_BlitzIndex @GetAllDatabases = 1, @Mode = 4, @BringThePain = 1, @OutputDatabaseName = ''DBA'', @OutputSchemaName = ''dbo'', @OutputTableName = ''BlitzIndex_Mode4'';"', 
-		@flags=8
+		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1
@@ -77,14 +77,14 @@ IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_add_jobschedule @job_id=@jobId, @name=N'(dba) Run-BlitzIndex - Weekly', 
 		@enabled=1, 
 		@freq_type=8, 
-		@freq_interval=32, 
+		@freq_interval=64, 
 		@freq_subday_type=1, 
 		@freq_subday_interval=0, 
 		@freq_relative_interval=0, 
 		@freq_recurrence_factor=1, 
 		@active_start_date=20221002, 
 		@active_end_date=99991231, 
-		@active_start_time=200000
+		@active_start_time=50000
 		--,@schedule_uid=N'a1f4f1fd-4ef5-49dd-bf26-f7661af46d37'
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_add_jobserver @job_id = @jobId, @server_name = N'(local)'

@@ -1,10 +1,13 @@
-USE [DBA]
-GO
+IF DB_NAME() = 'master'
+	raiserror ('Kindly execute all queries in [DBA] database', 20, -1) with log;
+go
 
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
+SET ANSI_PADDING ON;
+SET CONCAT_NULL_YIELDS_NULL ON;
+SET ANSI_WARNINGS ON;
+SET NUMERIC_ROUNDABORT OFF;
+SET ARITHABORT ON;
 GO
 
 CREATE OR ALTER PROCEDURE dbo.usp_send_login_expiry_emails
@@ -12,20 +15,12 @@ CREATE OR ALTER PROCEDURE dbo.usp_send_login_expiry_emails
 	@critical_threshold_days int = 10,
 	@pager_duty_threshold_days int = 13,
 	@mail_subject nvarchar(2000) = '*** IMPORTANT - Database Password Expiration Notification',
-	@job_name nvarchar(255) = '(dba) Send Login Expiry EMails',
-	@dba_team_email_id varchar(125) = 'dba@gmail.com',
-	@dba_manager_threshold_days int = 7,
-	@dba_manager_email_id varchar(125) = 'dba.manager@gmail.com', /* Email for DBA Manager */
+	@job_name nvarchar(255) = '(dba) Send Login Expiry EMails',	
+	@dba_manager_threshold_days int = 7,	
 	@copy_dba_team_for_all_mails bit = 0, /* 1 = Copy dba team for all email notifications */
-	@sre_vp_threshold_days int = 7,
-	@sre_vp_email_id varchar(125) = 'sre.vp@gmail.com', /* Email for SRE Senior VP */
-	@cto_threshold_days int = 3,
-	@cto_email_id varchar(125) = 'cto@gmail.com', /* Email for CTO */
-	@noc_email_id varchar(125) = 'noc@gmail.com', /* NOC team */
+	@sre_vp_threshold_days int = 7,	
+	@cto_threshold_days int = 3,	
 	@noc_threshold_days int = 12,
-	@url_login_expiry_dashboard_panel varchar(1000) = 'https://sqlmonitor.ajaydwivedi.com:3000/SQLServer/d/distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m&viewPanel=885',
-	@url_for_login_password_reset varchar(1000) = '#',
-	@url_for_dba_slack_channel varchar(1000) = 'https://ajaydwivedi.slack.com/archives/C0436G8SCDV',
 	@verbose tinyint = 0, /* 0 = No logs, 1 = Print Message, 2 = Table Result + Messages */
 	@send_mail bit = 1, /* 0 = Don't execute */
 	@enable_dba_mail_while_testing bit = 0, /* 1 = Send mails to DBA team for testing */
@@ -36,18 +31,14 @@ BEGIN
 /*
 	Purpose:		Send mail notification to login owners
 
-	Modifications:	2024-04-01 - Ajay - Initial Draft
+	Modifications:	2024-08-27 - Ajay - Get emails & params from dbo.sma_params
+					2024-04-01 - Ajay - Initial Draft
 
 	Examples:	
 		exec dbo.usp_send_login_expiry_emails @verbose = 2, @execute = 0, @test_server = '192.168.1.5'				
 		exec dbo.usp_send_login_expiry_emails @verbose = 2, @send_mail = 0, @enable_dba_mail_while_testing = 1;
 
 		exec dbo.usp_send_login_expiry_emails
-					@dba_team_email_id = 'sqlagentservice@gmail.com',
-					@dba_manager_email_id = 'sqlagentservice@gmail.com',
-					@sre_vp_email_id = 'sqlagentservice@gmail.com',
-					@cto_email_id = 'sqlagentservice@gmail.com',
-					@noc_email_id = 'sqlagentservice@gmail.com',
 					@verbose = 2, 
 					@send_mail = 0, 
 					@warning_threshold_days = 365,
@@ -55,13 +46,49 @@ BEGIN
 */
 	SET NOCOUNT ON;
 
+	declare @_start_time datetime2 = sysdatetime();
 	if @verbose >= 1
 		print 'Declare variables..'
 
-	declare @_start_time datetime2 = sysdatetime();
+	declare @dba_team_email_id varchar(125) = 'dba_team@gmail.com'
+	declare @dba_manager_email_id varchar(125) = 'dba.manager@gmail.com' /* Email for DBA Manager */
+	declare @sre_vp_email_id varchar(125) = 'sre.vp@gmail.com' /* Email for SRE Senior VP */
+	declare @cto_email_id varchar(125) = 'cto@gmail.com' /* Email for CTO */
+	declare @noc_email_id varchar(125) = 'noc@gmail.com' /* NOC team */
+	declare @url_for_GrafanaDashboardPortal varchar(1000) = 'http://localhost:3000/d/';
+	declare @url_login_expiry_dashboard_panel varchar(1000) = 'distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m&viewPanel=885'
+	declare @url_for_login_password_reset varchar(1000) = '#'
+	declare @url_for_dba_slack_channel varchar(1000) = 'workspace.slack.com/archives/unique_id';
+
+	select @dba_team_email_id = p.param_value from dbo.sma_params p where p.param_key = 'dba_team_email_id';
+	select @dba_manager_email_id = p.param_value from dbo.sma_params p where p.param_key = 'dba_manager_email_id';
+	select @sre_vp_email_id = p.param_value from dbo.sma_params p where p.param_key = 'sre_vp_email_id';
+	select @cto_email_id = p.param_value from dbo.sma_params p where p.param_key = 'cto_email_id';
+	select @noc_email_id = p.param_value from dbo.sma_params p where p.param_key = 'noc_email_id';
+
+	select @url_for_dba_slack_channel = p.param_value from dbo.sma_params p where p.param_key = 'url_for_dba_slack_channel';
+	select @url_for_GrafanaDashboardPortal = p.param_value from dbo.sma_params p where p.param_key = 'GrafanaDashboardPortal';
+	select @url_login_expiry_dashboard_panel = p.param_value from dbo.sma_params p where p.param_key = 'url_login_expiry_dashboard_panel';
+	select @url_for_login_password_reset = p.param_value from dbo.sma_params p where p.param_key = 'url_for_login_password_reset';
+	
+
+	IF (@dba_team_email_id IS NULL OR @dba_team_email_id = 'dba_team@gmail.com')
+		raiserror ('@dba_team_email_id is mandatory parameter', 20, -1) with log;
+	IF (@dba_manager_email_id IS NULL OR @dba_manager_email_id = 'dba.manager@gmail.com') AND @verbose = 0
+		raiserror ('@dba_manager_email_id is mandatory parameter', 20, -1) with log;
+	IF (@sre_vp_email_id IS NULL OR @sre_vp_email_id = 'sre.vp@gmail.com') AND @verbose = 0
+		raiserror ('@sre_vp_email_id is mandatory parameter', 20, -1) with log;
+	IF (@noc_email_id IS NULL OR @noc_email_id = 'noc@gmail.com') AND @verbose = 0
+		raiserror ('@noc_email_id is mandatory parameter', 20, -1) with log;
+	IF (@cto_email_id IS NULL OR @cto_email_id = 'cto@gmail.com') AND @verbose = 0
+		raiserror ('@cto_email_id is mandatory parameter', 20, -1) with log;
+
 	declare @_crlf nchar(2) = char(10)+char(13);
 	declare @_long_star_line varchar(500) = replicate('*',75);
 	declare @_server_count int = 0;
+	declare @_url_login_expiry_dashboard_panel varchar(1000);
+
+	set @_url_login_expiry_dashboard_panel = @url_for_GrafanaDashboardPortal+@url_login_expiry_dashboard_panel;
 
 	declare @_failed_server_count int = 0;
 	declare	@_errorNumber int,
@@ -87,12 +114,13 @@ BEGIN
 	(sql_instance varchar(125), login_name varchar(125), mail_recipient varchar(500));
 
 	-- Declare cluster variables
-	declare @c_sql_instance varchar(125)
-	declare @c_login_name varchar(125)
-	declare @c_server_owner_email varchar(500)
-	declare @c_login_owner_group_email varchar(500)
-	declare @c_app_team_emails varchar(500)
-	declare @c_application_owner_emails varchar(500)
+	declare @c_sql_instance varchar(125);
+	declare @c_login_name varchar(125);
+	declare @c_server_owner_email varchar(500);
+	declare @c_login_owner_group_email varchar(500);
+	declare @c_is_app_login bit;
+	declare @c_app_team_emails varchar(500);
+	declare @c_application_owner_emails varchar(500);
 	declare @c_mail_recipient varchar(2000);
 
 	if @copy_dba_team_for_all_mails = 1
@@ -169,8 +197,9 @@ BEGIN
 	-- Get logins which are about to expire in @warning_threshold_days
 	truncate table [dbo].[all_server_login_expiry_info_dashboard];
 	insert dbo.all_server_login_expiry_info_dashboard
-	([collection_time], [sql_instance], [login_name], [is_sysadmin], [password_last_set_time], [password_expiration], [is_expired], [is_locked], [days_until_expiration], [login_owner_group_email], [server_owner_email], [app_team_emails], [application_owner_emails])
-	select	lei.collection_time, lei.sql_instance, lei.login_name, lei.is_sysadmin, lei.password_last_set_time,
+	([collection_time], [sql_instance], [login_name], [is_sysadmin], [is_app_login], [password_last_set_time], [password_expiration], [is_expired], [is_locked], [days_until_expiration], [login_owner_group_email], [server_owner_email], [app_team_emails], [application_owner_emails])
+	select	lei.collection_time, lei.sql_instance, lei.login_name, lei.is_sysadmin, 
+			[is_app_login] = coalesce(lem.is_app_login, dba.is_app_login), lei.password_last_set_time,
 			lei.password_expiration, lei.is_expired, lei.is_locked, days_until_expiration,
 			[login_owner_group_email] = coalesce(lem.owner_group_email, dba.owner_group_email), ct.server_owner_email,
 			ct.app_team_emails, ct.application_owner_emails
@@ -180,7 +209,7 @@ BEGIN
 	left join dbo.login_email_mapping lem
 		on	lem.sql_instance_ip = lei.sql_instance and lem.login_name = lei.login_name
 			and lem.is_deleted = 0
-	outer apply (select dba.owner_group_email from dbo.login_email_mapping dba 
+	outer apply (select dba.owner_group_email, dba.is_app_login from dbo.login_email_mapping dba 
 					where dba.sql_instance_ip = '*' and login_name = lei.login_name) dba
 	where 1=1
 	and lei.is_expiration_checked = 1
@@ -200,12 +229,12 @@ BEGIN
 	if 'Get-Unique-Emails-Per-Login' = 'Get-Unique-Emails-Per-Login'
 	begin
 		declare cur_sql_logins cursor local fast_forward for 
-			select	sql_instance, login_name, login_owner_group_email,
+			select	sql_instance, login_name, login_owner_group_email, is_app_login,
 					server_owner_email, app_team_emails, application_owner_emails
 			from dbo.all_server_login_expiry_info_dashboard;
 	
 		open cur_sql_logins;
-		fetch next from cur_sql_logins into @c_sql_instance, @c_login_name, @c_login_owner_group_email,
+		fetch next from cur_sql_logins into @c_sql_instance, @c_login_name, @c_login_owner_group_email, @c_is_app_login,
 											@c_server_owner_email, @c_app_team_emails, @c_application_owner_emails;
 
 		while @@FETCH_STATUS = 0
@@ -240,18 +269,21 @@ BEGIN
 				SELECT @c_sql_instance, @c_login_name, ltrim(rtrim(value)) 
 				from string_split(@c_server_owner_email, ';');
 
-				-- Split [app_team_emails]
-				insert #login_email_xref_raw (sql_instance, login_name, mail_recipient)
-				SELECT @c_sql_instance, @c_login_name, ltrim(rtrim(value)) 
-				from string_split(@c_app_team_emails, ';');
+				if(@c_is_app_login = 1)
+				begin
+					-- Split [app_team_emails]
+					insert #login_email_xref_raw (sql_instance, login_name, mail_recipient)
+					SELECT @c_sql_instance, @c_login_name, ltrim(rtrim(value)) 
+					from string_split(@c_app_team_emails, ';');
 
-				-- Split [application_owner_emails]
-				insert #login_email_xref_raw (sql_instance, login_name, mail_recipient)
-				SELECT @c_sql_instance, @c_login_name, ltrim(rtrim(value)) 
-				from string_split(@c_application_owner_emails, ';');
+					-- Split [application_owner_emails]
+					insert #login_email_xref_raw (sql_instance, login_name, mail_recipient)
+					SELECT @c_sql_instance, @c_login_name, ltrim(rtrim(value)) 
+					from string_split(@c_application_owner_emails, ';');
+				end
 			end
 
-			fetch next from cur_sql_logins into @c_sql_instance, @c_login_name, @c_login_owner_group_email,
+			fetch next from cur_sql_logins into @c_sql_instance, @c_login_name, @c_login_owner_group_email, @c_is_app_login,
 											@c_server_owner_email, @c_app_team_emails, @c_application_owner_emails;
 		end
 
@@ -398,17 +430,17 @@ BEGIN
 			begin try
 				set @_table_data = null;
 				
-				set @_table_headline = N'<h3><a href="'+@url_login_expiry_dashboard_panel+'" target="_blank">NOTE: Following login passwords are expiring/expired. Ensure to reset the password for continous working of applications.</a></h3>'+@_crlf+
+				set @_table_headline = N'<h3><a href="'+@_url_login_expiry_dashboard_panel+'" target="_blank">NOTE: Following login passwords are expiring/expired. Ensure to reset the password for continous working of applications.</a></h3>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 01</span>: If login password has not expired yet, then password can be reset using following tsql - <pre><code> ALTER LOGIN [your_login_name_here] WITH PASSWORD=N''new_login_password_here'' </code></pre></p></div>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 02</span>: Kindly raise a DBA request and share same on <a href="'+@url_for_dba_slack_channel+'" target="_blank">#dba slack channel</a>.</p></div>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 03</span>: Utilize login reset portal <a href="'+@url_for_login_password_reset+'" target="_blank">'+@url_for_login_password_reset+'</a>.</p></div>'+@_crlf
 
-				set @_table_header = N'<tr><th>SQL Instance</th> <th>Login Name</th> <th>Days Until Expiry</th>'
+				set @_table_header = N'<tr><th>SQL Instance</th> <th>Login Name</th> <th>Login Type</th> <th>Days Until Expiry</th>'
 								+N'<th>Password Last Set</th> <th>Expired</th> <th>Locked</th>'
 								+N'<th>Collection Time</th>'+@_crlf;
 				
 				;with t_login_info as (
-					select lei.sql_instance, lei.login_name, lei.days_until_expiration,
+					select lei.sql_instance, lei.login_name, lei.is_app_login, lei.days_until_expiration,
 							lei.password_last_set_time, lei.is_expired, lei.is_locked,
 							lei.collection_time
 					from #login_email_xref lex
@@ -418,8 +450,10 @@ BEGIN
 				)
 				,t_table_rows as (
 					select	'<tr>'
-							+'<td class="bg_key"><a href="'+@url_login_expiry_dashboard_panel+'&var-log_expiry_sql_instance='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
-							+'<td class="bg_key"><a href="'+@url_login_expiry_dashboard_panel+'&var-login_expiry_login_name='+login_name+'" target="_blank">'+login_name+'</a></td>'
+							+'<td class="bg_key"><a href="'+@_url_login_expiry_dashboard_panel+'&var-log_expiry_sql_instance='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
+							+'<td class="bg_key"><a href="'+@_url_login_expiry_dashboard_panel+'&var-login_expiry_login_name='+login_name+'" target="_blank">'+login_name+'</a></td>'
+							+'<td class="'+(case when is_app_login = 1 then 'bg_yellow' else 'bg_none' end)+'">'
+										+(case when is_app_login = 1 then 'App' when is_app_login = 0 then 'Human User' else '' end)+'</td>'
 							+'<td class="'+(case when days_until_expiration <= @critical_threshold_days then 'bg_red' else 'bg_orange' end)+'">'
 										+convert(varchar,days_until_expiration)+'</td>'
 							+'<td>'+isnull(convert(varchar,password_last_set_time,121),'')+'</td>'
@@ -449,7 +483,7 @@ BEGIN
 										+@_style_css
 										+N'</head>'
 										+N'<body>'
-										+N'<h1><a href="'+@url_login_expiry_dashboard_panel+'" target="_blank">'+@_mail_subject+'</a></h1>'
+										+N'<h1><a href="'+@_url_login_expiry_dashboard_panel+'" target="_blank">'+@_mail_subject+'</a></h1>'
 										+N'<p>'+@_mail_html_body+N'</p>'
 										+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
 										+N'</body>';	
@@ -515,17 +549,17 @@ BEGIN
 		begin try
 			set @_table_data = null;
 
-			set @_table_headline = N'<h3><a href="'+@url_login_expiry_dashboard_panel+'" target="_blank">NOTE: Following login passwords are expiring/expired within '+convert(varchar,@noc_threshold_days)+' days. Ensure to reset the password for continous working of applications.</a></h3>'+@_crlf+
+			set @_table_headline = N'<h3><a href="'+@_url_login_expiry_dashboard_panel+'" target="_blank">NOTE: Following login passwords are expiring/expired within '+convert(varchar,@noc_threshold_days)+' days. Ensure to reset the password for continous working of applications.</a></h3>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 01</span>: If login password has not expired yet, then password can be reset using following tsql - <pre><code> ALTER LOGIN [your_login_name_here] WITH PASSWORD=N''new_login_password_here'' </code></pre></p></div>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 02</span>: Kindly raise a DBA request and share same on <a href="'+@url_for_dba_slack_channel+'" target="_blank">#angel-dba slack channel</a>.</p></div>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 03</span>: Utilize login reset portal <a href="'+@url_for_login_password_reset+'" target="_blank">'+@url_for_login_password_reset+'</a>.</p></div>'+@_crlf
 
-			set @_table_header = N'<tr><th>SQL Instance</th> <th>Login Name</th> <th>Days Until Expiry</th>'
+			set @_table_header = N'<tr><th>SQL Instance</th> <th>Login Name</th> <th>Login Type</th> <th>Days Until Expiry</th>'
 							+N'<th>Password Last Set</th> <th>Expired</th> <th>Locked</th>'
 							+N'<th>Collection Time</th>'+@_crlf;
 				
 			;with t_login_info as (
-				select lei.sql_instance, lei.login_name, lei.days_until_expiration,
+				select lei.sql_instance, lei.login_name, lei.is_app_login, lei.days_until_expiration,
 						lei.password_last_set_time, lei.is_expired, lei.is_locked,
 						lei.collection_time, lei.login_owner_group_email
 				from dbo.all_server_login_expiry_info_dashboard lei
@@ -539,8 +573,10 @@ BEGIN
 			)
 			,t_table_rows as (
 				select	'<tr>'
-							+'<td class="bg_key"><a href="'+@url_login_expiry_dashboard_panel+'&var-log_expiry_sql_instance='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
-							+'<td class="bg_key"><a href="'+@url_login_expiry_dashboard_panel+'&var-login_expiry_login_name='+login_name+'" target="_blank">'+login_name+'</a></td>'
+							+'<td class="bg_key"><a href="'+@_url_login_expiry_dashboard_panel+'&var-log_expiry_sql_instance='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
+							+'<td class="bg_key"><a href="'+@_url_login_expiry_dashboard_panel+'&var-login_expiry_login_name='+login_name+'" target="_blank">'+login_name+'</a></td>'
+						+'<td class="'+(case when is_app_login = 1 then 'bg_yellow' else 'bg_none' end)+'">'
+										+(case when is_app_login = 1 then 'App' when is_app_login = 0 then 'Human User' else '' end)+'</td>'
 						+'<td class="'+(case when days_until_expiration <= @critical_threshold_days then 'bg_red' else 'bg_orange' end)+'">'
 									+convert(varchar,days_until_expiration)+'</td>'
 						+'<td>'+isnull(convert(varchar,password_last_set_time,121),'')+'</td>'
@@ -571,7 +607,7 @@ BEGIN
 									+@_style_css
 									+N'</head>'
 									+N'<body>'
-									+N'<h1><a href="'+@url_login_expiry_dashboard_panel+'" target="_blank">'+@_mail_subject+'</a></h1>'
+									+N'<h1><a href="'+@_url_login_expiry_dashboard_panel+'" target="_blank">'+@_mail_subject+'</a></h1>'
 									+N'<p>'+@_mail_html_body+N'</p>'
 									+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
 									+N'</body>';	
@@ -635,17 +671,17 @@ BEGIN
 		begin try
 			set @_table_data = null;
 
-			set @_table_headline = N'<h3><a href="'+@url_login_expiry_dashboard_panel+'" target="_blank">NOTE: Following login passwords are expiring/expired. Ensure to reset the password for continous working of applications.</a></h3>'+@_crlf+
+			set @_table_headline = N'<h3><a href="'+@_url_login_expiry_dashboard_panel+'" target="_blank">NOTE: Following login passwords are expiring/expired. Ensure to reset the password for continous working of applications.</a></h3>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 01</span>: If login password has not expired yet, then password can be reset using following tsql - <pre><code> ALTER LOGIN [your_login_name_here] WITH PASSWORD=N''new_login_password_here'' </code></pre></p></div>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 02</span>: Kindly raise a DBA request and share same on <a href="'+@url_for_dba_slack_channel+'" target="_blank">#angel-dba slack channel</a>.</p></div>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 03</span>: Utilize login reset portal <a href="'+@url_for_login_password_reset+'" target="_blank">'+@url_for_login_password_reset+'</a>.</p></div>'+@_crlf
 
-			set @_table_header = N'<tr><th>SQL Instance</th> <th>Login Name</th> <th>Days Until Expiry</th>'
+			set @_table_header = N'<tr><th>SQL Instance</th> <th>Login Name</th> <th>Login Type</th> <th>Days Until Expiry</th>'
 							+N'<th>Password Last Set</th> <th>Expired</th> <th>Locked</th>'
 							+N'<th>Collection Time</th>'+@_crlf;
 				
 			;with t_login_info as (
-				select lei.sql_instance, lei.login_name, lei.days_until_expiration,
+				select lei.sql_instance, lei.login_name, lei.is_app_login, lei.days_until_expiration,
 						lei.password_last_set_time, lei.is_expired, lei.is_locked,
 						lei.collection_time, lei.login_owner_group_email
 				from dbo.all_server_login_expiry_info_dashboard lei
@@ -656,11 +692,14 @@ BEGIN
 						--and coalesce(lei.login_owner_group_email,'') <> @dba_team_email_id
 					)
 				and lei.days_until_expiration <= @sre_vp_threshold_days
+				and (lei.is_app_login = 1 or lei.is_app_login is null)
 			)
 			,t_table_rows as (
 				select	'<tr>'
-							+'<td class="bg_key"><a href="'+@url_login_expiry_dashboard_panel+'&var-log_expiry_sql_instance='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
-							+'<td class="bg_key"><a href="'+@url_login_expiry_dashboard_panel+'&var-login_expiry_login_name='+login_name+'" target="_blank">'+login_name+'</a></td>'
+							+'<td class="bg_key"><a href="'+@_url_login_expiry_dashboard_panel+'&var-log_expiry_sql_instance='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
+							+'<td class="bg_key"><a href="'+@_url_login_expiry_dashboard_panel+'&var-login_expiry_login_name='+login_name+'" target="_blank">'+login_name+'</a></td>'
+						+'<td class="'+(case when is_app_login = 1 then 'bg_yellow' else 'bg_none' end)+'">'
+										+(case when is_app_login = 1 then 'App' when is_app_login = 0 then 'Human User' else '' end)+'</td>'
 						+'<td class="'+(case when days_until_expiration <= @critical_threshold_days then 'bg_red' else 'bg_orange' end)+'">'
 									+convert(varchar,days_until_expiration)+'</td>'
 						+'<td>'+isnull(convert(varchar,password_last_set_time,121),'')+'</td>'
@@ -690,7 +729,7 @@ BEGIN
 									+@_style_css
 									+N'</head>'
 									+N'<body>'
-									+N'<h1><a href="'+@url_login_expiry_dashboard_panel+'" target="_blank">'+@_mail_subject+'</a></h1>'
+									+N'<h1><a href="'+@_url_login_expiry_dashboard_panel+'" target="_blank">'+@_mail_subject+'</a></h1>'
 									+N'<p>'+@_mail_html_body+N'</p>'
 									+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
 									+N'</body>';	
@@ -753,17 +792,17 @@ BEGIN
 		begin try
 			set @_table_data = null;
 
-			set @_table_headline = N'<h3><a href="'+@url_login_expiry_dashboard_panel+'" target="_blank">NOTE: Following login passwords are expiring/expired. Ensure to reset the password for continous working of applications.</a></h3>'+@_crlf+
+			set @_table_headline = N'<h3><a href="'+@_url_login_expiry_dashboard_panel+'" target="_blank">NOTE: Following login passwords are expiring/expired. Ensure to reset the password for continous working of applications.</a></h3>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 01</span>: If login password has not expired yet, then password can be reset using following tsql - <pre><code> ALTER LOGIN [your_login_name_here] WITH PASSWORD=N''new_login_password_here'' </code></pre></p></div>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 02</span>: Kindly raise a DBA request and share same on <a href="'+@url_for_dba_slack_channel+'" target="_blank">#angel-dba slack channel</a>.</p></div>'+@_crlf+
 									N'<div><p><span class="underline thick">How to Resolve - Method 03</span>: Utilize login reset portal <a href="'+@url_for_login_password_reset+'" target="_blank">'+@url_for_login_password_reset+'</a>.</p></div>'+@_crlf
 
-			set @_table_header = N'<tr><th>SQL Instance</th> <th>Login Name</th> <th>Days Until Expiry</th>'
+			set @_table_header = N'<tr><th>SQL Instance</th> <th>Login Name</th> <th>Login Type</th> <th>Days Until Expiry</th>'
 							+N'<th>Password Last Set</th> <th>Expired</th> <th>Locked</th>'
 							+N'<th>Collection Time</th>'+@_crlf;
 				
 			;with t_login_info as (
-				select lei.sql_instance, lei.login_name, lei.days_until_expiration,
+				select lei.sql_instance, lei.login_name, lei.is_app_login, lei.days_until_expiration,
 						lei.password_last_set_time, lei.is_expired, lei.is_locked,
 						lei.collection_time, lei.login_owner_group_email
 				from dbo.all_server_login_expiry_info_dashboard lei
@@ -773,11 +812,14 @@ BEGIN
 				and left(lower(lei.login_name),6) <> 'dba.' 
 				and coalesce(lei.login_owner_group_email,'') <> @dba_team_email_id
 				and lei.days_until_expiration <= @cto_threshold_days
+				and (lei.is_app_login is null or lei.is_app_login = 1)
 			)
 			,t_table_rows as (
 				select	'<tr>'
-							+'<td class="bg_key"><a href="'+@url_login_expiry_dashboard_panel+'&var-log_expiry_sql_instance='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
-							+'<td class="bg_key"><a href="'+@url_login_expiry_dashboard_panel+'&var-login_expiry_login_name='+login_name+'" target="_blank">'+login_name+'</a></td>'
+							+'<td class="bg_key"><a href="'+@_url_login_expiry_dashboard_panel+'&var-log_expiry_sql_instance='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
+							+'<td class="bg_key"><a href="'+@_url_login_expiry_dashboard_panel+'&var-login_expiry_login_name='+login_name+'" target="_blank">'+login_name+'</a></td>'
+						+'<td class="'+(case when is_app_login = 1 then 'bg_yellow' else 'bg_none' end)+'">'
+										+(case when is_app_login = 1 then 'App' when is_app_login = 0 then 'Human User' else '' end)+'</td>'
 						+'<td class="'+(case when days_until_expiration <= @critical_threshold_days then 'bg_red' else 'bg_orange' end)+'">'
 									+convert(varchar,days_until_expiration)+'</td>'
 						+'<td>'+isnull(convert(varchar,password_last_set_time,121),'')+'</td>'
@@ -807,7 +849,7 @@ BEGIN
 									+@_style_css
 									+N'</head>'
 									+N'<body>'
-									+N'<h1><a href="'+@url_login_expiry_dashboard_panel+'" target="_blank">'+@_mail_subject+'</a></h1>'
+									+N'<h1><a href="'+@_url_login_expiry_dashboard_panel+'" target="_blank">'+@_mail_subject+'</a></h1>'
 									+N'<p>'+@_mail_html_body+N'</p>'
 									+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
 									+N'</body>';	

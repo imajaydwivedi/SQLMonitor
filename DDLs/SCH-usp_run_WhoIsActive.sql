@@ -22,7 +22,7 @@ ALTER PROCEDURE dbo.usp_run_WhoIsActive
 	@notification_delay_minutes tinyint = 15, /* Send mail only after a gap of x minutes from last mail */ 
 	@is_test_alert bit = 0, /* enable for alert testing */
 	@verbose tinyint = 0, /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
-	@recipients varchar(500) = 'some_dba_mail_id@gmail.com', /* Folks who receive the failure mail */
+	@recipients varchar(500) = 'dba_team@gmail.com', /* Folks who receive the failure mail */
 	@alert_key varchar(100) = 'Run-WhoIsActive', /* Subject of Failure Mail */
 	@retention_day int = 15, /* No of days for data retention */
 	@purge_flag bit = 1 /* When enabled, then based on @retention_day, old data would be purged */
@@ -35,8 +35,8 @@ BEGIN
 		Update:			2022-10-12 - Removed Staging Table Logic. Also removed computed columns to avoid single threaded search.
 						2022-12-12 - Add @format_output = 0 to get numeric values instead of Human readable format
 
-		EXEC dbo.usp_run_WhoIsActive @recipients = 'some_dba_mail_id@gmail.com'
-		EXEC dbo.usp_run_WhoIsActive @recipients = 'some_dba_mail_id@gmail.com', @verbose = 2 ,@drop_recreate = 1
+		EXEC dbo.usp_run_WhoIsActive @recipients = 'dba_team@gmail.com'
+		EXEC dbo.usp_run_WhoIsActive @recipients = 'dba_team@gmail.com', @verbose = 2 ,@drop_recreate = 1
 	
 		Additional Requirements
 		1) Default Global Mail Profile
@@ -50,7 +50,7 @@ BEGIN
 	/* Derived Parameters */
 	--DECLARE @staging_table VARCHAR(4000) = @destination_table+'_Staging';
 
-	IF (@recipients IS NULL OR @recipients = 'some_dba_mail_id@gmail.com') AND @verbose = 0
+	IF (@recipients IS NULL OR @recipients = 'dba_team@gmail.com') AND @verbose = 0
 		raiserror ('@recipients is mandatory parameter', 20, -1) with log;
 
 	DECLARE @_output VARCHAR(8000);

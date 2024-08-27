@@ -16,7 +16,7 @@ GO
 
 ALTER PROCEDURE dbo.usp_wrapper_CollectPrivilegedInfo
 (	@verbose tinyint = 0, /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
-	@recipients varchar(500) = 'some_dba_mail_id@gmail.com', /* Folks who receive the failure mail */
+	@recipients varchar(500) = 'dba_team@gmail.com', /* Folks who receive the failure mail */
 	@alert_key varchar(100) = 'Wrapper-CollectPrivilegedInfo', /* Subject of Failure Mail */
 	@send_error_mail bit = 1, /* Send mail on failure */
 	@is_test_alert bit = 0, /* enable for alert testing */
@@ -36,7 +36,7 @@ BEGIN
 	Modifications:	2023-08-30 - Initial Draft
 
 	exec dbo.usp_wrapper_CollectPrivilegedInfo 
-		@recipients = 'some_dba_mail_id@gmail.com', 
+		@recipients = 'dba_team@gmail.com', 
 		@step_name = 'dbo.server_privileged_info',
 		@truncate_table = 1,
 		@has_staging_table = 0,
@@ -66,7 +66,7 @@ BEGIN
 
 	SET @_job_name = '(dba) '+@alert_key;
 
-	IF (@recipients IS NULL OR @recipients = 'some_dba_mail_id@gmail.com') AND @verbose = 0
+	IF (@recipients IS NULL OR @recipients = 'dba_team@gmail.com') AND @verbose = 0
 		raiserror ('@recipients is mandatory parameter', 20, -1) with log;
 
 	IF @step_name NOT IN ('dbo.server_privileged_info')

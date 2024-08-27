@@ -1028,7 +1028,7 @@ if ( $instanceDetails.Count -gt 0 )
     }
 
     if ($DbaGroupMailId.Count -eq 0) {
-        $DbaGroupMailId += 'some_dba_mail_id@gmail.com'
+        $DbaGroupMailId += 'dba_team@gmail.com'
     }
     
     if ([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs)) {
@@ -1118,7 +1118,7 @@ if($SkipMultiMailJobSteps) {
     $Steps2Execute = $Steps2Execute | ForEach-Object {if($_ -notin $MultiMailJobSteps){$_}}
 }
 
-if($DbaGroupMailId -eq 'some_dba_mail_id@gmail.com') {
+if($DbaGroupMailId -eq 'dba_team@gmail.com') {
     if ($ReturnInlineErrorMessage) {
 		"Kindly provide a valid value for DbaGroupMailId parameter." | Write-Error
 	}
@@ -2029,6 +2029,13 @@ if($stepName -in $Steps2Execute)
             $memoryOptimizedFilePath = if($dbaDatabaseParentPath -notmatch '\\$') { "$dbaDatabaseParentPath\MemoryOptimized.ndf" } else { "$($dabaDatabaseParentPath)MemoryOptimized.ndf" }
             #$InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('E:\Data\MemoryOptimized.ndf', "$(Join-Path $dbaDatabaseParentPath 'MemoryOptimized.ndf')")
             $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('E:\Data\MemoryOptimized.ndf', $memoryOptimizedFilePath)
+
+            $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('dba_team@gmail.com', $($DbaGroupMailId -join ';'))
+            $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('dba.manager@gmail.com', $($DbaGroupMailId -join ';'))
+            $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('sre.vp@gmail.com', $($DbaGroupMailId -join ';'))
+            $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('cto@gmail.com', $($DbaGroupMailId -join ';'))
+            $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('noc@gmail.com', $($DbaGroupMailId -join ';'))
+            $InventorySpecificObjectsFileText = $InventorySpecificObjectsFileText.Replace('http://localhost:3000/d/', $GrafanaDashboardPortal)
         
 
             if($verbose -or $debug) {
@@ -2192,6 +2199,44 @@ and created_date >= DATEADD(hour,-2,getdate())
 "@
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$sqlSetPurgeThreshold => `n`n`t$sqlSetPurgeThreshold"
         $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlSetPurgeThreshold -EnableException
+    }
+
+
+
+    # On $InventoryServer => Validate if dbo.params data has been customized as per need 
+    if($InventoryServer -ne $SqlInstanceToBaseline) 
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Checking data for [$InventoryDatabase].dbo.sma_params on [$InventoryServer]."
+        $sqlGetSmaParamsData = "select * from [$InventoryDatabase].dbo.sma_params"
+        if($verbose) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$sqlGetSmaParamsData => `n`n`t$sqlGetSmaParamsData"
+        }
+        $resultGetSmaParamsData = @()
+        $resultGetSmaParamsData += $conInventoryServer | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlGetSmaParamsData -EnableException
+
+        if($resultGetSmaParamsData.Count -gt 0) {
+            Write-Debug "Validate SmaParams"
+            $dba_team_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'dba_team_email_id'} | Select-Object -ExpandProperty param_value
+            $dba_manager_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'dba_manager_email_id'} | Select-Object -ExpandProperty param_value
+            $sre_vp_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'sre_vp_email_id'} | Select-Object -ExpandProperty param_value
+            $cto_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'cto_email_id'} | Select-Object -ExpandProperty param_value
+            $noc_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'noc_email_id'} | Select-Object -ExpandProperty param_value
+            $dba_team_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'dba_team_email_id'} | Select-Object -ExpandProperty param_value
+            $GrafanaDashboardPortal = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'GrafanaDashboardPortal'} | Select-Object -ExpandProperty param_value
+            $url_for_dba_slack_channel = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'url_for_dba_slack_channel'} | Select-Object -ExpandProperty param_value
+
+            if($dba_team_email_id -eq 'dba_team@gmail.com' -or $dba_manager_email_id -eq 'dba.manager@gmail.com') {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly update the [param_value] in table [$InventoryDatabase].dbo.sma_params on [$InventoryServer]." | Write-Host -ForegroundColor Red
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Then re-run this baselining of inventory server.`n" | Write-Host -ForegroundColor Red
+                Start-Sleep -Seconds 1
+                "Kindly fix error of above line" | Write-Error -ErrorAction Stop
+            }
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "No data found in table [$InventoryDatabase].dbo.sma_params on [$InventoryServer].`n" | Write-Host -ForegroundColor Red
+            Start-Sleep -Seconds 1
+            "Kindly fix error of above line" | Write-Error -ErrorAction Stop
+        }
     }
 }
 
@@ -3026,7 +3071,7 @@ if($stepName -in $Steps2Execute)
 
     $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
    
     if($jobNameNew -ne $jobName) {
         $sqlCreateJobCollectWaitStats = $sqlCreateJobCollectWaitStats.Replace($jobName, $jobNameNew)
@@ -3268,7 +3313,7 @@ if($stepName -in $Steps2Execute)
 
     $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlCreateJobFileIOStats = $sqlCreateJobFileIOStats.Replace($jobName, $jobNameNew)
     }
@@ -3747,7 +3792,7 @@ if($stepName -in $Steps2Execute)
 
     $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlCreateJobRunLogSaver = $sqlCreateJobRunLogSaver.Replace($jobName, $jobNameNew)
     }
@@ -3867,7 +3912,7 @@ if($stepName -in $Steps2Execute)
 
     $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlCreateJobRunTempDbSaver = $sqlCreateJobRunTempDbSaver.Replace($jobName, $jobNameNew)
     }
@@ -3987,7 +4032,7 @@ if($stepName -in $Steps2Execute)
 
     $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($isExpressEdition) {
         $sqlRunWhoIsActive = $sqlRunWhoIsActive.Replace('@retention_day = 7,', "@retention_day = 2,")
     }
@@ -4113,7 +4158,7 @@ if($stepName -in $Steps2Execute)
     $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace("''DBA''", "''$DbaDatabase''" )
     $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace("'DBA'", "'$DbaDatabase'" )
-    $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlRunBlitzIndexJob = $sqlRunBlitzIndexJob.Replace($jobName, $jobNameNew)
     }
@@ -4236,7 +4281,7 @@ if($stepName -in $Steps2Execute)
     $sqlRunBlitzJob = $sqlRunBlitzJob.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlRunBlitzJob = $sqlRunBlitzJob.Replace("''DBA''", "''$DbaDatabase''" )
     $sqlRunBlitzJob = $sqlRunBlitzJob.Replace("'DBA'", "'$DbaDatabase'" )
-    $sqlRunBlitzJob = $sqlRunBlitzJob.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlRunBlitzJob = $sqlRunBlitzJob.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlRunBlitzJob = $sqlRunBlitzJob.Replace($jobName, $jobNameNew)
     }
@@ -4361,7 +4406,7 @@ if($stepName -in $Steps2Execute)
     $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace('-d "DBA"', "-d `"$DbaDatabase`"")
     $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace("''DBA''", "''$DbaDatabase''" )
     $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace("'DBA'", "'$DbaDatabase'" )
-    $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlRunBlitzIndexWeeklyJob = $sqlRunBlitzIndexWeeklyJob.Replace($jobName, $jobNameNew)
     }
@@ -4487,7 +4532,7 @@ if($stepName -in $Steps2Execute)
 
     $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlCreateJobCollectMemoryClerks = $sqlCreateJobCollectMemoryClerks.Replace($jobName, $jobNameNew)
     }
@@ -4608,7 +4653,7 @@ if($stepName -in $Steps2Execute)
 
     $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlCreateJobCollectPrivilegedInfo = $sqlCreateJobCollectPrivilegedInfo.Replace($jobName, $jobNameNew)
     }
@@ -4728,7 +4773,7 @@ if($stepName -in $Steps2Execute)
 
     $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlCreateJobCollectAgHealthState = $sqlCreateJobCollectAgHealthState.Replace($jobName, $jobNameNew)
     }
@@ -4849,7 +4894,7 @@ if($stepName -in $Steps2Execute -and $isExpressEdition -eq $false)
 
     $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlCreateJobCheckSQLAgentJobs = $sqlCreateJobCheckSQLAgentJobs.Replace($jobName, $jobNameNew)
     }
@@ -4960,7 +5005,7 @@ if($stepName -in $Steps2Execute)
     $sqlCreateJobCaptureAlertMessages = $sqlCreateJobCaptureAlertMessages.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCreateJobCaptureAlertMessages = $sqlCreateJobCaptureAlertMessages.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCreateJobCaptureAlertMessages = $sqlCreateJobCaptureAlertMessages.Replace("@database_name=N'DBA'", "@database_name=N'$DbaDatabase'")
-    $sqlCreateJobCaptureAlertMessages = $sqlCreateJobCaptureAlertMessages.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlCreateJobCaptureAlertMessages = $sqlCreateJobCaptureAlertMessages.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlCreateJobCaptureAlertMessages = $sqlCreateJobCaptureAlertMessages.Replace($jobName, $jobNameNew)
     }
@@ -5232,7 +5277,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
 
     $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlGetAllServerInfoJobFileText = $sqlGetAllServerInfoJobFileText.Replace($jobName, $jobNameNew)
     }
@@ -5362,7 +5407,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
 
     $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlGetAllServerCollectedDataJobFileText = $sqlGetAllServerCollectedDataJobFileText.Replace($jobName, $jobNameNew)
     }
@@ -5492,7 +5537,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
 
     $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace('-S localhost', "-S `"$sqlInstanceOnJobStep`"")
     $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
-    $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlGetAllServerDashboardMailJobFileText = $sqlGetAllServerDashboardMailJobFileText.Replace($jobName, $jobNameNew)
     }
@@ -5731,7 +5776,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace('-S "localhost"', "-S `"$sqlInstanceOnJobStep`"")
     $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace('-d "DBA"', "-d `"$DbaDatabase`"")
-    $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if($jobNameNew -ne $jobName) {
         $sqlCollectLoginExpirationInfoJobFile = $sqlCollectLoginExpirationInfoJobFile.Replace($jobName, $jobNameNew)
     }
@@ -5875,7 +5920,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-S "localhost"', "-S `"$sqlInstanceOnJobStep`"")
     $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace('-d "DBA"', "-d `"$DbaDatabase`"")
-    $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
 
     if($jobNameNew -ne $jobName) {
         $sqlPopulateInventoryTablesJobFileText = $sqlPopulateInventoryTablesJobFileText.Replace($jobName, $jobNameNew)
@@ -6009,7 +6054,7 @@ if($stepName -in $Steps2Execute -and $SqlInstanceToBaseline -eq $InventoryServer
     $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace('-S "localhost"', "-S `"$sqlInstanceOnJobStep`"")
     $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace('-d DBA', "-d `"$DbaDatabase`"")
     $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace('-d "DBA"', "-d `"$DbaDatabase`"")
-    $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace("''some_dba_mail_id@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
+    $sqlSendLoginExpiryEmailsJobFileText = $sqlSendLoginExpiryEmailsJobFileText.Replace("''dba_team@gmail.com''", "''$($DbaGroupMailId -join ';')''" )
     if(-not $GrafanaDashboardPortal.EndsWith('/')) {
         $GrafanaDashboardPortal = "$GrafanaDashboardPortal/"
     }
@@ -6723,6 +6768,13 @@ $addAgentAccountToWindowsGroups = @"
 "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Kindly RDP [$SqlInstanceForPowershellJobs], and execute following commands in Elevated Command Prompt-" | Write-Host -ForegroundColor Cyan
 "$addAgentAccountToWindowsGroups`n" | Write-Host -ForegroundColor Yellow
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Post executing above commands, restart SQLAgent service." | Write-Host -ForegroundColor Cyan
+
+
+if( ($SqlInstanceToBaseline -eq $InventoryServer) -and ([String]::IsNullOrEmpty($url_for_dba_slack_channel) -eq $false) ) {
+    if($url_for_dba_slack_channel -eq 'workspace.slack.com/archives/unique_id') {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Kindly update the [param_value] in table [$InventoryDatabase].dbo.sma_params on [$InventoryServer]." | Write-Host -ForegroundColor Yellow
+    }
+}
 
 $timeTaken = New-TimeSpan -Start $startTime -End $(Get-Date)
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Execution completed in $($timeTaken.TotalSeconds) seconds."

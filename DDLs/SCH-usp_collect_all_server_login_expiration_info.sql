@@ -1,10 +1,13 @@
-USE [DBA]
-GO
+IF DB_NAME() = 'master'
+	raiserror ('Kindly execute all queries in [DBA] database', 20, -1) with log;
+go
 
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
+SET ANSI_PADDING ON;
+SET CONCAT_NULL_YIELDS_NULL ON;
+SET ANSI_WARNINGS ON;
+SET NUMERIC_ROUNDABORT OFF;
+SET ARITHABORT ON;
 GO
 
 CREATE OR ALTER PROCEDURE dbo.usp_collect_all_server_login_expiration_info
@@ -19,7 +22,7 @@ BEGIN
 	Purpose:		Gather login metrics like last_password_set_date, expiry_date etc from each SQLServer using Linked Server object.
 					[dbo].[all_server_login_expiry] is target table.
 
-	Modifications:	2024-07-04 - Ajay - Cleanup & Meta Data Addition
+	Modifications:	2024-08-26 - Ajay - Adding extra column [is_app_login] in dbo.login_email_mapping
 
 	Examples:	
 		exec usp_collect_all_server_login_expiration_info @verbose = 2, @execute = 0, @test_server = '192.168.1.5'				
@@ -165,13 +168,6 @@ BEGIN
 
 	CLOSE curServers
 	DEALLOCATE curServers
-
-	if @execute = 1
-		UPDATE LE SET owner_group_email = LM.owner_group_email 
-		FROM dbo.all_server_login_expiry_info LE 
-		INNER JOIN dbo.login_email_mapping LM 
-			ON LE.sql_instance = LM.sql_instance_ip 
-			AND LE.login_name = LM.login_name
 
 	set @_failed_server_count = (select count(*) from [dbo].[sma_errorlog] where collection_time = @_start_time);
 	if @_failed_server_count > 0 

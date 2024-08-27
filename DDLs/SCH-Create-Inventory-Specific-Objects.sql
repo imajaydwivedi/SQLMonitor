@@ -77,6 +77,7 @@
 	57) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails]
 	58) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails]
 	59) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance]
+	60) Create table dbo.sma_wrapper_sql_server_hosts 
 
 */
 
@@ -848,9 +849,9 @@ begin
 	declare @table_html nvarchar(max);
 	declare @body_html nvarchar(max);
 	declare @footer_html nvarchar(max);
-	declare @dba_team_email_id varchar(125) = 'some_dba_mail_id@gmail.com';
+	declare @dba_team_email_id varchar(125) = 'dba_team@gmail.com';
 
-	if LEFT(@dba_team_email_id,CHARINDEX('@',@dba_team_email_id)-1) = 'some_dba_mail_id'
+	if LEFT(@dba_team_email_id,CHARINDEX('@',@dba_team_email_id)-1) = 'dba_team'
 		select top 1 @dba_team_email_id = dba_group_mail_id from dbo.instance_details where is_enabled = 1 and is_alias = 0;
 
 	if exists (select * from deleted) and exists (select * from inserted)
@@ -1000,7 +1001,7 @@ begin
 		set @action_type = 'insert'
 	end
 
-	-- Check if sql_instance has been 'Disabled'
+	-- Don't allow more than 5 rows in a single UPDATE/DELETE
 	if @action_type in ('update','delete')
 		and (select count(*) from deleted) > 5
 		and @program_name <> 'check-instance-availability.ps1'
@@ -1259,20 +1260,48 @@ if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 	print '37) Create table dbo.sma_params';
 go
 --drop table dbo.sma_params
-IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sma_errorlog]') AND type in (N'U'))
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sma_params]') AND type in (N'U'))
 BEGIN
 	create table dbo.sma_params
 	(	param_key varchar(125) not null,
 		param_value varchar(500) not null,
 		created_date datetime2 not null default sysdatetime(),
-		created_by datetime2 not null default suser_name(),
-		remarks varchar(2000) null
+		created_by varchar(125) not null default suser_name(),
+		remarks varchar(2000) null,
+		[valid_from] DATETIME2 GENERATED ALWAYS AS ROW START HIDDEN NOT NULL
+		,[valid_to] DATETIME2 GENERATED ALWAYS AS ROW END HIDDEN NOT NULL
+		,PERIOD FOR SYSTEM_TIME ([valid_from],[valid_to])
 
 		,constraint pk_sma_params primary key clustered (param_key)
-	);
+	)
+	WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.sma_params_history));;
 END
 go
 
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '37.a) Populate table dbo.sma_params';
+go
+if OBJECT_ID('dbo.sma_params') is not null
+begin
+	-- Populate missing params
+	insert dbo.sma_params (param_key, param_value, remarks)
+	select my_keys.param_key, my_keys.param_value, my_keys.remarks
+	from (values 
+				('dba_team_email_id','dba_team@gmail.com','EMail of DBA Team'),
+				('dba_manager_email_id','dba.manager@gmail.com','EMail of DBA Team Manager'),
+				('sre_vp_email_id','sre.vp@gmail.com','EMail of SRE VP'),
+				('cto_email_id','cto@gmail.com','EMail of CTO'),
+				('noc_email_id','noc@gmail.com','EMail of NOC Team'),
+				('url_for_dba_slack_channel','workspace.slack.com/archives/unique_id','URL for DBA Public Slack Channel For End Users Support'),
+				('GrafanaDashboardPortal','http://localhost:3000/d/','Grafana Dashboard Portal'),
+				('url_login_expiry_dashboard_panel','distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m&viewPanel=885','URL for Login Expiry Panel excluding dashboard Portal path'),
+				('url_for_login_password_reset','#','Portal for Resetting Login Password')
+		) my_keys (param_key, param_value, remarks)
+	left join dbo.sma_params p
+		on p.param_key = my_keys.param_key
+	where p.param_key is null;
+end
+go
 
 
 /* ***** 38) Create table dbo.sma_servers ***************************** */
@@ -1961,6 +1990,7 @@ BEGIN
 		at_server_name		varchar(125) null,
 		[host_name]			varchar(125) null,
 		login_name			varchar(125) not null,
+		[is_app_login]		bit not null,
 		owner_group_email	varchar(2000) not null,
 		created_date		datetime not null default getdate(),
 		created_by			varchar(125) not null default suser_name(),
@@ -2081,12 +2111,14 @@ if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.all_server_login_expiry_info_dashboard') AND type in (N'U'))
 BEGIN	
+	-- drop table dbo.all_server_login_expiry_info_dashboard
 	create table dbo.all_server_login_expiry_info_dashboard
 	(
 		[collection_time] [datetime2](7) NOT NULL,
 		[sql_instance] [varchar](125) not null,
 		[login_name] [varchar](125) not null,
 		[is_sysadmin] [bit] NULL,
+		[is_app_login] [bit] null,
 		[password_last_set_time] [datetime] NULL,
 		[password_expiration] [datetime] NULL,
 		[is_expired] [bit] NULL,
@@ -2123,7 +2155,18 @@ BEGIN
 END
 go
 
-
+/* ***** 60) Create table dbo.sma_wrapper_sql_server_hosts  ***************************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '60) Create table dbo.sma_wrapper_sql_server_hosts';
+go
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_wrapper_sql_server_hosts') AND type in (N'U'))
+BEGIN	
+	create table dbo.sma_wrapper_sql_server_hosts 
+	(	server varchar(125), [host_name] varchar(125), exists_in_DMV bit, exists_in_SM bit, 
+		exists_in_INV bit, disabled_in_INV bit, collection_time datetime2 default getdate()
+	);
+END
+go
 
 
 

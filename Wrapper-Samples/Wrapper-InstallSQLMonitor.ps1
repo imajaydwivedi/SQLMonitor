@@ -21,7 +21,7 @@ $params = @{
     #RemoteSQLMonitorPath = 'C:\SQLMonitor'
     InventoryServer = 'SQLMonitor'
     InventoryDatabase = 'DBA'
-    DbaGroupMailId = 'some_dba_mail_id@gmail.com'
+    DbaGroupMailId = 'dba_team@gmail.com'
     #SqlCredential = $personal
     #WindowsCredential = $DomainCredential
     <#

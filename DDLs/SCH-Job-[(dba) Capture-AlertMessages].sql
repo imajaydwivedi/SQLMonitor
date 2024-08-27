@@ -52,7 +52,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_
 				@error_severity = $(ESCAPE_NONE(A-SEV)), 
 				@error_message = ''$(ESCAPE_SQUOTE(A-MSG))'', 
 				@host_instance = ''$(ESCAPE_SQUOTE(SRVR))'',
-				@recipients = ''some_dba_mail_id@gmail.com'';', 
+				@recipients = ''dba_team@gmail.com'';', 
 		@database_name=N'DBA', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
