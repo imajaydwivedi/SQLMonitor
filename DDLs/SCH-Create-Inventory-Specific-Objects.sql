@@ -2111,6 +2111,7 @@ if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.all_server_login_expiry_info_dashboard') AND type in (N'U'))
 BEGIN	
+	-- drop table dbo.all_server_login_expiry_info_dashboard
 	create table dbo.all_server_login_expiry_info_dashboard
 	(
 		[collection_time] [datetime2](7) NOT NULL,
