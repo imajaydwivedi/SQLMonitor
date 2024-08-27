@@ -1,5 +1,14 @@
-use DBA
+IF DB_NAME() = 'master'
+	raiserror ('Kindly execute all queries in [DBA] database', 20, -1) with log;
 go
+
+SET QUOTED_IDENTIFIER ON;
+SET ANSI_PADDING ON;
+SET CONCAT_NULL_YIELDS_NULL ON;
+SET ANSI_WARNINGS ON;
+SET NUMERIC_ROUNDABORT OFF;
+SET ARITHABORT ON;
+GO
 
 create or alter procedure dbo.usp_wrapper_populate_sma_sql_instance
 	@job_name varchar(255) = '(dba) Populate Inventory Tables',

@@ -1,10 +1,13 @@
-USE [DBA]
-GO
+IF DB_NAME() = 'master'
+	raiserror ('Kindly execute all queries in [DBA] database', 20, -1) with log;
+go
 
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
+SET ANSI_PADDING ON;
+SET CONCAT_NULL_YIELDS_NULL ON;
+SET ANSI_WARNINGS ON;
+SET NUMERIC_ROUNDABORT OFF;
+SET ARITHABORT ON;
 GO
 
 CREATE OR ALTER PROCEDURE dbo.usp_send_login_expiry_emails
