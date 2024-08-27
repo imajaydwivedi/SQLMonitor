@@ -236,8 +236,8 @@ Param (
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-08-25'
-$sqlmonitorVersionDate = '2024-Aug-25'
+$sqlmonitorVersion = '2024-08-27'
+$sqlmonitorVersionDate = '2024-Aug-27'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 <#
     v2024-Sep-30
