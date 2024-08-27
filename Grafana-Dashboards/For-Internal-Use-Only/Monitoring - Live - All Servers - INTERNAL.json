@@ -25,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 21,
+  "id": 4,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -2200,7 +2200,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -2222,7 +2223,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "purple"
+                          "color": "purple",
+                          "value": null
                         }
                       ]
                     }
@@ -2245,7 +2247,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -2292,7 +2295,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "dark-blue"
+                          "color": "dark-blue",
+                          "value": null
                         }
                       ]
                     }
@@ -2455,7 +2459,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "orange",
@@ -2497,7 +2502,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "yellow",
@@ -2543,7 +2549,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -2622,7 +2629,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "10.4.5",
+          "pluginVersion": "11.1.4",
           "targets": [
             {
               "alias": "",
@@ -5445,7 +5452,7 @@
         "x": 0,
         "y": 10
       },
-      "id": 874,
+      "id": 889,
       "panels": [
         {
           "datasource": {
@@ -6317,21 +6324,25 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 66
+            "y": 25
           },
           "id": 119,
-          "links": [],
           "options": {
             "folderId": 4,
+            "includeVars": false,
+            "keepTime": false,
             "maxItems": 10,
             "query": "",
+            "showFolderNames": false,
             "showHeadings": false,
             "showRecentlyViewed": false,
             "showSearch": true,
             "showStarred": false,
-            "tags": []
+            "tags": [
+              "sqlmonitor"
+            ]
           },
-          "pluginVersion": "9.4.7",
+          "pluginVersion": "11.1.4",
           "title": "Other Dashboards",
           "type": "dashlist"
         }
@@ -6364,7 +6375,7 @@
         "current": {
           "selected": false,
           "text": "SQLMonitor",
-          "value": "ygPVA4snk"
+          "value": "a28aeb06-bb6e-4c74-81af-65de433776c8"
         },
         "description": "SQLMonitor Inventory Server Name",
         "hide": 2,
@@ -6435,8 +6446,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724421001587",
-          "value": "1724421001587"
+          "text": "1724770060881",
+          "value": "1724770060881"
         },
         "datasource": {
           "type": "mssql",
@@ -7139,8 +7150,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "7",
+          "value": "7"
         },
         "datasource": {
           "type": "mssql",
@@ -7211,8 +7222,8 @@
       {
         "current": {
           "selected": false,
-          "text": "2",
-          "value": "2"
+          "text": "5",
+          "value": "5"
         },
         "datasource": {
           "type": "mssql",
@@ -7259,8 +7270,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -7283,8 +7294,8 @@
       {
         "current": {
           "selected": false,
-          "text": "16",
-          "value": "16"
+          "text": "25",
+          "value": "25"
         },
         "datasource": {
           "type": "mssql",
@@ -7307,8 +7318,8 @@
       {
         "current": {
           "selected": false,
-          "text": "0",
-          "value": "0"
+          "text": "5",
+          "value": "5"
         },
         "datasource": {
           "type": "mssql",
@@ -7331,8 +7342,8 @@
       {
         "current": {
           "selected": false,
-          "text": "7",
-          "value": "7"
+          "text": "5",
+          "value": "5"
         },
         "datasource": {
           "type": "mssql",
@@ -7379,8 +7390,8 @@
       {
         "current": {
           "selected": false,
-          "text": "2",
-          "value": "2"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -7524,8 +7535,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724420921033",
-          "value": "1724420921033"
+          "text": "1724770001384",
+          "value": "1724770001384"
         },
         "datasource": {
           "type": "mssql",
@@ -7548,8 +7559,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724421001587",
-          "value": "1724421001587"
+          "text": "1724770060881",
+          "value": "1724770060881"
         },
         "datasource": {
           "type": "mssql",
@@ -7572,8 +7583,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724420621307",
-          "value": "1724420621307"
+          "text": "1724769546005",
+          "value": "1724769546005"
         },
         "datasource": {
           "type": "mssql",
@@ -7596,8 +7607,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724421001870",
-          "value": "1724421001870"
+          "text": "1724769605043",
+          "value": "1724769605043"
         },
         "datasource": {
           "type": "mssql",
@@ -7620,8 +7631,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724420402113",
-          "value": "1724420402113"
+          "text": "1724767762743",
+          "value": "1724767762743"
         },
         "datasource": {
           "type": "mssql",
@@ -7644,8 +7655,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724420400920",
-          "value": "1724420400920"
+          "text": "1724769300556",
+          "value": "1724769300556"
         },
         "datasource": {
           "type": "mssql",
@@ -7668,8 +7679,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724420401326",
-          "value": "1724420401326"
+          "text": "1724767760840",
+          "value": "1724767760840"
         },
         "datasource": {
           "type": "mssql",
@@ -7692,8 +7703,8 @@
       {
         "current": {
           "selected": false,
-          "text": "",
-          "value": ""
+          "text": "1724769901236",
+          "value": "1724769901236"
         },
         "datasource": {
           "type": "mssql",
@@ -7716,8 +7727,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724421001353",
-          "value": "1724421001353"
+          "text": "1724769900896",
+          "value": "1724769900896"
         },
         "datasource": {
           "type": "mssql",
@@ -7740,8 +7751,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724421001513",
-          "value": "1724421001513"
+          "text": "1724769901120",
+          "value": "1724769901120"
         },
         "datasource": {
           "type": "mssql",
@@ -7803,6 +7814,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - All Servers",
   "uid": "distributed_live_dashboard_all_servers",
-  "version": 180,
+  "version": 12,
   "weekStart": ""
 }
