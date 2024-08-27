@@ -19,7 +19,8 @@ BEGIN
 	Purpose:		Populate table dbo.sma_servers.
 					[dbo].[usp_populate_sma_servers] is target table.
 
-	Modifications:	2024-07-24 - Ajay - First draft
+	Modifications:	2024-08-27 - Ajay - Adding code to find possible decomissioned hosts
+					2024-07-24 - Ajay - First draft
 
 	Examples:	
 		exec usp_populate_sma_sql_instance @server = '21L-LTPABL-1187', @verbose = 2
@@ -33,6 +34,7 @@ BEGIN
 	declare @_crlf nchar(2) = char(10)+char(13);
 	declare @_long_star_line varchar(500) = replicate('*',75);
 	declare @_server_count int = 0;
+	declare @_rows_affected int = 0;
 
 	declare @_failed_server_count int = 0;
 	declare	@_errorNumber int,
@@ -367,7 +369,8 @@ BEGIN
 		end
 
 		if @execute = 1
-		begin			
+		begin
+			-- insert NEW host entries
 			if exists (select * from #sma_sql_server_hosts t left join dbo.sma_sql_server_hosts h 
 						on t.server = h.server and t.host_name = h.host_name where h.host_name is null
 					)
@@ -381,9 +384,50 @@ BEGIN
 				from #sma_sql_server_hosts t left join dbo.sma_sql_server_hosts h 
 					on t.server = h.server and t.host_name = h.host_name 
 				where h.host_name is null;
+
+				set @_rows_affected = @@ROWCOUNT;
+
+				print convert(varchar,@_rows_affected)+' hosts added for '+quotename(@server)+' server in dbo.sma_sql_server_hosts';
 			end
 			else
-				print quotename(@server)+' server hosts already present in dbo.sma_sql_server_hosts';
+				print 'No new entries for '+quotename(@server)+' server in dbo.sma_sql_server_hosts.';
+
+			-- Find list of hosts that are possibily decomissioned
+			if OBJECT_ID('tempdb..#possible_decomissioned_hosts') is not null
+				drop table #possible_decomissioned_hosts;
+			select h.*
+			into #possible_decomissioned_hosts
+			from dbo.sma_sql_server_hosts h 
+			left join #sma_sql_server_hosts t
+				on t.server = h.server and t.host_name = h.host_name
+			where h.server = @server
+			and t.host_name is null and h.is_decommissioned = 0;
+
+			if @verbose >= 2
+			begin
+				select RunningQuery, t.* from  #possible_decomissioned_hosts t
+				full outer join (select RunningQuery = '#possible_decomissioned_hosts') rq on 1=1;
+			end
+
+			-- If OLD host entries, then populate wrapper table to decide later
+			--if exists (select * from dbo.sma_sql_server_hosts h left join #sma_sql_server_hosts t
+			--			on t.server = h.server and t.host_name = h.host_name
+			--			where h.host_name is null and h.is_decommissioned = 0
+			--			and h.server = @server
+			--		)
+			--begin
+			--	insert dbo.sma_wrapper_sql_server_hosts
+			--	([server], [host_name], exists_in_DMV, exists_in_SM, exists_in_INV, disabled_in_INV, collection_time)
+			--	select server, [host_name], exists_in_DMV, exists_in_SM, exists_in_INV, disabled_in_INV, @_start_time
+			--	from #sma_sql_server_hosts t
+			--	where not ([exists_in_DMV] = 1 and [exists_in_INV] = 0);
+
+			--	set @_rows_affected = @@ROWCOUNT;
+
+			--	print convert(varchar,@_rows_affected)+' hosts added for '+quotename(@server)+' server in dbo.sma_wrapper_sql_server_hosts';
+			--end
+			--else
+			--	print 'No new entries for '+quotename(@server)+' server in dbo.sma_wrapper_sql_server_hosts.';
 		end
 	end
 

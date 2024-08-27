@@ -41,7 +41,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_
 		@retry_interval=0, 
 		@os_run_priority=0, 
 		@subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerDashboardMail" -d DBA -Q "EXEC dbo.usp_GetAllServerDashboardMail @recipients = ''some_dba_mail_id@gmail.com'', @only_threshold_validated = 1, @send_mail = 1, @verbose = 0;"', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerDashboardMail" -d DBA -Q "EXEC dbo.usp_GetAllServerDashboardMail @recipients = ''dba_team@gmail.com'', @only_threshold_validated = 1, @send_mail = 1, @verbose = 0;"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1

@@ -23,7 +23,7 @@ ALTER PROCEDURE [dbo].[usp_check_sql_agent_jobs]
 	@send_error_mail bit = 1, /* Send mail on failure */
 	@default_threshold_continous_failure tinyint = 2, /* Send mail only when failure is x times continously */
 	@default_notification_delay_minutes tinyint = 15, /* Send mail only after a gap of x minutes from last mail */ 
-	@default_mail_recipient varchar(500) = 'some_dba_mail_id@gmail.com', /* Folks who receive the failure mail */
+	@default_mail_recipient varchar(500) = 'dba_team@gmail.com', /* Folks who receive the failure mail */
 	@alert_key varchar(100) = 'Check-SQLAgentJobs', /* Subject of Failure Mail */
 	@reset_stats bit = 0, /* truncate table dbo.sql_agent_job_stats */
 	@consider_disabled_jobs bit = 1, /* fetch history for disabled jobs also */
@@ -43,8 +43,8 @@ BEGIN
 						2023-05-08 - Ajay=> Initial Draft	
 						2023-08-16 - Ajay => BugFix - Jobs which does not exist are not getting updated in column dbo.sql_agent_job_thresholds.IsNotFound
 
-		EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = 'some_dba_mail_id@gmail.com'
-		EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = 'some_dba_mail_id@gmail.com', @verbose = 2 ,@drop_recreate = 1
+		EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = 'dba_team@gmail.com'
+		EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = 'dba_team@gmail.com', @verbose = 2 ,@drop_recreate = 1
 	
 		Additional Requirements
 		1) Default Global Mail Profile
@@ -56,7 +56,7 @@ BEGIN
 	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 	SET LOCK_TIMEOUT 60000; -- 60 seconds
 
-	IF (@default_mail_recipient IS NULL OR @default_mail_recipient = 'some_dba_mail_id@gmail.com') AND @verbose = 0
+	IF (@default_mail_recipient IS NULL OR @default_mail_recipient = 'dba_team@gmail.com') AND @verbose = 0
 		raiserror ('@default_mail_recipient is mandatory parameter', 20, -1) with log;
 
 	DECLARE @_output VARCHAR(8000);

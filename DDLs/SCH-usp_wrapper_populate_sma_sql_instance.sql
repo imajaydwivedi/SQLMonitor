@@ -2,10 +2,6 @@ use DBA
 go
 
 create or alter procedure dbo.usp_wrapper_populate_sma_sql_instance
-	@dba_team_email_id varchar(125) = 'dba@gmail.com',
-	@dba_manager_email_id varchar(125) = 'dba.manager@gmail.com', /* Email for DBA Manager */
-	@sre_vp_email_id varchar(125) = 'sre.vp@gmail.com', /* Email for SRE Senior VP */
-	@url_dashboard varchar(2000) = 'https://sqlmonitor.ajaydwivedi.com:3000/SQLServer/d/distributed_live_dashboard/monitoring-live-distributed?orgId=1',
 	@job_name varchar(255) = '(dba) Populate Inventory Tables',
 	@send_mail bit = 1,
 	@verbose tinyint = 0,
@@ -18,22 +14,47 @@ begin
 
 		exec dbo.usp_wrapper_populate_sma_sql_instance @send_mail = 0, @verbose = 2, @truncate_log_table = 0
 
-		exec dbo.usp_wrapper_populate_sma_sql_instance
-					@dba_team_email_id = 'sqlagentservice@gmail.com',
-					@dba_manager_email_id = 'sqlagentservice@gmail.com',
-					@sre_vp_email_id = 'sqlagentservice@gmail.com',
-					@send_mail = 1, @verbose = 2, @truncate_log_table = 0
+		exec dbo.usp_wrapper_populate_sma_sql_instance @send_mail = 1, @verbose = 2, @truncate_log_table = 0
 
 */
 	set nocount on;
 
-	if @verbose >= 1
-		print 'Declaring variables..';
 	declare @_start_time datetime2 = sysdatetime();
+	if @verbose >= 1
+		print 'Declare variables..'
+
+	declare @dba_team_email_id varchar(125) = 'dba_team@gmail.com'
+	declare @dba_manager_email_id varchar(125) = 'dba.manager@gmail.com' /* Email for DBA Manager */
+	declare @sre_vp_email_id varchar(125) = 'sre.vp@gmail.com' /* Email for SRE Senior VP */
+	declare @cto_email_id varchar(125) = 'cto@gmail.com' /* Email for CTO */
+	declare @noc_email_id varchar(125) = 'noc@gmail.com' /* NOC team */
+	declare @url_for_GrafanaDashboardPortal varchar(1000) = 'http://localhost:3000/d/';
+
+	select @dba_team_email_id = p.param_value from dbo.sma_params p where p.param_key = 'dba_team_email_id';
+	select @dba_manager_email_id = p.param_value from dbo.sma_params p where p.param_key = 'dba_manager_email_id';
+	select @sre_vp_email_id = p.param_value from dbo.sma_params p where p.param_key = 'sre_vp_email_id';
+	select @cto_email_id = p.param_value from dbo.sma_params p where p.param_key = 'cto_email_id';
+	select @noc_email_id = p.param_value from dbo.sma_params p where p.param_key = 'noc_email_id';
+	select @url_for_GrafanaDashboardPortal = p.param_value from dbo.sma_params p where p.param_key = 'GrafanaDashboardPortal';
+	
+
+	IF (@dba_team_email_id IS NULL OR @dba_team_email_id = 'dba_team@gmail.com')
+		raiserror ('@dba_team_email_id is mandatory parameter', 20, -1) with log;
+	IF (@dba_manager_email_id IS NULL OR @dba_manager_email_id = 'dba.manager@gmail.com') AND @verbose = 0
+		raiserror ('@dba_manager_email_id is mandatory parameter', 20, -1) with log;
+	IF (@sre_vp_email_id IS NULL OR @sre_vp_email_id = 'sre.vp@gmail.com') AND @verbose = 0
+		raiserror ('@sre_vp_email_id is mandatory parameter', 20, -1) with log;
+	IF (@noc_email_id IS NULL OR @noc_email_id = 'noc@gmail.com') AND @verbose = 0
+		raiserror ('@noc_email_id is mandatory parameter', 20, -1) with log;
+	IF (@cto_email_id IS NULL OR @cto_email_id = 'cto@gmail.com') AND @verbose = 0
+		raiserror ('@cto_email_id is mandatory parameter', 20, -1) with log;
+
 	declare @_sql_instance varchar(125);
 	declare @_id int;
 	declare @_crlf nchar(2) = char(10)+char(13);
 	declare @_long_star_line varchar(500) = replicate('*',75);
+
+	declare @_url_individual_server_dashboard varchar(2000) = @url_for_GrafanaDashboardPortal+'distributed_live_dashboard/monitoring-live-distributed?orgId=1'
 
 	declare @_mail_subject varchar(max)
 	declare @_mail_html nvarchar(max)
@@ -59,6 +80,11 @@ begin
 
 	if ('Populate-Inventory-Tables' = 'Populate-Inventory-Tables')
 	begin
+		-- This table contains host entries that need DBA attention
+		if @verbose >= 1
+			print 'truncate table dbo.sma_wrapper_sql_server_hosts;'
+		truncate table dbo.sma_wrapper_sql_server_hosts;
+
 		if @truncate_log_table = 1
 		begin
 			if @verbose >= 1
@@ -282,7 +308,7 @@ begin
 			)
 			,t_table_rows as (
 				select	'<tr>'
-							+'<td class="bg_key"><a href="'+@url_dashboard+'&var-server='+server+'" target="_blank">'+server+'</a></td>'
+							+'<td class="bg_key"><a href="'+@_url_individual_server_dashboard+'&var-server='+server+'" target="_blank">'+server+'</a></td>'
 							+'<td>'+coalesce(convert(varchar,server_port),' ')+'</td>'
 							+'<td>'+coalesce(domain,' ')+'</td>'
 							+'<td>'+convert(varchar,stability)+'</td>'
@@ -307,7 +333,7 @@ begin
 									+@_style_css
 									+N'</head>'
 									+N'<body>'
-									+N'<h1><a href="'+@url_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
+									+N'<h1><a href="'+@_url_individual_server_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
 									+N'<p>'+@_mail_html_body+N'</p>'
 									+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
 									+N'</body>';	
@@ -411,7 +437,7 @@ begin
 				
 			;with t_table_rows as (
 				select	'<tr>'
-							+'<td class="bg_key"><a href="'+@url_dashboard+'&var-server='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
+							+'<td class="bg_key"><a href="'+@_url_individual_server_dashboard+'&var-server='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
 							+'<td>'+coalesce(convert(varchar,sql_instance_port),' ')+'</td>'
 							+'<td>'+coalesce(linked_server_data_source,' ')+'</td>'
 							+'<td>'+coalesce(sql_instance_with_port,' ')+'</td>'
@@ -433,7 +459,7 @@ begin
 									+@_style_css
 									+N'</head>'
 									+N'<body>'
-									+N'<h1><a href="'+@url_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
+									+N'<h1><a href="'+@_url_individual_server_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
 									+N'<p>'+@_mail_html_body+N'</p>'
 									+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
 									+N'</body>';	
@@ -573,7 +599,7 @@ begin
 				)
 				,t_table_rows as (
 					select	'<tr>'
-								+'<td class="bg_key"><a href="'+@url_dashboard+'&var-server='+related_server+'" target="_blank">'+related_server+'</a></td>'
+								+'<td class="bg_key"><a href="'+@_url_individual_server_dashboard+'&var-server='+related_server+'" target="_blank">'+related_server+'</a></td>'
 								+'<td>'+coalesce(sql_instance_port,server_port,' ')+'</td>'
 								+'<td>'+coalesce(host_name,' ')+'</td>'
 								+'<td>'+coalesce(host_ips,' ')+'</td>'
@@ -596,7 +622,7 @@ begin
 										+@_style_css
 										+N'</head>'
 										+N'<body>'
-										+N'<h1><a href="'+@url_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
+										+N'<h1><a href="'+@_url_individual_server_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
 										+N'<p>'+@_mail_html_body+N'</p>'
 										+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
 										+N'</body>';	
@@ -648,6 +674,125 @@ begin
 		end
 	end -- 'Send-Mail-4-Missing-Servers'
 
+	if ('Send-Mail-4-Wrong-Host-Entries' = 'Send-Mail-4-Wrong-Host-Entries__Wrong')
+	begin
+		set @_table_row_count = 0;
+
+		-- Probable List of hosts missing in SQLMonitor
+		if object_id('tempdb..#hosts') is not null
+			drop table #hosts;
+		select	*
+		--into #hosts
+		from dbo.sma_wrapper_sql_server_hosts h
+
+		-- Send mail for Missing Servers
+		if exists (select * from #hosts)
+		begin
+			print 'Send mail for Missing Servers..';
+
+			set @_table_row_count = (select count(*) from #hosts);
+
+			if @verbose >= 2
+			begin
+				select t.*, h.*
+				from #hosts h
+				full outer join
+					(select RunningQuery = 'Missing-Hosts') t
+					on 1=1;
+			end
+
+			set @_recepient = @dba_team_email_id;
+			set @_copy_recipients = @dba_manager_email_id
+
+			begin try
+				set @_table_data = null;
+
+				set @_table_headline = N'<h3>Possible list of Hosts missing in SQLMonitor table <code>dbo.instance_details</code></h3>'+@_crlf
+
+				set @_table_header = N'<tr><th>Related Server</th> <th>Possible Port</th> <th>Host Name</th>'
+											+'<th>Host Ip</th> <th>Possible Type</th> <th>Host FQDN</th> </tr>'+@_crlf;
+				
+				;with t_login_info as (
+					select h.related_server, h.server_port, h.sql_instance_port, h.host_name, h.host_ips, h.possible_type, domain, h.host_fqdn
+					from #hosts h
+				)
+				,t_table_rows as (
+					select	'<tr>'
+								+'<td class="bg_key"><a href="'+@_url_individual_server_dashboard+'&var-server='+related_server+'" target="_blank">'+related_server+'</a></td>'
+								+'<td>'+coalesce(sql_instance_port,server_port,' ')+'</td>'
+								+'<td>'+coalesce(host_name,' ')+'</td>'
+								+'<td>'+coalesce(host_ips,' ')+'</td>'
+								+'<td>'+coalesce(possible_type,' ')+'</td>'
+								+'<td>'+coalesce(host_fqdn,' ')+'</td>'
+							+'</tr>' as [table_row]
+					from t_login_info
+				)
+				select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+				from t_table_rows
+
+				set @_mail_html_body = @_table_headline+'<div class="tableContainerDiv"><table border="1">'
+										+'<caption>'+convert(varchar,@_table_row_count)+' rows</caption>'
+										+'<thead>'+@_table_header+'</thead><tbody>'+isnull(@_table_data,'')+'</tbody></table></div>'+@_crlf;
+
+				set @_mail_subject = 'Possible Hosts Missing in SQLMonitor'+' - '+convert(varchar,@_start_time,120);
+				set @_mail_html = '<html>'
+										+N'<head>'
+										+N'<title>'+@_mail_subject+'</title>'
+										+@_style_css
+										+N'</head>'
+										+N'<body>'
+										+N'<h1><a href="'+@_url_individual_server_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
+										+N'<p>'+@_mail_html_body+N'</p>'
+										+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
+										+N'</body>';	
+				if @verbose >= 1
+				begin
+					print @_long_star_line
+					print '@_table_headline => '+@_crlf+@_table_headline
+					print '@_table_header => '+@_crlf+@_table_header
+					print '@_mail_html_body => '+@_crlf+@_mail_html_body
+					print '@_table_data => '+@_crlf+@_table_data
+					print '@_mail_html => '+@_crlf+@_mail_html+@_crlf
+				end
+
+				if @send_mail = 1
+				begin
+					if @_table_data is not null
+					begin
+						exec msdb.dbo.sp_send_dbmail 
+											@recipients = @_recepient,
+											@copy_recipients = @_copy_recipients,
+											@subject = @_mail_subject,
+											@body = @_mail_html,
+											@importance = 'High',
+											@body_format = 'HTML';
+					end
+				end
+
+			end try
+			begin catch
+				SELECT	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+									'. State: '+convert(varchar,isnull(@_errorState,'')) +
+									'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+									'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error Occurred while sending mail.'+@_crlf+@_errorMessage+@_crlf+@_long_star_line+@_crlf;
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_wrapper_populate_sma_sql_instance', 
+						[function_call_arguments] = 'Send-Mail-4-Missing-Servers', [server] = null, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = program_name();
+			end catch
+		end
+	end -- 'Send-Mail-4-Wrong-Host-Entries'
+
 	-- Send mail for Probable list of Decomissioned Servers
 	if ('Send-Mail-4-Decomissioned-Server' = 'Send-Mail-4-Decomissioned-Server')
 	begin
@@ -693,7 +838,7 @@ begin
 				
 			;with t_table_rows as (
 				select	'<tr>'
-							+'<td class="bg_key"><a href="'+@url_dashboard+'&var-server='+server+'" target="_blank">'+server+'</a></td>'
+							+'<td class="bg_key"><a href="'+@_url_individual_server_dashboard+'&var-server='+server+'" target="_blank">'+server+'</a></td>'
 							+'<td>'+coalesce(convert(varchar,server_port),' ')+'</td>'
 							+'<td>'+coalesce(domain,' ')+'</td>'
 							+'<td>'+coalesce(friendly_name,' ')+'</td>'
@@ -719,7 +864,7 @@ begin
 									+@_style_css
 									+N'</head>'
 									+N'<body>'
-									+N'<h1><a href="'+@url_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
+									+N'<h1><a href="'+@_url_individual_server_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
 									+N'<p>'+@_mail_html_body+N'</p>'
 									+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
 									+N'</body>';	
@@ -840,7 +985,7 @@ begin
 				)
 				,t_table_rows as (
 					select	'<tr>'
-								+'<td class="bg_key"><a href="'+@url_dashboard+'&var-server='+related_server+'" target="_blank">'+related_server+'</a></td>'
+								+'<td class="bg_key"><a href="'+@_url_individual_server_dashboard+'&var-server='+related_server+'" target="_blank">'+related_server+'</a></td>'
 								+'<td>'+coalesce(ag_replicas_CSV,' ')+'</td>'
 								+'<td>'+coalesce(ag_listener_name,' ')+'</td>'
 								+'<td>'+coalesce(ag_listener_ip,' ')+'</td>'
@@ -861,7 +1006,7 @@ begin
 										+@_style_css
 										+N'</head>'
 										+N'<body>'
-										+N'<h1><a href="'+@url_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
+										+N'<h1><a href="'+@_url_individual_server_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
 										+N'<p>'+@_mail_html_body+N'</p>'
 										+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
 										+N'</body>';	
@@ -984,7 +1129,7 @@ begin
 				)
 				,t_table_rows as (
 					select	'<tr>'
-								+'<td class="bg_key"><a href="'+@url_dashboard+'&var-server='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
+								+'<td class="bg_key"><a href="'+@_url_individual_server_dashboard+'&var-server='+sql_instance+'" target="_blank">'+sql_instance+'</a></td>'
 								+'<td>'+coalesce(convert(varchar,sql_instance_port),' ')+'</td>'
 								+'<td>'+coalesce([host_name],' ')+'</td>'
 								+'<td>'+coalesce(convert(varchar,is_enabled),' ')+'</td>'
@@ -1007,7 +1152,7 @@ begin
 										+@_style_css
 										+N'</head>'
 										+N'<body>'
-										+N'<h1><a href="'+@url_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
+										+N'<h1><a href="'+@_url_individual_server_dashboard+'" target="_blank">'+@_mail_subject+'</a></h1>'
 										+N'<p>'+@_mail_html_body+N'</p>'
 										+N'<br><br><br><p>Regards,<br>Job ['+@job_name+']</p>'
 										+N'</body>';	

@@ -294,7 +294,7 @@ begin
 		[collector_tsql_jobs_server] varchar(255) null default convert(varchar,serverproperty('MachineName')),
 		[collector_powershell_jobs_server] varchar(255) null default convert(varchar,serverproperty('MachineName')),
 		[data_destination_sql_instance] varchar(255) null default convert(varchar,serverproperty('MachineName')),
-		[dba_group_mail_id] varchar(2000) not null default 'some_dba_mail_id@gmail.com',
+		[dba_group_mail_id] varchar(2000) not null default 'dba_team@gmail.com',
 		[sqlmonitor_script_path] varchar(2000) not null default 'C:\SQLMonitor',
 		[sqlmonitor_version] varchar(20) not null default '1.1.0',		
 
@@ -322,7 +322,7 @@ begin
 			--[collector_powershell_jobs_server] = convert(varchar,CONNECTIONPROPERTY('local_net_address')),
 			[data_destination_sql_instance] = convert(varchar,serverproperty('MachineName')),
 			--[data_destination_sql_instance] = convert(varchar,CONNECTIONPROPERTY('local_net_address')),
-			[dba_group_mail_id] = 'some_dba_mail_id@gmail.com',
+			[dba_group_mail_id] = 'dba_team@gmail.com',
 			[sqlmonitor_script_path] = 'C:\SQLMonitor'
 end
 go

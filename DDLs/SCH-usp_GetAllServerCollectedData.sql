@@ -616,7 +616,8 @@ full outer join
 	t_all_latest_backups b
 	on d.name = b.database_name
 where d.name not in (''tempdb'')
-and d.state_desc not in (''OFFLINE'')
+and d.state_desc not in (''OFFLINE'',''RECOVERY_PENDING'', ''SUSPECT'', ''EMERGENCY'', ''RESTORING'')
+and d.is_read_only = 0
 order by [database_name], [backup_start_date_utc];';
 
 			-- Decorate for remote query if LinkedServer

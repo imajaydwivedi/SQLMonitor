@@ -19,7 +19,7 @@ ALTER PROCEDURE dbo.usp_wrapper_GetAllServerInfo
 	@notification_delay_minutes tinyint = 10, /* Send mail only after a gap of x minutes from last mail */ 
 	@is_test_alert bit = 0, /* enable for alert testing */
 	@verbose tinyint = 0, /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
-	@recipients varchar(500) = 'some_dba_mail_id@gmail.com', /* Folks who receive the failure mail */
+	@recipients varchar(500) = 'dba_team@gmail.com', /* Folks who receive the failure mail */
 	@alert_key varchar(100) = 'Get-AllServerInfo', /* Subject of Failure Mail */
 	@send_error_mail bit = 1, /* Send mail on failure */
 	@step_name varchar(100) = 'dbo.all_server_stable_info',
@@ -35,10 +35,10 @@ BEGIN
 						2023-06-19 - Enhancement#262 - Add is_enabled field
 						2023-04-02 - Initial Draft
 
-		EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = 'some_dba_mail_id@gmail.com', @step_name = 'dbo.all_server_stable_info'
-		EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = 'some_dba_mail_id@gmail.com', @step_name = 'dbo.all_server_volatile_info'
-		EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = 'some_dba_mail_id@gmail.com', @step_name = 'dbo.all_server_collection_latency_info'
-		EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = 'some_dba_mail_id@gmail.com', @step_name = 'dbo.usp_populate__all_server_volatile_info_history'
+		EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = 'dba_team@gmail.com', @step_name = 'dbo.all_server_stable_info'
+		EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = 'dba_team@gmail.com', @step_name = 'dbo.all_server_volatile_info'
+		EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = 'dba_team@gmail.com', @step_name = 'dbo.all_server_collection_latency_info'
+		EXEC dbo.usp_wrapper_GetAllServerInfo @recipients = 'dba_team@gmail.com', @step_name = 'dbo.usp_populate__all_server_volatile_info_history'
 
 		Additional Requirements
 		1) Default Global Mail Profile
@@ -69,7 +69,7 @@ BEGIN
 
 	SET @_job_name = '(dba) '+@alert_key;
 
-	IF (@recipients IS NULL OR @recipients = 'some_dba_mail_id@gmail.com') AND @verbose = 0
+	IF (@recipients IS NULL OR @recipients = 'dba_team@gmail.com') AND @verbose = 0
 		raiserror ('@recipients is mandatory parameter', 20, -1) with log;
 
 	-- Variables for Try/Catch Block

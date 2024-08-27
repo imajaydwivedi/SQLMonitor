@@ -19,7 +19,7 @@ ALTER PROCEDURE dbo.usp_collect_file_io_stats
 	@notification_delay_minutes tinyint = 10, /* Send mail only after a gap of x minutes from last mail */ 
 	@is_test_alert bit = 0, /* enable for alert testing */
 	@verbose tinyint = 0, /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
-	@recipients varchar(500) = 'some_dba_mail_id@gmail.com', /* Folks who receive the failure mail */
+	@recipients varchar(500) = 'dba_team@gmail.com', /* Folks who receive the failure mail */
 	@alert_key varchar(100) = 'Collect-FileIOStats', /* Subject of Failure Mail */
 	@send_error_mail bit = 1 /* Send mail on failure */
 )
@@ -30,7 +30,7 @@ BEGIN
 		Version:		1.1.2
 		Date:			2022-10-20
 
-		EXEC dbo.usp_collect_file_io_stats @recipients = 'some_dba_mail_id@gmail.com'
+		EXEC dbo.usp_collect_file_io_stats @recipients = 'dba_team@gmail.com'
 		EXEC dbo.usp_collect_file_io_stats @verbose = 1
 
 		Additional Requirements
@@ -58,7 +58,7 @@ BEGIN
 	SET @_job_name = '(dba) '+@alert_key;
 	SET @_server_major_version = CONVERT(INT,SERVERPROPERTY ('ProductMajorVersion'));
 
-	IF (@recipients IS NULL OR @recipients = 'some_dba_mail_id@gmail.com') AND @verbose = 0
+	IF (@recipients IS NULL OR @recipients = 'dba_team@gmail.com') AND @verbose = 0
 		raiserror ('@recipients is mandatory parameter', 20, -1) with log;
 
 	-- Variables for Try/Catch Block

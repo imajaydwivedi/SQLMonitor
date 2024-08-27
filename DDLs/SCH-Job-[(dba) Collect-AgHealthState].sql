@@ -43,7 +43,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_
 		@retry_attempts=1, 
 		@retry_interval=1, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Collect-AgHealthState" -d DBA -Q "EXEC dbo.usp_collect_ag_health_state @recipients = ''some_dba_mail_id@gmail.com'';"', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Collect-AgHealthState" -d DBA -Q "EXEC dbo.usp_collect_ag_health_state @recipients = ''dba_team@gmail.com'';"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1

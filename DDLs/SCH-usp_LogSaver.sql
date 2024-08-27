@@ -18,7 +18,7 @@ ALTER PROCEDURE [dbo].[usp_LogSaver]
 	@log_used_gb_threshold int = NULL,
 	@threshold_condition varchar(5) = 'or', /* and | or */
 	@databases varchar(max) = NULL, /* Comma separated list of databases. -ve (negative) if database has to be excluded */
-	@email_recipients varchar(max) = 'some_dba_mail_id@gmail.com',
+	@email_recipients varchar(max) = 'dba_team@gmail.com',
 	@retention_days int = 30,
 	@purge_table bit = 1,
 	@drop_create_table bit = 0,
