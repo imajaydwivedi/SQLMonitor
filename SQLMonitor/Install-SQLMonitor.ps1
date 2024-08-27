@@ -2202,37 +2202,41 @@ and created_date >= DATEADD(hour,-2,getdate())
     }
 
 
-    # Validate if dbo.params data has been customized as per need
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Checking data for [$InventoryDatabase].dbo.sma_params on [$InventoryServer]."
-    $sqlGetSmaParamsData = "select * from [$InventoryDatabase].dbo.sma_params"
-    if($verbose) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$sqlGetSmaParamsData => `n`n`t$sqlGetSmaParamsData"
-    }
-    $resultGetSmaParamsData = @()
-    $resultGetSmaParamsData += $conInventoryServer | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlGetSmaParamsData -EnableException
 
-    if($resultGetSmaParamsData.Count -gt 0) {
-        Write-Debug "Validate SmaParams"
-        $dba_team_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'dba_team_email_id'} | Select-Object -ExpandProperty param_value
-        $dba_manager_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'dba_manager_email_id'} | Select-Object -ExpandProperty param_value
-        $sre_vp_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'sre_vp_email_id'} | Select-Object -ExpandProperty param_value
-        $cto_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'cto_email_id'} | Select-Object -ExpandProperty param_value
-        $noc_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'noc_email_id'} | Select-Object -ExpandProperty param_value
-        $dba_team_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'dba_team_email_id'} | Select-Object -ExpandProperty param_value
-        $GrafanaDashboardPortal = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'GrafanaDashboardPortal'} | Select-Object -ExpandProperty param_value
-        $url_for_dba_slack_channel = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'url_for_dba_slack_channel'} | Select-Object -ExpandProperty param_value
+    # On $InventoryServer => Validate if dbo.params data has been customized as per need 
+    if($InventoryServer -ne $SqlInstanceToBaseline) 
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Checking data for [$InventoryDatabase].dbo.sma_params on [$InventoryServer]."
+        $sqlGetSmaParamsData = "select * from [$InventoryDatabase].dbo.sma_params"
+        if($verbose) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$sqlGetSmaParamsData => `n`n`t$sqlGetSmaParamsData"
+        }
+        $resultGetSmaParamsData = @()
+        $resultGetSmaParamsData += $conInventoryServer | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlGetSmaParamsData -EnableException
 
-        if($dba_team_email_id -eq 'dba_team@gmail.com' -or $dba_manager_email_id -eq 'dba.manager@gmail.com') {
-            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly update the [param_value] in table [$InventoryDatabase].dbo.sma_params on [$InventoryServer]." | Write-Host -ForegroundColor Red
-            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Then re-run this baselining of inventory server.`n" | Write-Host -ForegroundColor Red
+        if($resultGetSmaParamsData.Count -gt 0) {
+            Write-Debug "Validate SmaParams"
+            $dba_team_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'dba_team_email_id'} | Select-Object -ExpandProperty param_value
+            $dba_manager_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'dba_manager_email_id'} | Select-Object -ExpandProperty param_value
+            $sre_vp_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'sre_vp_email_id'} | Select-Object -ExpandProperty param_value
+            $cto_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'cto_email_id'} | Select-Object -ExpandProperty param_value
+            $noc_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'noc_email_id'} | Select-Object -ExpandProperty param_value
+            $dba_team_email_id = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'dba_team_email_id'} | Select-Object -ExpandProperty param_value
+            $GrafanaDashboardPortal = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'GrafanaDashboardPortal'} | Select-Object -ExpandProperty param_value
+            $url_for_dba_slack_channel = $resultGetSmaParamsData | Where-Object {$_.param_key -eq 'url_for_dba_slack_channel'} | Select-Object -ExpandProperty param_value
+
+            if($dba_team_email_id -eq 'dba_team@gmail.com' -or $dba_manager_email_id -eq 'dba.manager@gmail.com') {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly update the [param_value] in table [$InventoryDatabase].dbo.sma_params on [$InventoryServer]." | Write-Host -ForegroundColor Red
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Then re-run this baselining of inventory server.`n" | Write-Host -ForegroundColor Red
+                Start-Sleep -Seconds 1
+                "Kindly fix error of above line" | Write-Error -ErrorAction Stop
+            }
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "No data found in table [$InventoryDatabase].dbo.sma_params on [$InventoryServer].`n" | Write-Host -ForegroundColor Red
             Start-Sleep -Seconds 1
             "Kindly fix error of above line" | Write-Error -ErrorAction Stop
-        }        
-    }
-    else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "No data found in table [$InventoryDatabase].dbo.sma_params on [$InventoryServer].`n" | Write-Host -ForegroundColor Red
-        Start-Sleep -Seconds 1
-        "Kindly fix error of above line" | Write-Error -ErrorAction Stop
+        }
     }
 }
 
@@ -6765,7 +6769,8 @@ $addAgentAccountToWindowsGroups = @"
 "$addAgentAccountToWindowsGroups`n" | Write-Host -ForegroundColor Yellow
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Post executing above commands, restart SQLAgent service." | Write-Host -ForegroundColor Cyan
 
-if(-not [String]::IsNullOrEmpty($url_for_dba_slack_channel)) {
+
+if( ($SqlInstanceToBaseline -eq $InventoryServer) -and ([String]::IsNullOrEmpty($url_for_dba_slack_channel) -eq $false) ) {
     if($url_for_dba_slack_channel -eq 'workspace.slack.com/archives/unique_id') {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Kindly update the [param_value] in table [$InventoryDatabase].dbo.sma_params on [$InventoryServer]." | Write-Host -ForegroundColor Yellow
     }
