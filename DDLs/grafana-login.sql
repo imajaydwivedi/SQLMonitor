@@ -91,3 +91,18 @@ use [DBA]
 if OBJECT_ID('dbo.usp_avg_disk_wait_ms') is not null
 	exec ('grant execute on object::dbo.usp_avg_disk_wait_ms to [grafana]')
 go
+
+use [DBA]
+if OBJECT_ID('dbo.sma_sql_servers') is not null
+	exec ('grant select on object::dbo.sma_sql_servers to [grafana]')
+go
+
+use [DBA]
+if OBJECT_ID('dbo.sma_sql_servers_including_offline') is not null
+	exec ('grant select on object::dbo.sma_sql_servers_including_offline to [grafana]')
+go
+
+use [DBA]
+if OBJECT_ID('dbo.vw_all_server_logins') is not null
+	exec ('grant select on object::dbo.vw_all_server_logins to [grafana]')
+go

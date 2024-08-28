@@ -78,6 +78,7 @@
 	58) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails]
 	59) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance]
 	60) Create table dbo.sma_wrapper_sql_server_hosts 
+	61) Create view dbo.vw_all_server_logins
 
 */
 
@@ -2166,6 +2167,32 @@ BEGIN
 		exists_in_INV bit, disabled_in_INV bit, collection_time datetime2 default getdate()
 	);
 END
+go
+
+/* ***** 61) Create view dbo.vw_all_server_logins ***************************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '61) Create view dbo.vw_all_server_logins';
+go
+create or alter view dbo.vw_all_server_logins
+as
+select	lei.sql_instance, s.server_port, lei.login_name, lei.login_sid, 
+		is_app_login = coalesce(lem.is_app_login, dba.is_app_login),
+		lei.is_sysadmin, login_create_date = lei.create_date,
+		lei.is_expiration_checked, lei.is_policy_checked, ct.server_owner_email,
+		[login_owner_group_email] = coalesce(lem.owner_group_email, dba.owner_group_email), 
+		days_until_expiration, password_expiration, lei.collection_time
+from dbo.server_login_expiry_collection_computed ct
+inner join dbo.all_server_login_expiry_info lei
+	on lei.sql_instance = ct.sql_instance and lei.collection_time = ct.collection_time_latest
+left join dbo.login_email_mapping lem
+	on	lem.sql_instance_ip = lei.sql_instance and lem.login_name = lei.login_name
+		and lem.is_deleted = 0
+outer apply (select dba.owner_group_email, dba.is_app_login from dbo.login_email_mapping dba 
+				where dba.sql_instance_ip = '*' and login_name = lei.login_name) dba
+left join dbo.sma_servers s
+	on s.server = ct.[sql_instance]
+	and s.is_decommissioned = 0
+where 1=1;
 go
 
 
