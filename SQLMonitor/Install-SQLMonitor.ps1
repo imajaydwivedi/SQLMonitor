@@ -236,8 +236,8 @@ Param (
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-08-28'
-$sqlmonitorVersionDate = '2024-Aug-28'
+$sqlmonitorVersion = '2024-08-30'
+$sqlmonitorVersionDate = '2024-Aug-30'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 $clientName = "Wrapper-InstallSQLMonitor.ps1"
 
@@ -285,6 +285,9 @@ $clientName = "Wrapper-InstallSQLMonitor.ps1"
     v1.4.0 - 2023-Mar-31
         -> https://github.com/imajaydwivedi/SQLMonitor/releases/tag/v1.4.0
 #>
+
+# Make sure to remove spaces
+$SqlInstanceToBaseline = $SqlInstanceToBaseline.Trim()
 
 $verbose = $false;
 if ($PSBoundParameters.ContainsKey('Verbose')) { # Command line specifies -Verbose[:$false]
