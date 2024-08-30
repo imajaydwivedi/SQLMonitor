@@ -15,18 +15,6 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="10.253.33.194:bidba.adwivedi">
-          <Created>2024-08-21T10:23:27.4632987+05:30</Created>
-          <Type>SQL</Type>
-          <Server>10.253.33.194</Server>
-          <UserName>bidba.adwivedi</UserName>
-          <Authentication>SQL</Authentication>
-          <InitialDB>DBA_Admin</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
         <ConnectionNode Name="localhost:21L-LTPABL-1187\Ajay">
           <Created>2023-10-09T17:55:17.115376+05:30</Created>
           <Type>SQL</Type>
