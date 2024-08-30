@@ -15,7 +15,7 @@ Param (
     [Parameter(Mandatory=$false)]
     [String]$SqlInstanceForPowershellJobs,
 
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory=$true)]
     [String]$InventoryServer,
 
     [Parameter(Mandatory=$false)]
@@ -290,9 +290,10 @@ Param (
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-08-27'
-$sqlmonitorVersionDate = '2024-Aug-27'
+$sqlmonitorVersion = '2024-08-30'
+$sqlmonitorVersionDate = '2024-Aug-30'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
+$clientName = "Wrapper-RemoveSQLMonitor.ps1"
 <#
     v2024-Sep-30
         -> Issue#51 - Updated objects for Inventory Infra
@@ -306,6 +307,8 @@ $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 
 #>
 
+# Make sure to remove spaces
+$SqlInstanceToBaseline = $SqlInstanceToBaseline.Trim()
 
 $verbose = $false;
 if ($PSBoundParameters.ContainsKey('Verbose')) { # Command line specifies -Verbose[:$false]
@@ -439,9 +442,513 @@ if ($ActionType -eq 'Delete' -and $OnlySteps.Count -gt 0) {
     Write-Error "Stop here. Fix above issue."
 }
 
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'START:', "Removing SQLMonitor.." | Write-Host -ForegroundColor Yellow
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'START:', "Using SQLMonitor v$sqlmonitorVersion released on $sqlmonitorVersionDate.." | Write-Host -ForegroundColor Yellow
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'START:', "For issues, kindly visit $releaseDiscussionURL" | Write-Host -ForegroundColor Yellow
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'START:', "For help, kindly reach out to 'Ajay Dwivedi <ajay.dwivedi2007@gmail.com>'`n" | Write-Host -ForegroundColor Yellow
+
+
+# Set windows credential if valid AD credential is provided as SqlCredential
+if( [String]::IsNullOrEmpty($WindowsCredential) -and (-not [String]::IsNullOrEmpty($SqlCredential)) -and $SqlCredential.UserName -like "*\*" ) {
+    $WindowsCredential = $SqlCredential
+}
+
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceToBaseline = [$SqlInstanceToBaseline]"
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$InventoryServer = [$InventoryServer]"
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$DryRun = $DryRun" | Write-Host -ForegroundColor Cyan
+
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlCredential => "
+$SqlCredential | ft -AutoSize
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$WindowsCredential => "
+$WindowsCredential | ft -AutoSize
+
+# Attempt 01 => Extract PortNo for $SqlInstanceToBaseline parameter value
+$Port4SqlInstanceToBaseline = $null
+$SqlInstanceToBaselineWithOutPort = $SqlInstanceToBaseline
+if($SqlInstanceToBaseline -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceToBaseline = $Matches['PortNo']
+    $SqlInstanceToBaselineWithOutPort = $Matches['SqlInstance']
+}
+
+# Extract PortNo for $InventoryServer
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Extract Port from `$InventoryServer ($InventoryServer).."
+$Port4InventoryServer = $null
+$InventoryServerWithOutPort = $InventoryServer
+if($InventoryServer -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4InventoryServer = $Matches['PortNo']
+    $InventoryServerWithOutPort = $Matches['SqlInstance']
+}
+
+# Evaluate path of Logs Folder
+$SqlInstanceToBaselineWithOutPort_Stripped = $SqlInstanceToBaselineWithOutPort -replace '\\', '_'
+$instanceDetailsFileDirectory = $null
+if(-not [String]::IsNullOrEmpty($PSScriptRoot)) {
+    $SQLMonitorPath = $(Split-Path $PSScriptRoot -Parent)
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SQLMonitorPath = '$SQLMonitorPath'"
+    if(-not (Test-Path "$SQLMonitorPath\Work-Logs")) {
+        New-Item "$SQLMonitorPath\Work-Logs" -ItemType Directory -Verbose:$verbose
+    }
+    $instanceDetailsFileDirectory = "$SQLMonitorPath\Work-Logs"
+}
+else {
+    $instanceDetailsFileDirectory = "$($env:TEMP)"
+}
+
+$instanceDetailsFilePathWithOutHostName = "$instanceDetailsFileDirectory\$SqlInstanceToBaselineWithOutPort_Stripped.xml"
+$instanceDetailsFilePath = $instanceDetailsFilePathWithOutHostName
+if(-not [String]::IsNullOrEmpty($HostName)) {
+    $instanceDetailsFilePath = "$instanceDetailsFileDirectory\$SqlInstanceToBaselineWithOutPort_Stripped"+"__$HostName.xml"
+}
+
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Import dbatools module.."
+Import-Module dbatools -Verbose:$false -Debug:$false
+
+# Setup SQL Connection for Inventory
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating connection for `$InventoryServer ([$InventoryServer].[$InventoryDatabase]).."
+try {
+    $conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database $InventoryDatabase -ClientName $clientName `
+                                    -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
+}
+catch {
+    $errMessage = $_.Exception.Message
+    
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "SQL Connection to `$InventoryServer ($[InventoryServer].[$InventoryDatabase]) failed." | Write-Host -ForegroundColor Red
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "$errMessage" | Write-Host -ForegroundColor Red
+
+    if([String]::IsNullOrEmpty($SqlCredential)) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly provide SqlCredentials." | Write-Host -ForegroundColor Red
+    } else {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly debug the issue based on above error message." | Write-Host -ForegroundColor Red
+    }
+
+    if($InventoryServerWithOutPort -ne $SqlInstanceToBaselineWithOutPort) {
+        if($verbose) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'VERBOSE:', "Inventory server connectivity is required when non-inventory server to remove." | Write-Verbose
+        }
+        Start-Sleep -Seconds 1
+        Write-Error "Stop here. Fix above issue."
+    }
+    else {
+        if(-not (Test-Path $instanceDetailsFilePath)) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "For `$InventoryServer ($InventoryServer), Instance Details XML is not found `$instanceDetailsFilePath ($instanceDetailsFilePath)." | Write-Host -ForegroundColor Red
+
+            Start-Sleep -Seconds 1
+            Write-Error "Stop here. Fix above issue."
+        }
+    }
+}
+
+# Get dbo.instance_details info from InventoryServer
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetching instance_details from Inventory [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details].."
+$instanceDetails = @()
+$instanceDetailsFromXMLFile = @()
+$instanceDetailsActiveHostRecords = @()
+$isMultipleHostRecordIssue = $false
+$isFetchFromInventory = $false
+
+if([String]::IsNullOrEmpty($HostName)) {
+    $sqlInstanceDetails = "select * from dbo.instance_details where sql_instance = '$SqlInstanceToBaselineWithOutPort'"
+}
+else {
+    $sqlInstanceDetails = "select * from dbo.instance_details where sql_instance = '$SqlInstanceToBaselineWithOutPort' and [host_name] = '$HostName'"
+}
+
+try {
+    $instanceDetails += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlInstanceDetails -EnableException
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Trying to filter for Active host records.."
+    $instanceDetailsActiveHostRecords += $instanceDetails | Where-Object {$_.is_enabled -eq $true}
+
+    # No details found in Inventory
+    if($instanceDetails.Count -eq 0) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "No instance details info in Inventory.." | Write-Host -ForegroundColor Yellow
+    }
+
+    # Validate if multiple host record
+    if($instanceDetails.Count -gt 1) 
+    {
+        # Perform all validations based on data fetched from Inventory
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Instance Details info Inventory.."    
+        $instanceDetails | Select-Object source, sql_instance, @{l='port';e={$_.sql_instance_port}}, host_name, `
+                database, sqlmonitor_version, created_date_utc, is_enabled, is_available, @{l='is_link_working';e={$_.is_linked_server_working}} | Format-Table -AutoSize
+        $instanceDetails | Select-Object source, @{l='tsql_jobs_server';e={$_.collector_tsql_jobs_server}}, `
+                @{l='powershell_jobs_server';e={$_.collector_powershell_jobs_server}}, @{l='data_destination';e={$_.data_destination_sql_instance}}, `
+                more_info | Format-Table -AutoSize    
+
+        $isFetchFromInventory = $true
+        $errMessage = "More than one host records found in Inventory for $SqlInstanceToBaseline ($SqlInstanceToBaselineWithOutPort).."
+
+        if($instanceDetailsActiveHostRecords.Count -gt 1) {
+            $isMultipleHostRecordIssue = $true
+            $errMessage = "More than one active host records found in Inventory for $SqlInstanceToBaseline ($SqlInstanceToBaselineWithOutPort).."
+        }
+
+        if($instanceDetailsActiveHostRecords.Count -eq 0) {
+            $isMultipleHostRecordIssue = $true
+            $errMessage = "From Inventory, found multiple hosts records, but none of them is active."
+        }   
+
+        if($isMultipleHostRecordIssue) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "$errMessage" | Write-Host -ForegroundColor Red
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly provide HostName parameter." | Write-Host -ForegroundColor Red
+            Start-Sleep -Seconds 1
+            Write-Error "Stop here. Fix above issue."
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Using active host record for operation."
+            if($verbose) {
+                $instanceDetailsActiveHostRecords | Select-Object source, sql_instance, @{l='port';e={$_.sql_instance_port}}, host_name, `
+                        database, sqlmonitor_version, created_date_utc, is_enabled, is_available, @{l='is_link_working';e={$_.is_linked_server_working}} | Format-Table -AutoSize
+                $instanceDetailsActiveHostRecords | Select-Object source, @{l='tsql_jobs_server';e={$_.collector_tsql_jobs_server}}, `
+                        @{l='powershell_jobs_server';e={$_.collector_powershell_jobs_server}}, @{l='data_destination';e={$_.data_destination_sql_instance}}, `
+                        more_info | Format-Table -AutoSize    
+            }
+        }
+    }
+
+    if($instanceDetails.Count -eq 1 -or $instanceDetailsActiveHostRecords -eq 1)
+    {
+        # Drop XML file if exists
+        if(Test-Path $instanceDetailsFilePath) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Dropping XML file `$instanceDetailsFilePath ($instanceDetailsFilePath) before recreating.."
+            Remove-Item $instanceDetailsFilePath -Force | Out-Null
+        }
+
+        # Get details from active host record if exists
+        if($instanceDetailsActiveHostRecords -eq 1) 
+        {
+            # Create XML file
+            if( -not (Test-Path $instanceDetailsFilePath) ) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating XML file `$instanceDetailsFilePath ($instanceDetailsFilePath).."
+                $instanceDetailsActiveHostRecords | Export-Clixml -Path $instanceDetailsFilePath
+            }
+            
+            # Populate $HostName if empty
+            if([String]::IsNullOrEmpty($HostName)) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Taking `$HostName from inventory based active host record.."
+                $HostName = $instanceDetailsActiveHostRecords[0].host_name
+            }
+
+            # Populate $DbaDatabase if empty
+            if([String]::IsNullOrEmpty($DbaDatabase)) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Taking `$DbaDatabase from inventory based active host record.."
+                $DbaDatabase = $instanceDetailsActiveHostRecords[0].database
+            }
+
+            # If SQL Port is not provided, but should be present
+            if ([String]::IsNullOrEmpty($Port4SqlInstanceToBaseline)) {
+                if (-not [String]::IsNullOrEmpty($instanceDetailsActiveHostRecords[0].sql_instance_port)) {
+                    #if($instanceDetailsActiveHostRecords[0].is_available -eq $true) {
+                        $Port4SqlInstanceToBaseline = $instanceDetailsActiveHostRecords[0].sql_instance_port
+                        #$SqlInstanceToBaseline = "$SqlInstanceToBaseline,$Port4SqlInstanceToBaseline"
+                        #$SqlInstanceToBaselineWithOutPort = $instanceDetailsActiveHostRecords[0].sql_instance
+                    #}
+                }
+            }
+
+            # Populate $SqlInstanceAsDataDestination if empty
+            if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
+               $SqlInstanceAsDataDestination = $instanceDetailsActiveHostRecords[0].data_destination_sql_instance
+            }
+
+            # Populate $SqlInstanceForTsqlJobs if empty
+            if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs)) {
+               $SqlInstanceForTsqlJobs = $instanceDetailsActiveHostRecords[0].collector_tsql_jobs_server
+            }
+
+            # Populate $SqlInstanceForPowershellJobs if empty
+            if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) {
+               $SqlInstanceForPowershellJobs = $instanceDetailsActiveHostRecords[0].collector_powershell_jobs_server
+            }
+        }
+        else 
+        {
+            # Create XML file
+            if( -not (Test-Path $instanceDetailsFilePath) ) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating XML file `$instanceDetailsFilePath ($instanceDetailsFilePath).."
+                $instanceDetails | Export-Clixml -Path $instanceDetailsFilePath
+            }
+                     
+            # Populate $HostName if empty
+            if([String]::IsNullOrEmpty($HostName)) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Taking `$HostName from inventory based host record.."
+                $HostName = $instanceDetails[0].host_name
+            }
+
+            # Populate $DbaDatabase if empty
+            if([String]::IsNullOrEmpty($DbaDatabase)) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Taking `$DbaDatabase from inventory based host record.."
+                $DbaDatabase = $instanceDetails[0].database
+            }
+            
+            # If SQL Port is not provided, but should be present
+            if ([String]::IsNullOrEmpty($Port4SqlInstanceToBaseline)) {
+                if (-not [String]::IsNullOrEmpty($instanceDetails[0].sql_instance_port)) {
+                    $Port4SqlInstanceToBaseline = $instanceDetails[0].sql_instance_port
+                    #$SqlInstanceToBaseline = "$SqlInstanceToBaseline,$Port4SqlInstanceToBaseline"
+                    #$SqlInstanceToBaselineWithOutPort = $instanceDetails[0].sql_instance
+                }
+            }
+
+            # Populate $SqlInstanceAsDataDestination if empty
+            if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
+               $SqlInstanceAsDataDestination = $instanceDetailsActiveHostRecords[0].data_destination_sql_instance
+            }
+
+            # Populate $SqlInstanceForTsqlJobs if empty
+            if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs)) {
+               $SqlInstanceForTsqlJobs = $instanceDetailsActiveHostRecords[0].collector_tsql_jobs_server
+            }
+
+            # Populate $SqlInstanceForPowershellJobs if empty
+            if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) {
+               $SqlInstanceForPowershellJobs = $instanceDetailsActiveHostRecords[0].collector_powershell_jobs_server
+            }
+        }
+    }
+}
+catch {
+    $errMessage = $_.Exception.Message
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Following error occurred while retrieving instance_details from Inventory server-`n$errMessage" | Write-Host -ForegroundColor Red
+    
+    Start-Sleep -Seconds 1
+    Write-Error "Stop here. Fix above issue."
+}
+
+# Read from XML file for later use
+if( (Test-Path $instanceDetailsFilePath) -or (Test-Path $instanceDetailsFilePathWithOutHostName) ) 
+{
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Read XML file.."
+
+    $instanceDetailsFromXMLFile += Import-Clixml $instanceDetailsFilePath
+    if($instanceDetailsFromXMLFile.Count -eq 0) {
+        $instanceDetailsFromXMLFile += Import-Clixml $instanceDetailsFilePathWithOutHostName
+    }
+}
+
+# If $DbaDatabase is empty, then try to read XML file if exists
+if([String]::IsNullOrEmpty($DbaDatabase)) {
+    $DbaDatabase = $instanceDetailsFromXMLFile[0].database
+}
+
+# If $DbaDatabase is empty, throw error as we need DbaDatabase for connection to BaselineServer
+if([String]::IsNullOrEmpty($DbaDatabase)) {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly provide DbaDatabase parameter value." | Write-Host -ForegroundColor Red
+    
+    Start-Sleep -Seconds 1
+    Write-Error "Stop here. Fix above issue."
+}
+
+
+# Attempt 01, Connection for SqlInstanceToBaseline, Using Parameter $SqlInstanceToBaseline
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Connection attempt 01 for `$SqlInstanceToBaseline ([$SqlInstanceToBaseline].[$DbaDatabase]).."
+try {
+    $conSqlInstanceToBaseline = Connect-DbaInstance -SqlInstance $SqlInstanceToBaseline -Database $DbaDatabase -ClientName $clientName `
+                                    -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
+    
+    # Reset PortNo for $SqlInstanceToBaseline as connection is successful
+    $Port4SqlInstanceToBaseline = $null
+    if($SqlInstanceToBaseline -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+        $Port4SqlInstanceToBaseline = $Matches['PortNo']
+    }
+}
+catch {
+    $errMessage = $_.Exception.Message
+    
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Connection attempt 01 for `$SqlInstanceToBaseline ([$SqlInstanceToBaseline].[$DbaDatabase]) failed." | Write-Host -ForegroundColor Red
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "$errMessage" | Write-Host -ForegroundColor Red
+}
+
+# Attempt 02, Connection for SqlInstanceToBaseline, Using Parameter $SqlInstanceToBaseline
+if([String]::IsNullOrEmpty($conSqlInstanceToBaseline)) 
+{
+    # If Server is correct as per inventory, then throw error
+    if($SqlInstanceToBaseline -eq "$SqlInstanceToBaselineWithOutPort,$Port4SqlInstanceToBaseline") {
+        Start-Sleep -Seconds 1
+        Write-Error "Stop here. Fix above issue."
+    }
+
+    # Try PortNo from Inventory data
+    $SqlInstanceToBaselineWithPort = $SqlInstanceToBaselineWithOutPort
+    if(-not [String]::IsNullOrEmpty($Port4SqlInstanceToBaseline)) {
+        $SqlInstanceToBaselineWithPort = "$SqlInstanceToBaselineWithOutPort,$Port4SqlInstanceToBaseline"
+    }
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Connection attempt 02 for `$SqlInstanceToBaseline ([$SqlInstanceToBaselineWithPort].[$DbaDatabase]).."
+    try {
+        $conSqlInstanceToBaseline = Connect-DbaInstance -SqlInstance $SqlInstanceToBaselineWithPort -Database $DbaDatabase -ClientName $clientName `
+                                        -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
+        
+        # Reset PortNo for $SqlInstanceToBaseline as connection is successful
+        $Port4SqlInstanceToBaseline = $null
+        if($SqlInstanceToBaselineWithPort -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+            $Port4SqlInstanceToBaseline = $Matches['PortNo']
+        }
+    }
+    catch {
+        $errMessage = $_.Exception.Message
+    
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Connection attempt 02 for `$SqlInstanceToBaseline ([$SqlInstanceToBaselineWithPort].[$DbaDatabase]) failed." | Write-Host -ForegroundColor Red
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "$errMessage" | Write-Host -ForegroundColor Red
+
+        if([String]::IsNullOrEmpty($SqlCredential)) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly provide SqlCredentials." | Write-Host -ForegroundColor Red
+        } else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly debug the issue based on above error message." | Write-Host -ForegroundColor Red
+        }
+        
+        Start-Sleep -Seconds 1
+        Write-Error "Stop here. Fix above issue."
+    }
+}
+
+
+# If instance_details not found in Inventory, then try on BaselineServer itself
+if( $instanceDetails.Count -eq 0 ) 
+{
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetching instance_details from BaselineServer ([$SqlInstanceToBaseline].[$DbaDatabase]).."
+    try 
+    {
+        $sqlInstanceDetails = "if object_id('dbo.instance_details') is not null $sqlInstanceDetails"
+        $instanceDetails += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlInstanceDetails -EnableException
+
+        # No details found in BaselineServer
+        if($instanceDetails.Count -eq 0) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "No instance details info in BaselineServer.." | Write-Host -ForegroundColor Yellow
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Instance Details info from BaselineServer.."
+            $instanceDetails | Format-Table -AutoSize
+        }
+                
+
+        # Validate if multiple host record
+        if($instanceDetails.Count -gt 1) {
+            $errMessage = "More than one host records found for $SqlInstanceToBaseline ($SqlInstanceToBaselineWithOutPort).."
+
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "$errMessage" | Write-Host -ForegroundColor Red
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly provide HostName parameter." | Write-Host -ForegroundColor Red
+                Start-Sleep -Seconds 1
+                Write-Error "Stop here. Fix above issue."
+        }
+
+        if($instanceDetails.Count -eq 1)
+        {
+            # Populate $HostName if empty
+            if([String]::IsNullOrEmpty($HostName)) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Taking `$HostName from inventory based active host record.."
+                $HostName = $instanceDetailsActiveHostRecords[0].host_name
+            }
+
+            # Drop XML file if exists
+            if(Test-Path $instanceDetailsFilePath) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Dropping XML file `$instanceDetailsFilePath ($instanceDetailsFilePath) before recreating.."
+                Remove-Item $instanceDetailsFilePath -Force | Out-Null
+            }
+            if( -not (Test-Path $instanceDetailsFilePath) ) {
+                "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating XML file `$instanceDetailsFilePath ($instanceDetailsFilePath).."
+                $instanceDetails | Export-Clixml -Path $instanceDetailsFilePath
+            }
+
+            # If SQL Port is not provided, but should be present
+            if ([String]::IsNullOrEmpty($Port4SqlInstanceToBaseline)) {
+                if (-not [String]::IsNullOrEmpty($instanceDetails[0].sql_instance_port)) {
+                    $Port4SqlInstanceToBaseline = $instanceDetails[0].sql_instance_port
+                    #$SqlInstanceToBaseline = "$SqlInstanceToBaseline,$Port4SqlInstanceToBaseline"
+                    #$SqlInstanceToBaselineWithOutPort = $instanceDetails[0].sql_instance
+                }
+            }
+
+            # Populate $SqlInstanceAsDataDestination if empty
+            if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
+                $SqlInstanceAsDataDestination = $instanceDetails[0].data_destination_sql_instance
+            }
+
+            # Populate $SqlInstanceForTsqlJobs if empty
+            if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs)) {
+                $SqlInstanceForTsqlJobs = $instanceDetails[0].collector_tsql_jobs_server
+            }
+
+            # Populate $SqlInstanceForPowershellJobs if empty
+            if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) {
+                $SqlInstanceForPowershellJobs = $instanceDetails[0].collector_powershell_jobs_server
+            }
+        }
+    }
+    catch {
+        $errMessage = $_.Exception.Message
+
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Following error occurred while retrieving instance_details from BaselineServer-`n$errMessage" | Write-Host -ForegroundColor Red
+    
+        Start-Sleep -Seconds 1
+        Write-Error "Stop here. Fix above issue."
+    }
+}
+
+
+# If instance_details not found in Inventory or Baseline server, then try on XML file
+if( $instanceDetailsFromXMLFile.Count -gt 0 -and $instanceDetails.Count -eq 0 ) {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Using instance_details from XML file.." | Write-Host -ForegroundColor Yellow
+    $instanceDetails += $instanceDetailsFromXMLFile
+}
+
+
+# If instance_details still not found, then throw error 
+if( $instanceDetails.Count -eq 0 ) 
+{
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "[$SqlInstanceToBaseline] details not found in Inventory, BaselineServer or XML file.."
+    Write-Error "Stop here. Fix above issue."
+}
+
+
+# If instance_details found, then initialize any empty parameter
+if( $instanceDetails.Count -gt 0)
+{
+    # Assign top instance~host
+    $instanceDetailsForRemoval = $instanceDetails[0]
+
+    # Check if instance_details are fetched from Inventory Server
+    if (Get-Member -inputobject $instanceDetails[0] -name "sqlmonitor_script_path" -Membertype Properties) {
+        $isFetchFromInventory = $true
+    }
+
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Initializing other empty parameters using following details.." | Write-Host -ForegroundColor Yellow
+    $instanceDetailsForRemoval | Format-Table -AutoSize
+
+    if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
+        $SqlInstanceAsDataDestination = $instanceDetailsForRemoval.data_destination_sql_instance
+    }
+
+    if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs)) {
+        $SqlInstanceForTsqlJobs = $instanceDetailsForRemoval.collector_tsql_jobs_server
+    }
+
+    if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) {
+        $SqlInstanceForPowershellJobs = $instanceDetailsForRemoval.collector_powershell_jobs_server
+    }
+
+    if([String]::IsNullOrEmpty($DbaDatabase)) {
+        $DbaDatabase = $instanceDetailsForRemoval.database
+    }
+
+    if([String]::IsNullOrEmpty($HostName)) {
+        $HostName = $instanceDetailsForRemoval.host_name
+    }
+
+    # Details present only in Inventory Server
+    if($isFetchFromInventory) 
+    {
+        # Set SQLMonitor path if non-default
+        if($instanceDetailsForRemoval.sqlmonitor_script_path -ne $RemoteSQLMonitorPath) {
+            $RemoteSQLMonitorPath = $instanceDetailsForRemoval.sqlmonitor_script_path
+        }
+    } 
+}
+
 
 # Add $PowerShellJobSteps to Skip PowerShell Jobs
-if($SqlInstanceToBaseline -ne $SqlInstanceAsDataDestination) {
+if( ($SqlInstanceToBaseline -ne $SqlInstanceAsDataDestination) -and ([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) -eq $false ) {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceToBaseline is not same as `$SqlInstanceAsDataDestination. So skipping `$PowerShellJobSteps.." | Write-Host -ForegroundColor Red
     $SkipRemovePowerShellJobs = $true
     $additionalSkipSteps = @("141__RemovePerfmonFilesFromDisk")
@@ -478,41 +985,12 @@ if($SkipRemoveTsqlJobs -and $SkipRemovePowerShellJobs) {
     $SkipAllJobs = $true
 }
 
-
+# Reject localhost BaselineServer name
 if($SqlInstanceToBaseline -eq '.' -or $SqlInstanceToBaseline -eq 'localhost') {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "'localhost' or '.' are not validate SQLInstance names." | Write-Host -ForegroundColor Red
     Write-Error "Stop here. Fix above issue."
 }
 
-if([String]::IsNullOrEmpty($DbaDatabase)) {
-    "`n`n`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'START:', "Working on server [$SqlInstanceToBaseline].." | Write-Host -ForegroundColor Yellow
-}
-else {
-    "`n`n`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'START:', "Working on server [$SqlInstanceToBaseline] with [$DbaDatabase] database." | Write-Host -ForegroundColor Yellow
-}
-
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'START:', "Removing SQLMonitor.." | Write-Host -ForegroundColor Yellow
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'START:', "Using SQLMonitor v$sqlmonitorVersion released on $sqlmonitorVersionDate.." | Write-Host -ForegroundColor Yellow
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'START:', "For issues, kindly visit $releaseDiscussionURL" | Write-Host -ForegroundColor Yellow
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'START:', "For help, kindly reach out to 'Ajay Dwivedi <ajay.dwivedi2007@gmail.com>'`n" | Write-Host -ForegroundColor Yellow
-
-
-# Set windows credential if valid AD credential is provided as SqlCredential
-if( [String]::IsNullOrEmpty($WindowsCredential) -and (-not [String]::IsNullOrEmpty($SqlCredential)) -and $SqlCredential.UserName -like "*\*" ) {
-    $WindowsCredential = $SqlCredential
-}
-
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceToBaseline = [$SqlInstanceToBaseline]"
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$DryRun = $DryRun" | Write-Host -ForegroundColor Cyan
-
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlCredential => "
-$SqlCredential | ft -AutoSize
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$WindowsCredential => "
-$WindowsCredential | ft -AutoSize
-
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Import dbatools module.."
-Import-Module dbatools -Verbose:$false -Debug:$false
-#Import-Module SqlServer
 
 # Compute steps to execute
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Compute Steps to execute.."
@@ -566,89 +1044,6 @@ if($OnlySteps.Count -gt 0) {
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$StopAtStep -> $StopAtStep.."
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Total steps to execute -> $($Steps2Execute.Count)."
 
-<#
-if($DryRun) {
-    "`n`n" | Write-Host
-    $Steps2Execute
-    "`n`n" | Write-Host
-}
-#>
-
-# Setup SQL Connection for Inventory
-try {
-    if($InventoryServer -ne $SqlInstanceToBaseline) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] Create connection for '$InventoryServer'.."
-        $conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database master -ClientName "Wrapper-RemoveSQLMonitor.ps1" `
-                                                    -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
-    } else {
-        $conInventoryServer = $conSqlInstanceToBaseline
-    }
-}
-catch {
-    $errMessage = $_
-    
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "SQL Connection to [$InventoryServer] failed." | Write-Host -ForegroundColor Red
-    if([String]::IsNullOrEmpty($SqlCredential)) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly provide SqlCredentials." | Write-Host -ForegroundColor Red
-    } else {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Provided SqlCredentials seems to be NOT working." | Write-Host -ForegroundColor Red
-    }
-    Write-Error "Stop here. Fix above issue."
-}
-
-# Check if PortNo is specified
-$Port4SqlInstanceToBaseline = $null
-$SqlInstanceToBaselineWithOutPort = $SqlInstanceToBaseline
-if($SqlInstanceToBaseline -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
-    $Port4SqlInstanceToBaseline = $Matches['PortNo']
-    $SqlInstanceToBaselineWithOutPort = $Matches['SqlInstance']
-}
-
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceToBaselineWithOutPort = '$SqlInstanceToBaselineWithOutPort'"
-
-# Get dbo.instance_details info
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetching info from [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details].."
-$instanceDetails = @()
-if([String]::IsNullOrEmpty($HostName)) {
-    $sqlInstanceDetails = "select * from dbo.instance_details where sql_instance = '$SqlInstanceToBaselineWithOutPort'"
-}
-else {
-    $sqlInstanceDetails = "select * from dbo.instance_details where sql_instance = '$SqlInstanceToBaselineWithOutPort' and [host_name] = '$HostName'"
-}
-try {
-    $instanceDetails += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlInstanceDetails
-
-    if($instanceDetails.Count -eq 1) 
-    {
-        # If SQL Port is not provided, but should be present
-        if ([String]::IsNullOrEmpty($Port4SqlInstanceToBaseline)) 
-        {
-            if (-not [String]::IsNullOrEmpty($instanceDetails.sql_instance_port)) 
-            {
-                $Port4SqlInstanceToBaseline = $instanceDetails.sql_instance_port
-                $SqlInstanceToBaseline = "$SqlInstanceToBaseline,$Port4SqlInstanceToBaseline"
-                $SqlInstanceToBaselineWithOutPort = $instanceDetails.sql_instance
-            }
-        }
-    }
-}
-catch {
-    $errMessage = $_
-
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Could not fetch details from [$InventoryServer].[$InventoryDatabase].[dbo].[instance_details] info."
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "So assuming fresh installation of SQLMonitor."
-}
-
-# Setup SQL Connections
-$conSqlInstanceToBaseline = Connect-DbaInstance -SqlInstance $SqlInstanceToBaseline -Database master -ClientName "Wrapper-RemoveSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
-if($InventoryServer -ne $SqlInstanceToBaseline) {
-    $conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
-                                                -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
-} else {
-    $conInventoryServer = $conSqlInstanceToBaseline
-}
-
 
 # Get Server Info
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetching basic server info.."
@@ -701,106 +1096,10 @@ catch {
 }
 
 # Extract domain & isClustered property
-$SqlInstanceToBaselineWithOutPort_Stripped = $SqlInstanceToBaselineWithOutPort -replace '\\', '_'
 [bool]$isClustered = $dbServiceInfo.is_clustered
 [string]$domain = $dbServiceInfo.domain_reg
 if([String]::IsNullOrEmpty($domain)) {
     $domain = $dbServiceInfo.domain+'.com'
-}
-
-
-# Evaluate path of SQLMonitor folder
-if(-not [String]::IsNullOrEmpty($PSScriptRoot)) {
-    $SQLMonitorPath = $(Split-Path $PSScriptRoot -Parent)
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SQLMonitorPath = '$SQLMonitorPath'"
-    if(-not (Test-Path "$SQLMonitorPath\Work-Logs")) {
-        New-Item "$SQLMonitorPath\Work-Logs" -ItemType Directory -Verbose:$verbose
-    }
-    $instanceDetailsFilePath = "$SQLMonitorPath\Work-Logs\$SqlInstanceToBaselineWithOutPort_Stripped"
-}
-else {
-    $instanceDetailsFilePath = "$($env:TEMP)\$SqlInstanceToBaselineWithOutPort_Stripped"
-}
-
-# Get dbo.instance_details info
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetching info from [dbo].[instance_details].."
-if([String]::IsNullOrEmpty($HostName)) {
-    $sqlInstanceDetails = "select * from dbo.instance_details where sql_instance = '$SqlInstanceToBaselineWithOutPort'"
-}
-else {
-    $instanceDetailsFilePath = $instanceDetailsFilePath + "__$HostName"
-    $sqlInstanceDetails = "select * from dbo.instance_details where sql_instance = '$SqlInstanceToBaselineWithOutPort' and [host_name] = '$HostName'"
-}
-
-$instanceDetailsFilePath = "$instanceDetailsFilePath.xml"
-try {
-    $instanceDetails = @()
-    if($verbose) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Executing following query to fetch instance_details.."
-        $sqlInstanceDetails | Write-Host -ForegroundColor Cyan
-    }
-    $instanceDetails += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlInstanceDetails
-    if($instanceDetails.Count -eq 0) {
-        if($verbose) {
-            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "instance_details not found in [$InventoryServer]. So Trying [$SqlInstanceToBaseline].."
-        }
-        $instanceDetails += $conSqlInstanceToBaseline | Invoke-DbaQuery -Database $DbaDatabase -Query $sqlInstanceDetails -EnableException
-    }
-
-    # If Instance Details file does not exists
-    if( -not (Test-Path $instanceDetailsFilePath) ) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "'$instanceDetailsFilePath' does not exist. So creating.."
-        $instanceDetails | Export-Clixml -Path $instanceDetailsFilePath
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$instanceDetailsFilePath created containing instance details."
-    }
-    else {
-        # If Instance Details file exists
-        $creationTime = Get-ChildItem -Path $instanceDetailsFilePath | select -ExpandProperty CreationTime
-        if((Get-Date).AddDays(-2) -gt $creationTime) {
-            Remove-Item $instanceDetailsFilePath | Out-Null
-        }
-    }
-}
-catch {
-    $errMessage = $_
-
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Could not fetch details from dbo.instance_details info." | Write-Host -ForegroundColor Red
-    $($errMessage.Exception.Message -Split [Environment]::NewLine) | % {"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "$_"} | Write-Host -ForegroundColor Red
-
-    # If Instance Details file does not exists
-    if(Test-Path $instanceDetailsFilePath) {
-        $instanceDetails += Import-Clixml -Path $instanceDetailsFilePath
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Using details from file '$instanceDetailsFilePath'.." | Write-Host -ForegroundColor DarkYellow
-    }
-    elseif ([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs) -or [String]::IsNullOrEmpty($SqlInstanceForPowershellJobs) -or [String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Even file '$instanceDetailsFilePath' was not found." | Write-Host -ForegroundColor Red
-        Write-Error "Stop here. Fix above issue."
-    }
-}
-
-# If no instance details found, then throw error
-if ( $instanceDetails.Count -eq 0 ) {
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Instance details could not be found in [dbo].[instance_details] on either [$InventoryServer] or [$SqlInstanceToBaseline].`n`t`tThis information is required to get HostName & Collector Instance details." | Write-Host -ForegroundColor Red
-    if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs) -or [String]::IsNullOrEmpty($SqlInstanceForPowershellJobs) -or [String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
-        "STOP here, and fix above issue." | Write-Error
-    }
-}
-else {
-    $instanceDetails | ft -AutoSize
-}
-
-# If more than 1 host is found, then confirm from user
-if ( $instanceDetails.Count -gt 1 ) 
-{
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Multiple Hosts detected for SqlInstance [$SqlInstanceToBaseline]." | Write-Host -ForegroundColor DarkRed
-    $instanceDetails | ft -AutoSize
-
-    if($ConfirmValidationOfMultiInstance = $false) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Kindly either specify specific HostName or set ConfirmValidationOfMultiInstance to True.
-                                        When executed with ConfirmValidationOfMultiInstance = `$True, then this infra removes SQLMonitor for 1st HostName from above resultset.
-                                        So this function should be completed enough times to remove SQLMonitor for all Hosts of [$SqlInstanceToBaseline]." | Write-Host -ForegroundColor Red
-        "STOP here, and fix above issue." | Write-Error
-    }
 }
 
 # Assign top instance~host
@@ -858,19 +1157,19 @@ if( ($RemoteSQLMonitorPath -ne $instanceDetailsForRemoval.sqlmonitor_script_path
 if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
     $conSqlInstanceAsDataDestination = $conSqlInstanceToBaseline
 } else {
-    $conSqlInstanceAsDataDestination = Connect-DbaInstance -SqlInstance $SqlInstanceAsDataDestination -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
+    $conSqlInstanceAsDataDestination = Connect-DbaInstance -SqlInstance $SqlInstanceAsDataDestination -Database master -ClientName $clientName `
                                                 -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 }
 if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs)) {
     $conSqlInstanceForTsqlJobs = $conSqlInstanceToBaseline
 } else {
-    $conSqlInstanceForTsqlJobs = Connect-DbaInstance -SqlInstance $SqlInstanceForTsqlJobs -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
+    $conSqlInstanceForTsqlJobs = Connect-DbaInstance -SqlInstance $SqlInstanceForTsqlJobs -Database master -ClientName $clientName `
                                                 -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 }
 if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) {
     $conSqlInstanceForPowershellJobs = $conSqlInstanceToBaseline
 } else {
-    $conSqlInstanceForPowershellJobs = Connect-DbaInstance -SqlInstance $SqlInstanceForPowershellJobs -Database master -ClientName "Wrapper-InstallSQLMonitor.ps1" `
+    $conSqlInstanceForPowershellJobs = Connect-DbaInstance -SqlInstance $SqlInstanceForPowershellJobs -Database master -ClientName $clientName `
                                                 -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
 }
 
@@ -942,9 +1241,11 @@ if( (-not $SkipRDPSessionSteps) ) #-and ($HostName -ne $env:COMPUTERNAME)
         "STOP here, and fix above issue." | Write-Error
     }
 
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$ssn4PerfmonSetup PSSession for [$HostName].."
-    $ssn4PerfmonSetup | Format-Table -AutoSize
-    "`n"
+    if($verbose) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$ssn4PerfmonSetup PSSession for [$HostName].."
+        $ssn4PerfmonSetup | Format-Table -AutoSize
+        "`n"
+    }
 }
 
 
@@ -5277,7 +5578,7 @@ if($stepName -in $Steps2Execute) {
     }
     
     # Remove grafana logins by killing existing sessions
-    Remove-DbaLogin -SqlInstance $conSqlInstanceToBaseline -Login @('grafana') -Confirm:$false -Force
+    Remove-DbaLogin -SqlInstance $conSqlInstanceToBaseline -Login @('grafana') -Confirm:$false -Force | Out-Null
 
 
     $sqlRemoveObject = @"
