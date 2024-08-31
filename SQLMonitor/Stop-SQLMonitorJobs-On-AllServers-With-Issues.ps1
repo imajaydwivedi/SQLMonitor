@@ -14,8 +14,16 @@ Param (
     [String]$AllServerLogin #= 'sa'
 )
 
+$wrapperClientAppName = "Stop-SQLMonitorJobs-On-AllServers-With-Issues.ps1"
+$jobClientAppName = "Inventory-(dba) Stop-StuckSQLMonitorJobs"
+
+$verbose = $false;
+if ($PSBoundParameters.ContainsKey('Verbose')) { # Command line specifies -Verbose[:$false]
+    $verbose = $PSBoundParameters.Get_Item('Verbose')
+}
+
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] Create connection for InventoryServer '$InventoryServer'.."
-$conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database $InventoryDatabase -ClientName "Stop-SQLMonitorJobs-On-AllServers-With-Issues.ps1" `
+$conInventoryServer = Connect-DbaInstance -SqlInstance $InventoryServer -Database $InventoryDatabase -ClientName $wrapperClientAppName `
                                                     -TrustServerCertificate -EncryptConnection -ErrorAction Stop
 
 if(-not [String]::IsNullOrEmpty($AllServerLogin)) 
@@ -84,8 +92,17 @@ set quoted_identifier off;
 
 exec sp_executesql @_sql, @_params, @_buffer_time_minutes = @_buffer_time_minutes;
 "@
+
+if($verbose) {
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "SQL Script to get the relevant jobs -`n$sqlGetAllStuckJobs" | Write-Host -ForegroundColor Cyan
+}
+
 $resultGetAllStuckJobs = @()
 $resultGetAllStuckJobs += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlGetAllStuckJobs;
+
+if($verbose) {
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "$($resultGetAllStuckJobs.Count) jobs found that need start/stop action." | Write-Host -ForegroundColor Cyan
+}
 
 # Execute SQL files & SQL Query
 [System.Collections.ArrayList]$failedJobs = @()
@@ -112,7 +129,7 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
     # Create SQLServer connection
     try {
         "`n`t$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Create connection to [$sqlInstanceWithPort].."
-        $conSqlInstance = Connect-DbaInstance -SqlInstance $sqlInstanceWithPort -Database $database -ClientName "Inventory-(dba) Stop-StuckSQLMonitorJobs" `
+        $conSqlInstance = Connect-DbaInstance -SqlInstance $sqlInstanceWithPort -Database $database -ClientName $jobClientAppName `
                                     -TrustServerCertificate -EncryptConnection -ErrorAction Stop -SqlCredential $allServerLoginCredential
     }
     catch {
@@ -130,8 +147,8 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
 
         $errMessage | Write-Host -ForegroundColor Red
 
-        $errorParams = @{
-            function_name = 'Stop-SQLMonitorJobs-On-AllServers-With-Issues.ps1'
+        $errorParams = [Ordered]@{
+            function_name = $wrapperClientAppName
             function_call_arguments = 'Connect-DbaInstance'
             server = $sqlInstance
             error = $errMessage
@@ -179,7 +196,7 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
                                     Action = 'Stop Job';
                                     Result = 'Successes';
                               }
-                    $successJobs.Add($errObj) | Out-Null
+                    $successJobs.Add($resultObj) | Out-Null
 
                     Start-Sleep -Seconds 5
                 }
@@ -210,6 +227,16 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
                     $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlAddErrorLogEntry `
                                 -EnableException -ErrorAction Stop -SqlParameter $errorParams
                     "`n"
+                }                
+                else {
+                    $resultObj = [PSCustomObject]@{
+                                    SqlInstance = $sqlInstance;
+                                    SqlIntanceWithPort = $sqlInstanceWithPort; 
+                                    JobName = $jobName; 
+                                    Action = 'Stop Job';
+                                    Result = 'Not running.';
+                              }
+                    $successJobs.Add($resultObj) | Out-Null
                 }
             }
 
@@ -218,6 +245,9 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
                 if($StartJob -and $isSqlInstanceAvailable -and $isStartNeeded)
                 {
                     "`t$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Start job [$jobName] on [$sqlInstance].."
+                    $conSqlInstance | Invoke-DbaQuery -CommandType StoredProcedure -EnableException `
+                                    -Database msdb -Query sp_start_job -SqlParameter @{ job_name = $jobName }
+
                     $resultObj = [PSCustomObject]@{
                                     SqlInstance = $sqlInstance;
                                     SqlIntanceWithPort = $sqlInstanceWithPort; 
@@ -225,7 +255,7 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
                                     Action = 'Start Job';
                                     Result = 'Successes';
                               }
-                    $successJobs.Add($errObj) | Out-Null
+                    $successJobs.Add($resultObj) | Out-Null
                 }
             }    
             catch {
@@ -255,6 +285,16 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
                                 -EnableException -ErrorAction Stop -SqlParameter $errorParams
                     "`n"
                 }
+                else {
+                    $resultObj = [PSCustomObject]@{
+                                    SqlInstance = $sqlInstance;
+                                    SqlIntanceWithPort = $sqlInstanceWithPort; 
+                                    JobName = $jobName; 
+                                    Action = 'Start Job';
+                                    Result = 'Already running.';
+                              }
+                    $successJobs.Add($resultObj) | Out-Null
+                }
             }
         }
     }
@@ -262,9 +302,13 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
 
 if($failedJobs.Count -gt 0) {
     #$failedJobs | ogv -Title "Failed"
-    "`nAction on following jobs failed:`n" | Write-Output
-    "`n`t$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Action on following jobs failed:`n"
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Following actions failed:`n"
     $failedJobs | Format-Table -AutoSize
+}
+
+if($successJobs.Count -gt 0) {
+    "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Following action was completed successfully:`n"
+    $successJobs | Format-Table -AutoSize
 }
 #$successJobs | ogv -Title "Successful"
 
