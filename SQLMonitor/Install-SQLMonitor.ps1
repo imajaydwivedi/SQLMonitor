@@ -236,8 +236,8 @@ Param (
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-08-28'
-$sqlmonitorVersionDate = '2024-Aug-28'
+$sqlmonitorVersion = '2024-08-31'
+$sqlmonitorVersionDate = '2024-Aug-31'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 $clientName = "Wrapper-InstallSQLMonitor.ps1"
 
@@ -378,7 +378,7 @@ if ($PSBoundParameters.ContainsKey('Debug')) { # Command line specifies -Debug[:
 [String]$UpdateSqlServerVersionsJobFileName = "SCH-Job-[(dba) Update-SqlServerVersions].sql"
 
 # Check if PortNo is specified for $SqlInstanceToBaseline
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Extract port no from `$SqlInstanceToBaseline ($SqlInstanceToBaseline) if provided."
+#"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Extract port no from `$SqlInstanceToBaseline ($SqlInstanceToBaseline) if provided."
 $Port4SqlInstanceToBaseline = $null
 $SqlInstanceToBaselineWithOutPort = $SqlInstanceToBaseline
 if($SqlInstanceToBaseline -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
@@ -387,7 +387,7 @@ if($SqlInstanceToBaseline -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
 }
 
 # Check if PortNo is specified for $InventoryServer
-"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Extract port no from `$InventoryServer ($InventoryServer) if provided."
+#"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Extract port no from `$InventoryServer ($InventoryServer) if provided."
 $Port4InventoryServer = $null
 $InventoryServerWithOutPort = $InventoryServer
 if($InventoryServer -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
@@ -398,8 +398,10 @@ if($InventoryServer -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
 # Port for $InventoryServer will always be present is it connects on non-default port
 if($SqlInstanceToBaselineWithOutPort -eq $InventoryServerWithOutPort) {
     if($SqlInstanceToBaseline -ne $InventoryServer) {
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Logically InventoryServer & SqlInstanceToBaseline seems same, but still differ in port."
-        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Correcting this different port situation."
+        if($verbose) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Logically InventoryServer & SqlInstanceToBaseline seems same, but still differ in port."
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Correcting this different port situation."
+        }
         $SqlInstanceToBaseline = $InventoryServer
         $Port4SqlInstanceToBaseline = $Port4InventoryServer
     }
@@ -797,7 +799,6 @@ if($verbose) {
 # Local Parameters
 $countHostRecords = 0
 $isInventoryPresent = $false
-$isUpgradeScenario = $false
 $hasMultipleHostRecords = $false
 $hasActiveHostRecords = $false
 $hasMultipleActiveHostRecords = $false
@@ -883,12 +884,26 @@ if($hasActiveHostRecords -and $countActiveHostRecordsFromInventory -eq 1)
     $hostNameFromInventory = $activeHostRecordsFromInventory[0].host_name
     $moreInfoFromInventory = $activeHostRecordsFromInventory[0].more_info
     $dbaGroupMailIdFromInventory = $activeHostRecordsFromInventory[0].dba_group_mail_id
+    $dbaDatabaseFromInventory = $activeHostRecordsFromInventory[0].database
 
     # If $isAvailable, then Port information is correct in dbo.instance_details
     if ($isAvailable) {
         if (-not [String]::IsNullOrEmpty($sqlInstancePortFromInventory)) {
             $SqlInstanceToBaselineWithPortFromInventory = "$SqlInstanceToBaselineWithOutPort,$sqlInstancePortFromInventory"
         }
+    }
+
+    if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
+        $SqlInstanceAsDataDestination = $dataDestinationServerFromInventory
+    }
+    if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs)) {
+        $SqlInstanceForTsqlJobs = $collectorTsqlJobsServerFromInventory
+    }
+    if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) {
+        $SqlInstanceForPowershellJobs = $collectorPSJobsServerFromInventory
+    }
+    if($DbaDatabase -ne $dbaDatabaseFromInventory) {
+        $DbaDatabase = $dbaDatabaseFromInventory
     }
 }
 
@@ -902,11 +917,26 @@ if($hasActiveHostRecords -eq $false -and $countHostRecords -eq 1)
     $collectorPSJobsServerFromInventory = $instanceDetailsFromInventory[0].collector_powershell_jobs_server
     $dataDestinationServerFromInventory = $instanceDetailsFromInventory[0].data_destination_sql_instance
     $dbaGroupMailIdFromInventory = $instanceDetailsFromInventory[0].dba_group_mail_id
+    $dbaDatabaseFromInventory = $activeHostRecordsFromInventory[0].database
+
+    if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
+        $SqlInstanceAsDataDestination = $dataDestinationServerFromInventory
+    }
+    if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs)) {
+        $SqlInstanceForTsqlJobs = $collectorTsqlJobsServerFromInventory
+    }
+    if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) {
+        $SqlInstanceForPowershellJobs = $collectorPSJobsServerFromInventory
+    }
+    if($DbaDatabase -ne $dbaDatabaseFromInventory) {
+        $DbaDatabase = $dbaDatabaseFromInventory
+    }
 }
 
 
 # Attempt 01: Setup SQL Connection for SqlInstanceToBaseline
 [String]$errMessageAttempt1 = $null
+$conSqlInstanceToBaseline = $null
 try {
     if ($SqlInstanceToBaselineWithOutPort -ne $InventoryServerWithOutPort) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] First attempt to create connection for `$SqlInstanceToBaseline ($SqlInstanceToBaseline).."
@@ -930,14 +960,21 @@ catch {
 
 # Attempt 02: Setup SQL Connection for SqlInstanceToBaseline
 [String]$errMessageAttempt2 = $null
-if([String]::IsNullOrEmpty($conSqlInstanceToBaseline) -and $isAvailable) 
+#if([String]::IsNullOrEmpty($conSqlInstanceToBaseline) -and $isAvailable) 
+if([String]::IsNullOrEmpty($conSqlInstanceToBaseline)) 
 {
     try {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Connect-DbaInstance] Second attempt to create connection for `$SqlInstanceToBaseline ($SqlInstanceToBaselineWithPortFromInventory).."
         $conSqlInstanceToBaseline = Connect-DbaInstance -SqlInstance $SqlInstanceToBaselineWithPortFromInventory -Database master -ClientName $clientName `
                                                         -SqlCredential $SqlCredential -TrustServerCertificate -EncryptConnection -ErrorAction Stop -Verbose:$false -Debug:$false
+        
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$conSqlInstanceToBaseline connection created successfully."
         $SqlInstanceToBaseline = $SqlInstanceToBaselineWithPortFromInventory
+
+        if($SqlInstanceToBaseline -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+            $Port4SqlInstanceToBaseline = $Matches['PortNo']
+            $SqlInstanceToBaselineWithOutPort = $Matches['SqlInstance']
+        }
 
         if($verbose) {
             $conSqlInstanceToBaseline
@@ -964,6 +1001,39 @@ if([String]::IsNullOrEmpty($conSqlInstanceToBaseline)) {
         Start-Sleep -Seconds 1
         Write-Error "Stop here. Fix above issue."
     }
+}
+
+# Extract port no for DataDestination server
+$Port4SqlInstanceAsDataDestination = $null
+if($SqlInstanceAsDataDestination -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceAsDataDestination = $Matches['PortNo']
+    $SqlInstanceAsDataDestinationWithOutPort = $Matches['SqlInstance']
+}
+if($SqlInstanceToBaselineWithOutPort -eq $SqlInstanceAsDataDestinationWithOutPort) {
+    $SqlInstanceAsDataDestination = $SqlInstanceToBaseline
+    $Port4SqlInstanceAsDataDestination = $Port4SqlInstanceToBaseline
+}
+
+# Extract port no for DataDestination server
+$Port4SqlInstanceForTsqlJobs = $null
+if($SqlInstanceForTsqlJobs -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceForTsqlJobs = $Matches['PortNo']
+    $SqlInstanceForTsqlJobsWithOutPort = $Matches['SqlInstance']
+}
+if($SqlInstanceToBaselineWithOutPort -eq $SqlInstanceForTsqlJobsWithOutPort) {
+    $SqlInstanceForTsqlJobs = $SqlInstanceToBaseline
+    $Port4SqlInstanceForTsqlJobs = $Port4SqlInstanceToBaseline
+}
+
+# Extract port no for DataDestination server
+$Port4SqlInstanceForPowershellJobs = $null
+if($SqlInstanceForPowershellJobs -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
+    $Port4SqlInstanceForPowershellJobs = $Matches['PortNo']
+    $SqlInstanceForPowershellJobsWithOutPort = $Matches['SqlInstance']
+}
+if($SqlInstanceToBaselineWithOutPort -eq $SqlInstanceForPowershellJobsWithOutPort) {
+    $SqlInstanceForPowershellJobs = $SqlInstanceToBaseline
+    $Port4SqlInstanceForPowershellJobs = $Port4SqlInstanceToBaseline
 }
 
 # Check if PortNo is specified for $dataDestinationServerFromInventory
@@ -7239,6 +7309,5 @@ Owner Ajay Kumar Dwivedi (ajay.dwivedi2007@gmail.com)
     https://ajaydwivedi.com/youtube/sqlmonitor
     https://ajaydwivedi.com/blog/sqlmonitor    
 #>
-
 
 
