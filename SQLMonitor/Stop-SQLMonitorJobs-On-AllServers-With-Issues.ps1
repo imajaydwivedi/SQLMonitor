@@ -51,9 +51,11 @@ declare @_params nvarchar(max);
 set @_params = N'@_buffer_time_minutes int';
 set quoted_identifier off;
 set @_sql = "
-select	/* [Tsql-Stop-Job] = 'exec msdb.dbo.sp_stop_job @job_name = '''+sj.JobName+'''' ,
-		[Tsql-Start-Job] = 'exec msdb.dbo.sp_start_job @job_name = '''+sj.JobName+'''' , 
-		*/
+select	[start_job_action] = case when (dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@_buffer_time_minutes),getutcdate()) > sj.Last_Successful_ExecutionTime
+										or sj.Last_Successful_ExecutionTime is null)
+									then cast(1 as bit) else cast(0 as bit) end,
+		[stop_job_action] = case when sj.Running_Since_Min >= (sj.Successfull_Execution_ClockTime_Threshold_Minutes * 4)
+									then cast(1 as bit) else cast(0 as bit) end,
 		[CollectionTimeUTC] = [UpdatedDateUTC],
 		[sql_instance], sql_instance_with_port, [database], [JobName],
 		[Job-Delay-Minutes] = case when sj.Last_Successful_ExecutionTime is null then 10080 else datediff(minute, sj.Last_Successful_ExecutionTime, dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@_buffer_time_minutes),getutcdate())) end,
@@ -153,23 +155,18 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
             #$database = $job.database
             $jobName = $job.JobName
             #$isSqlInstanceAvailable = $true
-            $isJobRunning = $false
-            $isRunningThresholdBroken = $false
+            $isStartNeeded = $job.start_job_action
+            $isStopNeeded = $job.stop_job_action
 
-            if(-not [String]::IsNullOrEmpty($job.Running_Since_Min)) {
-                $isJobRunning = $true
-                if($job.Running_Since_Min -gt $job.Expected_Max_Duration_Minutes) {
-                    $isRunningThresholdBroken = $true
-                }
-            }
+            Write-Debug "Stop inside each job."
 
-            if($isSqlInstanceAvailable -and ( ($StopJob -and $isRunningThresholdBroken) -or ($StartJob -and (-not $isJobRunning)) ) ) {
+            if(-not ($isSqlInstanceAvailable -and ( ($StartJob -and $isStartNeeded) -or ($StopJob -and $isStopNeeded) ))) {
                 "`t$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "No action required for job [$jobName] on [$sqlInstance]."
             }
     
             try 
             {
-                if($StopJob -and $isSqlInstanceAvailable -and $isRunningThresholdBroken) 
+                if($StopJob -and $isSqlInstanceAvailable -and $isStopNeeded) 
                 {
                     "`n`t$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Stop job [$jobName] on [$sqlInstance].."
                     $conSqlInstance | Invoke-DbaQuery -CommandType StoredProcedure -EnableException `
@@ -218,7 +215,7 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
 
             try 
             {
-                if($StartJob -and $isSqlInstanceAvailable -and ($isJobRunning = $false))
+                if($StartJob -and $isSqlInstanceAvailable -and $isStartNeeded)
                 {
                     "`t$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Start job [$jobName] on [$sqlInstance].."
                     $resultObj = [PSCustomObject]@{
