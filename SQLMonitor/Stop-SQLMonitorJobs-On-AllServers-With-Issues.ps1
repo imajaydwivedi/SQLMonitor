@@ -82,8 +82,8 @@ set quoted_identifier off;
 
 exec sp_executesql @_sql, @_params, @_buffer_time_minutes = @_buffer_time_minutes;
 "@
-
-$resultGetAllStuckJobs = $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlGetAllStuckJobs;
+$resultGetAllStuckJobs = @()
+$resultGetAllStuckJobs += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $sqlGetAllStuckJobs;
 
 # Execute SQL files & SQL Query
 [System.Collections.ArrayList]$failedJobs = @()
@@ -91,7 +91,7 @@ $resultGetAllStuckJobs = $conInventoryServer | Invoke-DbaQuery -Database $Invent
 $resultGetAllStuckJobsServers = @()
 $resultGetAllStuckJobsServers += $resultGetAllStuckJobs | Select-Object -Property sql_instance, sql_instance_with_port, database -Unique
 
-if ($resultGetAllStuckJobsFiltered.Count -eq 0) {
+if ($resultGetAllStuckJobsServers.Count -eq 0) {
     "`n$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "No action required to be taken."
 }
 
@@ -153,10 +153,23 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
             #$database = $job.database
             $jobName = $job.JobName
             #$isSqlInstanceAvailable = $true
+            $isJobRunning = $false
+            $isRunningThresholdBroken = $false
+
+            if(-not [String]::IsNullOrEmpty($job.Running_Since_Min)) {
+                $isJobRunning = $true
+                if($job.Running_Since_Min -gt $job.Expected_Max_Duration_Minutes) {
+                    $isRunningThresholdBroken = $true
+                }
+            }
+
+            if($isSqlInstanceAvailable -and ( ($StopJob -and $isRunningThresholdBroken) -or ($StartJob -and (-not $isJobRunning)) ) ) {
+                "`t$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "No action required for job [$jobName] on [$sqlInstance]."
+            }
     
             try 
             {
-                if($StopJob -and $isSqlInstanceAvailable) 
+                if($StopJob -and $isSqlInstanceAvailable -and $isRunningThresholdBroken) 
                 {
                     "`n`t$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Stop job [$jobName] on [$sqlInstance].."
                     $conSqlInstance | Invoke-DbaQuery -CommandType StoredProcedure -EnableException `
@@ -205,7 +218,7 @@ foreach($srvDtls in $resultGetAllStuckJobsServers)
 
             try 
             {
-                if($StartJob -and $isSqlInstanceAvailable)
+                if($StartJob -and $isSqlInstanceAvailable -and ($isJobRunning = $false))
                 {
                     "`t$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Start job [$jobName] on [$sqlInstance].."
                     $resultObj = [PSCustomObject]@{
