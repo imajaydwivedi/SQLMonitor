@@ -234,10 +234,13 @@ Param (
     [String]$GrafanaDashboardPortal = 'https://sqlmonitor.ajaydwivedi.com:3000/'
 )
 
+# Make sure to remove spaces
+$SqlInstanceToBaseline = $SqlInstanceToBaseline.Trim()
+
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-08-31'
-$sqlmonitorVersionDate = '2024-Aug-31'
+$sqlmonitorVersion = '2024-09-02'
+$sqlmonitorVersionDate = '2024-Sep-02'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 $clientName = "Wrapper-InstallSQLMonitor.ps1"
 

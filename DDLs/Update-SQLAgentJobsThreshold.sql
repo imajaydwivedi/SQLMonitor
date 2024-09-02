@@ -553,7 +553,7 @@ go
 update sajt
 set		[Expected-Max-Duration(Min)] = 10,
 		Continous_Failure_Threshold = 2,
-		Successfull_Execution_ClockTime_Threshold_Minutes = 129600,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 525600,
 		StopJob_If_LongRunning =  0,
 		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
 		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
@@ -614,7 +614,7 @@ go
 update sajt
 set		[Expected-Max-Duration(Min)] = 10,
 		Continous_Failure_Threshold = 2,
-		Successfull_Execution_ClockTime_Threshold_Minutes = 129600,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 4320,
 		StopJob_If_LongRunning =  0,
 		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
 		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
@@ -632,12 +632,12 @@ and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
 go
 
 update sajt
-set		[Expected-Max-Duration(Min)] = 10,
+set		[Expected-Max-Duration(Min)] = 30,
 		Continous_Failure_Threshold = 2,
-		Successfull_Execution_ClockTime_Threshold_Minutes = 129600,
-		StopJob_If_LongRunning =  0,
-		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
-		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 4320,
+		StopJob_If_LongRunning =  1,
+		StopJob_If_NotSuccessful_In_ThresholdTime = 1,
+		RestartJob_If_NotSuccessful_In_ThresholdTime = 1,
 		RestartJob_If_Failed = 0,
 		Kill_Job_Blocker = 0,
 		Alert_When_Blocked = 0,
