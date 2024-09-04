@@ -25,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 9,
+  "id": 36,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -1066,8 +1066,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -1097,7 +1096,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "10.1.0",
           "targets": [
             {
               "alias": "",
@@ -1131,6 +1130,7 @@
             }
           ],
           "title": "All INDEX -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+          "transformations": [],
           "type": "table"
         }
       ],
@@ -1151,7 +1151,7 @@
         "current": {
           "selected": false,
           "text": "SQLMonitor",
-          "value": "a28aeb06-bb6e-4c74-81af-65de433776c8"
+          "value": "ygPVA4snk"
         },
         "description": "Inventory Server Name",
         "hide": 2,
@@ -1217,8 +1217,8 @@
       {
         "current": {
           "selected": false,
-          "text": "0",
-          "value": "0"
+          "text": "1",
+          "value": "1"
         },
         "datasource": {
           "type": "mssql",
@@ -1313,8 +1313,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1723987800000",
-          "value": "1723987800000"
+          "text": "1725402600000",
+          "value": "1725402600000"
         },
         "datasource": {
           "type": "mssql",
@@ -1361,8 +1361,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1723658594213",
-          "value": "1723658594213"
+          "text": "1725330621173",
+          "value": "1725330621173"
         },
         "datasource": {
           "type": "mssql",
@@ -1591,8 +1591,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717770600000",
-          "value": "1717770600000"
+          "text": "1724765580000",
+          "value": "1724765580000"
         },
         "datasource": {
           "type": "mssql",
@@ -1615,8 +1615,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717770600000",
-          "value": "1717770600000"
+          "text": "1724765580000",
+          "value": "1724765580000"
         },
         "datasource": {
           "type": "mssql",
@@ -1639,8 +1639,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717770660000",
-          "value": "1717770660000"
+          "text": "1724765580000",
+          "value": "1724765580000"
         },
         "datasource": {
           "type": "mssql",
@@ -1677,7 +1677,7 @@
   },
   "timezone": "",
   "title": "t___BlitzIndex_Analysis",
-  "uid": "PkaYSnOVk",
+  "uid": "t___BlitzIndex_Analysis",
   "version": 4,
   "weekStart": ""
 }

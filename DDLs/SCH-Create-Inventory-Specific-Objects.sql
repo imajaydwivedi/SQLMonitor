@@ -79,6 +79,7 @@
 	59) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance]
 	60) Create table dbo.sma_wrapper_sql_server_hosts 
 	61) Create view dbo.vw_all_server_logins
+	62) Create table dbo.sma_server_aliases
 
 */
 
@@ -2195,6 +2196,26 @@ left join dbo.sma_servers s
 where 1=1;
 go
 
+/* ***** 62) Create table dbo.sma_server_aliases  ***************************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '62) Create table dbo.sma_server_aliases';
+go
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_server_aliases') AND type in (N'U'))
+BEGIN
+	--drop table dbo.sma_server_aliases
+	create table dbo.sma_server_aliases
+	(	alias_name varchar(255) not null,
+		prod_ip varchar(20) null,
+		dr_ip varchar(20) null, 
+		listener_name varchar(125) null,
+		remarks varchar(2000) null, 
+		is_active bit default 1 not null,
+		created_date datetime2 not null default sysdatetime(),
+
+		index ci__sma_server_aliases unique clustered (alias_name)
+	)
+END
+go
 
 
 /*

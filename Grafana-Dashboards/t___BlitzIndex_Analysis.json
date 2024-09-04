@@ -1125,8 +1125,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -1156,7 +1155,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "10.1.0",
           "targets": [
             {
               "alias": "",
@@ -1190,6 +1189,7 @@
             }
           ],
           "title": "All INDEX -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+          "transformations": [],
           "type": "table"
         }
       ],
@@ -1724,7 +1724,7 @@
   },
   "timezone": "",
   "title": "t___BlitzIndex_Analysis",
-  "uid": "PkaYSnOVk",
+  "uid": "t___BlitzIndex_Analysis",
   "version": 4,
   "weekStart": ""
 }
