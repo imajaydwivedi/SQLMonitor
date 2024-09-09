@@ -2181,7 +2181,8 @@ select	lei.sql_instance, s.server_port, lei.login_name, lei.login_sid,
 		lei.is_sysadmin, login_create_date = lei.create_date,
 		lei.is_expiration_checked, lei.is_policy_checked, ct.server_owner_email,
 		[login_owner_group_email] = coalesce(lem.owner_group_email, dba.owner_group_email), 
-		days_until_expiration, password_expiration, lei.collection_time
+		days_until_expiration, password_expiration, lei.modify_date, lei.password_last_set_time, 
+		lei.collection_time
 from dbo.server_login_expiry_collection_computed ct
 inner join dbo.all_server_login_expiry_info lei
 	on lei.sql_instance = ct.sql_instance and lei.collection_time = ct.collection_time_latest

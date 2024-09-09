@@ -33,13 +33,11 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-ANAND1-Performance-Opt
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-VAPT-Login-Expiry", "Work-VAPT-Login-Expiry\Work-VAPT-Login-Expiry.ssmssqlproj", "{7A265B02-D3F6-42C3-86D4-C1BD8BA2111B}"
 EndProject
-Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-Naresh", "Work-Naresh\Work-Naresh.ssmssqlproj", "{1FE38CE5-BCAA-49D3-B365-75D5E3444C04}"
-EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-Fix-SQLMonitor-Issues", "Work-Fix-SQLMonitor-Issues\Work-Fix-SQLMonitor-Issues.ssmssqlproj", "{8CA435C9-FBE2-4D4D-AE50-C005D9875119}"
 EndProject
-Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-Ozonate-Call-Not-Landing", "Work-Ozonate-Call-Not-Landing\Work-Ozonate-Call-Not-Landing.ssmssqlproj", "{0D7382E5-1A89-4C15-9B0F-305B92B72EAC}"
-EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-Backup-Issues", "Work-Backup-Issues\Work-Backup-Issues.ssmssqlproj", "{C2EDA1A4-8CA2-494C-8C6B-8E4BE49E6E64}"
+EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-Yogesh-Query-Tuning", "Work-Yogesh-Query-Tuning\Work-Yogesh-Query-Tuning.ssmssqlproj", "{241D7782-2556-4BD9-8063-A72B7BAF7950}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,11 +59,10 @@ Global
 		{A16605EA-D232-40F8-B38D-CE93A4881DC1}.Default|Default.ActiveCfg = Default
 		{A9B34DA5-0EF8-4564-BF37-8F9B8C28763A}.Default|Default.ActiveCfg = Default
 		{7A265B02-D3F6-42C3-86D4-C1BD8BA2111B}.Default|Default.ActiveCfg = Default
-		{60325C81-7D5B-4F8B-9AC6-0F95705FCBE9}.Default|Default.ActiveCfg = Default
-		{1FE38CE5-BCAA-49D3-B365-75D5E3444C04}.Default|Default.ActiveCfg = Default
 		{8CA435C9-FBE2-4D4D-AE50-C005D9875119}.Default|Default.ActiveCfg = Default
-		{0D7382E5-1A89-4C15-9B0F-305B92B72EAC}.Default|Default.ActiveCfg = Default
 		{C2EDA1A4-8CA2-494C-8C6B-8E4BE49E6E64}.Default|Default.ActiveCfg = Default
+		{3E84D6FC-1E3B-4968-8C01-A588D599614E}.Default|Default.ActiveCfg = Default
+		{241D7782-2556-4BD9-8063-A72B7BAF7950}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
