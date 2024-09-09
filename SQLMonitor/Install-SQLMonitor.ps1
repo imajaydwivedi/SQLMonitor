@@ -239,8 +239,8 @@ $SqlInstanceToBaseline = $SqlInstanceToBaseline.Trim()
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-09-02'
-$sqlmonitorVersionDate = '2024-Sep-02'
+$sqlmonitorVersion = '2024-09-09'
+$sqlmonitorVersionDate = '2024-Sep-09'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 $clientName = "Wrapper-InstallSQLMonitor.ps1"
 
@@ -920,7 +920,7 @@ if($hasActiveHostRecords -eq $false -and $countHostRecords -eq 1)
     $collectorPSJobsServerFromInventory = $instanceDetailsFromInventory[0].collector_powershell_jobs_server
     $dataDestinationServerFromInventory = $instanceDetailsFromInventory[0].data_destination_sql_instance
     $dbaGroupMailIdFromInventory = $instanceDetailsFromInventory[0].dba_group_mail_id
-    $dbaDatabaseFromInventory = $activeHostRecordsFromInventory[0].database
+    $dbaDatabaseFromInventory = $instanceDetailsFromInventory[0].database
 
     if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
         $SqlInstanceAsDataDestination = $dataDestinationServerFromInventory
