@@ -31,7 +31,8 @@ BEGIN
 /*
 	Purpose:		Send mail notification to login owners
 
-	Modifications:	2024-08-27 - Ajay - Get emails & params from dbo.sma_params
+	Modifications:	2024-09-12 - Ajay - Send mail to server owner when login owner is missing
+					2024-08-27 - Ajay - Get emails & params from dbo.sma_params
 					2024-04-01 - Ajay - Initial Draft
 
 	Examples:	
@@ -265,9 +266,12 @@ BEGIN
 				from string_split(@c_login_owner_group_email, ';');
 
 				-- Split [server_owner_email]
-				insert #login_email_xref_raw (sql_instance, login_name, mail_recipient)
-				SELECT @c_sql_instance, @c_login_name, ltrim(rtrim(value)) 
-				from string_split(@c_server_owner_email, ';');
+				if @c_login_owner_group_email is null
+				begin
+					insert #login_email_xref_raw (sql_instance, login_name, mail_recipient)
+					SELECT @c_sql_instance, @c_login_name, ltrim(rtrim(value)) 
+					from string_split(@c_server_owner_email, ';');
+				end
 
 				if(@c_is_app_login = 1)
 				begin

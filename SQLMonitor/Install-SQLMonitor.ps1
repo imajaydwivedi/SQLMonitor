@@ -239,8 +239,8 @@ $SqlInstanceToBaseline = $SqlInstanceToBaseline.Trim()
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-09-09'
-$sqlmonitorVersionDate = '2024-Sep-09'
+$sqlmonitorVersion = '2024-09-12'
+$sqlmonitorVersionDate = '2024-Sep-12'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 $clientName = "Wrapper-InstallSQLMonitor.ps1"
 
