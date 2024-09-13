@@ -19,3 +19,5 @@
 /SQLMonitor/build/
 /SQLMonitor/build/*
 /SQLMonitor/*.spec
+/temp-output-*
+/temp-log-*
