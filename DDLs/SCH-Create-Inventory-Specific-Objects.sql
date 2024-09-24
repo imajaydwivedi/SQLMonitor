@@ -790,6 +790,9 @@ go
 if not exists (select * from sys.columns c where c.object_id = OBJECT_ID('dbo.instance_details') and c.name = 'is_linked_server_working')
     alter table dbo.instance_details add [is_linked_server_working] bit NOT NULL default 1;
 go
+if not exists (select * from sys.columns c where c.object_id = OBJECT_ID('dbo.instance_details') and c.name = 'remarks')
+    alter table dbo.instance_details add [remarks] nvarchar(500) NULL;
+go
 
 /* ****** 23) Create table dbo.instance_details_history ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')

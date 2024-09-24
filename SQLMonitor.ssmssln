@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# SQL Server Management Studio Solution File, Format Version 20.00
+# SQL Server Management Studio Solution File, Format Version 18.00
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Alerting", "Alerting\Alerting.ssmssqlproj", "{F85AF121-8497-4D2D-9E7C-F9B04A636F99}"
@@ -39,7 +39,7 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-Backup-Issues", "Work-
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-Yogesh-Query-Tuning", "Work-Yogesh-Query-Tuning\Work-Yogesh-Query-Tuning.ssmssqlproj", "{241D7782-2556-4BD9-8063-A72B7BAF7950}"
 EndProject
-Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-TOM-GM-DR-Replication", "Work-TOM-GM-DR-Replication\Work-TOM-GM-DR-Replication.ssmssqlproj", "{2A4709C9-0087-441B-80CC-DE2E57C0930B}"
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-TOM-GM-DR-Replication", "Work-TOM-GM-DR-Replication\Work-TOM-GM-DR-Replication.ssmssqlproj", "{604139B8-C349-4340-BE05-54655C544C89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,7 +64,8 @@ Global
 		{8CA435C9-FBE2-4D4D-AE50-C005D9875119}.Default|Default.ActiveCfg = Default
 		{C2EDA1A4-8CA2-494C-8C6B-8E4BE49E6E64}.Default|Default.ActiveCfg = Default
 		{241D7782-2556-4BD9-8063-A72B7BAF7950}.Default|Default.ActiveCfg = Default
-		{2A4709C9-0087-441B-80CC-DE2E57C0930B}.Default|Default.ActiveCfg = Default
+		{E12C5CDA-6EF6-4098-89CE-D2B83E73436F}.Default|Default.ActiveCfg = Default
+		{604139B8-C349-4340-BE05-54655C544C89}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
