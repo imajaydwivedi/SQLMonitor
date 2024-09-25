@@ -77,7 +77,7 @@ $params = @{
     #MemoryOptimizedObjectsUsage = $false
     #ReturnInlineErrorMessage = $true
     #ForceTSQLStepType4TsqlJobs = $true
-    #$GrafanaDashboardPortal = 'https://sqlmonitor.ajaydwivedi.com:3000/'
+    #$GrafanaDashboardPortal = 'https://sqlmonitor.ajaydwivedi.com:3000/d/'
 }
 
 #$preSQL = "EXEC dbo.usp_check_sql_agent_jobs @default_mail_recipient = 'sqlagentservice@gmail.com', @drop_recreate = 1"
