@@ -2,8 +2,11 @@
   # https://www.datacamp.com/tutorial/how-to-send-slack-messages-with-python
 	# https://stackoverflow.com/a/71973904/4449743
 
-# Replying to a Thread using Slack API
-  # https://github.com/SlackAPI/python-slack-sdk?tab=readme-ov-file#sending-a-message-to-slack
+# Python Slack SDK - Web Client
+  # https://tools.slack.dev/python-slack-sdk/web
+
+# Formatting with rich text
+  # https://api.slack.com/tutorials/tracks/rich-text-tutorial
 
 import os
 from slack_sdk import WebClient
@@ -91,13 +94,13 @@ finally:
 try:
   print(f"********************************* Upload file in alert message.")
   response3 = client.files_upload_v2(
-    channel=slack_channel,
-    #channel='C04LKQF9RGV',
-    thread_ts=slack_message_ts_value,
-    file=file_path
+      channel=slack_channel,
+      thread_ts=slack_message_ts_value,
+      file=file_path
   )
 except SlackApiError as e:
   print(f"Error: {e}")
+  print(f"Got an error: {e.response['error']}")
 except Exception as e:
   exception_name = type(e).__name__
   print(f'Exception [{exception_name}] occurred. \n{e}')
@@ -107,3 +110,29 @@ finally:
     print(response3)
     #slack_message_ts_value = response['ts']
     #print(f"Slack message TS = {slack_message_ts_value}")
+
+
+# Send text snippet as reply to alert
+try:
+  print(f"********************************* Reply with Code Snippet on alert message.")
+  message = f"""
+python ./Python-Scripts/Send-SlackAlert.py --slack_token 'YourSlackTokenHere' --slack_channel 'SlackChannelID' --file_path '/home/saanvi/GitHub/Images/SQLMonitor/Live-Dashboards-All.gif'
+#python ./Python-Scripts/Send-SlackAlert.py --slack_token 'YourSlackTokenHere' --slack_channel 'SlackChannelID' --file_path '/home/saanvi/GitHub/SQLMonitor/Work-Attachments/tmp.txt'
+"""
+  response2 = client.files_upload_v2(
+      channel=slack_channel,
+      thread_ts=slack_message_ts_value,
+      content=message,
+      filename='Wrapper-SendSlackAlert.ps1',
+  )
+except SlackApiError as e:
+  print(f"Error: {e}")
+except Exception as e:
+  exception_name = type(e).__name__
+  print(f'Exception [{exception_name}] occurred. \n{e}')
+finally:
+  if response2:
+    print(response2)
+    slack_message_ts_value = response['ts']
+    print(f"Slack message TS = {slack_message_ts_value}")
+
