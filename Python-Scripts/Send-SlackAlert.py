@@ -7,12 +7,16 @@
 
 # Formatting with rich text
   # https://api.slack.com/tutorials/tracks/rich-text-tutorial
+  
+# Block Kit Builder
+  # https://app.slack.com/block-kit-builder
 
 import os
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import argparse
 from datetime import datetime
+import time
 
 parser = argparse.ArgumentParser(description="Script to Send Slack Alert",
                                   formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -136,3 +140,57 @@ finally:
     slack_message_ts_value = response['ts']
     print(f"Slack message TS = {slack_message_ts_value}")
 
+
+# Send Block Kit Reply
+try:
+  time.sleep(3)
+  print(f"********************************* Reply with Block Kit.")
+  message = f"""
+See, I am responding on time by replying to slack message in thread.
+Now you should not have any complaints.
+"""
+  response2 = client.chat_postMessage(
+      channel=slack_channel, 
+      thread_ts=slack_message_ts_value,
+      blocks=[
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Danny Torrence left the following review for your property:"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "<https://example.com|Overlook Hotel> \n :star: \n Doors had too many axe holes, guest in room " +
+                    "237 was far too rowdy, whole place felt stuck in the 1920s."
+            },
+            "accessory": {
+                "type": "image",
+                "image_url": "https://images.pexels.com/photos/750319/pexels-photo-750319.jpeg",
+                "alt_text": "Haunted hotel image"
+            }
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": "*Average Rating*\n1.0"
+                }
+            ]
+        }
+    ]
+  )
+except SlackApiError as e:
+  print(f"Error: {e}")
+except Exception as e:
+  exception_name = type(e).__name__
+  print(f'Exception [{exception_name}] occurred. \n{e}')
+finally:
+  if response2:
+    print(response2)
+    slack_message_ts_value = response['ts']
+    print(f"Slack message TS = {slack_message_ts_value}")
