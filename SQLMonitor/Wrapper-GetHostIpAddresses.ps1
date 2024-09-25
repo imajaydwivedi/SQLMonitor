@@ -16,11 +16,18 @@ Param (
     [Parameter(Mandatory=$false)]
     [String]$WorkFolder = "C:\SQLMonitor\Work-Attachments",
     [Parameter(Mandatory=$false)]
-    [bool]$RemoveLog = $true
+    [bool]$RemoveLog = $true,
+    [Parameter(Mandatory=$false)]
+    [bool]$IgnorePingIssue = $false
 )
 
 $startTime = Get-Date
 $startTimeString = Get-Date -Format yyyyMMMdd_HHmm
+
+$verbose = $false;
+if ($PSBoundParameters.ContainsKey('Verbose')) { # Command line specifies -Verbose[:$false]
+    $verbose = $PSBoundParameters.Get_Item('Verbose')
+}
 
 $AppName = "Wrapper-GetHostIpAddresses.ps1"
 $outputFile ="$WorkFolder\$AppName-$startTimeString.txt"
@@ -80,6 +87,10 @@ where s.is_decommissioned = 0 and h.is_decommissioned = 0
 $hostsWithoutIPs = @()
 $hostsWithoutIPs += $conInventoryServer | Invoke-DbaQuery -Database $InventoryDatabase -Query $qryGetHostsWithoutIPs
 
+if($verbose) {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Following servers found-"
+    $hostsWithoutIPs | ft -AutoSize
+}
 
 # Tsql script to execute
 $findIPAddress = $true
@@ -130,7 +141,7 @@ if($findIPAddress)
             }
         }
 
-        if (-not [String]::IsNullOrEmpty($ip1)) {
+        if ( $IgnorePingIssue -or (-not [String]::IsNullOrEmpty($ip1)) ) {
             $db_row = [PSCustomObject]@{
                             sql_instance = $srvName; 
                             sql_instance_port = $srvPort; 
@@ -140,14 +151,20 @@ if($findIPAddress)
                             host_fqdn = $host_fqdn;
                             collection_time = $startTime
                         }
+
             $queryResult.Add($db_row) | Out-Null
-            $successServers.Add([PSCustomObject]@{sql_instance=$srvName; host_name = $host_name}) | Out-Null
+
+            if (-not [String]::IsNullOrEmpty($ip1)) {
+                $successServers.Add([PSCustomObject]@{sql_instance=$srvName; host_name = $host_name}) | Out-Null
+            }
             continue
         }
     }
 
-    $failedServers | ogv
-    $queryResult | ogv
+    if($verbose) {
+        $failedServers | ogv
+        $queryResult | ogv
+    }
 
     "`Result => `n" | Out-File $outputFile -Append
     $queryResult  | Format-Table -AutoSize | Out-File $outputFile -Append
