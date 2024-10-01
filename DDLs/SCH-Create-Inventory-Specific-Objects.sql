@@ -1292,17 +1292,17 @@ begin
 	insert dbo.sma_params (param_key, param_value, remarks)
 	select my_keys.param_key, my_keys.param_value, my_keys.remarks
 	from (values 
-				('dba_team_email_id','dba_team@gmail.com','EMail of DBA Team'),
-				('dba_manager_email_id','dba.manager@gmail.com','EMail of DBA Team Manager'),
-				('sre_vp_email_id','sre.vp@gmail.com','EMail of SRE VP'),
-				('cto_email_id','cto@gmail.com','EMail of CTO'),
-				('noc_email_id','noc@gmail.com','EMail of NOC Team'),
-				('url_for_dba_slack_channel','workspace.slack.com/archives/unique_id','URL for DBA Public Slack Channel For End Users Support'),
-        ('dba_slack_channel_name','#sqlmonitor-alerts','DBA Slack Channel ID'),
-        ('dba_slack_channel_id','C01234567890','DBA Slack Channel ID'),
-				('GrafanaDashboardPortal','http://localhost:3000/d/','Grafana Dashboard Portal'),
-				('url_login_expiry_dashboard_panel','distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m&viewPanel=885','URL for Login Expiry Panel excluding dashboard Portal path'),
-				('url_for_login_password_reset','#','Portal for Resetting Login Password')
+			('dba_team_email_id','dba_team@gmail.com','EMail of DBA Team'),
+			('dba_manager_email_id','dba.manager@gmail.com','EMail of DBA Team Manager'),
+			('sre_vp_email_id','sre.vp@gmail.com','EMail of SRE VP'),
+			('cto_email_id','cto@gmail.com','EMail of CTO'),
+			('noc_email_id','noc@gmail.com','EMail of NOC Team'),
+			('url_for_dba_slack_channel','workspace.slack.com/archives/unique_id','URL for DBA Public Slack Channel For End Users Support'),
+			('dba_slack_channel_name','#sqlmonitor-alerts','DBA Slack Channel ID'),
+			('dba_slack_channel_id','C01234567890','DBA Slack Channel ID'),
+			('GrafanaDashboardPortal','http://localhost:3000/d/','Grafana Dashboard Portal'),
+			('url_login_expiry_dashboard_panel','distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m&viewPanel=885','URL for Login Expiry Panel excluding dashboard Portal path'),
+			('url_for_login_password_reset','#','Portal for Resetting Login Password')
 		) my_keys (param_key, param_value, remarks)
 	left join dbo.sma_params p
 		on p.param_key = my_keys.param_key
