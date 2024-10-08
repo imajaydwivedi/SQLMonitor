@@ -7,7 +7,7 @@
 
 # Formatting with rich text
   # https://api.slack.com/tutorials/tracks/rich-text-tutorial
-  
+
 # Block Kit Builder
   # https://app.slack.com/block-kit-builder
 
