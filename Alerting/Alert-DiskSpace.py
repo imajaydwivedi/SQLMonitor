@@ -81,8 +81,10 @@ if 'Get DBA Params' == 'Get DBA Params':
     pt = get_pretty_table(sma_params_records)
     df = get_pandas_dataframe(sma_params_records, index_col='param_key')
 
-    dba_slack_channel_id = df[df.param_key=='dba_slack_channel_id']
-    print(dba_slack_channel_id)
+    # Extract slack channel id
+    #dba_slack_channel_id = df[df.param_key=='dba_slack_channel_id'].iloc[0]['param_value']
+    dba_slack_channel_id = df.loc['dba_slack_channel_id','param_value']
+    print(f"dba_slack_channel_id = '{dba_slack_channel_id}'")
 
     logger.info(f"Process query result..")
     #print(pt)
