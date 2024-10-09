@@ -76,20 +76,63 @@ if 'Get DBA Params' == 'Get DBA Params':
     logger.info(f"Query table dbo.sma_params..")
     query_sma_params = 'select param_key, param_value from dbo.sma_params'
     cursor.execute(query_sma_params)
-
     sma_params_records = cursor.fetchall()
+
+    logger.info(f"get PrettyTable..")
     pt = get_pretty_table(sma_params_records)
+    logger.info(f"get pandas dataframe..")
     df = get_pandas_dataframe(sma_params_records, index_col='param_key')
 
-    # Extract slack channel id
+    # Extract dynamic parameters from inventory
+    logger.info(f"Get parameters from dbo.sma_params..")
     #dba_slack_channel_id = df[df.param_key=='dba_slack_channel_id'].iloc[0]['param_value']
-    dba_slack_channel_id = df.loc['dba_slack_channel_id','param_value']
-    print(f"dba_slack_channel_id = '{dba_slack_channel_id}'")
+    #dba_slack_channel_id = df.loc['dba_slack_channel_id','param_value']
+    dba_slack_channel_id = df.at['dba_slack_channel_id','param_value']
 
-    logger.info(f"Process query result..")
+    logger.info(f"dba_slack_channel_id = '{dba_slack_channel_id}'")
+
     #print(pt)
     #print(df)
     #print(f'dba_slack_channel_id => {dba_slack_channel_id}')
+
+# Get Disk Space Info
+if 'Get Disk Space Info' == 'Get Disk Space Info':
+    logger.info(f"Query table dbo.disk_space_all_servers..")
+    sql_get_alert_data = f"""
+select	ds.updated_date_utc, ds.sql_instance, ds.host_name, ds.disk_volume, ds.label, ds.capacity_mb, ds.free_mb,
+		[state] = case when (ds.free_mb*100.0/ds.capacity_mb) < (100.0-{disk_critical_pct}) then 'Critical' else 'Warning' end,
+		--[free_pct] = convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb),
+		[used_pct] = 100.0-convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb)
+		--ds.block_size, ds.filesystem, 
+    --, ds.collection_time_utc
+/*
+select	ds.sql_instance, disk_drive = ds.host_name + ' (' + ds.disk_volume + ')', 
+        [state] = case when (ds.free_mb*100.0/ds.capacity_mb) < 10.0 then 'Critical' else 'Warning' end,
+        state_desc = convert(varchar,ds.free_mb) + ' mb ('+convert(varchar,convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb))+' %) free of ' + convert(varchar,ds.capacity_mb) + ' mb'
+*/
+from dbo.disk_space_all_servers ds
+where ds.updated_date_utc >= dateadd(minute,-60,getutcdate())
+and (	(	(ds.free_mb*100.0/ds.capacity_mb) < (100-{disk_warning_pct})
+			and ds.free_mb < ({disk_threshold_gb})*1024
+	  	)
+		or ( (ds.free_mb*100.0/ds.capacity_mb) < (100-{large_disk_threshold_pct})) -- free %
+		)
+and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = ds.sql_instance)
+"""
+    cursor.execute(sql_get_alert_data)
+    alert_data = cursor.fetchall()
+
+    logger.info(f"get PrettyTable for alert_data..")
+    pt = get_pretty_table(alert_data)
+    logger.info(f"get pandas dataframe for alert_data..")
+    df = get_pandas_dataframe(alert_data)
+
+    logger.info(f"Alert data..")
+    print(pt)
+
+
+#if(len(mytable._rows) > 0):
+  #print(f"{len(mytable._rows)} issue rows found for '{alert_name}'.")
 
 # Log end
 logger.info('***** COMPLETED:  %s' % script_name)
