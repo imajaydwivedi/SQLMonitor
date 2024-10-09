@@ -21,3 +21,4 @@
 /SQLMonitor/*.spec
 /temp-output-*
 /temp-log-*
+*.pyc
