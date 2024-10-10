@@ -169,12 +169,12 @@ create table [dbo].[sma_alert]
 ) on ps_dba_bigint_10part (id_part_no)
 go
 
-create index ix_sma_alert__alert_key__active on [dbo].[sma_alert]
-	(alert_key) 
+--drop index ix_sma_alert__alert_key__active on [dbo].[sma_alert]
+create unique index ix_sma_alert__alert_key__active on [dbo].[sma_alert]
+	(alert_key, id, id_part_no) 
 	include ([state]) 
-	where [state] in ('Active','Suppressed')
+	where [state] in ('Active','Suppressed','Cleared')
 go
-
 
 /* ***** 6) Create table dbo.sma_alert_history ***************************** */
 -- drop table [dbo].[sma_alert_history]
