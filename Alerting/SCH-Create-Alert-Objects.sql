@@ -151,6 +151,7 @@ create table [dbo].[sma_alert]
 	[state] varchar(15) not null default 'Active', -- 'Active','Suppressed','Cleared', 'Resolved'
 	[severity] varchar(15) not null default 'High', -- 'Critical', 'High', 'Medium', 'Low'
 	[slack_ts_value] varchar(125) null, -- Used for slack converstation in threads
+	[frequency_minutes] int not null, -- Time interval for re-evaluation of alert
 	[suppress_start_date_utc] datetime null,
 	[suppress_end_date_utc] datetime null
 
