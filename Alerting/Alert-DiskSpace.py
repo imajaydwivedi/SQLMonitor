@@ -8,7 +8,7 @@ from get_pandas_dataframe import get_pandas_dataframe
 from get_pretty_table import get_pretty_table
 from get_sma_params import get_sma_params
 from get_disk_space import get_disk_space
-from get_oncall_teams import get_oncall_teams
+#from get_oncall_teams import get_oncall_teams
 import sma_alert as sma
 
 # get Script Name
@@ -23,7 +23,7 @@ parser.add_argument("--login_password", type=str, required=False, action="store"
 parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-DiskSpace", help="Alert Name")
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-DiskSpace", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
-parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
+#parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
 
 args=parser.parse_args()
@@ -40,7 +40,7 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     alert_name = args.alert_name
     alert_job_name = args.alert_job_name
     alert_owner_team = args.alert_owner_team
-    frequency_minutes = args.frequency_minutes
+    #frequency_minutes = args.frequency_minutes
     verbose = args.verbose
 
 # create logger
@@ -62,10 +62,11 @@ if 'Initiate Local Variables' == 'Initiate Local Variables':
     pass
 
 if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
-    disk_warning_pct=disk_alert.disk_warning_pct
-    disk_critical_pct=disk_alert.disk_critical_pct
-    disk_threshold_gb=disk_alert.disk_threshold_gb
-    large_disk_threshold_pct=disk_alert.large_disk_threshold_pct
+    disk_warning_pct = disk_alert.disk_warning_pct
+    disk_critical_pct = disk_alert.disk_critical_pct
+    disk_threshold_gb = disk_alert.disk_threshold_gb
+    large_disk_threshold_pct = disk_alert.large_disk_threshold_pct
+    frequency_minutes = disk_alert.frequency_minutes
 
 # Print variables values
 if 'Print Variables' == 'Print Variables':
@@ -84,50 +85,6 @@ if 'Print Variables' == 'Print Variables':
     logger.info(f"disk_threshold_gb = '{disk_threshold_gb}'")
     logger.info(f"large_disk_threshold_pct = '{large_disk_threshold_pct}'")
     logger.info(f"verbose = '{verbose}'")
-
-# Get DBA Params
-if 'Get DBA Params' == 'Get DBA Params':
-    logger.info(f"Query table dbo.sma_params..")
-    sma_params_records = get_sma_params(sql_connection=cnxn, param_key='dba_slack_channel_id')
-
-    #logger.info(f"get PrettyTable..")
-    #pt = get_pretty_table(sma_params_records)
-    #logger.info(f"get pandas dataframe..")
-    #df = get_pandas_dataframe(sma_params_records, index_col='param_key')
-
-    # Extract dynamic parameters from inventory
-    #logger.info(f"Get parameters from dbo.sma_params..")
-    #dba_slack_channel_id = df[df.param_key=='dba_slack_channel_id'].iloc[0]['param_value']
-    #dba_slack_channel_id = df.loc['dba_slack_channel_id','param_value']
-    #dba_slack_channel_id = df.at['dba_slack_channel_id','param_value']
-
-    #logger.info(f"dba_slack_channel_id = '{dba_slack_channel_id}'")
-
-    #print(pt)
-    #print(df)
-    #print(f'dba_slack_channel_id => {dba_slack_channel_id}')
-
-# Get Alert Owner Team Details
-if 'Get Alert Owner Team Details' == 'Get Alert Owner Team Details':
-    logger.info(f"Query table dbo.sma_oncall_teams..")
-    oncall_teams_records = get_oncall_teams(sql_connection=cnxn, team_name='DBA')
-
-    #logger.info(f"get PrettyTable..")
-    pt_oncall_teams_records = get_pretty_table(oncall_teams_records)
-    #logger.info(f"get pandas dataframe..")
-    df_oncall_teams_records = get_pandas_dataframe(oncall_teams_records, index_col='team_name')
-
-    # Extract dynamic parameters from inventory
-    #logger.info(f"Get parameters from dbo.sma_params..")
-    #dba_slack_channel_id = df[df.param_key=='dba_slack_channel_id'].iloc[0]['param_value']
-    #dba_slack_channel_id = df.loc['dba_slack_channel_id','param_value']
-    #oncall_team_slack_channel_id = df_oncall_teams_records.at[alert_owner_team,'team_slack_channel']
-
-    #logger.info(f"oncall_team_slack_channel_id = '{oncall_team_slack_channel_id}'")
-
-    if verbose:
-        print(pt_oncall_teams_records)
-    #print(df_oncall_teams_records)
 
 # Get Disk Space Info
 if 'Get Disk Space Info' == 'Get Disk Space Info':
@@ -157,11 +114,22 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
 
     # fetch existing alert if any
     if disk_alert.initialize_data_from_db(cnxn):
-        logger.info(f"disk_alert.exists = '{disk_alert.exists}'")
+        logger.info(f"Overwrite variables from db retrieved data..")
         alert_owner_team = disk_alert.alert_owner_team
-    else:
-        logger.info(f"disk_alert.exists = '{disk_alert.exists}'")
 
+    logger.info(f"disk_alert.exists = '{disk_alert.exists}'")
+
+    if generate_alert is False and disk_alert.exists is False:
+        logger.info(f"No action required.")
+    else:
+        if generate_alert: # if alert is required
+            if disk_alert.exists:
+                logger.info(f"Update the existing alert..")
+            else:
+                logger.info(f"Trigger a new alert..")
+        else: # if alert is not required
+            if disk_alert.exists:
+                logger.info(f"Clear the existing alert..")
 
     #alert_method = df_oncall_teams_records.at[alert_owner_team,'alert_method']
 
@@ -169,18 +137,7 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
 
     #pt_alert_data_from_db = get_pretty_table(alert_data_from_db)
 
-    if verbose:
-        logger.info(f"Alert data from database..")
-        #print(pt_alert_data_from_db)
-        #print(alert_data_from_db)
-
     #logger.info(f"alert_method = '{alert_method}'")
-
-    if generate_alert:
-        logger.info(f'Generate alert for [{alert_key}]')
-        pass
-    else:
-        logger.info(f'Clear alert for [{alert_key}]')
 
 # Log end
 logger.info('***** COMPLETED:  %s' % script_name)

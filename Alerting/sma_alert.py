@@ -1,5 +1,6 @@
 import pyodbc
 #from get_pandas_dataframe import get_pandas_dataframe
+from get_oncall_teams import get_oncall_teams
 
 class SmaAlert():
     ''' SYNOPSIS: Class to represent dbo.sma_alert table
@@ -60,12 +61,19 @@ select [rows_affected] = isnull(@_rows_affected,0);
 
         return self.exists
 
+    def fetch_owner_team_details(self,sql_connection):
+        #print(f"fetch alert owner team details")
+
+        query_resultset = get_oncall_teams(sql_connection=cnxn, team_name=self.alert_owner_team)
+
+        return query_resultset
+
 class SmaDiskSpaceAlert(SmaAlert):
     '''
     SYNOPSIS: Class to represent disk space alert
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', state:str='', severity:str='', logger:str='', header:str='', description:str='', frequency_minutes:int=0, slack_ts_value:str = None, id:int = None, affected_servers:tuple=None, alert_method:str=None, disk_warning_pct:float=65, disk_critical_pct:float=85, disk_threshold_gb:int=250, large_disk_threshold_pct:float=95):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', state:str='', severity:str='', logger:str='', header:str='', description:str='', frequency_minutes:int=30, slack_ts_value:str = None, id:int = None, affected_servers:tuple=None, alert_method:str=None, disk_warning_pct:float=65, disk_critical_pct:float=85, disk_threshold_gb:int=250, large_disk_threshold_pct:float=95):
         ''' SYNOPSIS: Constructor
         '''
         super().__init__(alert_key, alert_owner_team, state, severity, logger, header, description, frequency_minutes, slack_ts_value, id, affected_servers, alert_method)
@@ -73,3 +81,4 @@ class SmaDiskSpaceAlert(SmaAlert):
         self.disk_critical_pct = disk_critical_pct
         self.disk_threshold_gb = disk_threshold_gb
         self.large_disk_threshold_pct = large_disk_threshold_pct
+
