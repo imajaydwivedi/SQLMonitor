@@ -24,11 +24,6 @@ parser.add_argument("--alert_name", type=str, required=False, action="store", de
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-DiskSpace", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
-
-parser.add_argument("--disk_warning_pct", type=float, required=False, action="store", default=65, help="Disk Warning Threshold %")
-parser.add_argument("--disk_critical_pct", type=float, required=False, action="store", default=85, help="Disk Critical Threshold %")
-parser.add_argument("--disk_threshold_gb", type=float, required=False, action="store", default=250, help="Large disk threshold gb")
-parser.add_argument("--large_disk_threshold_pct", type=float, required=False, action="store", default=95, help="Large disk used %")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
 
 args=parser.parse_args()
@@ -46,20 +41,31 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     alert_job_name = args.alert_job_name
     alert_owner_team = args.alert_owner_team
     frequency_minutes = args.frequency_minutes
-    disk_warning_pct = args.disk_warning_pct
-    disk_critical_pct = args.disk_critical_pct
-    disk_threshold_gb = args.disk_threshold_gb
-    large_disk_threshold_pct = args.large_disk_threshold_pct
     verbose = args.verbose
-
-if 'Initiate Local Variables' == 'Initiate Local Variables':
-    dba_slack_channel_id = ''
 
 # create logger
 logger = get_script_logger(alert_job_name)
 
 # Log begging
 logger.info('***** BEGIN:  %s' % script_name)
+
+# Make inventory server connection
+logger.info(f"Create db connection using connect_dba_instance..")
+cnxn = connect_dba_instance(inventory_server,inventory_database,login_name,login_password)
+cursor = cnxn.cursor()
+
+# Create SmaDiskSpaceAlert object to retrieve defaults
+logger.info(f"Create SmaDiskSpaceAlert class object with default values..")
+disk_alert = sma.SmaDiskSpaceAlert()
+
+if 'Initiate Local Variables' == 'Initiate Local Variables':
+    pass
+
+if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
+    disk_warning_pct=disk_alert.disk_warning_pct
+    disk_critical_pct=disk_alert.disk_critical_pct
+    disk_threshold_gb=disk_alert.disk_threshold_gb
+    large_disk_threshold_pct=disk_alert.large_disk_threshold_pct
 
 # Print variables values
 if 'Print Variables' == 'Print Variables':
@@ -78,11 +84,6 @@ if 'Print Variables' == 'Print Variables':
     logger.info(f"disk_threshold_gb = '{disk_threshold_gb}'")
     logger.info(f"large_disk_threshold_pct = '{large_disk_threshold_pct}'")
     logger.info(f"verbose = '{verbose}'")
-
-# Make inventory server connection
-logger.info(f"Create db connection using connect_dba_instance..")
-cnxn = connect_dba_instance(inventory_server,inventory_database,login_name,login_password)
-cursor = cnxn.cursor()
 
 # Get DBA Params
 if 'Get DBA Params' == 'Get DBA Params':
@@ -131,11 +132,14 @@ if 'Get Alert Owner Team Details' == 'Get Alert Owner Team Details':
 # Get Disk Space Info
 if 'Get Disk Space Info' == 'Get Disk Space Info':
     logger.info(f"Query table dbo.disk_space_all_servers..")
-    alert_data = get_disk_space(cnxn, disk_warning_pct=disk_warning_pct, disk_critical_pct=disk_critical_pct, disk_threshold_gb=disk_threshold_gb, large_disk_threshold_pct=large_disk_threshold_pct)
+    query_params = dict(disk_warning_pct=disk_warning_pct,
+                        disk_critical_pct=disk_critical_pct,
+                        disk_threshold_gb=disk_threshold_gb,
+                        large_disk_threshold_pct=large_disk_threshold_pct
+                        )
+    alert_data = get_disk_space(cnxn, **query_params)
 
-    #logger.info(f"get PrettyTable for alert_data..")
     pt_alert_data = get_pretty_table(alert_data)
-    #logger.info(f"get pandas dataframe for alert_data..")
     df_alert_data = get_pandas_dataframe(alert_data)
 
     if verbose:
@@ -145,21 +149,23 @@ if 'Get Disk Space Info' == 'Get Disk Space Info':
 # Generate Alert & Notify
 if 'Generate Alert & Notify' == 'Generate Alert & Notify':
     alert_key = f"{alert_name}"
-    disk_alert = sma.SmaAlert(alert_key)
+    disk_alert.alert_key = alert_key
 
-    # set flag is alert creation is required
+    # set flag if alert creation is required
     generate_alert = (True if len(alert_data)>0 else False)
+    logger.info(f"generate_alert = '{generate_alert}'")
+
     # fetch existing alert if any
     if disk_alert.initialize_data_from_db(cnxn):
-        print(f"existing alert_method => '{disk_alert.alert_method}'")
+        logger.info(f"disk_alert.exists = '{disk_alert.exists}'")
+        alert_owner_team = disk_alert.alert_owner_team
+    else:
+        logger.info(f"disk_alert.exists = '{disk_alert.exists}'")
+
 
     #alert_method = df_oncall_teams_records.at[alert_owner_team,'alert_method']
 
 
-    if disk_alert.exists:
-        logger.info(f"Alert already exists")
-    else:
-        logger.info(f"Alert does not exists")
 
     #pt_alert_data_from_db = get_pretty_table(alert_data_from_db)
 

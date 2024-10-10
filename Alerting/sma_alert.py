@@ -6,7 +6,7 @@ class SmaAlert():
         INPUT:
     '''
 
-    def __init__(self, alert_key:str, alert_owner_team:str='', state:str='', severity:str='', logger:str='', header:str='', description:str='', frequency_minutes:int=0, slack_ts_value:str = None, id:int = None, affected_servers:tuple=None, alert_method:str=None):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', state:str='', severity:str='', logger:str='', header:str='', description:str='', frequency_minutes:int=0, slack_ts_value:str = None, id:int = None, affected_servers:tuple=None, alert_method:str=None):
         ''' SYNOPSIS: Constructor
         '''
         self.id = id
@@ -60,3 +60,16 @@ select [rows_affected] = isnull(@_rows_affected,0);
 
         return self.exists
 
+class SmaDiskSpaceAlert(SmaAlert):
+    '''
+    SYNOPSIS: Class to represent disk space alert
+    '''
+
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', state:str='', severity:str='', logger:str='', header:str='', description:str='', frequency_minutes:int=0, slack_ts_value:str = None, id:int = None, affected_servers:tuple=None, alert_method:str=None, disk_warning_pct:float=65, disk_critical_pct:float=85, disk_threshold_gb:int=250, large_disk_threshold_pct:float=95):
+        ''' SYNOPSIS: Constructor
+        '''
+        super().__init__(alert_key, alert_owner_team, state, severity, logger, header, description, frequency_minutes, slack_ts_value, id, affected_servers, alert_method)
+        self.disk_warning_pct = disk_warning_pct
+        self.disk_critical_pct = disk_critical_pct
+        self.disk_threshold_gb = disk_threshold_gb
+        self.large_disk_threshold_pct = large_disk_threshold_pct
