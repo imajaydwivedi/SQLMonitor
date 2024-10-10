@@ -6,6 +6,8 @@ from get_script_logger import get_script_logger
 from connect_dba_instance import connect_dba_instance
 from get_pandas_dataframe import get_pandas_dataframe
 from get_pretty_table import get_pretty_table
+from get_sma_params import get_sma_params
+from get_disk_space import get_disk_space
 
 # get Script Name
 script_name = os.path.basename(__file__)
@@ -74,9 +76,7 @@ cursor = cnxn.cursor()
 # Get DBA Params
 if 'Get DBA Params' == 'Get DBA Params':
     logger.info(f"Query table dbo.sma_params..")
-    query_sma_params = 'select param_key, param_value from dbo.sma_params'
-    cursor.execute(query_sma_params)
-    sma_params_records = cursor.fetchall()
+    sma_params_records = get_sma_params(sql_connection=cnxn)
 
     logger.info(f"get PrettyTable..")
     pt = get_pretty_table(sma_params_records)
@@ -98,29 +98,7 @@ if 'Get DBA Params' == 'Get DBA Params':
 # Get Disk Space Info
 if 'Get Disk Space Info' == 'Get Disk Space Info':
     logger.info(f"Query table dbo.disk_space_all_servers..")
-    sql_get_alert_data = f"""
-select	ds.updated_date_utc, ds.sql_instance, ds.host_name, ds.disk_volume, ds.label, ds.capacity_mb, ds.free_mb,
-		[state] = case when (ds.free_mb*100.0/ds.capacity_mb) < (100.0-{disk_critical_pct}) then 'Critical' else 'Warning' end,
-		--[free_pct] = convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb),
-		[used_pct] = 100.0-convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb)
-		--ds.block_size, ds.filesystem, 
-    --, ds.collection_time_utc
-/*
-select	ds.sql_instance, disk_drive = ds.host_name + ' (' + ds.disk_volume + ')', 
-        [state] = case when (ds.free_mb*100.0/ds.capacity_mb) < 10.0 then 'Critical' else 'Warning' end,
-        state_desc = convert(varchar,ds.free_mb) + ' mb ('+convert(varchar,convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb))+' %) free of ' + convert(varchar,ds.capacity_mb) + ' mb'
-*/
-from dbo.disk_space_all_servers ds
-where ds.updated_date_utc >= dateadd(minute,-60,getutcdate())
-and (	(	(ds.free_mb*100.0/ds.capacity_mb) < (100-{disk_warning_pct})
-			and ds.free_mb < ({disk_threshold_gb})*1024
-	  	)
-		or ( (ds.free_mb*100.0/ds.capacity_mb) < (100-{large_disk_threshold_pct})) -- free %
-		)
-and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = ds.sql_instance)
-"""
-    cursor.execute(sql_get_alert_data)
-    alert_data = cursor.fetchall()
+    alert_data = get_disk_space(cnxn, disk_warning_pct=disk_warning_pct, disk_critical_pct=disk_critical_pct, disk_threshold_gb=disk_threshold_gb, large_disk_threshold_pct=large_disk_threshold_pct)
 
     logger.info(f"get PrettyTable for alert_data..")
     pt = get_pretty_table(alert_data)
