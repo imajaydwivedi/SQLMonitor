@@ -31,7 +31,7 @@ select [is_found] = @_rows_affected
 
 	declare @_rows_affected int = 0;
 
-	select id, created_date_utc, alert_key, alert_owner_team, state, severity, slack_ts_value, suppress_start_date_utc, suppress_end_date_utc, id_part_no
+	select id, created_date_utc, alert_key, frequency_minutes, alert_owner_team, state, severity, slack_ts_value, suppress_start_date_utc, suppress_end_date_utc, id_part_no
 	from dbo.sma_alert a 
 	where 1=1
 	and a.alert_key = @alert_key

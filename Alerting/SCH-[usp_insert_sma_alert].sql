@@ -17,6 +17,7 @@ GO
 ALTER PROCEDURE dbo.usp_insert_sma_alert
 	@alert_id_OUTPUT bigint output,
 	@alert_key varchar(255),
+	@frequency_minutes int,
 	@alert_owner_team varchar(125) = 'DBA',
 	@state varchar(15),
 	@severity varchar(15),
@@ -44,6 +45,7 @@ exec @_alert_id_RETURN = dbo.usp_insert_sma_alert
 		@alert_id_OUTPUT = @_alert_id output,
 		@is_pre_existing_OUTPUT = @_is_pre_existing output,
 		@alert_key = 'Alert-DiskSpace - [21L-LTPABL-1187]',
+		@frequency_minutes = 30,
 		@alert_owner_team = 'DBA',
 		@state = 'Active',
 		@severity = 'High',
@@ -54,6 +56,7 @@ exec @_alert_id_RETURN = dbo.usp_insert_sma_alert
 		@verbose = 2;
 
 select [result_alert_id] = @_alert_id_RETURN, [alert_id] = @_alert_id, [is_pre_existing] = @_is_pre_existing;
+go
 */
 	SET NOCOUNT ON;
 
@@ -78,9 +81,11 @@ select [result_alert_id] = @_alert_id_RETURN, [alert_id] = @_alert_id, [is_pre_e
 	else
 	begin
 		print 'creating alert with key ['+@alert_key+'..';
-		insert dbo.sma_alert (alert_key, alert_owner_team, state, severity)
+		set @is_pre_existing_OUTPUT = 0;
+
+		insert dbo.sma_alert (alert_key, alert_owner_team, state, severity, frequency_minutes)
 		output inserted.id into @_tbl_sma_alert
-		select @alert_key, @alert_owner_team, @state, @severity;
+		select @alert_key, @alert_owner_team, @state, @severity, @frequency_minutes;
 	end
 
 	select @alert_id_OUTPUT = alert_id from @_tbl_sma_alert;
@@ -124,6 +129,7 @@ exec @_alert_id_RETURN = dbo.usp_insert_sma_alert
 		@alert_id_OUTPUT = @_alert_id output,
 		@is_pre_existing_OUTPUT = @_is_pre_existing output,
 		@alert_key = 'Alert-DiskSpace - [21L-LTPABL-1187]',
+		@frequency_minutes = 30,
 		@alert_owner_team = 'DBA',
 		@state = 'Active',
 		@severity = 'High',
