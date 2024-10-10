@@ -71,7 +71,8 @@ select [result_alert_id] = @_alert_id_RETURN, [alert_id] = @_alert_id, [is_pre_e
 
 		insert @_tbl_sma_alert (alert_id)
 		select id from dbo.sma_alert a 
-		where a.alert_key = @alert_key 
+		where 1=1
+		and a.alert_key = @alert_key
 		and a.state in ('Active','Suppressed','Cleared');
 	end
 	else
@@ -110,6 +111,7 @@ select [result_alert_id] = @_alert_id_RETURN, [alert_id] = @_alert_id, [is_pre_e
 END
 GO
 
+/*
 declare @_alert_id bigint;
 declare @_alert_id_RETURN bigint;
 declare @_is_pre_existing bit;
@@ -133,6 +135,7 @@ exec @_alert_id_RETURN = dbo.usp_insert_sma_alert
 
 select [result_alert_id] = @_alert_id_RETURN, [alert_id] = @_alert_id, [is_pre_existing] = @_is_pre_existing;
 go
+*/
 
 /*
 select * from dbo.sma_alert

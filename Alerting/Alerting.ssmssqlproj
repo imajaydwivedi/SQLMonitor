@@ -25,11 +25,29 @@
           <AssociatedConnUserName />
           <FullPath>DML-Populate-Inventory-Tables.sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-[usp_get_active_alert_by_key].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-[usp_get_active_alert_by_key].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-[usp_get_alert_by_id].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-[usp_get_alert_by_id].sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-[usp_insert_sma_alert].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-[usp_insert_sma_alert].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-[usp_update_alert_slack_ts_value].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-[usp_update_alert_slack_ts_value].sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Create-Alert-Objects.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
