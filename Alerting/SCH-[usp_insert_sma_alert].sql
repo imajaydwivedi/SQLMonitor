@@ -32,27 +32,28 @@ BEGIN
 	Version:		1.0.0
 	Date:			2024-Oct-10
 
-	declare @_alert_id bigint;
-	declare @_is_pre_existing bit;
-	declare @_affected_servers as affected_servers_type;
+declare @_alert_id bigint;
+declare @_alert_id_RETURN bigint;
+declare @_is_pre_existing bit;
+declare @_affected_servers as affected_servers_type;
 
-	insert @_affected_servers
-	values ('21L-LTPABL-1187',NULL);
+insert @_affected_servers
+values ('21L-LTPABL-1187',NULL);
 
-	exec dbo.usp_insert_sma_alert
-			@alert_id_OUTPUT = @_alert_id output,
-			@is_pre_existing_OUTPUT = @_is_pre_existing output,
-			@alert_key = 'Alert-DiskSpace - [21L-LTPABL-1187]',
-			@alert_owner_team = 'DBA',
-			@state = 'Active',
-			@severity = 'High',
-			@logger = 'Wrapper-AlertDiskSpace.ps1',
-			@header = 'Disk Space Issue on [21L-LTPABL-1187]',
-			@description = N'Disk space issue on [21L-LTPABL-1187]',
-			@affected_servers = @_affected_servers,
-			@verbose = 2;
+exec @_alert_id_RETURN = dbo.usp_insert_sma_alert
+		@alert_id_OUTPUT = @_alert_id output,
+		@is_pre_existing_OUTPUT = @_is_pre_existing output,
+		@alert_key = 'Alert-DiskSpace - [21L-LTPABL-1187]',
+		@alert_owner_team = 'DBA',
+		@state = 'Active',
+		@severity = 'High',
+		@logger = 'Wrapper-AlertDiskSpace.ps1',
+		@header = 'Disk Space Issue on [21L-LTPABL-1187]',
+		@description = N'Disk space issue on [21L-LTPABL-1187]',
+		@affected_servers = @_affected_servers,
+		@verbose = 2;
 
-	select [alert_id] = @_alert_id, [is_pre_existing] = @_is_pre_existing;
+select [result_alert_id] = @_alert_id_RETURN, [alert_id] = @_alert_id, [is_pre_existing] = @_is_pre_existing;
 */
 	SET NOCOUNT ON;
 
