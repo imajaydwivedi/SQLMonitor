@@ -46,10 +46,12 @@ create table [dbo].[sma_oncall_teams]
 (
 	[team_name] varchar(125) not null,
 	[description] varchar(500) not null,
-	[team_lead_email] varchar(125) null,
-	[team_lead_slack_account] varchar(125) null,
-	[team_email] varchar(125) null,
+	[team_lead_email] varchar(125) not null,
+	[team_email] varchar(125) not null,
+	[team_lead_slack_account] varchar(125) null,	
 	[team_slack_channel] varchar(125) null,
+	[pagerduty_service_key] varchar(125) null,
+	[alert_method] varchar(255) not null default 'slack',
 	[created_by] varchar(125) not null default suser_name(),
 	[created_date_utc] smalldatetime not null default getutcdate()
 
@@ -58,8 +60,9 @@ create table [dbo].[sma_oncall_teams]
     ,PERIOD FOR SYSTEM_TIME ([valid_from],[valid_to])
 
 	,constraint pk_sma_oncall_teams primary key clustered ([team_name])
-	,constraint chk_team_lead_email_or_slack check ([team_lead_email] is not null or [team_lead_slack_account] is not null)
-	,constraint chk_team_email_or_slack check ([team_email] is not null or [team_slack_channel] is not null)
+	,constraint chk_team_alert_method check ( [alert_method] in ('slack','email','pagerduty') )
+	,constraint chk_slack_method check ([alert_method] <> 'slack' or ([team_slack_channel] is not null))
+	,constraint chk_pagerduty_method check ([alert_method] <> 'pagerduty' or ([pagerduty_service_key] is not null))	
 )
 WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.sma_oncall_teams_history))
 go
