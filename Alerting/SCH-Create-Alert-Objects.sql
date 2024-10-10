@@ -22,7 +22,8 @@ go
 	5) Create table dbo.sma_alert
 	6) Create table dbo.sma_alert_history
 	7) Create table dbo.sma_alert_affected_servers
-	8) Create table dbo.sma_process_logs
+	8) Create type affected_servers_type
+	9) Create table dbo.sma_process_logs
 
 */
 
@@ -207,8 +208,14 @@ create table [dbo].[sma_alert_affected_servers]
 )
 go
 
+/* ***** 8) Create type affected_servers_type ***************************** */
+-- drop type affected_servers_type
+create type affected_servers_type as table
+	( [sql_instance] varchar(125) null, [host_name] varchar(125) null );
+GO
 
-/* ***** 8) Create table dbo.sma_process_logs ***************************** */
+
+/* ***** 9) Create table dbo.sma_process_logs ***************************** */
 -- drop table dbo.sma_process_logs
 create table [dbo].[sma_process_logs]
 (
