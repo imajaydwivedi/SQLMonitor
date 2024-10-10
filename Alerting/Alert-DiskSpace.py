@@ -8,6 +8,7 @@ from get_pandas_dataframe import get_pandas_dataframe
 from get_pretty_table import get_pretty_table
 from get_sma_params import get_sma_params
 from get_disk_space import get_disk_space
+from get_oncall_teams import get_oncall_teams
 
 # get Script Name
 script_name = os.path.basename(__file__)
@@ -20,6 +21,7 @@ parser.add_argument("--login_name", type=str, required=False, action="store", de
 parser.add_argument("--login_password", type=str, required=False, action="store", default="", help="Login password for sql authentication")
 parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-DiskSpace", help="Alert Name")
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-DiskSpace", help="Script/Job calling this script")
+parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 
 parser.add_argument("--disk_warning_pct", type=float, required=False, action="store", default=65, help="Disk Warning Threshold %")
 parser.add_argument("--disk_critical_pct", type=float, required=False, action="store", default=85, help="Disk Critical Threshold %")
@@ -39,6 +41,7 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     login_password = args.login_password
     alert_name = args.alert_name
     alert_job_name = args.alert_job_name
+    alert_owner_team = args.alert_owner_team
     disk_warning_pct = args.disk_warning_pct
     disk_critical_pct = args.disk_critical_pct
     disk_threshold_gb = args.disk_threshold_gb
@@ -63,6 +66,7 @@ if 'Print Variables' == 'Print Variables':
     logger.info(f"inventory_database = '{inventory_database}'")
     logger.info(f"alert_name = '{alert_name}'")
     logger.info(f"alert_job_name = '{alert_job_name}'")
+    logger.info(f"alert_owner_team = '{alert_owner_team}'")
     logger.info(f"disk_warning_pct = '{disk_warning_pct}'")
     logger.info(f"disk_critical_pct = '{disk_critical_pct}'")
     logger.info(f"disk_threshold_gb = '{disk_threshold_gb}'")
@@ -76,33 +80,54 @@ cursor = cnxn.cursor()
 # Get DBA Params
 if 'Get DBA Params' == 'Get DBA Params':
     logger.info(f"Query table dbo.sma_params..")
-    sma_params_records = get_sma_params(sql_connection=cnxn)
+    sma_params_records = get_sma_params(sql_connection=cnxn, param_key='dba_slack_channel_id')
 
-    logger.info(f"get PrettyTable..")
+    #logger.info(f"get PrettyTable..")
     pt = get_pretty_table(sma_params_records)
-    logger.info(f"get pandas dataframe..")
-    df = get_pandas_dataframe(sma_params_records, index_col='param_key')
+    #logger.info(f"get pandas dataframe..")
+    #df = get_pandas_dataframe(sma_params_records, index_col='param_key')
 
     # Extract dynamic parameters from inventory
-    logger.info(f"Get parameters from dbo.sma_params..")
+    #logger.info(f"Get parameters from dbo.sma_params..")
     #dba_slack_channel_id = df[df.param_key=='dba_slack_channel_id'].iloc[0]['param_value']
     #dba_slack_channel_id = df.loc['dba_slack_channel_id','param_value']
-    dba_slack_channel_id = df.at['dba_slack_channel_id','param_value']
+    #dba_slack_channel_id = df.at['dba_slack_channel_id','param_value']
 
-    logger.info(f"dba_slack_channel_id = '{dba_slack_channel_id}'")
+    #logger.info(f"dba_slack_channel_id = '{dba_slack_channel_id}'")
 
     #print(pt)
     #print(df)
     #print(f'dba_slack_channel_id => {dba_slack_channel_id}')
+
+# Get Alert Owner Team Details
+if 'Get Alert Owner Team Details' == 'Get Alert Owner Team Details':
+    logger.info(f"Query table dbo.sma_oncall_teams..")
+    oncall_teams_records = get_oncall_teams(sql_connection=cnxn, team_name='DBA')
+
+    #logger.info(f"get PrettyTable..")
+    pt = get_pretty_table(oncall_teams_records)
+    #logger.info(f"get pandas dataframe..")
+    df = get_pandas_dataframe(oncall_teams_records, index_col='team_name')
+
+    # Extract dynamic parameters from inventory
+    #logger.info(f"Get parameters from dbo.sma_params..")
+    #dba_slack_channel_id = df[df.param_key=='dba_slack_channel_id'].iloc[0]['param_value']
+    #dba_slack_channel_id = df.loc['dba_slack_channel_id','param_value']
+    oncall_team_slack_channel_id = df.at[alert_owner_team,'team_slack_channel']
+
+    logger.info(f"oncall_team_slack_channel_id = '{oncall_team_slack_channel_id}'")
+
+    print(pt)
+    #print(df)
 
 # Get Disk Space Info
 if 'Get Disk Space Info' == 'Get Disk Space Info':
     logger.info(f"Query table dbo.disk_space_all_servers..")
     alert_data = get_disk_space(cnxn, disk_warning_pct=disk_warning_pct, disk_critical_pct=disk_critical_pct, disk_threshold_gb=disk_threshold_gb, large_disk_threshold_pct=large_disk_threshold_pct)
 
-    logger.info(f"get PrettyTable for alert_data..")
+    #logger.info(f"get PrettyTable for alert_data..")
     pt = get_pretty_table(alert_data)
-    logger.info(f"get pandas dataframe for alert_data..")
+    #logger.info(f"get pandas dataframe for alert_data..")
     df = get_pandas_dataframe(alert_data)
 
     logger.info(f"Alert data..")
