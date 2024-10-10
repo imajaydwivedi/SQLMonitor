@@ -9,6 +9,7 @@ from get_pretty_table import get_pretty_table
 from get_sma_params import get_sma_params
 from get_disk_space import get_disk_space
 from get_oncall_teams import get_oncall_teams
+import sma_alert as sma
 
 # get Script Name
 script_name = os.path.basename(__file__)
@@ -22,11 +23,13 @@ parser.add_argument("--login_password", type=str, required=False, action="store"
 parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-DiskSpace", help="Alert Name")
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-DiskSpace", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
+parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 
 parser.add_argument("--disk_warning_pct", type=float, required=False, action="store", default=65, help="Disk Warning Threshold %")
 parser.add_argument("--disk_critical_pct", type=float, required=False, action="store", default=85, help="Disk Critical Threshold %")
 parser.add_argument("--disk_threshold_gb", type=float, required=False, action="store", default=250, help="Large disk threshold gb")
 parser.add_argument("--large_disk_threshold_pct", type=float, required=False, action="store", default=95, help="Large disk used %")
+parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
 
 args=parser.parse_args()
 
@@ -42,10 +45,12 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     alert_name = args.alert_name
     alert_job_name = args.alert_job_name
     alert_owner_team = args.alert_owner_team
+    frequency_minutes = args.frequency_minutes
     disk_warning_pct = args.disk_warning_pct
     disk_critical_pct = args.disk_critical_pct
     disk_threshold_gb = args.disk_threshold_gb
     large_disk_threshold_pct = args.large_disk_threshold_pct
+    verbose = args.verbose
 
 if 'Initiate Local Variables' == 'Initiate Local Variables':
     dba_slack_channel_id = ''
@@ -67,10 +72,12 @@ if 'Print Variables' == 'Print Variables':
     logger.info(f"alert_name = '{alert_name}'")
     logger.info(f"alert_job_name = '{alert_job_name}'")
     logger.info(f"alert_owner_team = '{alert_owner_team}'")
+    logger.info(f"frequency_minutes = '{frequency_minutes}'")
     logger.info(f"disk_warning_pct = '{disk_warning_pct}'")
     logger.info(f"disk_critical_pct = '{disk_critical_pct}'")
     logger.info(f"disk_threshold_gb = '{disk_threshold_gb}'")
     logger.info(f"large_disk_threshold_pct = '{large_disk_threshold_pct}'")
+    logger.info(f"verbose = '{verbose}'")
 
 # Make inventory server connection
 logger.info(f"Create db connection using connect_dba_instance..")
@@ -83,7 +90,7 @@ if 'Get DBA Params' == 'Get DBA Params':
     sma_params_records = get_sma_params(sql_connection=cnxn, param_key='dba_slack_channel_id')
 
     #logger.info(f"get PrettyTable..")
-    pt = get_pretty_table(sma_params_records)
+    #pt = get_pretty_table(sma_params_records)
     #logger.info(f"get pandas dataframe..")
     #df = get_pandas_dataframe(sma_params_records, index_col='param_key')
 
@@ -105,20 +112,21 @@ if 'Get Alert Owner Team Details' == 'Get Alert Owner Team Details':
     oncall_teams_records = get_oncall_teams(sql_connection=cnxn, team_name='DBA')
 
     #logger.info(f"get PrettyTable..")
-    pt = get_pretty_table(oncall_teams_records)
+    pt_oncall_teams_records = get_pretty_table(oncall_teams_records)
     #logger.info(f"get pandas dataframe..")
-    df = get_pandas_dataframe(oncall_teams_records, index_col='team_name')
+    df_oncall_teams_records = get_pandas_dataframe(oncall_teams_records, index_col='team_name')
 
     # Extract dynamic parameters from inventory
     #logger.info(f"Get parameters from dbo.sma_params..")
     #dba_slack_channel_id = df[df.param_key=='dba_slack_channel_id'].iloc[0]['param_value']
     #dba_slack_channel_id = df.loc['dba_slack_channel_id','param_value']
-    oncall_team_slack_channel_id = df.at[alert_owner_team,'team_slack_channel']
+    #oncall_team_slack_channel_id = df_oncall_teams_records.at[alert_owner_team,'team_slack_channel']
 
-    logger.info(f"oncall_team_slack_channel_id = '{oncall_team_slack_channel_id}'")
+    #logger.info(f"oncall_team_slack_channel_id = '{oncall_team_slack_channel_id}'")
 
-    print(pt)
-    #print(df)
+    if verbose:
+        print(pt_oncall_teams_records)
+    #print(df_oncall_teams_records)
 
 # Get Disk Space Info
 if 'Get Disk Space Info' == 'Get Disk Space Info':
@@ -126,16 +134,47 @@ if 'Get Disk Space Info' == 'Get Disk Space Info':
     alert_data = get_disk_space(cnxn, disk_warning_pct=disk_warning_pct, disk_critical_pct=disk_critical_pct, disk_threshold_gb=disk_threshold_gb, large_disk_threshold_pct=large_disk_threshold_pct)
 
     #logger.info(f"get PrettyTable for alert_data..")
-    pt = get_pretty_table(alert_data)
+    pt_alert_data = get_pretty_table(alert_data)
     #logger.info(f"get pandas dataframe for alert_data..")
-    df = get_pandas_dataframe(alert_data)
+    df_alert_data = get_pandas_dataframe(alert_data)
 
-    logger.info(f"Alert data..")
-    print(pt)
+    if verbose:
+        logger.info(f"Alert data..")
+        print(pt_alert_data)
+
+# Generate Alert & Notify
+if 'Generate Alert & Notify' == 'Generate Alert & Notify':
+    alert_key = f"{alert_name}"
+    disk_alert = sma.SmaAlert(alert_key)
+
+    # set flag is alert creation is required
+    generate_alert = (True if len(alert_data)>0 else False)
+    # fetch existing alert if any
+    if disk_alert.initialize_data_from_db(cnxn):
+        print(f"existing alert_method => '{disk_alert.alert_method}'")
+
+    #alert_method = df_oncall_teams_records.at[alert_owner_team,'alert_method']
 
 
-#if(len(mytable._rows) > 0):
-  #print(f"{len(mytable._rows)} issue rows found for '{alert_name}'.")
+    if disk_alert.exists:
+        logger.info(f"Alert already exists")
+    else:
+        logger.info(f"Alert does not exists")
+
+    #pt_alert_data_from_db = get_pretty_table(alert_data_from_db)
+
+    if verbose:
+        logger.info(f"Alert data from database..")
+        #print(pt_alert_data_from_db)
+        #print(alert_data_from_db)
+
+    #logger.info(f"alert_method = '{alert_method}'")
+
+    if generate_alert:
+        logger.info(f'Generate alert for [{alert_key}]')
+        pass
+    else:
+        logger.info(f'Clear alert for [{alert_key}]')
 
 # Log end
 logger.info('***** COMPLETED:  %s' % script_name)
@@ -144,5 +183,8 @@ logger.info('***** COMPLETED:  %s' % script_name)
 '''
 Logging in Python
     https://docs.python.org/3/howto/logging.html
+
+Pyodbc named parameter binding
+    https://www.ckhang.com/blog/2019/pyodbc-named-parameter-binding/
 '''
 
