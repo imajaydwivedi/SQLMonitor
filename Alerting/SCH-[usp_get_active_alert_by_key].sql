@@ -25,7 +25,7 @@ BEGIN
 
 declare @_rows_affected int; 
 exec @_rows_affected = dbo.usp_get_active_alert_by_key @alert_key = 'Alert-DiskSpace - [21L-LTPABL-1187]';
-select [is_found] = @_rows_affected
+select [is_found] = isnull(@_rows_affected,0);
 */
 	SET NOCOUNT ON;
 
@@ -47,8 +47,8 @@ GO
 
 /*
 declare @_rows_affected int; 
-exec @_rows_affected = dbo.usp_get_active_alert_by_key @alert_key = 'Alert-DiskSpace - [21L-LTPABL-1187]';
-select [is_found] = @_rows_affected
+exec @_rows_affected = dbo.usp_get_active_alert_by_key @alert_key = 'Alert-DiskSpace';
+select [is_found] = isnull(@_rows_affected,0);
 */
 
 /*
