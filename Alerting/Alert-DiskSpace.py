@@ -94,17 +94,17 @@ if 'Get Disk Space Info' == 'Get Disk Space Info':
                         disk_threshold_gb=disk_threshold_gb,
                         large_disk_threshold_pct=large_disk_threshold_pct
                         )
-    alert_data = get_disk_space(cnxn, **query_params)
+    alert_pyodbc_resultset = get_disk_space(cnxn, **query_params)
 
-    pt_alert_data = get_pretty_table(alert_data)
-    df_alert_data = get_pandas_dataframe(alert_data)
+    pt_alert_pyodbc_resultset = get_pretty_table(alert_pyodbc_resultset)
+    df_alert_pyodbc_resultset = get_pandas_dataframe(alert_pyodbc_resultset)
 
     if verbose:
         logger.info(f"Alert data..")
-        print(pt_alert_data)
+        print(pt_alert_pyodbc_resultset)
 
 # Generate Alert & Notify
-if 'Generate Alert & Notify' == 'Generate Alert & Notify':    
+if 'Generate Alert & Notify' == 'Generate Alert & Notify':
     alert_key = f"{alert_name}"
     disk_alert.alert_key = alert_key
     disk_alert.alert_owner_team = alert_owner_team
@@ -112,7 +112,7 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
     disk_alert.verbose = verbose
 
     # set flag if alert creation is required
-    generate_alert = (True if len(alert_data)>0 else False)
+    generate_alert = (True if len(alert_pyodbc_resultset)>0 else False)
     logger.info(f"generate_alert = '{generate_alert}'")
 
     # fetch existing alert if any
@@ -137,6 +137,7 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
         disk_alert.severity = a_severity
         disk_alert.header = a_header
         disk_alert.affected_servers = a_affected_servers
+        disk_alert.alert_pyodbc_resultset = alert_pyodbc_resultset
 
         # set obj attribute for new alert
         if not disk_alert.exists:
@@ -156,7 +157,7 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
 
 
 
-    #pt_alert_data_from_db = get_pretty_table(alert_data_from_db)
+    #pt_alert_pyodbc_resultset_from_db = get_pretty_table(alert_pyodbc_resultset_from_db)
 
     #logger.info(f"alert_method = '{alert_method}'")
 

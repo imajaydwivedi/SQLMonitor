@@ -63,7 +63,7 @@ select [rows_affected] = isnull(@_rows_affected,0);
                 pt_alert_data_from_db = get_pretty_table(alert_data_from_db)
                 self.logger.info(f"Alert data fetched from db for alert key '{self.alert_key}'..")
                 print(pt_alert_data_from_db)
-                
+
             self.id = alert_data_from_db[0].id
             self.state = alert_data_from_db[0].state
             self.severity = alert_data_from_db[0].severity
@@ -99,4 +99,6 @@ class SmaDiskSpaceAlert(SmaAlert):
         self.disk_critical_pct = disk_critical_pct
         self.disk_threshold_gb = disk_threshold_gb
         self.large_disk_threshold_pct = large_disk_threshold_pct
+        self.alert_pyodbc_resultset = None
+
 
