@@ -1,8 +1,8 @@
 import pandas as pd
 from pandas import DataFrame
 # Video - https://www.youtube.com/watch?v=F6kmIpWWEdU
-# https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.from_records.html#pandas.DataFrame.from_records
-# https://pandas.pydata.org/docs/reference/frame.html
+# Tutorials - https://www.datacamp.com/tutorial/pandas-tutorial-dataframe-python
+# Docs - https://pandas.pydata.org/docs/reference/frame.html
 
 def get_pandas_dataframe(pyodbc_query_resultset, index_col=''):
     if len(pyodbc_query_resultset) == 0:

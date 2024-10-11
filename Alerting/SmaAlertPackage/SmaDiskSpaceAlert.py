@@ -16,25 +16,33 @@ class SmaDiskSpaceAlert(SmaAlert):
         self.large_disk_threshold_pct = large_disk_threshold_pct
         self.alert_pyodbc_resultset = None
 
-        self.__df_alert_pyodbc_resultset = None
+        self.__df_alert_pyodbc_resultset = None        
 
     def initialize_derived_attributes(self):
         ''' SYNOPSIS: Computes derived attributes like State, Severity, header, logger, description, affected_servers etc
         '''
+        self.__generate_alert = (True if len(self.alert_pyodbc_resultset)>0 else False)
         self.__compute_df_alert_pyodbc_resultset()
         self.__compute_severity()
         self.__compute_state()
 
     def __compute_severity(self):
-        if self.verbose:
-            self.logger.info(f"Before self.severity = '{self.severity}'")            
-
-    def __compute_state(self):
-        if self.verbose:
-            self.logger.info(f"Before self.state = '{self.state}'")
+        # 'Critical', 'High', 'Medium', 'Low'
+        df = self.__df_alert_pyodbc_resultset
+        
+        if len(df[df.state=='Critical']) > 0:
+            self.severity = 'Critical'
+        elif len(df[df.state=='High']) > 0:
+            self.severity = 'High'
+        elif len(df[df.state=='Medium']) > 0:
+            self.severity = 'Medium'
+        else:
+            self.severity = 'Low'
 
     def __compute_df_alert_pyodbc_resultset(self):
         self.__df_alert_pyodbc_resultset = get_pandas_dataframe(self.alert_pyodbc_resultset, index_col='sql_instance')
-        if self.verbose:
-            self.logger.info(f"self.__df_alert_pyodbc_resultset..")
-            print(self.__df_alert_pyodbc_resultset)
+
+    def __compute_state(self):
+        # 'Active','Suppressed','Cleared', 'Resolved'
+        if len(self.state) == 0:
+            self.state = 'Active'

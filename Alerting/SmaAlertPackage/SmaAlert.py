@@ -2,6 +2,7 @@ import pyodbc
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_oncall_teams import get_oncall_teams
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
+import datetime
 
 class SmaAlert():
     ''' SYNOPSIS: Class to represent dbo.sma_alert table
@@ -23,12 +24,16 @@ class SmaAlert():
         self.frequency_minutes = frequency_minutes
         self.affected_servers = affected_servers
         self.alert_method = alert_method
+        self.suppress_start_time_utc = None
+        self.suppress_end_time_utc = None
         self.alert_job_name = None
-        self.exists = None        
+        self.exists = None
+        self.generate_alert = None
+        self.action_to_take = 'No Action' # 'No Action', 'Create', 'Update', 'Upgrade', 'SkipNotification', 'Clear'
         self.verbose = verbose
 
         self.__alert_data_from_db = None
-        self.__owner_team_deatails_from_db = None
+        self.__owner_team_details_from_db = None
 
     def fetch_data_from_db(self,sql_connection):
         if self.verbose:
@@ -54,10 +59,10 @@ select [rows_affected] = isnull(@_rows_affected,0);
 
     def initialize_data_from_db(self,sql_connection):
         self.__alert_data_from_db = self.fetch_data_from_db(sql_connection)
-        self.__owner_team_deatails_from_db = self.fetch_owner_team_details(sql_connection)
+        self.__owner_team_details_from_db = self.fetch_owner_team_details(sql_connection)
 
         if self.verbose:
-            pt_owner_team_deatails_from_db = get_pretty_table(self.__owner_team_deatails_from_db)
+            pt_owner_team_deatails_from_db = get_pretty_table(self.__owner_team_details_from_db)
             self.logger.info(f"Alert owner team '{self.alert_owner_team}' details..")
             print(pt_owner_team_deatails_from_db)
 
@@ -76,8 +81,29 @@ select [rows_affected] = isnull(@_rows_affected,0);
 
             self.alert_owner_team = self.__alert_data_from_db[0].alert_owner_team
             self.alert_method = self.__alert_data_from_db[0].alert_method
+
+            self.suppress_start_time_utc = self.__alert_data_from_db[0].suppress_start_time_utc
+            self.suppress_end_time_utc = self.__alert_data_from_db[0].suppress_end_time_utc
         else:
-            self.alert_method = self.__owner_team_deatails_from_db[0].alert_method
+            self.alert_method = self.__owner_team_details_from_db[0].alert_method
+
+        # set action_to_take -- 'No Action', 'Create', 'Clear', 'SkipNotification', 'Update', 'Upgrade'
+        if self.exists is False and self.generate_alert is False:
+            self.action_to_take = 'No Action'
+        else:
+            if self.exists is False and self.generate_alert is True:
+                self.action_to_take = 'Create'
+
+            if self.exists and self.generate_alert is False:
+                self.action_to_take = 'Clear'
+
+            if self.exists and len(self.suppress_start_time_utc) > 0 and len(self.suppress_end_time_utc) > 0:
+                now_utc = datetime.datetime.now(timezone.utc) 
+                if self.suppress_start_time_utc < now_utc < self.suppress_end_time_utc:
+                    self.action_to_take = 'SkipNotification'
+            
+            if self.exists and self.action_to_take not in ['No Action', 'Create', 'Upgrade', 'SkipNotification', 'Clear']:
+                self.action_to_take = 'Update'        
 
         return self.exists
 
@@ -88,4 +114,10 @@ select [rows_affected] = isnull(@_rows_affected,0);
         query_resultset = get_oncall_teams(sql_connection, self.alert_owner_team)
 
         return query_resultset
+
+    def take_required_action(self):
+        if self.verbose:
+            self.logger.info(f"Perform '{self.action_to_take}' action under function take_required_action()..")
+            print(self)
+        pass
 

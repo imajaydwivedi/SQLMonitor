@@ -110,59 +110,30 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
     disk_alert.verbose = verbose
     disk_alert.alert_job_name = alert_job_name
 
-    # set flag if alert creation is required
-    generate_alert = (True if len(alert_pyodbc_resultset)>0 else False)
-    logger.info(f"generate_alert = '{generate_alert}'")
-    #logger.info(f"disk_alert.alert_job_name = '{disk_alert.alert_job_name}'")
+    # set flag if alert related action is required
+    disk_alert.generate_alert = (True if len(alert_pyodbc_resultset)>0 else False)
+    disk_alert.alert_pyodbc_resultset = (alert_pyodbc_resultset if disk_alert.generate_alert else None)
 
-    # fetch existing alert if any
+    # fetch existing alert if any & set flag if alert creation is required
     if disk_alert.initialize_data_from_db(cnxn):
         logger.info(f"Overwrite variables from db retrieved data..")
         alert_owner_team = disk_alert.alert_owner_team
 
     logger.info(f"disk_alert.exists = '{disk_alert.exists}'")
+    logger.info(f"disk_alert.generate_alert = '{disk_alert.generate_alert}'")
+    logger.info(f"disk_alert.action_to_take = '{disk_alert.action_to_take}'")
+    logger.info(f"disk_alert.state = '{disk_alert.state}'")
 
-    if generate_alert is False and disk_alert.exists is False:
-        logger.info(f"No action required.")
-    else:
+    if disk_alert.action_to_take != 'No Action':
         # if alert to be sent, then save raw data, and computer derived attributes
-        if generate_alert:
+        if disk_alert.generate_alert:
             # send alert raw data to class object to compute derived attributes
             disk_alert.alert_pyodbc_resultset = alert_pyodbc_resultset
             # compute derived attributes from raw data
             disk_alert.initialize_derived_attributes()
-        else:
-            disk_alert.state = 'Cleared'
 
-        #a_state = None
-        #a_severity = None
-        #a_logger = None
-        #a_header = None
-        #a_description = None
-        #a_affected_servers = None
-
-        # initialize attributes required for each notification
-        #disk_alert.state = a_state
-        #disk_alert.severity = a_severity
-        #disk_alert.header = a_header
-        #disk_alert.affected_servers = a_affected_servers        
-
-        if generate_alert: # if alert is required
-            if disk_alert.exists:
-                logger.info(f"Update the existing alert..")
-            else:
-                logger.info(f"Trigger a new alert..")
-        else: # if alert is not required
-            if disk_alert.exists:
-                logger.info(f"Clear the existing alert..")
-
-    #alert_method = df_oncall_teams_records.at[alert_owner_team,'alert_method']
-
-
-
-    #pt_alert_pyodbc_resultset_from_db = get_pretty_table(alert_pyodbc_resultset_from_db)
-
-    #logger.info(f"alert_method = '{alert_method}'")
+        # Take required action now
+        disk_alert.take_required_action()
 
 # Log end
 logger.info('***** COMPLETED:  %s' % script_name)
