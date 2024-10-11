@@ -78,12 +78,7 @@ go
 		select id from dbo.sma_alert a 
 		where 1=1
 		and a.alert_key = @alert_key
-		and a.state in ('Active','Suppressed','Cleared');
-
-		if @action_to_take in ('Upgrade','Clear')
-		begin
-			print 'Upgrade alert for key ['+@alert_key+']..';
-		end
+		and a.state in ('Active','Suppressed','Cleared');		
 	end
 	else
 	begin
@@ -96,6 +91,22 @@ go
 	end
 
 	select @alert_id_OUTPUT = alert_id from @_tbl_sma_alert;
+
+	-- Change alert severity or Clear the alert
+	if @action_to_take in ('Upgrade','Clear')
+	begin
+		print 'Upgrade alert for key ['+@alert_key+']..';
+
+		update	a
+		set		[state] = case when @action_to_take = 'Clear' then 'Cleared' else a.state end, 
+				[severity] = case when @action_to_take <> 'Clear' then @severity else a.severity end
+		from dbo.sma_alert a 
+		where 1=1
+		--and a.alert_key = @alert_key
+		and a.id = @alert_id_OUTPUT
+		and a.id_part_no = @alert_id_OUTPUT % 10
+		--and a.state in ('Active','Suppressed','Cleared');
+	end
 
 	-- populate dbo.sma_alert_history
 	insert dbo.sma_alert_history (alert_id, logger, header, description)
