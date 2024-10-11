@@ -104,9 +104,12 @@ if 'Get Disk Space Info' == 'Get Disk Space Info':
         print(pt_alert_data)
 
 # Generate Alert & Notify
-if 'Generate Alert & Notify' == 'Generate Alert & Notify':
+if 'Generate Alert & Notify' == 'Generate Alert & Notify':    
     alert_key = f"{alert_name}"
     disk_alert.alert_key = alert_key
+    disk_alert.alert_owner_team = alert_owner_team
+    disk_alert.logger = logger
+    disk_alert.verbose = verbose
 
     # set flag if alert creation is required
     generate_alert = (True if len(alert_data)>0 else False)
@@ -122,6 +125,24 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
     if generate_alert is False and disk_alert.exists is False:
         logger.info(f"No action required.")
     else:
+        a_state = None
+        a_severity = None
+        a_logger = None
+        a_header = None
+        a_description = None
+        a_affected_servers = None
+
+        # initialize attributes required for each notification
+        disk_alert.state = a_state
+        disk_alert.severity = a_severity
+        disk_alert.header = a_header
+        disk_alert.affected_servers = a_affected_servers
+
+        # set obj attribute for new alert
+        if not disk_alert.exists:
+            disk_alert.logger = a_logger
+            disk_alert.frequency_minutes = frequency_minutes
+
         if generate_alert: # if alert is required
             if disk_alert.exists:
                 logger.info(f"Update the existing alert..")
