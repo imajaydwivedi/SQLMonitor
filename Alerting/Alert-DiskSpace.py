@@ -2,14 +2,12 @@ import pyodbc
 import argparse
 from datetime import datetime
 import os
-from get_script_logger import get_script_logger
-from connect_dba_instance import connect_dba_instance
-from get_pandas_dataframe import get_pandas_dataframe
-from get_pretty_table import get_pretty_table
-from get_sma_params import get_sma_params
-from get_disk_space import get_disk_space
-#from get_oncall_teams import get_oncall_teams
-import sma_alert as sma
+from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
+from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
+from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
+from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
+from SmaAlertPackage.CustomFunctions.get_disk_space import get_disk_space
+import SmaAlertPackage.SmaDiskSpaceAlert as sma
 
 # get Script Name
 script_name = os.path.basename(__file__)
@@ -110,10 +108,12 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
     disk_alert.alert_owner_team = alert_owner_team
     disk_alert.logger = logger
     disk_alert.verbose = verbose
+    disk_alert.alert_job_name = alert_job_name
 
     # set flag if alert creation is required
     generate_alert = (True if len(alert_pyodbc_resultset)>0 else False)
     logger.info(f"generate_alert = '{generate_alert}'")
+    #logger.info(f"disk_alert.alert_job_name = '{disk_alert.alert_job_name}'")
 
     # fetch existing alert if any
     if disk_alert.initialize_data_from_db(cnxn):
@@ -125,24 +125,27 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
     if generate_alert is False and disk_alert.exists is False:
         logger.info(f"No action required.")
     else:
-        a_state = None
-        a_severity = None
-        a_logger = None
-        a_header = None
-        a_description = None
-        a_affected_servers = None
+        # if alert to be sent, then save raw data, and computer derived attributes
+        if generate_alert:
+            # send alert raw data to class object to compute derived attributes
+            disk_alert.alert_pyodbc_resultset = alert_pyodbc_resultset
+            # compute derived attributes from raw data
+            disk_alert.initialize_derived_attributes()
+        else:
+            disk_alert.state = 'Cleared'
+
+        #a_state = None
+        #a_severity = None
+        #a_logger = None
+        #a_header = None
+        #a_description = None
+        #a_affected_servers = None
 
         # initialize attributes required for each notification
-        disk_alert.state = a_state
-        disk_alert.severity = a_severity
-        disk_alert.header = a_header
-        disk_alert.affected_servers = a_affected_servers
-        disk_alert.alert_pyodbc_resultset = alert_pyodbc_resultset
-
-        # set obj attribute for new alert
-        if not disk_alert.exists:
-            disk_alert.logger = a_logger
-            disk_alert.frequency_minutes = frequency_minutes
+        #disk_alert.state = a_state
+        #disk_alert.severity = a_severity
+        #disk_alert.header = a_header
+        #disk_alert.affected_servers = a_affected_servers        
 
         if generate_alert: # if alert is required
             if disk_alert.exists:
