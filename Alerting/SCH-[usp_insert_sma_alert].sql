@@ -20,6 +20,7 @@ ALTER PROCEDURE dbo.usp_insert_sma_alert
 	@frequency_minutes int,
 	@alert_owner_team varchar(125) = 'DBA',
 	@state varchar(15),
+	@action_to_take varchar(125) = 'Create',
 	@severity varchar(15),
 	@logger varchar(125),
 	@header varchar(500),
@@ -48,6 +49,7 @@ exec @_alert_id_RETURN = dbo.usp_insert_sma_alert
 		@frequency_minutes = 30,
 		@alert_owner_team = 'DBA',
 		@state = 'Active',
+		@action_to_take = 'Create',
 		@severity = 'High',
 		@logger = 'Wrapper-AlertDiskSpace.ps1',
 		@header = 'Disk Space Issue on [21L-LTPABL-1187]',
@@ -69,7 +71,7 @@ go
 	-- populate dbo.sma_alert if alert does not exist for same alert_key
 	if exists (select * from dbo.sma_alert a where a.alert_key = @alert_key and a.state in ('Active','Suppressed','Cleared'))
 	begin
-		print 'alert with key ['+@alert_key+' already active.';
+		print 'alert with key ['+@alert_key+'] already active.';
 		set @is_pre_existing_OUTPUT = 1;
 
 		insert @_tbl_sma_alert (alert_id)
@@ -77,10 +79,15 @@ go
 		where 1=1
 		and a.alert_key = @alert_key
 		and a.state in ('Active','Suppressed','Cleared');
+
+		if @action_to_take in ('Upgrade','Clear')
+		begin
+			print 'Upgrade alert for key ['+@alert_key+']..';
+		end
 	end
 	else
 	begin
-		print 'creating alert with key ['+@alert_key+'..';
+		print 'creating alert with key ['+@alert_key+']..';
 		set @is_pre_existing_OUTPUT = 0;
 
 		insert dbo.sma_alert (alert_key, alert_owner_team, state, severity, frequency_minutes)
@@ -132,6 +139,7 @@ exec @_alert_id_RETURN = dbo.usp_insert_sma_alert
 		@frequency_minutes = 30,
 		@alert_owner_team = 'DBA',
 		@state = 'Active',
+		@action_to_take = 'Create',
 		@severity = 'High',
 		@logger = 'Wrapper-AlertDiskSpace.ps1',
 		@header = 'Disk Space Issue on [21L-LTPABL-1187]',
