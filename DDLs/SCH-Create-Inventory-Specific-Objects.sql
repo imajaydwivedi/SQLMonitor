@@ -1300,6 +1300,8 @@ begin
 			('url_for_dba_slack_channel','workspace.slack.com/archives/unique_id','URL for DBA Public Slack Channel For End Users Support'),
 			('dba_slack_channel_name','#sqlmonitor-alerts','DBA Slack Channel ID'),
 			('dba_slack_channel_id','C01234567890','DBA Slack Channel ID'),
+			('dba_slack_bot', 'SQLMonitor', 'DBA Slack Bot Name'),
+			('credential_manager_database', 'DBA', 'Credential Manager Database on Inventory Server'),
 			('GrafanaDashboardPortal',
 				'http://localhost:3000/d/',
 					'Grafana Dashboard Portal'),
