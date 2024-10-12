@@ -111,9 +111,12 @@ go
 		--and a.state in ('Active','Suppressed','Cleared');
 	end
 
+	if @action_to_take = 'Create'
+		set @header = REPLACE(@header,'Id#X',('Id#'+convert(varchar,@alert_id_OUTPUT)));
+
 	-- populate dbo.sma_alert_history
 	insert dbo.sma_alert_history (alert_id, logged_by, header, description)
-	select a.alert_id, @logged_by, @header, @description
+	select	a.alert_id, @logged_by, @header, @description
 	from @_tbl_sma_alert a;
 	
 	-- populate dbo.sma_alert_affected_servers

@@ -207,7 +207,8 @@ create table [dbo].[sma_alert_affected_servers]
 (
 	[alert_id] bigint not null,
 	[sql_instance] varchar(125) null,
-	[host_name] varchar(125) null
+	[host_name] varchar(125) null,
+	[collection_time] datetime2 not null default getdate()
 
 	,index ci_sma_alert_affected_servers clustered ([alert_id])
 )
