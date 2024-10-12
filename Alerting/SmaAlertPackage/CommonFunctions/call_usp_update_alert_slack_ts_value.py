@@ -19,6 +19,8 @@ select [is_found] = @_rows_affected
     cursor.execute(sql_query, alert_id, slack_ts_value)
     query_resultset = cursor.fetchone()
 
-    #sql_connection.commit()
+    sql_connection.commit()
     cursor.close()
+
+    return (True if query_resultset.is_found > 0 else False )
 

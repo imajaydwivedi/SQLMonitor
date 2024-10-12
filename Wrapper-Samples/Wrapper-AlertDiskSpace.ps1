@@ -1,0 +1,1 @@
+python ./Alerting/Alert-DiskSpace.py --inventory_server officelaptop #--login_password 'SomeStrongSApassword' #--verbose True

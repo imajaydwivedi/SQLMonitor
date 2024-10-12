@@ -7,10 +7,12 @@ class SmaDiskSpaceAlert(SmaAlert):
     SYNOPSIS: Class to represent disk space alert
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', state:str='', severity:str='', logger=None, header:str='', description:str='', frequency_minutes:int=30, slack_ts_value:str = None, id:int = None, affected_servers:tuple=None, alert_method:str=None, alert_job_name:str=None, verbose:bool=False, disk_warning_pct:float=65, disk_critical_pct:float=85, disk_threshold_gb:int=250, large_disk_threshold_pct:float=95):
+    #def __init__(self, alert_key:str=None, alert_owner_team:str='', state:str='', severity:str='', logger=None, header:str='', description:str='', frequency_minutes:int=30, slack_ts_value:str = None, id:int = None, affected_servers:tuple=None, alert_method:str=None, alert_job_name:str=None, verbose:bool=False, disk_warning_pct:float=65, disk_critical_pct:float=85, disk_threshold_gb:int=250, large_disk_threshold_pct:float=95):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=30, disk_warning_pct:float=65, disk_critical_pct:float=85, disk_threshold_gb:int=250, large_disk_threshold_pct:float=95):
         ''' SYNOPSIS: Constructor
         '''
-        super().__init__(alert_key, alert_owner_team, state, severity, logger, header, description, frequency_minutes, slack_ts_value, id, affected_servers, alert_method, alert_job_name, verbose)
+        #super().__init__(alert_key, alert_owner_team, state, severity, logger, header, description, frequency_minutes, slack_ts_value, id, affected_servers, alert_method, alert_job_name, verbose)
+        super().__init__(alert_key, alert_owner_team, frequency_minutes)
         self.disk_warning_pct = disk_warning_pct
         self.disk_critical_pct = disk_critical_pct
         self.disk_threshold_gb = disk_threshold_gb
@@ -49,7 +51,7 @@ class SmaDiskSpaceAlert(SmaAlert):
 
     def __compute_state(self):
         # 'Active','Suppressed','Cleared', 'Resolved'
-        if len(self.state) == 0:
+        if self.state is None or len(self.state) == 0:
             self.state = 'Active'
 
     def __compute_header(self):

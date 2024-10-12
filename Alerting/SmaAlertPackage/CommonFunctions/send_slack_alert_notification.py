@@ -29,13 +29,18 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
     client = WebClient(token=slack_token)
     
     # Send one liner alert message
-    if slack_ts_value is None:
+    if slack_ts_value is None or len(slack_ts_value) == 0:
+        if verbose:
+            logger.info(f"slack_ts_value is None, so send one liner alert message first..")
         response = client.chat_postMessage(
             channel = slack_channel,
             text = alert_header,
             username = slack_bot
         )
         slack_ts_value = response['ts']
+
+        if verbose:
+            logger.info(f"slack_ts_value '{slack_ts_value}' is generated.")
 
     # Add to alert message thread with alert description as text snippet
     if slack_ts_value is not None and action_to_take in ['Create','Update', 'Upgrade']:

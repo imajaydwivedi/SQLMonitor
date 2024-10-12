@@ -15,29 +15,29 @@ class SmaAlert():
         INPUT:
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', state:str='', severity:str='', logger=None, header:str='', description:str='', frequency_minutes:int=0, slack_ts_value:str=None, id:int = None, affected_servers:tuple=None, alert_method:str=None, alert_job_name:str=None,  verbose:bool=False):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=0):
         ''' SYNOPSIS: Constructor
         '''
-        self.id = id
+        self.id = None
         self.alert_key = alert_key
         self.alert_owner_team = alert_owner_team
-        self.state = state
-        self.severity = severity
-        self.header = header
-        self.description = description
-        self.slack_ts_value = slack_ts_value
+        self.state = None
+        self.severity = None
+        self.header = None
+        self.description = None
+        self.slack_ts_value = None
         self.frequency_minutes = frequency_minutes
-        self.affected_servers = affected_servers
-        self.alert_method = alert_method
+        self.affected_servers = None
+        self.alert_method = None
         self.suppress_start_date_utc = None
         self.suppress_end_date_utc = None
         self.alert_job_name = None
-        self.logger = logger # logging tool
+        self.logger = None # logging tool
         self.logged_by = self.alert_job_name # alert logging job or person using portal
         self.exists = None
         self.generate_alert = None
         self.action_to_take = 'No Action' # 'No Action', 'Create', 'Update', 'Upgrade', 'SkipNotification', 'Clear'
-        self.verbose = verbose
+        self.verbose = None
         self.sql_connection = None
         self.credential_manager_database = None
 
@@ -199,6 +199,8 @@ select [rows_affected] = isnull(@_rows_affected,0);
             self.logger.info(f"set self.id with '{query_resultset[0]}'")
             self.id = query_resultset[0]
 
+            self.header = self.header.replace("Id#X", f"Id#{self.id}")
+
     def __send_alert_notification(self):
         if self.verbose:
             self.logger.info(f"executing SmaAlert.__send_alert_notification()..")
@@ -238,7 +240,11 @@ select [rows_affected] = isnull(@_rows_affected,0);
             print(pt_alert_params.get_string(fields=["slack_token", "slack_bot", "slack_channel", "slack_ts_value", "action_to_take", "header"]))
 
         self.slack_ts_value = send_slack_alert_notification(**alert_params)
-        call_usp_update_alert_slack_ts_value(self.sql_connection, self.id, self.slack_ts_value, self.logger, self.verbose)
+        if self.verbose:
+            self.logger.info(f"post send_slack_alert_notification() call, self.slack_ts_value = '{self.slack_ts_value}'")
+        slack_ts_value_update = call_usp_update_alert_slack_ts_value(self.sql_connection, self.id, self.slack_ts_value, self.logger, self.verbose)
+        if self.verbose:
+            self.logger.info(f"slack_ts_value_update = {('Success' if slack_ts_value_update else 'Failure')}")
     
     def __send_email_alert_notification(self):
         if self.verbose:
