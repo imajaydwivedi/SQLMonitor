@@ -94,7 +94,6 @@ exec @_rows_affected = dbo.usp_get_active_alert_by_key @alert_key = ?;
 select [rows_affected] = isnull(@_rows_affected,0);
     """
         cursor.execute(sql_query, self.alert_key)
-        #cursor.execute(sql_query, 'Alert-DiskSpace - [21L-LTPABL-1187]')
         query_resultset = cursor.fetchall()
         cursor.nextset()
         row_count = (cursor.fetchall())[0][0]
@@ -102,14 +101,14 @@ select [rows_affected] = isnull(@_rows_affected,0);
         # set existence
         self.exists = bool(row_count)
 
-        #return (row_count,query_resultset)
         return query_resultset
 
     def initialize_data_from_db(self):
+        # set self.exists if alert found
         self.__alert_data_from_db = self.fetch_data_from_db()
         self.__owner_team_details_from_db = self.fetch_owner_team_details()
 
-        if self.verbose:
+        if self.verbose and (self.exists or self.generate_alert):
             pt_owner_team_deatails_from_db = get_pretty_table(self.__owner_team_details_from_db)
             self.logger.info(f"Alert owner team '{self.alert_owner_team}' details..")
             print(pt_owner_team_deatails_from_db)
@@ -242,9 +241,11 @@ select [rows_affected] = isnull(@_rows_affected,0);
         self.slack_ts_value = send_slack_alert_notification(**alert_params)
         if self.verbose:
             self.logger.info(f"post send_slack_alert_notification() call, self.slack_ts_value = '{self.slack_ts_value}'")
-        slack_ts_value_update = call_usp_update_alert_slack_ts_value(self.sql_connection, self.id, self.slack_ts_value, self.logger, self.verbose)
-        if self.verbose:
-            self.logger.info(f"slack_ts_value_update = {('Success' if slack_ts_value_update else 'Failure')}")
+        
+        if self.action_to_take == 'Create':
+            slack_ts_value_update = call_usp_update_alert_slack_ts_value(self.sql_connection, self.id, self.slack_ts_value, self.logger, self.verbose)
+            if self.verbose:
+                self.logger.info(f"slack_ts_value_update = {('Success' if slack_ts_value_update else 'Failure')}")
     
     def __send_email_alert_notification(self):
         if self.verbose:

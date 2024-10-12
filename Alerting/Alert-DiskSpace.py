@@ -56,9 +56,6 @@ cursor = cnxn.cursor()
 logger.info(f"Create SmaDiskSpaceAlert class object with default values..")
 disk_alert = sma.SmaDiskSpaceAlert()
 
-if 'Initiate Local Variables' == 'Initiate Local Variables':
-    pass
-
 if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
     disk_warning_pct = disk_alert.disk_warning_pct
     disk_critical_pct = disk_alert.disk_critical_pct
@@ -94,12 +91,14 @@ if 'Get Disk Space Info' == 'Get Disk Space Info':
                         )
     alert_pyodbc_resultset = get_disk_space(cnxn, **query_params)
 
-    pt_alert_pyodbc_resultset = get_pretty_table(alert_pyodbc_resultset)
-    df_alert_pyodbc_resultset = get_pandas_dataframe(alert_pyodbc_resultset)
+    if len(alert_pyodbc_resultset) > 0:
+        logger.info(f"Before creating pt & df on alert_pyodbc_resultset..")
+        pt_alert_pyodbc_resultset = get_pretty_table(alert_pyodbc_resultset)
+        df_alert_pyodbc_resultset = get_pandas_dataframe(alert_pyodbc_resultset)
 
-    if verbose:
-        logger.info(f"Alert data..")
-        print(pt_alert_pyodbc_resultset)
+        if verbose:
+            logger.info(f"Alert data..")
+            print(pt_alert_pyodbc_resultset)
 
 # Generate Alert & Notify
 if 'Generate Alert & Notify' == 'Generate Alert & Notify':
@@ -113,7 +112,7 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
 
     # set flag if alert related action is required
     disk_alert.generate_alert = (True if len(alert_pyodbc_resultset)>0 else False)
-    disk_alert.alert_pyodbc_resultset = (alert_pyodbc_resultset if disk_alert.generate_alert else None)
+    disk_alert.alert_pyodbc_resultset = alert_pyodbc_resultset
 
     # fetch existing alert if any & set flag if alert creation is required
     if disk_alert.initialize_data_from_db():
@@ -126,12 +125,8 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
     logger.info(f"disk_alert.state = '{disk_alert.state}'")
 
     if disk_alert.action_to_take != 'No Action':
-        # if alert to be sent, then save raw data, and computer derived attributes
-        if disk_alert.generate_alert:
-            # send alert raw data to class object to compute derived attributes
-            disk_alert.alert_pyodbc_resultset = alert_pyodbc_resultset
-            # compute derived attributes from raw data
-            disk_alert.initialize_derived_attributes()
+        # compute derived attributes from raw data
+        disk_alert.initialize_derived_attributes()
 
         # Take required action now
         disk_alert.take_required_action()
