@@ -6,6 +6,8 @@ from SmaAlertPackage.CommonFunctions.get_pretty_dictionary import get_pretty_dic
 from SmaAlertPackage.CommonFunctions.call_usp_insert_sma_alert import call_usp_insert_sma_alert
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 from SmaAlertPackage.CommonFunctions.get_sm_credential import get_sm_credential
+from SmaAlertPackage.CommonFunctions.send_slack_alert_notification import send_slack_alert_notification
+from SmaAlertPackage.CommonFunctions.call_usp_update_alert_slack_ts_value import call_usp_update_alert_slack_ts_value
 from datetime import datetime, timezone
 
 class SmaAlert():
@@ -13,7 +15,7 @@ class SmaAlert():
         INPUT:
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', state:str='', severity:str='', logger=None, header:str='', description:str='', frequency_minutes:int=0, slack_ts_value:str = None, id:int = None, affected_servers:tuple=None, alert_method:str=None, alert_job_name:str=None,  verbose:bool=False):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', state:str='', severity:str='', logger=None, header:str='', description:str='', frequency_minutes:int=0, slack_ts_value:str=None, id:int = None, affected_servers:tuple=None, alert_method:str=None, alert_job_name:str=None,  verbose:bool=False):
         ''' SYNOPSIS: Constructor
         '''
         self.id = id
@@ -214,6 +216,29 @@ select [rows_affected] = isnull(@_rows_affected,0);
     def __send_slack_alert_notification(self):
         if self.verbose:
             self.logger.info(f"executing SmaAlert.__send_slack_alert_notification()..")
+
+        alert_params = dict(
+                        slack_token = self.__slack_token, 
+                        slack_bot = self.__slack_bot,
+                        slack_channel = self.__alert_owner_team_slack_channel,
+                        slack_ts_value = self.slack_ts_value,
+                        action_to_take = self.action_to_take,
+                        logger = self.logger,
+                        verbose = self.verbose,
+                        alert_key = self.alert_key,
+                        state = self.state,
+                        severity = self.severity,
+                        header = self.header,
+                        description = self.description
+                    )
+        if self.verbose:
+            pt_alert_params = get_pretty_dictionary(alert_params)
+            self.logger.info(f"self.__slack_token = '{self.__slack_token}'")
+            self.logger.info(f"Parameters for call_usp_update_alert_slack_ts_value() function call =>")
+            print(pt_alert_params.get_string(fields=["slack_token", "slack_bot", "slack_channel", "slack_ts_value", "action_to_take", "header"]))
+
+        self.slack_ts_value = send_slack_alert_notification(**alert_params)
+        call_usp_update_alert_slack_ts_value(self.sql_connection, self.id, self.slack_ts_value, self.logger, self.verbose)
     
     def __send_email_alert_notification(self):
         if self.verbose:

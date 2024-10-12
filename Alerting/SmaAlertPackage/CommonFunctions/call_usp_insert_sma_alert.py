@@ -1,6 +1,6 @@
 import pyodbc
 
-def call_usp_insert_sma_alert(sql_connection, logger:None, verbose:bool=False, **kwargs):
+def call_usp_insert_sma_alert(sql_connection, logger=None, verbose:bool=False, **kwargs):
     cursor = sql_connection.cursor()
 
     sql_query = f"""
