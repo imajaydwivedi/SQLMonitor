@@ -121,6 +121,7 @@ go
 		select a.alert_id, s.sql_instance, s.host_name
 		from @affected_servers s full outer join @_tbl_sma_alert a
 			on 1=1
+		where s.sql_instance is not null or s.host_name is not null
 	)
 	,cte_existing_data as (
 		select s.alert_id, s.sql_instance, s.host_name
