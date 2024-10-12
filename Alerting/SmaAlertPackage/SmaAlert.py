@@ -4,6 +4,8 @@ from SmaAlertPackage.CommonFunctions.get_oncall_teams import get_oncall_teams
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
 from SmaAlertPackage.CommonFunctions.get_pretty_dictionary import get_pretty_dictionary
 from SmaAlertPackage.CommonFunctions.call_usp_insert_sma_alert import call_usp_insert_sma_alert
+from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
+from SmaAlertPackage.CommonFunctions.get_sm_credential import get_sm_credential
 from datetime import datetime, timezone
 
 class SmaAlert():
@@ -35,9 +37,17 @@ class SmaAlert():
         self.action_to_take = 'No Action' # 'No Action', 'Create', 'Update', 'Upgrade', 'SkipNotification', 'Clear'
         self.verbose = verbose
         self.sql_connection = None
+        self.credential_manager_database = None
 
         self.__alert_data_from_db = None
         self.__owner_team_details_from_db = None
+        self.__slack_token = None
+        self.__slack_bot = None
+        self.__alert_owner_team_email = None
+        self.__alert_owner_team_pagerduty_service_key = None
+        self.__alert_owner_team_slack_channel = None
+        self.__alert_dashboard_url = None
+        self.__sqlmonitor_dashboard_url = None
         #self.__affected_servers_json = None
 
     def __get_alert_dict(self):
@@ -123,6 +133,22 @@ select [rows_affected] = isnull(@_rows_affected,0);
         else:
             self.alert_method = self.__owner_team_details_from_db[0].alert_method
 
+        # set alert_owner_team related attributes
+        self.__alert_owner_team_email = self.__owner_team_details_from_db[0].team_email
+        self.__alert_owner_team_slack_channel = self.__owner_team_details_from_db[0].team_slack_channel
+        self.__alert_owner_team_pagerduty_service_key = self.__owner_team_details_from_db[0].team_slack_channel
+
+        # set attributes from dbo.sma_params
+        self.__slack_bot = get_sma_params(self.sql_connection, param_key='dba_slack_bot')[0].param_value
+        self.credential_manager_database = get_sma_params(self.sql_connection, param_key='credential_manager_database')[0].param_value
+        self.__alert_dashboard_url = get_sma_params(self.sql_connection, param_key='url_for_alerts_grafana_dashboard')[0].param_value
+
+        # set attributes from credential manager
+        if self.alert_method == 'slack':
+            self.__slack_token = get_sm_credential(self.sql_connection, self.credential_manager_database, 'dba_slack_bot_token')
+        if self.alert_method == 'pagerduty':
+            self.__alert_owner_team_pagerduty_service_key = get_sm_credential(self.sql_connection, self.credential_manager_database, 'dba_pagerduty_service_key')
+
         # set action_to_take -- 'No Action', 'Create', 'Clear', 'SkipNotification', 'Update', 'Upgrade'
         if self.exists is False and self.generate_alert is False:
             self.action_to_take = 'No Action'
@@ -171,6 +197,32 @@ select [rows_affected] = isnull(@_rows_affected,0);
             self.logger.info(f"set self.id with '{query_resultset[0]}'")
             self.id = query_resultset[0]
 
+    def __send_alert_notification(self):
+        if self.verbose:
+            self.logger.info(f"executing SmaAlert.__send_alert_notification()..")
+
+        if self.alert_method == 'slack':
+            self.__send_slack_alert_notification()
+        elif self.alert_method == 'email':
+            self.__send_email_alert_notification()
+        elif self.alert_method == 'pagerduty':
+            self.__send_pagerduty_alert_notification()
+        else:
+            if self.verbose:
+                self.logger.warning(f"alert_method '{self.alert_method}' is still not implemented.")
+
+    def __send_slack_alert_notification(self):
+        if self.verbose:
+            self.logger.info(f"executing SmaAlert.__send_slack_alert_notification()..")
+    
+    def __send_email_alert_notification(self):
+        if self.verbose:
+            self.logger.info(f"executing SmaAlert.__send_email_alert_notification()..")
+
+    def __send_pagerduty_alert_notification(self):
+        if self.verbose:
+            self.logger.info(f"executing SmaAlert.__send_pagerduty_alert_notification()..")
+
     def take_required_action(self): # Reimplement this in child class if to override
         if self.verbose:
             self.logger.info(f"Perform '{self.action_to_take}' action under function take_required_action()..")
@@ -178,7 +230,6 @@ select [rows_affected] = isnull(@_rows_affected,0);
         
         if self.action_to_take != 'No Action':
             self.__call_usp_insert_sma_alert()
-            pass
-
+            self.__send_alert_notification()
 
 
