@@ -25,6 +25,12 @@
           <AssociatedConnUserName />
           <FullPath>DML-Populate-Inventory-Tables.sql</FullPath>
         </FileNode>
+        <FileNode Name="QRY-Debug-Failures-XEvent.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QRY-Debug-Failures-XEvent.sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-[usp_get_active_alert_by_key].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
