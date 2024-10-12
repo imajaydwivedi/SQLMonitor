@@ -71,7 +71,8 @@ go
 	-- populate dbo.sma_alert if alert does not exist for same alert_key
 	if exists (select * from dbo.sma_alert a where a.alert_key = @alert_key and a.state in ('Active','Suppressed','Cleared'))
 	begin
-		print 'alert with key ['+@alert_key+'] already active.';
+		if @verbose > 0
+			print 'alert with key ['+@alert_key+'] already active.';
 		set @is_pre_existing_OUTPUT = 1;
 
 		insert @_tbl_sma_alert (alert_id)
@@ -82,7 +83,8 @@ go
 	end
 	else
 	begin
-		print 'creating alert with key ['+@alert_key+']..';
+		if @verbose > 0
+			print 'creating alert with key ['+@alert_key+']..';
 		set @is_pre_existing_OUTPUT = 0;
 
 		insert dbo.sma_alert (alert_key, alert_owner_team, state, severity, frequency_minutes)
@@ -95,7 +97,8 @@ go
 	-- Change alert severity or Clear the alert
 	if @action_to_take in ('Upgrade','Clear')
 	begin
-		print 'Upgrade alert for key ['+@alert_key+']..';
+		if @verbose > 0
+			print 'Upgrade alert for key ['+@alert_key+']..';
 
 		update	a
 		set		[state] = case when @action_to_take = 'Clear' then 'Cleared' else a.state end, 
@@ -118,6 +121,7 @@ go
 		select a.alert_id, s.sql_instance, s.host_name
 		from @affected_servers s full outer join @_tbl_sma_alert a
 			on 1=1
+		where s.sql_instance is not null or s.host_name is not null
 	)
 	,cte_existing_data as (
 		select s.alert_id, s.sql_instance, s.host_name
