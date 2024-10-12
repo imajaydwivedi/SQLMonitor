@@ -90,5 +90,6 @@ class SmaDiskSpaceAlert(SmaAlert):
             self.logger.info(f"compute affected servers for alert..")
         
         df = self.__df_alert_pyodbc_resultset
-        print(df)
+        if self.verbose:
+            print(df)
 

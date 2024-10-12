@@ -165,11 +165,11 @@ select [rows_affected] = isnull(@_rows_affected,0);
         query_resultset = call_usp_insert_sma_alert(self.sql_connection, self.logger, self.verbose, **query_params)
 
         if self.verbose:
-            self.logger.info(f"result of call_usp_insert_sma_alert() => ")
-            print(query_resultset)
+            self.logger.info(f"result of call_usp_insert_sma_alert() is alert_id {query_resultset[0]} ")
         
         if len(query_resultset) > 0 and self.action_to_take == 'Create':
-            self.id = query_resultset[0][0]
+            self.logger.info(f"set self.id with '{query_resultset[0]}'")
+            self.id = query_resultset[0]
 
     def take_required_action(self): # Reimplement this in child class if to override
         if self.verbose:

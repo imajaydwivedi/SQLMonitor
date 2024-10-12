@@ -4,13 +4,14 @@ def call_usp_insert_sma_alert(sql_connection, logger:None, verbose:bool=False, *
     cursor = sql_connection.cursor()
 
     sql_query = f"""
+SET NOCOUNT ON;
 declare @_alert_id bigint;
 declare @_alert_id_RETURN bigint;
 declare @_is_pre_existing bit;
 declare @_affected_servers as affected_servers_type;
 declare @_description nvarchar(max);
 
---set @_description = ?;
+set @_description = ?;
 
 --insert @_affected_servers
 --values ('21L-LTPABL-1187',NULL);
@@ -39,9 +40,10 @@ select [result_alert_id] = @_alert_id_RETURN, [alert_id] = @_alert_id, [is_pre_e
         print(sql_query)
         print(f"______________")
 
-    #cursor.execute(sql_query, kwargs['description'])
-    cursor.execute(sql_query)
-    query_resultset = cursor.fetchall()
+    cursor.execute(sql_query, kwargs['description'])
+    #cursor.execute(sql_query)
+    #query_resultset = cursor.fetchall()
+    query_resultset = cursor.fetchone()
 
     sql_connection.commit()
     cursor.close()
