@@ -22,7 +22,7 @@ ALTER PROCEDURE dbo.usp_insert_sma_alert
 	@state varchar(15),
 	@action_to_take varchar(125) = 'Create',
 	@severity varchar(15),
-	@logger varchar(125),
+	@logged_by varchar(125),
 	@header varchar(500),
 	@description nvarchar(max),
 	@affected_servers affected_servers_type readonly,
@@ -51,7 +51,7 @@ exec @_alert_id_RETURN = dbo.usp_insert_sma_alert
 		@state = 'Active',
 		@action_to_take = 'Create',
 		@severity = 'High',
-		@logger = 'Wrapper-AlertDiskSpace.ps1',
+		@logged_by = 'Wrapper-AlertDiskSpace.ps1',
 		@header = 'Disk Space Issue on [21L-LTPABL-1187]',
 		@description = N'Disk space issue on [21L-LTPABL-1187]',
 		@affected_servers = @_affected_servers,
@@ -109,8 +109,8 @@ go
 	end
 
 	-- populate dbo.sma_alert_history
-	insert dbo.sma_alert_history (alert_id, logger, header, description)
-	select a.alert_id, @logger, @header, @description
+	insert dbo.sma_alert_history (alert_id, logged_by, header, description)
+	select a.alert_id, @logged_by, @header, @description
 	from @_tbl_sma_alert a;
 	
 	-- populate dbo.sma_alert_affected_servers
@@ -152,7 +152,7 @@ exec @_alert_id_RETURN = dbo.usp_insert_sma_alert
 		@state = 'Active',
 		@action_to_take = 'Create',
 		@severity = 'High',
-		@logger = 'Wrapper-AlertDiskSpace.ps1',
+		@logged_by = 'Wrapper-AlertDiskSpace.ps1',
 		@header = 'Disk Space Issue on [21L-LTPABL-1187]',
 		@description = N'Disk space issue on [21L-LTPABL-1187]',
 		@affected_servers = @_affected_servers,

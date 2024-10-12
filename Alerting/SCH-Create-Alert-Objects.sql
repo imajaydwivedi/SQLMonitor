@@ -187,7 +187,7 @@ create table [dbo].[sma_alert_history]
 	[alert_id] bigint not null,
 	--[alert_id_part_no] bigint not null,
 	[alert_id_part_no] as [alert_id] % 10 persisted,
-	[logger] varchar(125) not null,
+	[logged_by] varchar(125) not null,
 	[header] varchar(500) not null,
 	[description] nvarchar(max) null
 
