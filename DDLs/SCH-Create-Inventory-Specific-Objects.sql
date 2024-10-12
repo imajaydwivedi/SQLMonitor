@@ -1347,7 +1347,10 @@ begin
 			('url_all_servers_offline_aliases_dashboard_panel',
 				'distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m&viewPanel=887',
 				'URL for All Servers Offline Aliasas or Alias Linked Server Panel'),
-			('url_for_login_password_reset','#','Portal for Resetting Login Password')
+			('url_for_login_password_reset','#','Portal for Resetting Login Password'),
+			('url_for_alerts_grafana_dashboard',
+				'http://localhost:3000/d/',
+					'Grafana Dashboard for Alerts')
 		) my_keys (param_key, param_value, remarks)
 	left join dbo.sma_params p
 		on p.param_key = my_keys.param_key

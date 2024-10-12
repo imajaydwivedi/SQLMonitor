@@ -66,7 +66,7 @@ go
 
 /* Get All Credentials */
 select server_ip, server_name, [user_name], is_sql_user, is_rdp_user, 
-		password_hash, [password] = cast(DecryptByPassPhrase(cast(salt as varchar),password_hash ,1, server_ip) as varchar),
+		password_hash, [password] = cast(DecryptByPassPhrase(cast(salt as varchar),password_hash ,1, server_ip) as varchar(500)),
 		salt, salt_raw = cast(salt as varchar),	created_date, created_by, updated_date, updated_by, 
 		delegate_login_01, delegate_login_02, remarks 
 from dbo.credential_manager cm

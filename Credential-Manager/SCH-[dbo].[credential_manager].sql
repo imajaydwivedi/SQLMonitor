@@ -11,7 +11,7 @@ create table dbo.credential_manager
 (	server_ip char(15) not null,
 	server_name varchar(125) null,
 	[user_name] varchar(125) not null,
-	[password_hash] varbinary(256) not null,
+	[password_hash] varbinary(500) not null,
 	salt varbinary(125) null,
 	is_sql_user bit not null default 0,
 	is_rdp_user bit not null default 0,

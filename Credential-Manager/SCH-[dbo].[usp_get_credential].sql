@@ -17,7 +17,8 @@ with  encryption
 as
 begin
 /*	Purpose:		This procedure helps to retrieve a credential password based on provided server & user_name
-	Modification:	2023-Dec-17 - Ajay - Bux fix where IS_SRVROLEMEMBER was incorrecting displaying other users passwords
+	Modification:	2024-Oct-12 - Ajay - Bux fix where password is getting truncated when its very long
+					2023-Dec-17 - Ajay - Bux fix where IS_SRVROLEMEMBER was incorrecting displaying other users passwords
 
 */
 	set nocount on;
@@ -37,7 +38,6 @@ begin
 	begin
 		insert @_privilege_table (account_name, acc_type, privilege, mapped_login_name, permission_path)
 		exec xp_logininfo @acctname = @_caller_user --, @privilege = @_privilege OUTPUT;
-		--exec xp_logininfo 'angeltrade\Sushant.Banerjee'
 	end
 
 	if exists (select * from @_privilege_table where privilege = 'admin')
@@ -133,8 +133,8 @@ begin
 		begin
 			print 'exact one match found. Decrypting password, and storing to output variable..';
 			select @password = case when @passphrase_string is null 
-										then cast(DecryptByPassPhrase(cast(salt as varchar),password_hash ,1, isnull(@server_ip,server_ip)) as varchar)
-										else cast(DecryptByPassPhrase(@passphrase_string,password_hash ,1, isnull(@server_ip,server_ip)) as varchar)
+										then cast(DecryptByPassPhrase(cast(salt as varchar(500)),password_hash ,1, isnull(@server_ip,server_ip)) as varchar(500))
+										else cast(DecryptByPassPhrase(@passphrase_string,password_hash ,1, isnull(@server_ip,server_ip)) as varchar(500))
 										end
 			from #matched_credentials
 		end
@@ -142,8 +142,8 @@ begin
 		begin
 			select server_ip, server_name, [user_name], is_sql_user, is_rdp_user,
 				[password] = case when @passphrase_string is null 
-									then cast(DecryptByPassPhrase(cast(salt as varchar),password_hash ,1, isnull(@server_ip,server_ip)) as varchar)
-									else cast(DecryptByPassPhrase(@passphrase_string,password_hash ,1, isnull(@server_ip,server_ip)) as varchar)
+									then cast(DecryptByPassPhrase(cast(salt as varchar(500)),password_hash ,1, isnull(@server_ip,server_ip)) as varchar(500))
+									else cast(DecryptByPassPhrase(@passphrase_string,password_hash ,1, isnull(@server_ip,server_ip)) as varchar(500))
 									end,
 				created_date, created_by, updated_date, updated_by, remarks
 			from #matched_credentials
