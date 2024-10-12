@@ -2,7 +2,8 @@ import pyodbc
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_oncall_teams import get_oncall_teams
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
-import datetime
+from SmaAlertPackage.CommonFunctions.get_pretty_dictionary import get_pretty_dictionary
+from datetime import datetime, timezone
 
 class SmaAlert():
     ''' SYNOPSIS: Class to represent dbo.sma_alert table
@@ -34,6 +35,35 @@ class SmaAlert():
 
         self.__alert_data_from_db = None
         self.__owner_team_details_from_db = None
+        #self.__affected_servers_json = None
+
+    def __get_obj_dict(self):
+        obj_dict = dict(alert_id = self.id,
+                        alert_key = self.alert_key,
+                        alert_owner_team = self.alert_owner_team,
+                        state = self.state,
+                        severity = self.severity,
+                        #logger = self.logger,
+                        header = self.header,
+                        description = self.description,
+                        slack_ts_value = self.slack_ts_value,
+                        frequency_minutes = self.frequency_minutes,
+                        #affected_servers = self.affected_servers,
+                        alert_method = self.alert_method,
+                        suppress_start_time_utc = self.suppress_end_time_utc,
+                        suppress_end_time_utc = self.suppress_end_time_utc,
+                        alert_job_name = self.alert_job_name,
+                        exists = self.exists,
+                        generate_alert = self.generate_alert,
+                        action_to_take = self.action_to_take,
+                        verbose = self.verbose
+                    )
+        return obj_dict
+
+    def __get_pretty_object(self):
+        pt = get_pretty_dictionary(self.__get_obj_dict())
+        print(pt.get_string(fields=["alert_id", "alert_key", "alert_owner_team", "state", "severity", "frequency_minutes", "slack_ts_value", "alert_method", "alert_job_name"]))
+        print(pt.get_string(fields=["action_to_take", "exists", "generate_alert", "verbose", "suppress_start_time_utc", "suppress_end_time_utc", "header", "description"]))
 
     def fetch_data_from_db(self,sql_connection):
         if self.verbose:
@@ -98,12 +128,12 @@ select [rows_affected] = isnull(@_rows_affected,0);
                 self.action_to_take = 'Clear'
 
             if self.exists and len(self.suppress_start_time_utc) > 0 and len(self.suppress_end_time_utc) > 0:
-                now_utc = datetime.datetime.now(timezone.utc) 
+                now_utc = datetime.now(timezone.utc)
                 if self.suppress_start_time_utc < now_utc < self.suppress_end_time_utc:
                     self.action_to_take = 'SkipNotification'
-            
+
             if self.exists and self.action_to_take not in ['No Action', 'Create', 'Upgrade', 'SkipNotification', 'Clear']:
-                self.action_to_take = 'Update'        
+                self.action_to_take = 'Update'
 
         return self.exists
 
@@ -118,6 +148,7 @@ select [rows_affected] = isnull(@_rows_affected,0);
     def take_required_action(self):
         if self.verbose:
             self.logger.info(f"Perform '{self.action_to_take}' action under function take_required_action()..")
-            print(self)
+            self.__get_pretty_object()
         pass
+
 
