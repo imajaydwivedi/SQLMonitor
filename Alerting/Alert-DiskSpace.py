@@ -109,13 +109,14 @@ if 'Generate Alert & Notify' == 'Generate Alert & Notify':
     disk_alert.logger = logger
     disk_alert.verbose = verbose
     disk_alert.alert_job_name = alert_job_name
+    disk_alert.sql_connection = cnxn
 
     # set flag if alert related action is required
     disk_alert.generate_alert = (True if len(alert_pyodbc_resultset)>0 else False)
     disk_alert.alert_pyodbc_resultset = (alert_pyodbc_resultset if disk_alert.generate_alert else None)
 
     # fetch existing alert if any & set flag if alert creation is required
-    if disk_alert.initialize_data_from_db(cnxn):
+    if disk_alert.initialize_data_from_db():
         logger.info(f"Overwrite variables from db retrieved data..")
         alert_owner_team = disk_alert.alert_owner_team
 

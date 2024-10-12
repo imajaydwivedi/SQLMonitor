@@ -3,6 +3,7 @@ from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_data
 from SmaAlertPackage.CommonFunctions.get_oncall_teams import get_oncall_teams
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
 from SmaAlertPackage.CommonFunctions.get_pretty_dictionary import get_pretty_dictionary
+from SmaAlertPackage.CommonFunctions.call_usp_insert_sma_alert import call_usp_insert_sma_alert
 from datetime import datetime, timezone
 
 class SmaAlert():
@@ -18,40 +19,42 @@ class SmaAlert():
         self.alert_owner_team = alert_owner_team
         self.state = state
         self.severity = severity
-        self.logger = logger
         self.header = header
         self.description = description
         self.slack_ts_value = slack_ts_value
         self.frequency_minutes = frequency_minutes
         self.affected_servers = affected_servers
         self.alert_method = alert_method
-        self.suppress_start_time_utc = None
-        self.suppress_end_time_utc = None
+        self.suppress_start_date_utc = None
+        self.suppress_end_date_utc = None
         self.alert_job_name = None
+        self.logger = logger # logging tool
+        self.logged_by = self.alert_job_name # alert logging job or person using portal
         self.exists = None
         self.generate_alert = None
         self.action_to_take = 'No Action' # 'No Action', 'Create', 'Update', 'Upgrade', 'SkipNotification', 'Clear'
         self.verbose = verbose
+        self.sql_connection = None
 
         self.__alert_data_from_db = None
         self.__owner_team_details_from_db = None
         #self.__affected_servers_json = None
 
-    def __get_obj_dict(self):
+    def __get_alert_dict(self):
         obj_dict = dict(alert_id = self.id,
                         alert_key = self.alert_key,
                         alert_owner_team = self.alert_owner_team,
                         state = self.state,
                         severity = self.severity,
-                        #logger = self.logger,
+                        logged_by = self.alert_job_name,
                         header = self.header,
-                        description = self.description,
+                        #description = self.description,
                         slack_ts_value = self.slack_ts_value,
                         frequency_minutes = self.frequency_minutes,
                         #affected_servers = self.affected_servers,
                         alert_method = self.alert_method,
-                        suppress_start_time_utc = self.suppress_end_time_utc,
-                        suppress_end_time_utc = self.suppress_end_time_utc,
+                        suppress_start_date_utc = self.suppress_start_date_utc,
+                        suppress_end_date_utc = self.suppress_end_date_utc,
                         alert_job_name = self.alert_job_name,
                         exists = self.exists,
                         generate_alert = self.generate_alert,
@@ -60,16 +63,19 @@ class SmaAlert():
                     )
         return obj_dict
 
-    def __get_pretty_object(self):
-        pt = get_pretty_dictionary(self.__get_obj_dict())
-        print(pt.get_string(fields=["alert_id", "alert_key", "alert_owner_team", "state", "severity", "frequency_minutes", "slack_ts_value", "alert_method", "alert_job_name"]))
-        print(pt.get_string(fields=["action_to_take", "exists", "generate_alert", "verbose", "suppress_start_time_utc", "suppress_end_time_utc", "header", "description"]))
+    def __get_pretty_alert(self):
+        pt = get_pretty_dictionary(self.__get_alert_dict())
+        print(pt.get_string(fields=["alert_id", "alert_key", "alert_owner_team", "state", "severity", "frequency_minutes", "slack_ts_value", "alert_method", "logged_by"]))
+        print(pt.get_string(fields=["action_to_take", "exists", "generate_alert", "verbose", "suppress_start_date_utc", "suppress_end_date_utc", "header"]))
+        
+        self.logger.info(f"Text snippet inside self.description => ")
+        print(self.description)
 
-    def fetch_data_from_db(self,sql_connection):
+    def fetch_data_from_db(self):
         if self.verbose:
             self.logger.info(f"get alert for key '{self.alert_key}' from database..")
 
-        cursor = sql_connection.cursor()
+        cursor = self.sql_connection.cursor()
         sql_query = f"""
 declare @_rows_affected int;
 exec @_rows_affected = dbo.usp_get_active_alert_by_key @alert_key = ?;
@@ -87,9 +93,9 @@ select [rows_affected] = isnull(@_rows_affected,0);
         #return (row_count,query_resultset)
         return query_resultset
 
-    def initialize_data_from_db(self,sql_connection):
-        self.__alert_data_from_db = self.fetch_data_from_db(sql_connection)
-        self.__owner_team_details_from_db = self.fetch_owner_team_details(sql_connection)
+    def initialize_data_from_db(self):
+        self.__alert_data_from_db = self.fetch_data_from_db()
+        self.__owner_team_details_from_db = self.fetch_owner_team_details()
 
         if self.verbose:
             pt_owner_team_deatails_from_db = get_pretty_table(self.__owner_team_details_from_db)
@@ -112,8 +118,8 @@ select [rows_affected] = isnull(@_rows_affected,0);
             self.alert_owner_team = self.__alert_data_from_db[0].alert_owner_team
             self.alert_method = self.__alert_data_from_db[0].alert_method
 
-            self.suppress_start_time_utc = self.__alert_data_from_db[0].suppress_start_time_utc
-            self.suppress_end_time_utc = self.__alert_data_from_db[0].suppress_end_time_utc
+            self.suppress_start_date_utc = self.__alert_data_from_db[0].suppress_start_date_utc
+            self.suppress_end_date_utc = self.__alert_data_from_db[0].suppress_end_date_utc
         else:
             self.alert_method = self.__owner_team_details_from_db[0].alert_method
 
@@ -127,9 +133,12 @@ select [rows_affected] = isnull(@_rows_affected,0);
             if self.exists and self.generate_alert is False:
                 self.action_to_take = 'Clear'
 
-            if self.exists and len(self.suppress_start_time_utc) > 0 and len(self.suppress_end_time_utc) > 0:
+            if self.exists and self.generate_alert:
+                self.action_to_take = 'Update'
+
+            if self.exists and self.suppress_start_date_utc is not None and self.suppress_end_date_utc is not None:
                 now_utc = datetime.now(timezone.utc)
-                if self.suppress_start_time_utc < now_utc < self.suppress_end_time_utc:
+                if self.suppress_start_date_utc < now_utc < self.suppress_end_date_utc:
                     self.action_to_take = 'SkipNotification'
 
             if self.exists and self.action_to_take not in ['No Action', 'Create', 'Upgrade', 'SkipNotification', 'Clear']:
@@ -137,18 +146,39 @@ select [rows_affected] = isnull(@_rows_affected,0);
 
         return self.exists
 
-    def fetch_owner_team_details(self,sql_connection):
+    def fetch_owner_team_details(self):
         if self.verbose:
             self.logger.info(f"fetch alert owner team [{self.alert_owner_team}] details from database..")
 
-        query_resultset = get_oncall_teams(sql_connection, self.alert_owner_team)
+        query_resultset = get_oncall_teams(self.sql_connection, self.alert_owner_team)
 
         return query_resultset
 
-    def take_required_action(self):
+    def __call_usp_insert_sma_alert(self):
+        if self.verbose:
+            self.logger.info(f"executing SmaAlert.__call_usp_insert_sma_alert()..")
+
+        query_params = dict(alert_key=self.alert_key, frequency_minutes=self.frequency_minutes, alert_owner_team=self.alert_owner_team,
+                            state=self.state, action_to_take=self.action_to_take, severity=self.severity, logged_by=self.logged_by,
+                            header=self.header, description=self.description, affected_servers=self.affected_servers
+                            )
+        query_resultset = call_usp_insert_sma_alert(self.sql_connection, self.logger, self.verbose, **query_params)
+
+        if self.verbose:
+            self.logger.info(f"result of call_usp_insert_sma_alert() => ")
+            print(query_resultset)
+        
+        if len(query_resultset) > 0 and self.action_to_take == 'Create':
+            self.id = query_resultset[0][0]
+
+    def take_required_action(self): # Reimplement this in child class if to override
         if self.verbose:
             self.logger.info(f"Perform '{self.action_to_take}' action under function take_required_action()..")
-            self.__get_pretty_object()
-        pass
+            self.__get_pretty_alert()
+        
+        if self.action_to_take != 'No Action':
+            self.__call_usp_insert_sma_alert()
+            pass
+
 
 
