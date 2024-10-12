@@ -24,7 +24,7 @@ ALTER PROCEDURE dbo.usp_insert_sma_alert
 	@severity varchar(15),
 	@logged_by varchar(125),
 	@header varchar(500),
-	@description nvarchar(max),
+	@description nvarchar(max) = null,
 	@affected_servers affected_servers_type readonly,
 	@is_pre_existing_OUTPUT bit = 0 output,
 	@verbose tinyint = 0
