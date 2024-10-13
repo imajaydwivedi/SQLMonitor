@@ -1350,7 +1350,10 @@ begin
 			('url_for_login_password_reset','#','Portal for Resetting Login Password'),
 			('url_for_alerts_grafana_dashboard',
 				'http://localhost:3000/d/',
-					'Grafana Dashboard for Alerts')
+					'Grafana Dashboard for Alerts'),
+			('smtp_server','smtp.gmail.com','SMTP Server for Database Mail'),
+			('smtp_server_port','587','SMTP Server Port'),
+			('smtp_account_name','some_smtp_account@gmail.com','Account having access to SMTP Server')
 		) my_keys (param_key, param_value, remarks)
 	left join dbo.sma_params p
 		on p.param_key = my_keys.param_key
