@@ -24,6 +24,7 @@ class SmaAlert():
         self.state = None
         self.severity = None
         self.header = None
+        self.header_slack_markdown = None
         self.description = None
         self.slack_ts_value = None
         self.frequency_minutes = frequency_minutes
@@ -40,6 +41,7 @@ class SmaAlert():
         self.verbose = None
         self.sql_connection = None
         self.credential_manager_database = None
+        self.alert_dashboard_url = None
 
         self.__alert_data_from_db = None
         self.__owner_team_details_from_db = None
@@ -48,7 +50,6 @@ class SmaAlert():
         self.__alert_owner_team_email = None
         self.__alert_owner_team_pagerduty_service_key = None
         self.__alert_owner_team_slack_channel = None
-        self.__alert_dashboard_url = None
         self.__sqlmonitor_dashboard_url = None
         #self.__affected_servers_json = None
 
@@ -142,7 +143,9 @@ select [rows_affected] = isnull(@_rows_affected,0);
         # set attributes from dbo.sma_params
         self.__slack_bot = get_sma_params(self.sql_connection, param_key='dba_slack_bot')[0].param_value
         self.credential_manager_database = get_sma_params(self.sql_connection, param_key='credential_manager_database')[0].param_value
-        self.__alert_dashboard_url = get_sma_params(self.sql_connection, param_key='url_for_alerts_grafana_dashboard')[0].param_value
+        self.alert_dashboard_url = get_sma_params(self.sql_connection, param_key='url_for_alerts_grafana_dashboard')[0].param_value
+        if self.verbose:
+            self.logger.info(f"self.alert_dashboard_url = '{self.alert_dashboard_url}'")
 
         # set attributes from credential manager
         if self.alert_method == 'slack':
@@ -199,6 +202,9 @@ select [rows_affected] = isnull(@_rows_affected,0);
             self.id = query_resultset[0]
 
             self.header = self.header.replace("Id#X", f"Id#{self.id}")
+            #self.logger.info(f"BEFORE: self.header_slack_markdown = '{self.header_slack_markdown}'")
+            self.header_slack_markdown = self.header_slack_markdown.replace("Id#X", f"Id#{self.id}")
+            #self.logger.info(f"AFTER: self.header_slack_markdown = '{self.header_slack_markdown}'")
 
     def __send_alert_notification(self):
         if self.verbose:
@@ -230,13 +236,15 @@ select [rows_affected] = isnull(@_rows_affected,0);
                         state = self.state,
                         severity = self.severity,
                         header = self.header,
+                        header_slack_markdown = self.header_slack_markdown,
                         description = self.description
                     )
         if self.verbose:
             pt_alert_params = get_pretty_dictionary(alert_params)
             self.logger.info(f"self.__slack_token = '{self.__slack_token}'")
             self.logger.info(f"Parameters for call_usp_update_alert_slack_ts_value() function call =>")
-            print(pt_alert_params.get_string(fields=["slack_token", "slack_bot", "slack_channel", "slack_ts_value", "action_to_take", "header"]))
+            print(pt_alert_params.get_string(fields=["slack_token", "slack_bot", "slack_channel", "slack_ts_value", "action_to_take"]))
+            print(pt_alert_params.get_string(fields=["header", "header_slack_markdown"]))
 
         self.slack_ts_value = send_slack_alert_notification(**alert_params)
         if self.verbose:

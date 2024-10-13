@@ -23,20 +23,30 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
     alert_state = kwargs['state']
     alert_severity = kwargs['severity']
     alert_header = kwargs['header']
+    header_slack_markdown = kwargs['header_slack_markdown']
     alert_description = kwargs['description']
-    
+
     # Set up a WebClient with the Slack OAuth token
     client = WebClient(token=slack_token)
-    
+
     # Send one liner alert message
     if slack_ts_value is None or len(slack_ts_value) == 0:
         if verbose:
             logger.info(f"slack_ts_value is None, so send one liner alert message first..")
         response = client.chat_postMessage(
             channel = slack_channel,
-            text = alert_header,
-            username = slack_bot
+            username = slack_bot,
+            blocks = [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": header_slack_markdown
+                            }
+                        }
+                    ]
         )
+
         slack_ts_value = response['ts']
 
         if verbose:
@@ -58,7 +68,6 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
             thread_ts = slack_ts_value,
             text = alert_header
         )
-    
+
     return slack_ts_value
 
-    
