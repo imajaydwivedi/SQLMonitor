@@ -8,6 +8,7 @@ from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 from SmaAlertPackage.CommonFunctions.get_sm_credential import get_sm_credential
 from SmaAlertPackage.CommonFunctions.send_slack_alert_notification import send_slack_alert_notification
 from SmaAlertPackage.CommonFunctions.call_usp_update_alert_slack_ts_value import call_usp_update_alert_slack_ts_value
+from SmaAlertPackage.CommonFunctions.send_email_alert_notification import send_email_alert_notification
 from datetime import datetime, timezone
 
 class SmaAlert():
@@ -42,11 +43,19 @@ class SmaAlert():
         self.sql_connection = None
         self.credential_manager_database = None
         self.alert_dashboard_url = None
+        self.smtp_server = None
+        self.smtp_server_port = None
+        self.smtp_account_name = None
+        self.alert_sender_email = None
+        #self.alert_receiver_email = None
+        self.alert_mail_subject = None
+        self.alert_mail_body = None
 
         self.__alert_data_from_db = None
         self.__owner_team_details_from_db = None
         self.__slack_token = None
         self.__slack_bot = None
+        self.__smtp_account_password = None
         self.__alert_owner_team_email = None
         self.__alert_owner_team_pagerduty_service_key = None
         self.__alert_owner_team_slack_channel = None
@@ -80,7 +89,7 @@ class SmaAlert():
         pt = get_pretty_dictionary(self.__get_alert_dict())
         print(pt.get_string(fields=["alert_id", "alert_key", "alert_owner_team", "state", "severity", "frequency_minutes", "slack_ts_value", "alert_method", "logged_by"]))
         print(pt.get_string(fields=["action_to_take", "exists", "generate_alert", "verbose", "suppress_start_date_utc", "suppress_end_date_utc", "header"]))
-        
+
         self.logger.info(f"Text snippet inside self.description => ")
         print(self.description)
 
@@ -141,8 +150,18 @@ select [rows_affected] = isnull(@_rows_affected,0);
         self.__alert_owner_team_pagerduty_service_key = self.__owner_team_details_from_db[0].team_slack_channel
 
         # set attributes from dbo.sma_params
-        self.__slack_bot = get_sma_params(self.sql_connection, param_key='dba_slack_bot')[0].param_value
         self.credential_manager_database = get_sma_params(self.sql_connection, param_key='credential_manager_database')[0].param_value
+        if self.alert_method == 'slack':
+            self.__slack_bot = get_sma_params(self.sql_connection, param_key='dba_slack_bot')[0].param_value
+
+        if self.alert_method == 'email':
+            self.smtp_server = get_sma_params(self.sql_connection, param_key='smtp_server')[0].param_value
+            self.smtp_server_port = get_sma_params(self.sql_connection, param_key='smtp_server_port')[0].param_value
+            self.smtp_account_name = get_sma_params(self.sql_connection, param_key='smtp_account_name')[0].param_value
+            self.alert_sender_email = get_sma_params(self.sql_connection, param_key='alert_sender_email')[0].param_value
+            #self.alert_receiver_email = self.__alert_owner_team_email
+            self.__smtp_account_password = get_sm_credential(self.sql_connection, self.credential_manager_database, 'smtp_account_password')
+
         self.alert_dashboard_url = get_sma_params(self.sql_connection, param_key='url_for_alerts_grafana_dashboard')[0].param_value
         if self.verbose:
             self.logger.info(f"self.alert_dashboard_url = '{self.alert_dashboard_url}'")
@@ -196,15 +215,17 @@ select [rows_affected] = isnull(@_rows_affected,0);
 
         if self.verbose:
             self.logger.info(f"result of call_usp_insert_sma_alert() is alert_id {query_resultset[0]} ")
-        
+
         if len(query_resultset) > 0 and self.action_to_take == 'Create':
             self.logger.info(f"set self.id with '{query_resultset[0]}'")
             self.id = query_resultset[0]
 
             self.header = self.header.replace("Id#X", f"Id#{self.id}")
-            #self.logger.info(f"BEFORE: self.header_slack_markdown = '{self.header_slack_markdown}'")
-            self.header_slack_markdown = self.header_slack_markdown.replace("Id#X", f"Id#{self.id}")
-            #self.logger.info(f"AFTER: self.header_slack_markdown = '{self.header_slack_markdown}'")
+            if self.alert_method == 'slack':
+                self.header_slack_markdown = self.header_slack_markdown.replace("Id#X", f"Id#{self.id}")
+            if self.alert_method == 'email':
+                self.alert_mail_subject = self.alert_mail_subject.replace("Id#X", f"Id#{self.id}")
+                self.alert_mail_body = self.alert_mail_body.replace("Id#X", f"Id#{self.id}")
 
     def __send_alert_notification(self):
         if self.verbose:
@@ -249,15 +270,41 @@ select [rows_affected] = isnull(@_rows_affected,0);
         self.slack_ts_value = send_slack_alert_notification(**alert_params)
         if self.verbose:
             self.logger.info(f"post send_slack_alert_notification() call, self.slack_ts_value = '{self.slack_ts_value}'")
-        
+
         if self.action_to_take == 'Create':
             slack_ts_value_update = call_usp_update_alert_slack_ts_value(self.sql_connection, self.id, self.slack_ts_value, self.logger, self.verbose)
             if self.verbose:
                 self.logger.info(f"slack_ts_value_update = {('Success' if slack_ts_value_update else 'Failure')}")
-    
+
     def __send_email_alert_notification(self):
         if self.verbose:
             self.logger.info(f"executing SmaAlert.__send_email_alert_notification()..")
+
+        alert_params = dict(
+                        smtp_server = self.smtp_server,
+                        smtp_server_port = self.smtp_server_port,
+                        smtp_account_name = self.smtp_account_name,
+                        smtp_account_password = self.__smtp_account_password,
+                        logger = self.logger,
+                        verbose = self.verbose,
+                        alert_key = self.alert_key,
+                        state = self.state,
+                        severity = self.severity,
+                        action_to_take = self.action_to_take,
+                        alert_sender_email = self.alert_sender_email,
+                        alert_receiver_email = self.__alert_owner_team_email,
+                        alert_mail_subject = self.alert_mail_subject,
+                        alert_mail_body = self.alert_mail_body
+                    )
+        if self.verbose:
+            pt_alert_params = get_pretty_dictionary(alert_params)
+            self.logger.info(f"Parameters for send_email_alert_notification() function call =>")
+            print(pt_alert_params.get_string(fields=["smtp_server", "smtp_server_port", "smtp_account_name", "smtp_account_password", "action_to_take"]))
+            print(pt_alert_params.get_string(fields=["alert_sender_email", "alert_receiver_email", "alert_mail_subject"]))
+            self.logger.info(f"self.alert_mail_body => ")
+            print(self.alert_mail_body)
+
+        send_email_alert_notification(**alert_params)
 
     def __send_pagerduty_alert_notification(self):
         if self.verbose:
@@ -267,9 +314,25 @@ select [rows_affected] = isnull(@_rows_affected,0);
         if self.verbose:
             self.logger.info(f"Perform '{self.action_to_take}' action under function take_required_action()..")
             self.__get_pretty_alert()
-        
+
         if self.action_to_take != 'No Action':
             self.__call_usp_insert_sma_alert()
             self.__send_alert_notification()
 
 
+    def state_colorizer(self, state:str):
+        if state=='Critical':
+            color = 'OrangeRed'
+        elif state=='High':
+            color = 'Tomato'
+        elif state=='Warning':
+            color = 'SandyBrown'
+        elif state=='Medium':
+            color = 'SandyBrown'
+        elif state=='Low':
+            color = 'PapayaWhip'
+        else:
+            color = 'PeachPuff'
+
+        result = f'<span style="background-color:{color}">{state}</span>'
+        return result
