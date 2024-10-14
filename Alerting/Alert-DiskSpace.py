@@ -52,16 +52,16 @@ logger.info(f"Create db connection using connect_dba_instance..")
 cnxn = connect_dba_instance(inventory_server,inventory_database,login_name,login_password)
 cursor = cnxn.cursor()
 
-# Create SmaDiskSpaceAlert object to retrieve defaults
-logger.info(f"Create SmaDiskSpaceAlert class object with default values..")
-disk_alert = sma.SmaDiskSpaceAlert()
+# Create SmaAlert object to retrieve defaults
+logger.info(f"Create SmaAlert child class object with default values..")
+alert_obj = sma.SmaDiskSpaceAlert()
 
 if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
-    disk_warning_pct = disk_alert.disk_warning_pct
-    disk_critical_pct = disk_alert.disk_critical_pct
-    disk_threshold_gb = disk_alert.disk_threshold_gb
-    large_disk_threshold_pct = disk_alert.large_disk_threshold_pct
-    frequency_minutes = disk_alert.frequency_minutes
+    frequency_minutes = alert_obj.frequency_minutes
+    disk_warning_pct = alert_obj.disk_warning_pct
+    disk_critical_pct = alert_obj.disk_critical_pct
+    disk_threshold_gb = alert_obj.disk_threshold_gb
+    large_disk_threshold_pct = alert_obj.large_disk_threshold_pct
 
 # Print variables values
 if 'Print Variables' == 'Print Variables':
@@ -81,13 +81,15 @@ if 'Print Variables' == 'Print Variables':
     logger.info(f"large_disk_threshold_pct = '{large_disk_threshold_pct}'")
     logger.info(f"verbose = '{verbose}'")
 
-# Get Disk Space Info
-if 'Get Disk Space Info' == 'Get Disk Space Info':
+# Get Alert Raw Data
+if 'Get Alert Raw Data' == 'Get Alert Raw Data':
     logger.info(f"Query table dbo.disk_space_all_servers..")
-    query_params = dict(disk_warning_pct=disk_warning_pct,
-                        disk_critical_pct=disk_critical_pct,
-                        disk_threshold_gb=disk_threshold_gb,
-                        large_disk_threshold_pct=large_disk_threshold_pct
+    query_params = dict(logger = logger,
+                        verbose = verbose,
+                        disk_warning_pct = disk_warning_pct,
+                        disk_critical_pct = disk_critical_pct,
+                        disk_threshold_gb = disk_threshold_gb,
+                        large_disk_threshold_pct = large_disk_threshold_pct
                         )
     alert_pyodbc_resultset = get_disk_space(cnxn, **query_params)
 
@@ -103,33 +105,35 @@ if 'Get Disk Space Info' == 'Get Disk Space Info':
 # Generate Alert & Notify
 if 'Generate Alert & Notify' == 'Generate Alert & Notify':
     alert_key = f"{alert_name}"
-    disk_alert.alert_key = alert_key
-    disk_alert.alert_owner_team = alert_owner_team
-    disk_alert.logger = logger
-    disk_alert.verbose = verbose
-    disk_alert.alert_job_name = alert_job_name
-    disk_alert.sql_connection = cnxn
+    alert_obj.alert_key = alert_key
+    alert_obj.alert_owner_team = alert_owner_team
+    alert_obj.logger = logger
+    alert_obj.verbose = verbose
+    alert_obj.alert_job_name = alert_job_name
+    alert_obj.sql_connection = cnxn
 
     # set flag if alert related action is required
-    disk_alert.generate_alert = (True if len(alert_pyodbc_resultset)>0 else False)
-    disk_alert.alert_pyodbc_resultset = alert_pyodbc_resultset
+    alert_obj.generate_alert = (True if len(alert_pyodbc_resultset)>0 else False)
+    alert_obj.alert_pyodbc_resultset = alert_pyodbc_resultset
 
     # fetch existing alert if any & set flag if alert creation is required
-    if disk_alert.initialize_data_from_db():
+    if alert_obj.initialize_data_from_db():
         logger.info(f"Overwrite variables from db retrieved data..")
-        alert_owner_team = disk_alert.alert_owner_team
+        alert_owner_team = alert_obj.alert_owner_team
 
-    logger.info(f"disk_alert.exists = '{disk_alert.exists}'")
-    logger.info(f"disk_alert.generate_alert = '{disk_alert.generate_alert}'")
-    logger.info(f"disk_alert.action_to_take = '{disk_alert.action_to_take}'")
-    logger.info(f"disk_alert.state = '{disk_alert.state}'")
+    logger.info(f"alert_obj.exists = '{alert_obj.exists}'")
+    logger.info(f"alert_obj.generate_alert = '{alert_obj.generate_alert}'")
+    logger.info(f"alert_obj.action_to_take = '{alert_obj.action_to_take}'")
+    logger.info(f"alert_obj.state = '{alert_obj.state}'")
 
-    if disk_alert.action_to_take != 'No Action':
+    if alert_obj.action_to_take != 'No Action':
         # compute derived attributes from raw data
-        disk_alert.initialize_derived_attributes()
+        logger.info(f"calling alert_obj.initialize_derived_attributes()..")
+        alert_obj.initialize_derived_attributes()
 
         # Take required action now
-        disk_alert.take_required_action()
+        logger.info(f"calling alert_obj.take_required_action()..")
+        alert_obj.take_required_action()
 
 # Log end
 logger.info('***** COMPLETED:  %s' % script_name)

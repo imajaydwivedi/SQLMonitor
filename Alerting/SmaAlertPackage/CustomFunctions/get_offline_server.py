@@ -1,48 +1,35 @@
 import pyodbc
 
-def get_disk_space(sql_connection, server_name = '', **kwargs):
+def get_offline_server(sql_connection, logger:None, verbose:bool=False, **kwargs):
     cursor = sql_connection.cursor()
 
-    # Extract parameters
-    disk_warning_pct = kwargs['disk_warning_pct']
-    disk_critical_pct = kwargs['disk_critical_pct']
-    disk_threshold_gb = kwargs['disk_threshold_gb']
-    large_disk_threshold_pct = kwargs['large_disk_threshold_pct']
-
-    sql_get_disk_space = f"""
-declare @_disk_warning_pct decimal(20,2) = {disk_warning_pct};
-declare @_disk_critical_pct decimal(20,2) = {disk_critical_pct};
-declare @_disk_threshold_gb decimal(20,2) = {disk_threshold_gb};
-declare @_large_disk_threshold_pct decimal(20,2) = {large_disk_threshold_pct};;
-
-declare @_sql nvarchar(max);
-declare @_params nvarchar(max);
-
-set @_params = '@disk_warning_pct decimal(20,2), @disk_critical_pct decimal(20,2), @disk_threshold_gb decimal(20,2), @large_disk_threshold_pct decimal(20,2)';
+    sql_query = f"""
+declare @sql nvarchar(max);
 
 set quoted_identifier off;
-set @_sql = "
-select	ds.updated_date_utc, ds.sql_instance, ds.host_name, ds.disk_volume, ds.label, ds.capacity_mb, ds.free_mb,
-		[state] = case when (ds.free_mb*100.0/ds.capacity_mb) < (100.0-@disk_critical_pct) then 'Critical' else 'Warning' end,
-		--[free_pct] = convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb),
-		[used_pct] = 100.0-convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb)
-		--ds.block_size, ds.filesystem,
-    --, ds.collection_time_utc
-from dbo.disk_space_all_servers ds
-where ds.updated_date_utc >= dateadd(minute,-60,getutcdate())
-and (	(	(ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_warning_pct)
-			and ds.free_mb < (@disk_threshold_gb)*1024
-	  	)
-		or ( (ds.free_mb*100.0/ds.capacity_mb) < (100-@large_disk_threshold_pct)) -- free %
-		)
-and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = ds.sql_instance)
+set @sql = "
+/* Monitoring - Live - All Servers */
+select sql_instance, sql_instance_port, [host_name], is_available,
+			is_linked_server_working = case when is_available = 0 then null else is_linked_server_working end,
+			--[tsql jobs server] = collector_tsql_jobs_server,
+		--[powershell jobs server] = collector_powershell_jobs_server,
+		[perfmon data server] = data_destination_sql_instance,
+		is_alias,
+		 last_unavailability_time_utc
+from dbo.instance_details id
+where is_enabled = 1 and is_alias = 0
+and (is_available = 0 or is_linked_server_working = 0)
+and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = id.sql_instance)
 ";
 set quoted_identifier off;
 
-exec sp_executesql @_sql, @_params, @_disk_warning_pct, @_disk_critical_pct, @_disk_threshold_gb , @_large_disk_threshold_pct;
+exec dbo.sp_executesql @sql;
 """
-    cursor.execute(sql_get_disk_space)
+    if verbose:
+        logger.info(f"following query is being executed inside {__name__}()..")
+        print(sql_query)
 
-    disk_space_records = cursor.fetchall()
-    return disk_space_records
+    cursor.execute(sql_query)
+    sql_query_resultset = cursor.fetchall()
+    return sql_query_resultset
 

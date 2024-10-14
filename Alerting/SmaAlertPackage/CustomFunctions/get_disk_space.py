@@ -1,6 +1,6 @@
 import pyodbc
 
-def get_disk_space(sql_connection, server_name = '', **kwargs):
+def get_disk_space(sql_connection, logger:None, verbose:bool=False, **kwargs):
     cursor = sql_connection.cursor()
 
     # Extract parameters
@@ -9,7 +9,7 @@ def get_disk_space(sql_connection, server_name = '', **kwargs):
     disk_threshold_gb = kwargs['disk_threshold_gb']
     large_disk_threshold_pct = kwargs['large_disk_threshold_pct']
 
-    sql_get_disk_space = f"""
+    sql_query = f"""
 declare @_disk_warning_pct decimal(20,2) = {disk_warning_pct};
 declare @_disk_critical_pct decimal(20,2) = {disk_critical_pct};
 declare @_disk_threshold_gb decimal(20,2) = {disk_threshold_gb};
@@ -41,8 +41,11 @@ set quoted_identifier off;
 
 exec sp_executesql @_sql, @_params, @_disk_warning_pct, @_disk_critical_pct, @_disk_threshold_gb , @_large_disk_threshold_pct;
 """
-    cursor.execute(sql_get_disk_space)
+    if verbose:
+        logger.info(f"following query is being executed inside {__name__}()..")
+        print(sql_query)
 
-    disk_space_records = cursor.fetchall()
-    return disk_space_records
+    cursor.execute(sql_query)
+    sql_query_resultset = cursor.fetchall()
+    return sql_query_resultset
 

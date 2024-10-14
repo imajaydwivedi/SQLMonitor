@@ -6,20 +6,20 @@ from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
-from SmaAlertPackage.CustomFunctions.get_disk_space import get_disk_space
-import SmaAlertPackage.SmaDiskSpaceAlert as sma
+from SmaAlertPackage.CustomFunctions.get_offline_server import get_offline_server
+import SmaAlertPackage.SmaOfflineServerAlert as sma
 
 # get Script Name
 script_name = os.path.basename(__file__)
 
-parser = argparse.ArgumentParser(description="Script to raise disk space alert", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(description="Script to raise offline server alert", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--inventory_server", type=str, required=False, action="store", default="localhost", help="Inventory Server")
 parser.add_argument("--inventory_database", type=str, required=False, action="store", default="DBA", help="Inventory Database")
 parser.add_argument("--credential_manager_database", type=str, required=False, action="store", default="DBA", help="Credential Manager Database")
 parser.add_argument("--login_name", type=str, required=False, action="store", default="sa", help="Login name for sql authentication")
 parser.add_argument("--login_password", type=str, required=False, action="store", default="", help="Login password for sql authentication")
-parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-DiskSpace", help="Alert Name")
-parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-DiskSpace", help="Script/Job calling this script")
+parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-OfflineServer", help="Alert Name")
+parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-OfflineServer", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 #parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
@@ -52,16 +52,12 @@ logger.info(f"Create db connection using connect_dba_instance..")
 cnxn = connect_dba_instance(inventory_server,inventory_database,login_name,login_password)
 cursor = cnxn.cursor()
 
-# Create SmaDiskSpaceAlert object to retrieve defaults
-logger.info(f"Create SmaDiskSpaceAlert class object with default values..")
-disk_alert = sma.SmaDiskSpaceAlert()
+# Create SmaAlert object to retrieve defaults
+logger.info(f"Create SmaAlert child class object with default values..")
+alert_obj = sma.SmaOfflineServerAlert()
 
 if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
-    disk_warning_pct = disk_alert.disk_warning_pct
-    disk_critical_pct = disk_alert.disk_critical_pct
-    disk_threshold_gb = disk_alert.disk_threshold_gb
-    large_disk_threshold_pct = disk_alert.large_disk_threshold_pct
-    frequency_minutes = disk_alert.frequency_minutes
+    frequency_minutes = alert_obj.frequency_minutes
 
 # Print variables values
 if 'Print Variables' == 'Print Variables':
@@ -75,21 +71,15 @@ if 'Print Variables' == 'Print Variables':
     logger.info(f"alert_job_name = '{alert_job_name}'")
     logger.info(f"alert_owner_team = '{alert_owner_team}'")
     logger.info(f"frequency_minutes = '{frequency_minutes}'")
-    logger.info(f"disk_warning_pct = '{disk_warning_pct}'")
-    logger.info(f"disk_critical_pct = '{disk_critical_pct}'")
-    logger.info(f"disk_threshold_gb = '{disk_threshold_gb}'")
-    logger.info(f"large_disk_threshold_pct = '{large_disk_threshold_pct}'")
     logger.info(f"verbose = '{verbose}'")
 
-# Get Disk Space Info
-if 'Get Disk Space Info' == 'Get Disk Space Info':
-    logger.info(f"Query table dbo.disk_space_all_servers..")
-    query_params = dict(disk_warning_pct=disk_warning_pct,
-                        disk_critical_pct=disk_critical_pct,
-                        disk_threshold_gb=disk_threshold_gb,
-                        large_disk_threshold_pct=large_disk_threshold_pct
+# Get Alert Raw Data
+if 'Get Alert Raw Data' == 'Get Alert Raw Data':
+    logger.info(f"Query table dbo.instance_details..")
+    query_params = dict(logger = logger,
+                        verbose = verbose
                         )
-    alert_pyodbc_resultset = get_disk_space(cnxn, **query_params)
+    alert_pyodbc_resultset = get_offline_server(cnxn, **query_params)
 
     if len(alert_pyodbc_resultset) > 0:
         logger.info(f"Before creating pt & df on alert_pyodbc_resultset..")
@@ -103,33 +93,35 @@ if 'Get Disk Space Info' == 'Get Disk Space Info':
 # Generate Alert & Notify
 if 'Generate Alert & Notify' == 'Generate Alert & Notify':
     alert_key = f"{alert_name}"
-    disk_alert.alert_key = alert_key
-    disk_alert.alert_owner_team = alert_owner_team
-    disk_alert.logger = logger
-    disk_alert.verbose = verbose
-    disk_alert.alert_job_name = alert_job_name
-    disk_alert.sql_connection = cnxn
+    alert_obj.alert_key = alert_key
+    alert_obj.alert_owner_team = alert_owner_team
+    alert_obj.logger = logger
+    alert_obj.verbose = verbose
+    alert_obj.alert_job_name = alert_job_name
+    alert_obj.sql_connection = cnxn
 
     # set flag if alert related action is required
-    disk_alert.generate_alert = (True if len(alert_pyodbc_resultset)>0 else False)
-    disk_alert.alert_pyodbc_resultset = alert_pyodbc_resultset
+    alert_obj.generate_alert = (True if len(alert_pyodbc_resultset)>0 else False)
+    alert_obj.alert_pyodbc_resultset = alert_pyodbc_resultset
 
     # fetch existing alert if any & set flag if alert creation is required
-    if disk_alert.initialize_data_from_db():
+    if alert_obj.initialize_data_from_db():
         logger.info(f"Overwrite variables from db retrieved data..")
-        alert_owner_team = disk_alert.alert_owner_team
+        alert_owner_team = alert_obj.alert_owner_team
 
-    logger.info(f"disk_alert.exists = '{disk_alert.exists}'")
-    logger.info(f"disk_alert.generate_alert = '{disk_alert.generate_alert}'")
-    logger.info(f"disk_alert.action_to_take = '{disk_alert.action_to_take}'")
-    logger.info(f"disk_alert.state = '{disk_alert.state}'")
+    logger.info(f"alert_obj.exists = '{alert_obj.exists}'")
+    logger.info(f"alert_obj.generate_alert = '{alert_obj.generate_alert}'")
+    logger.info(f"alert_obj.action_to_take = '{alert_obj.action_to_take}'")
+    logger.info(f"alert_obj.state = '{alert_obj.state}'")
 
-    if disk_alert.action_to_take != 'No Action':
+    if alert_obj.action_to_take != 'No Action':
         # compute derived attributes from raw data
-        disk_alert.initialize_derived_attributes()
+        logger.info(f"calling alert_obj.initialize_derived_attributes()..")
+        alert_obj.initialize_derived_attributes()
 
         # Take required action now
-        disk_alert.take_required_action()
+        logger.info(f"calling alert_obj.take_required_action()..")
+        alert_obj.take_required_action()
 
 # Log end
 logger.info('***** COMPLETED:  %s' % script_name)

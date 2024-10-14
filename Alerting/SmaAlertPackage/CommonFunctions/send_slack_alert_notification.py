@@ -44,7 +44,8 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
                                 "text": header_slack_markdown
                             }
                         }
-                    ]
+                    ],
+            text = alert_header
         )
 
         slack_ts_value = response['ts']

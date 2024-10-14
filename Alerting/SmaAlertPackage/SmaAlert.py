@@ -24,7 +24,7 @@ class SmaAlert():
         self.alert_owner_team = alert_owner_team
         self.state = None
         self.severity = None
-        self.header = None
+        self.header = None # goes in table dbo.sma_alert_history
         self.header_slack_markdown = None
         self.description = None
         self.slack_ts_value = None
