@@ -11,6 +11,9 @@
 # Block Kit Builder
   # https://app.slack.com/block-kit-builder
 
+# Creating interactive messages 
+  # https://api.slack.com/messaging/interactivity
+
 from datetime import datetime
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
@@ -43,6 +46,41 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
                                 "type": "mrkdwn",
                                 "text": header_slack_markdown
                             }
+                        },
+                        {
+                            "type": "actions",
+                            "elements": [
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "emoji": True,
+                                        "text": "Acknowledge"
+                                    },
+                                    "style": "primary",
+                                    "value": "click_me_123"
+                                },
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "emoji": True,
+                                        "text": "Clear"
+                                    },
+                                    "style": "primary",
+                                    "value": "click_me_123"
+                                },
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "emoji": True,
+                                        "text": "Resolve"
+                                    },
+                                    "style": "danger",
+                                    "value": "click_me_123"
+                                }
+                            ]
                         }
                     ],
             text = alert_header
