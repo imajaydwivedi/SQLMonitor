@@ -2,7 +2,7 @@ import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-def send_email_alert_notification(smtp_server:str, smtp_server_port:int, smtp_account_name:str, smtp_account_password:str, logger:None, verbose:bool=False, **kwargs):
+def send_email_alert_notification(smtp_server:str, smtp_server_port:int, smtp_account_name:str, smtp_account_password:str, logger=None, verbose:bool=False, **kwargs):
     alert_sender_email = kwargs['alert_sender_email']
     alert_receiver_email = kwargs['alert_receiver_email']
     alert_mail_subject = kwargs['alert_mail_subject']

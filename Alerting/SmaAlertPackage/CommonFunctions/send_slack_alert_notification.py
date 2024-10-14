@@ -20,7 +20,7 @@ from datetime import datetime
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
-def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:str, action_to_take:str, logger:None, slack_ts_value:str=None, verbose:bool=False, **kwargs):
+def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:str, action_to_take:str, logger=None, slack_ts_value:str=None, verbose:bool=False, **kwargs):
     if verbose:
         logger.info(f"Extracting **kwargs inside send_slack_alert_notification()..")
 

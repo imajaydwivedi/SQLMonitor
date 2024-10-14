@@ -3,7 +3,7 @@ import os
 
 # Pyodbc Cursor - https://github.com/mkleehammer/pyodbc/wiki/Cursor
 
-def connect_dba_instance(sql_instance='localhost', database='DBA', login_name='', login_password='', app_name='connect_dba_instance.py'):
+def connect_dba_instance(sql_instance='localhost', database='DBA', login_name='', login_password='', app_name='connect_dba_instance.py', logger=None, verbose:bool=False):
     if os.name == 'nt':
         # driver on windows
         sql_driver = 'SQL Server Native Client 11.0'
@@ -33,5 +33,8 @@ def connect_dba_instance(sql_instance='localhost', database='DBA', login_name=''
                 TrustServerCertificate=yes;
                 """
 
+    if verbose:
+        logger.info(f"connection_string => ")
+        print(connection_string)
     cnxn = pyodbc.connect(connection_string)
     return cnxn

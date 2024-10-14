@@ -49,7 +49,7 @@ logger.info('***** BEGIN:  %s' % script_name)
 
 # Make inventory server connection
 logger.info(f"Create db connection using connect_dba_instance..")
-cnxn = connect_dba_instance(inventory_server,inventory_database,login_name,login_password)
+cnxn = connect_dba_instance(inventory_server,inventory_database,login_name,login_password,logger,verbose)
 cursor = cnxn.cursor()
 
 # Create SmaAlert object to retrieve defaults
