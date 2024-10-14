@@ -14,6 +14,8 @@
 # Creating interactive messages 
   # https://api.slack.com/messaging/interactivity
 
+# Youtube Playlist -> Python Slack Bot - https://www.youtube.com/playlist?list=PLzMcBGfZo4-kqyzTzJWCV6lyK-ZMYECDc
+
 from datetime import datetime
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
