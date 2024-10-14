@@ -19,6 +19,7 @@ class SmaDiskSpaceAlert(SmaAlert):
         self.alert_pyodbc_resultset = None
 
         self.__df_alert_pyodbc_resultset = None
+        self.__fields_for_display = ["sql_instance", "host_name", "disk_volume", "capacity_mb", "used_pct", "free_mb", "state"]
 
         # severity counts
         self.__critical_count = 0
@@ -46,6 +47,9 @@ class SmaDiskSpaceAlert(SmaAlert):
 
         self.__compute_affected_servers()
 
+    def __compute_df_alert_pyodbc_resultset(self):
+        if self.generate_alert:
+            self.__df_alert_pyodbc_resultset = get_pandas_dataframe(self.alert_pyodbc_resultset, index_col='sql_instance')
 
     def __compute_severity(self):
         # 'Critical', 'High', 'Medium', 'Low'
@@ -69,10 +73,6 @@ class SmaDiskSpaceAlert(SmaAlert):
             self.severity = 'Medium'
         else:
             self.severity = 'Low'
-
-    def __compute_df_alert_pyodbc_resultset(self):
-        if self.generate_alert:
-            self.__df_alert_pyodbc_resultset = get_pandas_dataframe(self.alert_pyodbc_resultset, index_col='sql_instance')
 
     def __compute_state(self):
         # 'Active','Suppressed','Cleared', 'Resolved'
@@ -124,7 +124,7 @@ class SmaDiskSpaceAlert(SmaAlert):
 
         if self.generate_alert:
             pt = get_pretty_table(self.alert_pyodbc_resultset)
-            self.description = pt.get_string(fields=["sql_instance", "host_name", "disk_volume", "capacity_mb", "used_pct", "free_mb", "state"])
+            self.description = pt.get_string(fields=self.__fields_for_display)
         else:
             self.description = f"Alert cleared."
 
@@ -165,7 +165,7 @@ class SmaDiskSpaceAlert(SmaAlert):
         if self.generate_alert:
             df = self.__df_alert_pyodbc_resultset
 
-            alert_mail_table = df.to_html(columns=["sql_instance", "host_name", "disk_volume", "capacity_mb", "used_pct", "free_mb", "state"],
+            alert_mail_table = df.to_html(columns=self.__fields_for_display,
                                     justify='center', index=False, escape=False, decimal=',',
                                     formatters={
                                         'sql_instance': lambda x: f'<b>{x}</b>',
