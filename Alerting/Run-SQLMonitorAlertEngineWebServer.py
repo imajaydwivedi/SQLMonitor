@@ -94,14 +94,15 @@ def verification():
     #data = request.json
     data = request.get_json()
     #challenge = data['challenge']
-    challenge = data.get("challenge")
+    #challenge = data.get("challenge")
     print(data)
 
-    #if 'challenge' in data:
-        #return jsonify({'challenge': data['challenge']})
-    return jsonify({"challenge": challenge})
+    if 'challenge' in data:
+        return jsonify({'challenge': data['challenge']})
 
-    #return jsonify({'status': 'ok'})
+    print("no challenge found. So doing some tasks.")
+
+    return "OK", 200
 
 @app.before_request
 def redirect_http_to_https():
