@@ -250,3 +250,5 @@ exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_pagerduty_servic
 go
 exec dbo.usp_add_credential @server_ip = '*', @user_name = 'smtp_account_password', @password_string = 'SomeStringPassword', @remarks = 'SMTP Account Password';
 go
+exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_slack_bot_signing_secret', @password_string = 'SomeStringPassword', @remarks = 'DBA Slack Bot Signing Secret';
+go

@@ -1,0 +1,1 @@
+& python D:\GitHub-Personal\SQLMonitor\Alerting\Run-SQLMonitorAlertEngineWebServer.py --inventory_server localhost --verbose True #--login_password 'SomeStrongSApassword' #

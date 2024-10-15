@@ -15,3 +15,7 @@ pip install flask
 
 # module to work with slack events
 pip install slackeventsapi
+
+# Waitress Web Server
+https://github.com/Pylons/waitress
+
