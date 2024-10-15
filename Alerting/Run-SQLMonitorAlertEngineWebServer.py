@@ -1,7 +1,7 @@
 import pyodbc
 import os
 import argparse
-from flask import Flask
+from flask import Flask, request, Response
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 from slackeventsapi import SlackEventAdapter
@@ -97,6 +97,19 @@ def message(payload):
 
     if bot_user_id != user_id:
         client.chat_postMessage(channel=channel_id, text=text)
+
+# Listen to slack commands
+@app.route('alerts', methods=['GET','POST'])
+def get_alert():
+    data = request.form
+    if verbose:
+        print(data)
+    user_id = data.get('user_id')
+    channel_id = data.get('channel_id')
+    if bot_user_id != user_id:
+        client.chat_postMessage(channel=channel_id, text=f"Sure {user_id}! Will come back with Active Alert!")
+
+    return Response(), 200
 
 if __name__ == "__main__":
     #app.run()
