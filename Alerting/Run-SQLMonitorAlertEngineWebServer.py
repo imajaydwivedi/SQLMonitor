@@ -2,7 +2,7 @@ import pyodbc
 import os
 import argparse
 from datetime import datetime
-from flask import Flask, request, Response
+from flask import Flask, Response, request
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 from slackeventsapi import SlackEventAdapter
@@ -13,6 +13,9 @@ from SmaAlertPackage.CommonFunctions.get_sm_credential import get_sm_credential
 
 # get Script Name
 script_name = os.path.basename(__file__)
+script_full_path = os.path.abspath(__file__)
+script_directory = os.path.abspath(os.path.abspath(os.path.dirname(__file__)))
+script_parent_directory = os.path.split(os.path.abspath(script_directory))[0]
 
 parser = argparse.ArgumentParser(description="Script to run SQLMonitor Alert Engine Web Server", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--inventory_server", type=str, required=False, action="store", default="localhost", help="Inventory Server")
@@ -23,6 +26,7 @@ parser.add_argument("--login_password", type=str, required=False, action="store"
 parser.add_argument("--alert_name", type=str, required=False, action="store", default="Run-SQLMonitorAlertEngineWebServer", help="Alert Name")
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Run-SQLMonitorAlertEngineWebServer", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
+parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=True, help="Checks for SSL certificate if enabled")
 #parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=True, help="Extra debug message when enabled")
 
@@ -37,6 +41,7 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     alert_name = args.alert_name
     alert_job_name = args.alert_job_name
     alert_owner_team = args.alert_owner_team
+    has_ssl_certificate = args.has_ssl_certificate
     #frequency_minutes = args.frequency_minutes
     verbose = args.verbose
 
@@ -45,6 +50,18 @@ logger = get_script_logger(alert_job_name)
 
 # Log begging
 logger.info('***** BEGIN:  %s' % script_name)
+
+# determine os
+if os.name == 'nt':
+    path_separator = '\\'
+else:
+    path_separator = '/'
+
+# ssl_certificate
+if has_ssl_certificate:
+    logger.info(f"script_parent_directory = '{script_parent_directory}'")
+    ssl_certificate = f"{script_parent_directory}{path_separator}Private{path_separator}ssl_certificates{path_separator}fullchain.pem"
+    ssl_certificate_key = f"{script_parent_directory}{path_separator}Private{path_separator}ssl_certificates{path_separator}privkey.pem"
 
 # Make inventory server connection
 logger.info(f"Create db connection using connect_dba_instance..")
@@ -74,20 +91,21 @@ if verbose:
     print(bot_user_details)
 
 logger.info(f"Log Web Server startup on slack channel {dba_slack_channel_id}..")
-client.chat_postMessage(
-          channel = dba_slack_channel_id,
-          username = dba_slack_bot,
-          blocks = [
-            {
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": f"{datetime.now()} - Starting SQLMonitor Web Server.."
-              }
-            }
-          ],
-          text = f"{datetime.now()} - Starting SQLMonitor Web Server.."
-      )
+if True is False:
+    client.chat_postMessage(
+              channel = dba_slack_channel_id,
+              username = dba_slack_bot,
+              blocks = [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": f"{datetime.now()} - Starting SQLMonitor Web Server.."
+                  }
+                }
+              ],
+              text = f"{datetime.now()} - Starting SQLMonitor Web Server.."
+          )
 
 logger.info(f"Read slack message & echo back..")
 @slack_event_adapter.on('message')
@@ -106,15 +124,44 @@ logger.info(f"Listen to slack command {slack_command}..")
 @app.route(slack_command, methods=['GET','POST'])
 def get_alert():
     data = request.form
-    if verbose:
-        print(data)
+    #if verbose:
+        #print(data)
     user_id = data.get('user_id')
+    user_name = data.get('user_name')
     channel_id = data.get('channel_id')
+    channel_name = data.get('channel_name')
+    command_by_user = data.get('command')
+    api_app_id = data.get('api_app_id')
+
     if bot_user_id != user_id:
         client.chat_postMessage(channel=channel_id, text=f"Sure @{user_id}! Will come back with Active Alert!")
 
     return Response(), 200
 
+# dummy
+@app.route("/", methods=['GET','POST'])
+def greetings():
+    print("inside greetings()")
+    return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
+
+@app.route('/slack/events', methods=['POST'])
+def inbound():
+    """
+    Inbound POST from slack to test token
+    """
+    print(f"Inside inbound()")
+    # When slack send a POST to your app, it will send a JSON payload:
+    payload = request.get_json()
+
+    # This response will only be used for the initial URL validation
+    if payload:
+        return Response(payload['challenge']), 200
+
+
 if __name__ == "__main__":
     #app.run()
-    app.run(debug=verbose)
+    if has_ssl_certificate:
+        context = (ssl_certificate, ssl_certificate_key)
+        app.run(host='0.0.0.0', debug=verbose, ssl_context=context, port=5000)
+    else:
+        app.run(host='0.0.0.0', debug=verbose, port=5000)
