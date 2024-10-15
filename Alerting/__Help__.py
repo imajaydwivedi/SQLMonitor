@@ -16,6 +16,10 @@ pip install flask
 # module to work with slack events
 pip install slackeventsapi
 
+# ngrok for testing web server
+https://ngrok.com/download
+ngrok http 5000
+
 # Waitress Web Server
 https://github.com/Pylons/waitress
 

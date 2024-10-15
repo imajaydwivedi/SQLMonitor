@@ -23,7 +23,7 @@ parser.add_argument("--alert_name", type=str, required=False, action="store", de
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Run-SQLMonitorAlertEngineWebServer", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 #parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
-parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
+parser.add_argument("--verbose", type=bool, required=False, action="store", default=True, help="Extra debug message when enabled")
 
 args=parser.parse_args()
 
@@ -64,7 +64,14 @@ slack_event_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/ev
 
 # Send Test Slack Message
 logger.info(f"Create slack WebClient..")
+if verbose:
+    logger.info(f"dba_slack_bot_token = '{dba_slack_bot_token}'")
 client = WebClient(token=dba_slack_bot_token)
+bot_user_details = client.auth_test()
+bot_user_id = bot_user_details['user_id']
+if verbose:
+    print(bot_user_details)
+
 logger.info(f"Report Web Server startup on channel {dba_slack_channel_id}..")
 client.chat_postMessage(
           channel=dba_slack_channel_id,
@@ -80,6 +87,16 @@ client.chat_postMessage(
           ],
           text = "Starting SQLMonitor Web Server.."
       )
+
+@slack_event_adapter.on('message')
+def message(payload):
+    event = payload.get('event', {})
+    channel_id = event.get('channel')
+    user_id = event.get('user')
+    text = event.get('text')
+
+    if bot_user_id != user_id:
+        client.chat_postMessage(channel=channel_id, text=text)
 
 if __name__ == "__main__":
     #app.run()
