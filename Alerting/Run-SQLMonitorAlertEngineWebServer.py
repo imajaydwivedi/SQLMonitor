@@ -1,6 +1,7 @@
 import pyodbc
 import os
 import argparse
+from datetime import datetime
 from flask import Flask, request, Response
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
@@ -72,22 +73,23 @@ bot_user_id = bot_user_details['user_id']
 if verbose:
     print(bot_user_details)
 
-logger.info(f"Report Web Server startup on channel {dba_slack_channel_id}..")
+logger.info(f"Log Web Server startup on slack channel {dba_slack_channel_id}..")
 client.chat_postMessage(
-          channel=dba_slack_channel_id,
+          channel = dba_slack_channel_id,
           username = dba_slack_bot,
           blocks = [
             {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": f"Starting SQLMonitor Web Server.."
+                "text": f"{datetime.now()} - Starting SQLMonitor Web Server.."
               }
             }
           ],
-          text = "Starting SQLMonitor Web Server.."
+          text = f"{datetime.now()} - Starting SQLMonitor Web Server.."
       )
 
+logger.info(f"Read slack message & echo back..")
 @slack_event_adapter.on('message')
 def message(payload):
     event = payload.get('event', {})
@@ -99,7 +101,9 @@ def message(payload):
         client.chat_postMessage(channel=channel_id, text=text)
 
 # Listen to slack commands
-@app.route('alerts', methods=['GET','POST'])
+slack_command = '/alerts'
+logger.info(f"Listen to slack command {slack_command}..")
+@app.route(slack_command, methods=['GET','POST'])
 def get_alert():
     data = request.form
     if verbose:
@@ -107,7 +111,7 @@ def get_alert():
     user_id = data.get('user_id')
     channel_id = data.get('channel_id')
     if bot_user_id != user_id:
-        client.chat_postMessage(channel=channel_id, text=f"Sure {user_id}! Will come back with Active Alert!")
+        client.chat_postMessage(channel=channel_id, text=f"Sure @{user_id}! Will come back with Active Alert!")
 
     return Response(), 200
 
