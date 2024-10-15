@@ -85,20 +85,23 @@ app = Flask(__name__)
 
 
 
-@app.route('/slack/events', methods=['POST'])
+@app.route('/slack/events', methods=['GET','POST'])
 def verification():
     """
     Inbound POST from slack to test token
     """
     print("Inside verification()")
-    data = request.json
-    challenge = data['challenge']
+    #data = request.json
+    data = request.get_json()
+    #challenge = data['challenge']
+    challenge = data.get("challenge")
     print(data)
 
-    if 'challenge' in data:
-        return jsonify({'challenge': data['challenge']})
+    #if 'challenge' in data:
+        #return jsonify({'challenge': data['challenge']})
+    return jsonify({"challenge": challenge})
 
-    return jsonify({'status': 'ok'})
+    #return jsonify({'status': 'ok'})
 
 @app.before_request
 def redirect_http_to_https():
