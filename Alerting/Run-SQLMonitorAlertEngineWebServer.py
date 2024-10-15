@@ -2,10 +2,11 @@ import pyodbc
 import os
 import argparse
 from datetime import datetime
-from flask import Flask, Response, request
+from flask import Flask, Response, request, jsonify, redirect
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 from slackeventsapi import SlackEventAdapter
+#from waitress import serve
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
@@ -28,7 +29,9 @@ parser.add_argument("--alert_job_name", type=str, required=False, action="store"
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=True, help="Checks for SSL certificate if enabled")
 #parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
-parser.add_argument("--verbose", type=bool, required=False, action="store", default=True, help="Extra debug message when enabled")
+parser.add_argument("--verbose", type=bool, required=False, action="store", default=True, help="Extra verbose messages when enabled")
+parser.add_argument("--debug", type=bool, required=False, action="store", default=False, help="Run web server in debug mode")
+
 
 args=parser.parse_args()
 
@@ -42,6 +45,7 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     alert_job_name = args.alert_job_name
     alert_owner_team = args.alert_owner_team
     has_ssl_certificate = args.has_ssl_certificate
+    debug = args.debug
     #frequency_minutes = args.frequency_minutes
     verbose = args.verbose
 
@@ -78,6 +82,32 @@ if 'Get Bot OAuth Token' == 'Get Bot OAuth Token':
 
 # Slack Event Adapter
 app = Flask(__name__)
+
+
+
+@app.route('/slack/events', methods=['POST'])
+def verification():
+    """
+    Inbound POST from slack to test token
+    """
+    print("Inside verification()")
+    data = request.json
+    challenge = data['challenge']
+    print(data)
+
+    if 'challenge' in data:
+        return jsonify({'challenge': data['challenge']})
+
+    return jsonify({'status': 'ok'})
+
+@app.before_request
+def redirect_http_to_https():
+    if not request.is_secure:
+        if verbose:
+            logger.info(f"direct unsecure access to https")
+        #return redirect(request.url.replace("http://", "https://"), code=301)
+
+# Slack Event Adapter
 slack_event_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
 
 # Send Test Slack Message
@@ -91,7 +121,7 @@ if verbose:
     print(bot_user_details)
 
 logger.info(f"Log Web Server startup on slack channel {dba_slack_channel_id}..")
-if True is False:
+if verbose:
     client.chat_postMessage(
               channel = dba_slack_channel_id,
               username = dba_slack_bot,
@@ -144,24 +174,13 @@ def greetings():
     print("inside greetings()")
     return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
 
-@app.route('/slack/events', methods=['POST'])
-def inbound():
-    """
-    Inbound POST from slack to test token
-    """
-    print(f"Inside inbound()")
-    # When slack send a POST to your app, it will send a JSON payload:
-    payload = request.get_json()
-
-    # This response will only be used for the initial URL validation
-    if payload:
-        return Response(payload['challenge']), 200
-
 
 if __name__ == "__main__":
     #app.run()
     if has_ssl_certificate:
         context = (ssl_certificate, ssl_certificate_key)
-        app.run(host='0.0.0.0', debug=verbose, ssl_context=context, port=5000)
+        app.run(host='0.0.0.0', debug=debug, ssl_context=context, port=5000)
+        #serve(app, host='0.0.0.0', port=5000, threads=10, ssl_context=context)
     else:
-        app.run(host='0.0.0.0', debug=verbose, port=5000)
+        app.run(host='0.0.0.0', debug=debug, port=5000)
+        #serve(app, host='0.0.0.0', port=5000, threads=10)

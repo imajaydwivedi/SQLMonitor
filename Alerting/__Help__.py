@@ -23,3 +23,13 @@ ngrok http 5000
 # Waitress Web Server
 https://github.com/Pylons/waitress
 
+# Virtual Env for Web Server Deployment
+  # https://stackoverflow.com/a/47816344/4449743
+c:\Python312\Scripts>virtualenv.exe flask-app-env
+c:\Python312\Scripts>
+c:\Python312\Scripts>flask-app-env\Scripts\activate.bat
+(flask-app-env) c:\Python312\Scripts>
+
+# Flask App Deployment in Windows (Apache-Server, mod_wsgi)
+  # https://thilinamad.medium.com/flask-app-deployment-in-windows-apache-server-mod-wsgi-82e1cfeeb2ed
+
