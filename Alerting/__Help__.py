@@ -39,4 +39,4 @@ https://jsonformatter.curiousconcept.com/#
 
 # Scheduler
 https://stackoverflow.com/a/38501429/4449743
-
+pip install apscheduler
