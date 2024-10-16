@@ -61,7 +61,7 @@ class SmaAlert():
         self.__alert_owner_team_slack_channel = None
         self.__sqlmonitor_dashboard_url = None
         #self.__affected_servers_json = None
-        self.__action_dictionary = dict(Acknowledge = 'Acknowledged', Clear = 'Cleared', Suppress = 'Suppressed', Resolve = 'Resolved')
+        self.action_dictionary = dict(Acknowledge = 'Acknowledged', Clear = 'Cleared', Suppress = 'Suppressed', Resolve = 'Resolved')
 
     def __get_alert_dict(self):
         obj_dict = dict(alert_id = self.id,
@@ -193,9 +193,13 @@ select [rows_affected] = isnull(@_rows_affected,0);
             self.__alert_owner_team_pagerduty_service_key = get_sm_credential(self.sql_connection, self.credential_manager_database, 'dba_pagerduty_service_key')
 
         # set action_to_take -- 'No Action', 'Create', 'Acknowledge', 'Clear', 'SkipNotification', 'Update', 'Upgrade'
-        if self.exists is False and self.generate_alert is False:
+        if self.generate_alert is None:
+            if self.verbose:
+                self.logger(f"self.generate_alert is None. So no compute for self.action_to_take.")
+        elif self.exists is False and self.generate_alert is False:
             self.action_to_take = 'No Action'
         else:
+            # set action_to_take only when its default
             if self.exists is False and self.generate_alert is True:
                 self.action_to_take = 'Create'
 
@@ -365,8 +369,8 @@ select [rows_affected] = isnull(@_rows_affected,0);
             self.logger(f"Inside SmaAlert.initialize_derived_attributes() method.")
 
         # Set alert state
-        if self.action_to_take in self.__action_dictionary:
-            self.state = self.__action_dictionary[action_to_take]
+        if self.action_to_take in self.action_dictionary:
+            self.state = self.action_dictionary[action_to_take]
 
         self.header = f"Alert {self.state} by {self.logged_by}"
 
