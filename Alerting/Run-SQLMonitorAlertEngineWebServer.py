@@ -3,6 +3,9 @@ import os
 import argparse
 import json
 from datetime import datetime
+import time
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, Response, request, jsonify, redirect, make_response
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
@@ -36,6 +39,7 @@ parser.add_argument("--verbose", type=bool, required=False, action="store", defa
 parser.add_argument("--debug", type=bool, required=False, action="store", default=True, help="Run web server in debug mode")
 parser.add_argument("--log_server_startup", type=bool, required=False, action="store", default=False, help="Log server startup message in Slack Channel")
 parser.add_argument("--echo_test", type=bool, required=False, action="store", default=False, help="Enable echo test")
+parser.add_argument("--run_scheduled_jobs", type=bool, required=False, action="store", default=True, help="Enable echo test")
 
 
 
@@ -55,6 +59,7 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     #frequency_minutes = args.frequency_minutes
     verbose = args.verbose
     log_server_startup = args.log_server_startup
+    run_scheduled_jobs = args.run_scheduled_jobs
 
 # create logger
 logger = get_script_logger(alert_job_name)
@@ -69,8 +74,9 @@ else:
     path_separator = '/'
 
 # ssl_certificate
+logger.info(f"script_parent_directory = '{script_parent_directory}'")
+logger.info(f"script_directory = '{script_directory}'")
 if has_ssl_certificate:
-    logger.info(f"script_parent_directory = '{script_parent_directory}'")
     ssl_certificate = f"{script_parent_directory}{path_separator}Private{path_separator}ssl_certificates{path_separator}fullchain.pem"
     ssl_certificate_key = f"{script_parent_directory}{path_separator}Private{path_separator}ssl_certificates{path_separator}privkey.pem"
 
@@ -259,7 +265,27 @@ def greetings():
     return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
 
 
+def call_30_minute_job_script():
+    logger.info(f"Inside call_30_minute_job_script()")
+
+    alert_script_path = os.path.join(script_directory, "Alert-DiskSpace.py")
+    os.system(f"python {alert_script_path}")
+
+    alert_script_path = os.path.join(script_directory, "Alert-OfflineServer.py")
+    os.system(f"python {alert_script_path}")
+
+# execute scheduler
+if run_scheduled_jobs:
+    logger.info(f"Using WebServer for running Alert Jobs as run_scheduled_jobs is True.")
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(func=call_30_minute_job_script, trigger="interval", minutes=30)
+    scheduler.start()
+
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: scheduler.shutdown())
+
 if __name__ == "__main__":
+
     #app.run()
     if has_ssl_certificate:
         context = (ssl_certificate, ssl_certificate_key)
