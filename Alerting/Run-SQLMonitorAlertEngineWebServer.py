@@ -93,9 +93,6 @@ app = Flask(__name__)
 # Slack Event Adapter
 slack_event_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
 
-# alert object
-alert_obj = SmaAlert()
-
 '''
 @app.route('/slack/events', methods=['GET','POST'])
 def slack_events_handler():
@@ -232,6 +229,8 @@ def interactive_action():
     alert_id = int(action_id.replace(f"{action_to_take}-",""))
     action_ts = form_json["actions"][0]["action_ts"]
 
+    # alert object
+    alert_obj = SmaAlert()
     alert_obj.logger = logger
     alert_obj.logged_by = user_name
     alert_obj.alert_job_name = alert_job_name
