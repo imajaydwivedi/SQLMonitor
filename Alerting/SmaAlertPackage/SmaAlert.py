@@ -231,7 +231,7 @@ select [rows_affected] = isnull(@_rows_affected,0);
         if self.verbose:
             self.logger.info(f"executing SmaAlert.__call_usp_insert_sma_alert()..")
 
-        logged_by = self.logged_by
+        logged_by = (self.logged_by if self.logged_by is not None else self.alert_job_name)
         if self.generate_alert is None and self.alert_job_name is not None:
             logged_by = self.alert_job_name
 
