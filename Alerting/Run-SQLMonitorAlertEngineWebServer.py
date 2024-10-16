@@ -1,8 +1,9 @@
 import pyodbc
 import os
 import argparse
+import json
 from datetime import datetime
-from flask import Flask, Response, request, jsonify, redirect
+from flask import Flask, Response, request, jsonify, redirect, make_response
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 from slackeventsapi import SlackEventAdapter
@@ -177,7 +178,7 @@ def message(payload):
 slack_command = '/alerts'
 @app.route(slack_command, methods=['GET','POST'])
 def get_alert():
-    logger.info(f"Listen to slack command {slack_command}..")
+    logger.info(f"Got request on endpoint: {slack_command}..")
     data = request.form
     if verbose:
         print(data)
@@ -205,6 +206,25 @@ def get_alert():
           )
 
     return Response(), 200
+
+
+# Handle Interactivity
+slack_command = '/slack/interactive-endpoint'
+@app.route(slack_command, methods=['GET','POST'])
+def interactive_action():
+    logger.info(f"Got request on endpoint: {slack_command}..")
+
+    # Parse the request payload
+    data = request.form["payload"]
+    form_json = json.loads(data)
+
+    if verbose:
+        print(form_json)
+
+    # Check to see what the user's selection was and update the message
+
+
+    return make_response("", 200)
 
 # dummy
 @app.route("/", methods=['GET','POST'])

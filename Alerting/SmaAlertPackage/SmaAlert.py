@@ -253,6 +253,7 @@ select [rows_affected] = isnull(@_rows_affected,0);
                         action_to_take = self.action_to_take,
                         logger = self.logger,
                         verbose = self.verbose,
+                        alert_id = self.id,
                         alert_key = self.alert_key,
                         state = self.state,
                         severity = self.severity,

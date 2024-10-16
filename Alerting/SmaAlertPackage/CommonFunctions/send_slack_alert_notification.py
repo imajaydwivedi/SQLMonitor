@@ -24,6 +24,7 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
     if verbose:
         logger.info(f"Extracting **kwargs inside send_slack_alert_notification()..")
 
+    alert_id = kwargs['alert_id']
     alert_key = kwargs['alert_key']
     alert_state = kwargs['state']
     alert_severity = kwargs['severity']
@@ -60,7 +61,8 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
                                         "text": "Acknowledge"
                                     },
                                     "style": "primary",
-                                    "value": "click_me_123"
+                                    "value": f"acknowledge_alert-{alert_id}",
+                                    "action_id": "acknowledge_alert_click"
                                 },
                                 {
                                     "type": "button",
@@ -70,7 +72,8 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
                                         "text": "Clear"
                                     },
                                     "style": "primary",
-                                    "value": "click_me_123"
+                                    "value": "clear_alert-{alert_id}",
+                                    "action_id": "clear_alert_click"
                                 },
                                 {
                                     "type": "button",
@@ -80,7 +83,8 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
                                         "text": "Resolve"
                                     },
                                     "style": "danger",
-                                    "value": "click_me_123"
+                                    "value": "resolve_alert-{alert_id}",
+                                    "action_id": "resolve_alert_click"
                                 }
                             ]
                         }
