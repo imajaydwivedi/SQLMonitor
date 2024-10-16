@@ -31,6 +31,9 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
     alert_header = kwargs['header']
     header_slack_markdown = kwargs['header_slack_markdown']
     alert_description = kwargs['description']
+    generate_alert = None
+    if 'generate_alert' in kwargs:
+        generate_alert = kwargs['generate_alert']
 
     # Set up a WebClient with the Slack OAuth token
     client = WebClient(token=slack_token)
