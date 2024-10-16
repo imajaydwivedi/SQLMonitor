@@ -32,6 +32,7 @@ parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=True, help="Extra verbose messages when enabled")
 parser.add_argument("--debug", type=bool, required=False, action="store", default=True, help="Run web server in debug mode")
 parser.add_argument("--log_server_startup", type=bool, required=False, action="store", default=False, help="Log server startup message in Slack Channel")
+parser.add_argument("--echo_test", type=bool, required=False, action="store", default=False, help="Enable echo test")
 
 
 
@@ -141,20 +142,36 @@ if log_server_startup:
                     "text": f"{datetime.now()} - Starting SQLMonitor Web Server.."
                   }
                 }
-              ],
-              text = f"{datetime.now()} - Starting SQLMonitor Web Server.."
+              ]
+              #text = f"{datetime.now()} - Starting SQLMonitor Web Server.."
           )
 
-logger.info(f"Read slack message & echo back..")
+
 @slack_event_adapter.on('message')
 def message(payload):
+    logger.info(f"Read slack message & echo back..")
     event = payload.get('event', {})
     channel_id = event.get('channel')
     user_id = event.get('user')
     text = event.get('text')
+    if verbose:
+        print(event)
 
-    if bot_user_id != user_id:
-        client.chat_postMessage(channel=channel_id, text=text)
+    if bot_user_id != user_id and args.echo_test:
+        client.chat_postMessage(
+              channel = channel_id,
+              #username = dba_slack_bot,
+              blocks = [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": f"ECHO: {text}"
+                  }
+                }
+              ]
+              #text = f"Sure @{user_name}! Will come back with Active Alert!"
+          )
 
 # Listen to slack commands
 slack_command = '/alerts'
@@ -172,7 +189,20 @@ def get_alert():
     api_app_id = data.get('api_app_id')
 
     if bot_user_id != user_id:
-        client.chat_postMessage(channel=channel_id, text=f"Sure @{user_name}! Will come back with Active Alert!")
+        client.chat_postMessage(
+              channel = channel_id,
+              username = dba_slack_bot,
+              blocks = [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": f"Sure @{user_name}! Will come back with Active Alert!"
+                  }
+                }
+              ]
+              #text = f"Sure @{user_name}! Will come back with Active Alert!"
+          )
 
     return Response(), 200
 
