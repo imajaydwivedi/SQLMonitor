@@ -61,8 +61,8 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
                                         "text": "Acknowledge"
                                     },
                                     "style": "primary",
-                                    "value": f"acknowledge_alert-{alert_id}",
-                                    "action_id": "acknowledge_alert_click"
+                                    "value": f"{alert_id}",
+                                    "action_id": "acknowledge_alert"
                                 },
                                 {
                                     "type": "button",
@@ -72,8 +72,8 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
                                         "text": "Clear"
                                     },
                                     "style": "primary",
-                                    "value": "clear_alert-{alert_id}",
-                                    "action_id": "clear_alert_click"
+                                    "value": f"{alert_id}",
+                                    "action_id": "clear_alert"
                                 },
                                 {
                                     "type": "button",
@@ -83,8 +83,8 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
                                         "text": "Resolve"
                                     },
                                     "style": "danger",
-                                    "value": "resolve_alert-{alert_id}",
-                                    "action_id": "resolve_alert_click"
+                                    "value": f"{alert_id}",
+                                    "action_id": "resolve_alert"
                                 }
                             ]
                         }

@@ -33,3 +33,8 @@ c:\Python312\Scripts>flask-app-env\Scripts\activate.bat
 # Flask App Deployment in Windows (Apache-Server, mod_wsgi)
   # https://thilinamad.medium.com/flask-app-deployment-in-windows-apache-server-mod-wsgi-82e1cfeeb2ed
 
+
+# JSON Formatter
+https://jsonformatter.curiousconcept.com/#
+
+
