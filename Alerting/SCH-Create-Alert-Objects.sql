@@ -152,8 +152,8 @@ create table [dbo].[sma_alert]
 	[created_date_utc] datetime2 not null default sysutcdatetime(),
 	[alert_key] varchar(255) not null,
 	[alert_owner_team] varchar(125) not null, -- 'DBA'
-	[state] varchar(15) not null default 'Active', -- 'Active','Suppressed','Cleared', 'Resolved'
-	[severity] varchar(15) not null default 'High', -- 'Critical', 'High', 'Medium', 'Low'
+	[state] varchar(15) not null default 'Active', -- 'Active', 'Acknowledged', 'Suppressed', 'Cleared', 'Resolved'
+	[severity] varchar(15) not null default 'High', -- 'Critical', 'High', 'Warning', 'Medium', 'Low'
 	[slack_ts_value] varchar(125) null, -- Used for slack converstation in threads
 	[frequency_minutes] int not null, -- Time interval for re-evaluation of alert
 	[suppress_start_date_utc] datetime null,
@@ -162,9 +162,9 @@ create table [dbo].[sma_alert]
 	,id_part_no as [id] % 10 persisted
 
 	,constraint pk_sma_alert primary key (id, id_part_no) on ps_dba_bigint_10part (id_part_no)
-	,constraint chk_sma_alert__state check ( [state] in ('Active','Suppressed','Cleared','Resolved') )
-	,constraint chk_sma_alert__severity check ( [severity] in ('Critical', 'High', 'Medium', 'Low') )
-	,constraint chk_sma_alert__suppress_state check ([state] in ('Active','Cleared','Resolved') 
+	,constraint chk_sma_alert__state check ( [state] in ('Active','Acknowledged','Suppressed','Cleared','Resolved') )
+	,constraint chk_sma_alert__severity check ( [severity] in ('Critical', 'High', 'Warning', 'Medium', 'Low') )
+	,constraint chk_sma_alert__suppress_state check ([state] in ('Active','Acknowledged','Cleared','Resolved') 
 								or (	[state] = 'Suppressed' and suppress_start_date_utc is not null and suppress_end_date_utc is not null and  suppress_start_date_utc < suppress_end_date_utc)
 								)
 
@@ -178,7 +178,7 @@ go
 create unique index ix_sma_alert__alert_key__active on [dbo].[sma_alert]
 	(alert_key, id, id_part_no) 
 	include ([state]) 
-	where [state] in ('Active','Suppressed','Cleared')
+	where [state] in ('Active','Acknowledged','Suppressed','Cleared')
 go
 
 /* ***** 6) Create table dbo.sma_alert_history ***************************** */

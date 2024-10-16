@@ -38,7 +38,7 @@ class SmaAlert():
         self.logged_by = self.alert_job_name # alert logging job or person using portal
         self.exists = None
         self.generate_alert = None
-        self.action_to_take = 'No Action' # 'No Action', 'Create', 'Update', 'Upgrade', 'SkipNotification', 'Clear'
+        self.action_to_take = 'No Action' # 'No Action', 'Create', 'Acknowledge', 'Update', 'Upgrade', 'SkipNotification', 'Clear'
         self.verbose = None
         self.sql_connection = None
         self.credential_manager_database = None
@@ -61,6 +61,7 @@ class SmaAlert():
         self.__alert_owner_team_slack_channel = None
         self.__sqlmonitor_dashboard_url = None
         #self.__affected_servers_json = None
+        self.__action_dictionary = dict(Acknowledge = 'Acknowledged', Clear = 'Cleared', Suppress = 'Suppressed', Resolve = 'Resolved')
 
     def __get_alert_dict(self):
         obj_dict = dict(alert_id = self.id,
@@ -94,16 +95,27 @@ class SmaAlert():
         print(self.description)
 
     def fetch_data_from_db(self):
-        if self.verbose:
+        if self.id is not None and self.verbose:
+            self.logger.info(f"get alert for id '{self.id}' from database..")
+        if self.id is None and self.verbose:
             self.logger.info(f"get alert for key '{self.alert_key}' from database..")
 
         cursor = self.sql_connection.cursor()
-        sql_query = f"""
+
+        if self.id is not None:
+            sql_query = f"""
+declare @_rows_affected int;
+exec @_rows_affected = dbo.usp_get_alert_by_id @alert_id = ?;
+select [rows_affected] = isnull(@_rows_affected,0);
+    """
+            cursor.execute(sql_query, self.id)
+        else:
+            sql_query = f"""
 declare @_rows_affected int;
 exec @_rows_affected = dbo.usp_get_active_alert_by_key @alert_key = ?;
 select [rows_affected] = isnull(@_rows_affected,0);
     """
-        cursor.execute(sql_query, self.alert_key)
+            cursor.execute(sql_query, self.alert_key)
         query_resultset = cursor.fetchall()
         cursor.nextset()
         row_count = (cursor.fetchall())[0][0]
@@ -116,6 +128,8 @@ select [rows_affected] = isnull(@_rows_affected,0);
     def initialize_data_from_db(self):
         # set self.exists if alert found
         self.__alert_data_from_db = self.fetch_data_from_db()
+        if len(self.__alert_data_from_db) > 0 and len(self.alert_owner_team) == 0:
+            self.alert_owner_team = self.__alert_data_from_db[0].alert_owner_team
         self.__owner_team_details_from_db = self.fetch_owner_team_details()
 
         if self.verbose and (self.exists or self.generate_alert):
@@ -127,17 +141,23 @@ select [rows_affected] = isnull(@_rows_affected,0);
             if self.verbose:
                 self.logger.info(f"initialize alert attributes from fetched data..")
                 pt_alert_data_from_db = get_pretty_table(self.__alert_data_from_db)
-                self.logger.info(f"Alert data fetched from db for alert key '{self.alert_key}'..")
+                if self.id is not None:
+                    self.logger.info(f"Alert data fetched from db for alert id '{self.id}'..")
+                else:
+                    self.logger.info(f"Alert data fetched from db for alert key '{self.alert_key}'..")
                 print(pt_alert_data_from_db)
 
-            self.id = self.__alert_data_from_db[0].id
+            if self.id is None:
+                self.id = self.__alert_data_from_db[0].id
+            if self.alert_key is None:
+                self.alert_key = self.__alert_data_from_db[0].alert_key
             self.state = self.__alert_data_from_db[0].state
             self.severity = self.__alert_data_from_db[0].severity
             self.slack_ts_value = self.__alert_data_from_db[0].slack_ts_value
             self.frequency_minutes = self.__alert_data_from_db[0].frequency_minutes
 
             self.alert_owner_team = self.__alert_data_from_db[0].alert_owner_team
-            self.alert_method = self.__alert_data_from_db[0].alert_method
+            self.alert_method = self.__owner_team_details_from_db[0].alert_method
 
             self.suppress_start_date_utc = self.__alert_data_from_db[0].suppress_start_date_utc
             self.suppress_end_date_utc = self.__alert_data_from_db[0].suppress_end_date_utc
@@ -172,7 +192,7 @@ select [rows_affected] = isnull(@_rows_affected,0);
         if self.alert_method == 'pagerduty':
             self.__alert_owner_team_pagerduty_service_key = get_sm_credential(self.sql_connection, self.credential_manager_database, 'dba_pagerduty_service_key')
 
-        # set action_to_take -- 'No Action', 'Create', 'Clear', 'SkipNotification', 'Update', 'Upgrade'
+        # set action_to_take -- 'No Action', 'Create', 'Acknowledge', 'Clear', 'SkipNotification', 'Update', 'Upgrade'
         if self.exists is False and self.generate_alert is False:
             self.action_to_take = 'No Action'
         else:
@@ -337,3 +357,19 @@ select [rows_affected] = isnull(@_rows_affected,0);
 
         result = f'<span style="background-color:{color}">{state}</span>'
         return result
+
+    def initialize_derived_attributes(self):
+        ''' SYNOPSIS: Computes derived attributes like State, Severity, header, logger, description, affected_servers etc
+        '''
+        if self.verbose:
+            self.logger(f"Inside SmaAlert.initialize_derived_attributes() method.")
+
+        # Set alert state
+        if self.action_to_take in self.__action_dictionary:
+            self.state = self.__action_dictionary[action_to_take]
+
+        self.header = f"Alert {self.state} by {self.logged_by}"
+
+        if self.alert_method == 'slack':
+            self.header_slack_markdown = f"Alert {self.state} by @{self.logged_by}"
+            self.description = self.header

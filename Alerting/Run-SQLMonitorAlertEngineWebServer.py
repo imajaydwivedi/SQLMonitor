@@ -12,6 +12,8 @@ from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 from SmaAlertPackage.CommonFunctions.get_sm_credential import get_sm_credential
+#from SmaAlertPackage.SmaAlert import SmaAlert as sma
+from SmaAlertPackage.SmaAlert import SmaAlert
 
 # get Script Name
 script_name = os.path.basename(__file__)
@@ -90,6 +92,9 @@ app = Flask(__name__)
 
 # Slack Event Adapter
 slack_event_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
+
+# alert object
+alert_obj = SmaAlert()
 
 '''
 @app.route('/slack/events', methods=['GET','POST'])
@@ -226,6 +231,16 @@ def interactive_action():
     action_id = form_json["actions"][0]["action_id"]
     alert_id = int(action_id.replace(f"{action_to_take}-",""))
     action_ts = form_json["actions"][0]["action_ts"]
+
+    alert_obj.logger = logger
+    alert_obj.id = alert_id
+    alert_obj.action_to_take = action_to_take
+    alert_obj.verbose = verbose
+    alert_obj.sql_connection = cnxn
+    alert_obj.initialize_data_from_db()
+    #alert_obj.initialize_derived_attributes()
+    alert_obj.slack_ts_value = action_ts
+    alert_obj.take_required_action()
 
     if verbose:
         print(form_json)

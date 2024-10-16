@@ -37,7 +37,7 @@ select [is_found] = isnull(@_rows_affected,0);
 		on t.team_name = a.alert_owner_team
 	where 1=1
 	and a.alert_key = @alert_key
-	and a.state in ('Active','Suppressed','Cleared');
+	and a.state in ('Active','Acknowledged','Suppressed','Cleared');
 
 	set @_rows_affected = @@ROWCOUNT;
 

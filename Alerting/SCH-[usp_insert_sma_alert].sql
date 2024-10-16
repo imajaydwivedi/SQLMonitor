@@ -69,7 +69,7 @@ go
 	--dbo.sma_alert_rules
 	
 	-- populate dbo.sma_alert if alert does not exist for same alert_key
-	if exists (select * from dbo.sma_alert a where a.alert_key = @alert_key and a.state in ('Active','Suppressed','Cleared'))
+	if exists (select * from dbo.sma_alert a where a.alert_key = @alert_key and a.state in ('Active','Acknowledged','Suppressed','Cleared'))
 	begin
 		if @verbose > 0
 			print 'alert with key ['+@alert_key+'] already active.';
@@ -79,7 +79,7 @@ go
 		select id from dbo.sma_alert a 
 		where 1=1
 		and a.alert_key = @alert_key
-		and a.state in ('Active','Suppressed','Cleared');		
+		and a.state in ('Active','Acknowledged','Suppressed','Cleared');		
 	end
 	else
 	begin
@@ -95,13 +95,16 @@ go
 	select @alert_id_OUTPUT = alert_id from @_tbl_sma_alert;
 
 	-- Change alert severity or Clear the alert
-	if @action_to_take in ('Upgrade','Clear')
+	if @action_to_take in ('Acknowledged','Upgrade','Clear')
 	begin
 		if @verbose > 0
 			print 'Upgrade alert for key ['+@alert_key+']..';
 
 		update	a
-		set		[state] = case when @action_to_take = 'Clear' then 'Cleared' else a.state end, 
+		set		[state] = case when @action_to_take = 'Acknowledge' then 'Acknowledged' 
+								when @action_to_take = 'Clear' then 'Cleared' 
+								else a.state 
+							end, 
 				[severity] = case when @action_to_take <> 'Clear' then @severity else a.severity end
 		from dbo.sma_alert a 
 		where 1=1

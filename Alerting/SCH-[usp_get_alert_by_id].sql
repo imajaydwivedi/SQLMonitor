@@ -25,7 +25,7 @@ BEGIN
 
 declare @_rows_affected int; 
 exec @_rows_affected = dbo.usp_get_alert_by_id @alert_id = 2;
-select [is_found] = @_rows_affected
+select [rows_affected] = isnull(@_rows_affected,0);
 */
 	SET NOCOUNT ON;
 
@@ -45,8 +45,8 @@ GO
 
 /*
 declare @_rows_affected int; 
-exec @_rows_affected = dbo.usp_get_alert_by_id @alert_id = 3;
-select [is_found] = @_rows_affected
+exec @_rows_affected = dbo.usp_get_alert_by_id @alert_id = 53;
+select [rows_affected] = isnull(@_rows_affected,0);
 */
 
 /*

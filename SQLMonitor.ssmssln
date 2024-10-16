@@ -41,6 +41,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-Yogesh-Query-Tuning", 
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-TOM-GM-DR-Replication", "Work-TOM-GM-DR-Replication\Work-TOM-GM-DR-Replication.ssmssqlproj", "{604139B8-C349-4340-BE05-54655C544C89}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-LAMA", "Work-LAMA\Work-LAMA.ssmssqlproj", "{B144CA7D-0D76-483A-8B34-7DE7617B21B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -64,8 +66,9 @@ Global
 		{8CA435C9-FBE2-4D4D-AE50-C005D9875119}.Default|Default.ActiveCfg = Default
 		{C2EDA1A4-8CA2-494C-8C6B-8E4BE49E6E64}.Default|Default.ActiveCfg = Default
 		{241D7782-2556-4BD9-8063-A72B7BAF7950}.Default|Default.ActiveCfg = Default
-		{E12C5CDA-6EF6-4098-89CE-D2B83E73436F}.Default|Default.ActiveCfg = Default
 		{604139B8-C349-4340-BE05-54655C544C89}.Default|Default.ActiveCfg = Default
+		{4E08465F-BA39-4724-8017-2F9758236418}.Default|Default.ActiveCfg = Default
+		{B144CA7D-0D76-483A-8B34-7DE7617B21B5}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
