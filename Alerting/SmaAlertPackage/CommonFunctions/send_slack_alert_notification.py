@@ -1,3 +1,6 @@
+# slack_sdk WebClient functionalities
+  # https://tools.slack.dev/python-slack-sdk/web/
+
 # How to send message to a Slack channel
   # https://www.datacamp.com/tutorial/how-to-send-slack-messages-with-python
 	# https://stackoverflow.com/a/71973904/4449743
@@ -123,9 +126,27 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
 
     # Add alert thread one liner reply
     if slack_ts_value is not None and action_to_take not in ['Create','Update', 'Upgrade']:
+        '''
+        response = client.chat_update(
+            channel = slack_channel,
+            thread_ts = slack_ts_value,
+            #reply_broadcast=True,
+            text = alert_header
+        )
+        '''
         response = client.chat_postMessage(
             channel = slack_channel,
             thread_ts = slack_ts_value,
+            reply_broadcast=True,
+            blocks = [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": header_slack_markdown
+                            }
+                        }
+                    ],
             text = alert_header
         )
 

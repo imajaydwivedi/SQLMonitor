@@ -241,7 +241,7 @@ def interactive_action():
     alert_obj.sql_connection = cnxn
     alert_obj.initialize_data_from_db()
     alert_obj.initialize_derived_attributes()
-    alert_obj.slack_ts_value = action_ts
+    #alert_obj.slack_ts_value = action_ts
     alert_obj.take_required_action()
 
     if verbose:

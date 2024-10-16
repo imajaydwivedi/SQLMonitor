@@ -346,8 +346,14 @@ select [rows_affected] = isnull(@_rows_affected,0);
             self.__get_pretty_alert()
 
         if self.action_to_take != 'No Action':
-            self.__call_usp_insert_sma_alert()
-            self.__send_alert_notification()
+            self.logger.info(f"self.state = {self.state}, self.action_to_take = {self.action_to_take} ")
+            if self.action_to_take in ['Clear','Suppress','Resolve'] and self.state == self.action_dictionary[self.action_to_take]:
+                self.logger.info(f"Alert already set to {self.action_dictionary[self.action_to_take]} state.")
+            elif self.state == 'Resolved' and self.action_to_take not in ['update']:
+                self.logger.info(f"Alert already set to {self.state} state. So cannot be alerted.")
+            else:
+                self.__call_usp_insert_sma_alert()
+                self.__send_alert_notification()
 
 
     def state_colorizer(self, state:str):
@@ -377,8 +383,8 @@ select [rows_affected] = isnull(@_rows_affected,0);
         if self.action_to_take in self.action_dictionary:
             self.state = self.action_dictionary[self.action_to_take]
 
-        self.header = f"Alert {self.state} by {self.logged_by}"
+        self.header = f"[{self.alert_key}] {self.state} by {self.logged_by}"
 
         #if self.alert_method == 'slack':
-        self.header_slack_markdown = f"Alert {self.state} by @{self.logged_by}"
+        self.header_slack_markdown = f"`{self.alert_key}` {self.state} by @{self.logged_by}"
         self.description = f"{self.header} from Slack"
