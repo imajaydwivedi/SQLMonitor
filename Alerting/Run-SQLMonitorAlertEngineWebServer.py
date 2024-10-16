@@ -221,13 +221,15 @@ def interactive_action():
     user_id = form_json['user']['id']
     token = form_json["token"]
     channel_id = form_json["channel"]["id"]
+    action_to_take = form_json["actions"][0]["text"]["text"]
+    alert_key = form_json["actions"][0]["value"]
     action_id = form_json["actions"][0]["action_id"]
-    alert_id = form_json["actions"][0]["value"]
+    alert_id = int(action_id.replace(f"{action_to_take}-",""))
     action_ts = form_json["actions"][0]["action_ts"]
 
     if verbose:
         print(form_json)
-        print(f"{action_id} for alert_id {alert_id}, and respond back on {action_ts}")
+        print(f"{action_to_take} {alert_key} with id {alert_id}, and respond back on {action_ts}")
 
     # Check to see what the user's selection was and update the message
     #select = form_json["action"][0]

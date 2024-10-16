@@ -80,6 +80,17 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
                                     "text": {
                                         "type": "plain_text",
                                         "emoji": True,
+                                        "text": "Suppress"
+                                    },
+                                    "style": "primary",
+                                    "value": f"{alert_key}",
+                                    "action_id": f"Suppress-{alert_id}"
+                                },
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "emoji": True,
                                         "text": "Resolve"
                                     },
                                     "style": "danger",
