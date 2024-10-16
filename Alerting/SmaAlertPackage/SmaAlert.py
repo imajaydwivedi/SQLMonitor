@@ -38,7 +38,7 @@ class SmaAlert():
         self.logged_by = self.alert_job_name # alert logging job or person using portal
         self.exists = None
         self.generate_alert = None
-        self.action_to_take = 'No Action' # 'No Action', 'Create', 'Acknowledge', 'Update', 'Upgrade', 'SkipNotification', 'Clear'
+        self.action_to_take = 'No Action' # 'No Action', 'Create', 'Acknowledge', 'Update', 'Upgrade', 'Suppress', 'SkipNotification', 'Clear', 'Resolve'
         self.verbose = None
         self.sql_connection = None
         self.credential_manager_database = None
@@ -153,7 +153,8 @@ select [rows_affected] = isnull(@_rows_affected,0);
                 self.alert_key = self.__alert_data_from_db[0].alert_key
             self.state = self.__alert_data_from_db[0].state
             self.severity = self.__alert_data_from_db[0].severity
-            self.slack_ts_value = self.__alert_data_from_db[0].slack_ts_value
+            if self.slack_ts_value is None:
+                self.slack_ts_value = self.__alert_data_from_db[0].slack_ts_value
             self.frequency_minutes = self.__alert_data_from_db[0].frequency_minutes
 
             self.alert_owner_team = self.__alert_data_from_db[0].alert_owner_team

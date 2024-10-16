@@ -36,7 +36,7 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
     client = WebClient(token=slack_token)
 
     # Send one liner alert message
-    if slack_ts_value is None or len(slack_ts_value) == 0:
+    if slack_ts_value is None: # or len(slack_ts_value) == 0:
         if verbose:
             logger.info(f"slack_ts_value is None, so send one liner alert message first..")
         response = client.chat_postMessage(
@@ -108,6 +108,7 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
         if verbose:
             logger.info(f"slack_ts_value '{slack_ts_value}' is generated.")
 
+    # 'No Action', 'Create', 'Acknowledge', 'Update', 'Upgrade', 'Suppress', 'SkipNotification', 'Clear', 'Resolve'
     # Add to alert message thread with alert description as text snippet
     if slack_ts_value is not None and action_to_take in ['Create','Update', 'Upgrade']:
         response = client.files_upload_v2(
@@ -118,7 +119,7 @@ def send_slack_alert_notification(slack_token:str, slack_bot:str, slack_channel:
         )
 
     # Add alert thread one liner reply
-    if slack_ts_value is not None and action_to_take in ['SkipNotification','Clear']:
+    if slack_ts_value is not None and action_to_take not in ['Create','Update', 'Upgrade']:
         response = client.chat_postMessage(
             channel = slack_channel,
             thread_ts = slack_ts_value,
