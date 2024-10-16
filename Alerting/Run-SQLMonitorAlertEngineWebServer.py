@@ -27,10 +27,12 @@ parser.add_argument("--login_password", type=str, required=False, action="store"
 parser.add_argument("--alert_name", type=str, required=False, action="store", default="Run-SQLMonitorAlertEngineWebServer", help="Alert Name")
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Run-SQLMonitorAlertEngineWebServer", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
-parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=True, help="Checks for SSL certificate if enabled")
+parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=False, help="Checks for SSL certificate if enabled")
 #parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=True, help="Extra verbose messages when enabled")
-parser.add_argument("--debug", type=bool, required=False, action="store", default=False, help="Run web server in debug mode")
+parser.add_argument("--debug", type=bool, required=False, action="store", default=True, help="Run web server in debug mode")
+parser.add_argument("--log_server_startup", type=bool, required=False, action="store", default=False, help="Log server startup message in Slack Channel")
+
 
 
 args=parser.parse_args()
@@ -48,6 +50,7 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     debug = args.debug
     #frequency_minutes = args.frequency_minutes
     verbose = args.verbose
+    log_server_startup = args.log_server_startup
 
 # create logger
 logger = get_script_logger(alert_job_name)
@@ -83,10 +86,12 @@ if 'Get Bot OAuth Token' == 'Get Bot OAuth Token':
 # Slack Event Adapter
 app = Flask(__name__)
 
+# Slack Event Adapter
+slack_event_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
 
-
+'''
 @app.route('/slack/events', methods=['GET','POST'])
-def verification():
+def slack_events_handler():
     """
     Inbound POST from slack to test token
     """
@@ -110,22 +115,21 @@ def redirect_http_to_https():
         if verbose:
             logger.info(f"direct unsecure access to https")
         #return redirect(request.url.replace("http://", "https://"), code=301)
+'''
 
-# Slack Event Adapter
-slack_event_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
 
 # Send Test Slack Message
 logger.info(f"Create slack WebClient..")
-if verbose:
-    logger.info(f"dba_slack_bot_token = '{dba_slack_bot_token}'")
 client = WebClient(token=dba_slack_bot_token)
 bot_user_details = client.auth_test()
 bot_user_id = bot_user_details['user_id']
 if verbose:
+    logger.info(f"dba_slack_bot_token = '{dba_slack_bot_token}'")
     print(bot_user_details)
 
-logger.info(f"Log Web Server startup on slack channel {dba_slack_channel_id}..")
-if verbose:
+
+if log_server_startup:
+    logger.info(f"Log Web Server startup on slack channel {dba_slack_channel_id}..")
     client.chat_postMessage(
               channel = dba_slack_channel_id,
               username = dba_slack_bot,
@@ -154,12 +158,12 @@ def message(payload):
 
 # Listen to slack commands
 slack_command = '/alerts'
-logger.info(f"Listen to slack command {slack_command}..")
 @app.route(slack_command, methods=['GET','POST'])
 def get_alert():
+    logger.info(f"Listen to slack command {slack_command}..")
     data = request.form
-    #if verbose:
-        #print(data)
+    if verbose:
+        print(data)
     user_id = data.get('user_id')
     user_name = data.get('user_name')
     channel_id = data.get('channel_id')
@@ -168,7 +172,7 @@ def get_alert():
     api_app_id = data.get('api_app_id')
 
     if bot_user_id != user_id:
-        client.chat_postMessage(channel=channel_id, text=f"Sure @{user_id}! Will come back with Active Alert!")
+        client.chat_postMessage(channel=channel_id, text=f"Sure @{user_name}! Will come back with Active Alert!")
 
     return Response(), 200
 
