@@ -233,12 +233,14 @@ def interactive_action():
     action_ts = form_json["actions"][0]["action_ts"]
 
     alert_obj.logger = logger
+    alert_obj.logged_by = user_name
+    alert_obj.alert_job_name = alert_job_name
     alert_obj.id = alert_id
     alert_obj.action_to_take = action_to_take
     alert_obj.verbose = verbose
     alert_obj.sql_connection = cnxn
     alert_obj.initialize_data_from_db()
-    #alert_obj.initialize_derived_attributes()
+    alert_obj.initialize_derived_attributes()
     alert_obj.slack_ts_value = action_ts
     alert_obj.take_required_action()
 

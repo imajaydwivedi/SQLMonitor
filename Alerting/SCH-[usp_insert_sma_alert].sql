@@ -95,7 +95,7 @@ go
 	select @alert_id_OUTPUT = alert_id from @_tbl_sma_alert;
 
 	-- Change alert severity or Clear the alert
-	if @action_to_take in ('Acknowledged','Upgrade','Clear')
+	if @action_to_take in ('Acknowledge','Upgrade','Clear')
 	begin
 		if @verbose > 0
 			print 'Upgrade alert for key ['+@alert_key+']..';

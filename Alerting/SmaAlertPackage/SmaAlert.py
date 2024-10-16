@@ -195,7 +195,7 @@ select [rows_affected] = isnull(@_rows_affected,0);
         # set action_to_take -- 'No Action', 'Create', 'Acknowledge', 'Clear', 'SkipNotification', 'Update', 'Upgrade'
         if self.generate_alert is None:
             if self.verbose:
-                self.logger(f"self.generate_alert is None. So no compute for self.action_to_take.")
+                self.logger.info(f"self.generate_alert is None. So no compute for self.action_to_take.")
         elif self.exists is False and self.generate_alert is False:
             self.action_to_take = 'No Action'
         else:
@@ -374,6 +374,6 @@ select [rows_affected] = isnull(@_rows_affected,0);
 
         self.header = f"Alert {self.state} by {self.logged_by}"
 
-        if self.alert_method == 'slack':
-            self.header_slack_markdown = f"Alert {self.state} by @{self.logged_by}"
-            self.description = self.header
+        #if self.alert_method == 'slack':
+        self.header_slack_markdown = f"Alert {self.state} by @{self.logged_by}"
+        self.description = self.header
