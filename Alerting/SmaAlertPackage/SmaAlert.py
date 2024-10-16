@@ -366,14 +366,14 @@ select [rows_affected] = isnull(@_rows_affected,0);
         ''' SYNOPSIS: Computes derived attributes like State, Severity, header, logger, description, affected_servers etc
         '''
         if self.verbose:
-            self.logger(f"Inside SmaAlert.initialize_derived_attributes() method.")
+            self.logger.info(f"Inside SmaAlert.initialize_derived_attributes() method.")
 
         # Set alert state
         if self.action_to_take in self.action_dictionary:
-            self.state = self.action_dictionary[action_to_take]
+            self.state = self.action_dictionary[self.action_to_take]
 
         self.header = f"Alert {self.state} by {self.logged_by}"
 
         #if self.alert_method == 'slack':
         self.header_slack_markdown = f"Alert {self.state} by @{self.logged_by}"
-        self.description = self.header
+        self.description = f"{self.header} from Slack"

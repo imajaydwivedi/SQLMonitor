@@ -95,17 +95,18 @@ go
 	select @alert_id_OUTPUT = alert_id from @_tbl_sma_alert;
 
 	-- Change alert severity or Clear the alert
-	if @action_to_take in ('Acknowledge','Upgrade','Clear')
+	if @action_to_take in ('Acknowledge','Upgrade','Clear','Resolve')
 	begin
 		if @verbose > 0
 			print 'Upgrade alert for key ['+@alert_key+']..';
 
 		update	a
 		set		[state] = case when @action_to_take = 'Acknowledge' then 'Acknowledged' 
-								when @action_to_take = 'Clear' then 'Cleared' 
+								when @action_to_take = 'Clear' then 'Cleared'
+								when @action_to_take = 'Resolve' then 'Resolved'
 								else a.state 
 							end, 
-				[severity] = case when @action_to_take <> 'Clear' then @severity else a.severity end
+				[severity] = case when @action_to_take in ('Upgrade') then @severity else a.severity end
 		from dbo.sma_alert a 
 		where 1=1
 		--and a.alert_key = @alert_key
