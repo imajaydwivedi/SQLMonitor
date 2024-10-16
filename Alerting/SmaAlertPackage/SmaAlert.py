@@ -231,8 +231,12 @@ select [rows_affected] = isnull(@_rows_affected,0);
         if self.verbose:
             self.logger.info(f"executing SmaAlert.__call_usp_insert_sma_alert()..")
 
+        logged_by = self.logged_by
+        if self.generate_alert is None and self.alert_job_name is not None:
+            logged_by = self.alert_job_name
+
         query_params = dict(alert_key=self.alert_key, frequency_minutes=self.frequency_minutes, alert_owner_team=self.alert_owner_team,
-                            state=self.state, action_to_take=self.action_to_take, severity=self.severity, logged_by=self.logged_by,
+                            state=self.state, action_to_take=self.action_to_take, severity=self.severity, logged_by=logged_by,
                             header=self.header, description=self.description, affected_servers=self.affected_servers
                             )
         query_resultset = call_usp_insert_sma_alert(self.sql_connection, self.logger, self.verbose, **query_params)
