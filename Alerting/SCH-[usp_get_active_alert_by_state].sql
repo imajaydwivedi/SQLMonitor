@@ -38,9 +38,12 @@ select [is_found] = isnull(@_rows_affected,0);
 	set @_sql = N'
 	select	/* dbo.usp_get_active_alert_by_state */ 
 			id, a.created_date_utc, alert_key, frequency_minutes, alert_owner_team, t.alert_method,
-			state, severity, slack_ts_value, suppress_start_date_utc, suppress_end_date_utc, id_part_no
+			state, severity, slack_ts_value, suppress_start_date_utc, suppress_end_date_utc, id_part_no,
+			ah.latest_log_time_utc
+			,minutes_since_last_log = case when a.state = ''Cleared'' then datediff(minute,ah.latest_log_time_utc,getutcdate()) else null end
 	from dbo.sma_alert a join dbo.sma_oncall_teams t
 		on t.team_name = a.alert_owner_team
+	outer apply (select latest_log_time_utc = max(log_time_utc) from dbo.sma_alert_history ah where ah.alert_id = a.id) ah
 	where 1=1
 	and a.state in (''Active'',''Acknowledged'',''Suppressed'',''Cleared'')
 	'+(case when @state is null then '--' else '' end)+'and a.state = @state
