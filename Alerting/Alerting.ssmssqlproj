@@ -37,6 +37,12 @@
           <AssociatedConnUserName />
           <FullPath>SCH-[usp_get_active_alert_by_key].sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-[usp_get_active_alert_by_state].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-[usp_get_active_alert_by_state].sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-[usp_get_alert_by_id].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
