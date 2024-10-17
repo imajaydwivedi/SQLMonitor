@@ -52,8 +52,9 @@ class SmaDiskSpaceAlert(SmaAlert):
             self.__df_alert_pyodbc_resultset = get_pandas_dataframe(self.alert_pyodbc_resultset, index_col='sql_instance')
 
     def __compute_severity(self):
-        # 'Critical', 'High', 'Medium', 'Low'
+        # 'Critical', 'High', 'Warning', 'Medium', 'Low'
 
+        existing_severity = self.severity
         if self.generate_alert:
             df = self.__df_alert_pyodbc_resultset
 
@@ -73,6 +74,10 @@ class SmaDiskSpaceAlert(SmaAlert):
             self.severity = 'Medium'
         else:
             self.severity = 'Low'
+
+        # upgrade severity if required
+        if self.severity_dictionary[existing_severity] < self.severity_dictionary[self.severity]:
+            self.action_to_take = 'Upgrade'
 
     def __compute_state(self):
         # 'Active','Suppressed','Cleared', 'Resolved'

@@ -62,6 +62,8 @@ class SmaAlert():
         self.__sqlmonitor_dashboard_url = None
         #self.__affected_servers_json = None
         self.action_dictionary = dict(Acknowledge = 'Acknowledged', Clear = 'Cleared', Suppress = 'Suppressed', Resolve = 'Resolved')
+        # use this for comparision b/w alert severity for Upgrade scenario
+        self.severity_dictionary = dict(Critical = 5, High = 4, Warning = 3, Medium = 2, Low = 1)
 
     def __get_alert_dict(self):
         obj_dict = dict(alert_id = self.id,
