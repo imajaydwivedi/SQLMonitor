@@ -33,6 +33,7 @@ parser.add_argument("--login_password", type=str, required=False, action="store"
 parser.add_argument("--alert_name", type=str, required=False, action="store", default="Run-SQLMonitorAlertEngineWebServer", help="Alert Name")
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Run-SQLMonitorAlertEngineWebServer", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
+parser.add_argument("--frequency_multiplier", type=int, required=False, action="store", default=4, help="Alert resolve threshold minutes = frequency_multiplier x alert frequency_minutes")
 parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=False, help="Checks for SSL certificate if enabled")
 #parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=True, help="Extra verbose messages when enabled")
@@ -54,6 +55,7 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     alert_name = args.alert_name
     alert_job_name = args.alert_job_name
     alert_owner_team = args.alert_owner_team
+    frequency_multiplier = args.frequency_multiplier
     has_ssl_certificate = args.has_ssl_certificate
     debug = args.debug
     #frequency_minutes = args.frequency_minutes
@@ -265,6 +267,53 @@ def greetings():
     return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
 
 
+def auto_resolve_cleared_alerts():
+    logger.info(f"Inside auto_resolve_cleared_alerts()")
+    sql_query = f"""
+declare @_rows_affected int;
+exec @_rows_affected = dbo.usp_get_active_alert_by_state_severity @state = 'Cleared' --,@severity = 'Critical';
+select [is_found] = isnull(@_rows_affected,0);
+    """
+    cursor = cnxn.cursor()
+    cursor.execute(sql_query)
+    query_resultset = cursor.fetchall()
+
+    cursor.nextset()
+    row_count = (cursor.fetchall())[0][0]
+
+    #logger.info(f"{row_count} cleared alerts found.")
+    #print(query_resultset)
+
+    if row_count > 0:
+        col_names = [column[0] for column in query_resultset[0].cursor_description]
+        col_value = lambda row,col: row[(lambda col: col_names.index(col))(col)]
+
+        # loop through cleared alerts, and check if they should be cleared
+        for row in query_resultset:
+            alert_id = col_value(row,'id')
+            alert_key = col_value(row,'alert_key')
+            frequency_minutes = int(col_value(row,'frequency_minutes'))
+            minutes_since_last_log = int(col_value(row,'minutes_since_last_log'))
+
+            if minutes_since_last_log >= (frequency_minutes*frequency_multiplier):
+                logger.info(f"Threshold met for {alert_key}. frequency_minutes = {frequency_minutes}, minutes_since_last_log = {minutes_since_last_log}, threshold = {frequency_minutes*frequency_multiplier}")
+
+                # alert object
+                alert_obj = SmaAlert()
+                alert_obj.logger = logger
+                alert_obj.logged_by = alert_job_name
+                alert_obj.alert_job_name = alert_job_name
+                alert_obj.id = alert_id
+                alert_obj.action_to_take = 'Clear'
+                alert_obj.verbose = verbose
+                alert_obj.sql_connection = cnxn
+                alert_obj.initialize_data_from_db()
+                alert_obj.initialize_derived_attributes()
+                #alert_obj.slack_ts_value = action_ts
+                alert_obj.take_required_action()
+            else:
+                logger.info(f"Threshold not met for {alert_key}. frequency_minutes = {frequency_minutes}, minutes_since_last_log = {minutes_since_last_log}, threshold = {frequency_minutes*frequency_multiplier}")
+
 def call_30_minute_job_script():
     logger.info(f"Inside call_30_minute_job_script()")
 
@@ -274,11 +323,19 @@ def call_30_minute_job_script():
     alert_script_path = os.path.join(script_directory, "Alert-OfflineServer.py")
     os.system(f"python {alert_script_path}")
 
+def call_5_minute_job_script():
+    logger.inf(f"Inside call_5_minute_job_script()")
+
+    auto_resolve_cleared_alerts()
+
 # execute scheduler
 if run_scheduled_jobs:
     logger.info(f"Using WebServer for running Alert Jobs as run_scheduled_jobs is True.")
     scheduler = BackgroundScheduler()
-    scheduler.add_job(func=call_30_minute_job_script, trigger="interval", minutes=30)
+
+    #scheduler.add_job(func=call_30_minute_job_script, trigger="interval", minutes=30)
+    scheduler.add_job(func=call_5_minute_job_script, trigger="interval", minutes=5)
+
     scheduler.start()
 
     # Shut down the scheduler when exiting the app
