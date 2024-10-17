@@ -301,10 +301,10 @@ select [is_found] = isnull(@_rows_affected,0);
                 # alert object
                 alert_obj = SmaAlert()
                 alert_obj.logger = logger
-                alert_obj.logged_by = alert_job_name
+                alert_obj.logged_by = dba_slack_bot
                 alert_obj.alert_job_name = alert_job_name
                 alert_obj.id = alert_id
-                alert_obj.action_to_take = 'Clear'
+                alert_obj.action_to_take = 'Resolve'
                 alert_obj.verbose = verbose
                 alert_obj.sql_connection = cnxn
                 alert_obj.initialize_data_from_db()
@@ -324,7 +324,7 @@ def call_30_minute_job_script():
     os.system(f"python {alert_script_path}")
 
 def call_5_minute_job_script():
-    logger.inf(f"Inside call_5_minute_job_script()")
+    logger.info(f"Inside call_5_minute_job_script()")
 
     auto_resolve_cleared_alerts()
 
