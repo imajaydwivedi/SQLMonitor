@@ -58,6 +58,7 @@ if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
     frequency_minutes = alert_obj.frequency_minutes
     cpu_warning_pct = alert_obj.cpu_warning_pct
     cpu_critical_pct = alert_obj.cpu_critical_pct
+    average_duration_minutes = alert_obj.average_duration_minutes
 
 # Print variables values
 if 'Print Variables' == 'Print Variables':
@@ -81,7 +82,8 @@ if 'Get Alert Raw Data' == 'Get Alert Raw Data':
     query_params = dict(logger = logger,
                         verbose = verbose,
                         cpu_warning_pct = cpu_warning_pct,
-                        cpu_critical_pct = cpu_critical_pct
+                        cpu_critical_pct = cpu_critical_pct,
+                        average_duration_minutes = average_duration_minutes
                         )
     alert_pyodbc_resultset = get_cpu(cnxn, **query_params)
 

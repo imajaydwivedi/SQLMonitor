@@ -8,12 +8,13 @@ class SmaCpuAlert(SmaAlert):
     SYNOPSIS: Class to represent cpu alert
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=10, cpu_warning_pct:float=45, cpu_critical_pct:float=70):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=10, cpu_warning_pct:float=45, cpu_critical_pct:float=70, average_duration_minutes:int = 5):
         ''' SYNOPSIS: Constructor
         '''
         super().__init__(alert_key, alert_owner_team, frequency_minutes)
         self.cpu_warning_pct = cpu_warning_pct
         self.cpu_critical_pct = cpu_critical_pct
+        self.average_duration_minutes = average_duration_minutes
         self.alert_pyodbc_resultset = None
 
         self.__df_alert_pyodbc_resultset = None
