@@ -18,7 +18,11 @@ pip install slackeventsapi
 
 # ngrok for testing web server
 https://ngrok.com/download
-ngrok http 5000
+ngrok http --url=gratefully-easy-ewe.ngrok-free.app 5000
+
+https://gratefully-easy-ewe.ngrok-free.app/slack/events
+https://gratefully-easy-ewe.ngrok-free.app/slack/interactive-endpoint
+
 
 # Waitress Web Server
 https://github.com/Pylons/waitress
