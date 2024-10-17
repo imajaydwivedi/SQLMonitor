@@ -40,7 +40,7 @@ parser.add_argument("--verbose", type=bool, required=False, action="store", defa
 parser.add_argument("--debug", type=bool, required=False, action="store", default=True, help="Run web server in debug mode")
 parser.add_argument("--log_server_startup", type=bool, required=False, action="store", default=False, help="Log server startup message in Slack Channel")
 parser.add_argument("--echo_test", type=bool, required=False, action="store", default=False, help="Enable echo test")
-parser.add_argument("--run_scheduled_jobs", type=bool, required=False, action="store", default=False, help="Enable echo test")
+parser.add_argument("--run_scheduled_jobs", type=bool, required=False, action="store", default=True, help="Enable echo test")
 
 
 
