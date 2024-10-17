@@ -27,6 +27,9 @@ ALTER PROCEDURE dbo.usp_insert_sma_alert
 	@description nvarchar(max) = null,
 	@affected_servers affected_servers_type readonly,
 	@is_pre_existing_OUTPUT bit = 0 output,
+	@duration_hours_for_suppress_action int = 1,
+	@suppress_start_date_utc datetime2 = null,
+	@suppress_end_date_utc datetime2 = null,
 	@verbose tinyint = 0
 AS 
 BEGIN
@@ -107,6 +110,24 @@ go
 								else a.state 
 							end, 
 				[severity] = case when @action_to_take in ('Upgrade') then @severity else a.severity end
+		from dbo.sma_alert a 
+		where 1=1
+		--and a.alert_key = @alert_key
+		and a.id = @alert_id_OUTPUT
+		and a.id_part_no = @alert_id_OUTPUT % 10
+		--and a.state in ('Active','Suppressed','Cleared');
+	end
+
+	-- Suppress alert
+	if @action_to_take = 'Suppress'
+	begin
+		if @verbose > 0
+			print 'Suppress alert ['+@alert_key+']..';
+
+		update	a
+		set		[state] = case when @action_to_take = 'Suppress' then 'Suppressed' else a.state end, 
+				[suppress_start_date_utc] = isnull(@suppress_start_date_utc, GETUTCDATE()),
+				[suppress_end_date_utc] = isnull(@suppress_end_date_utc, dateadd(hour,@duration_hours_for_suppress_action,GETUTCDATE()) )
 		from dbo.sma_alert a 
 		where 1=1
 		--and a.alert_key = @alert_key

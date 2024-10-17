@@ -197,6 +197,7 @@ select [rows_affected] = isnull(@_rows_affected,0);
         if self.generate_alert is None:
             if self.verbose:
                 self.logger.info(f"self.generate_alert is None. So no compute for self.action_to_take.")
+                self.logger.info(f"Current self.action_to_take = {self.action_to_take}")
         elif self.exists is False and self.generate_alert is False:
             self.action_to_take = 'No Action'
         else:
@@ -380,11 +381,12 @@ select [rows_affected] = isnull(@_rows_affected,0);
             self.logger.info(f"Inside SmaAlert.initialize_derived_attributes() method.")
 
         # Set alert state
+        state = self.state
         if self.action_to_take in self.action_dictionary:
-            self.state = self.action_dictionary[self.action_to_take]
+            state = self.action_dictionary[self.action_to_take]
 
-        self.header = f"[{self.alert_key}] {self.state} by {self.logged_by}"
+        self.header = f"[{self.alert_key}] {state} by {self.logged_by}"
 
         #if self.alert_method == 'slack':
-        self.header_slack_markdown = f"`{self.alert_key}` {self.state} by @{self.logged_by}"
+        self.header_slack_markdown = f"`{self.alert_key}` {state} by @{self.logged_by}"
         self.description = f"{self.header} from Slack"
