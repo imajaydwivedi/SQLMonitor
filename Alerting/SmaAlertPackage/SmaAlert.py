@@ -22,8 +22,11 @@ class SmaAlert():
         self.id = None
         self.alert_key = alert_key
         self.alert_owner_team = alert_owner_team
-        self.state = None
-        self.severity = None
+
+        self.state = None # 'Active', 'Acknowledged', 'Suppressed', 'Cleared', 'Resolved'
+        self.severity = None # 'Critical', 'High', 'Warning', 'Medium', 'Low'
+        self.action_to_take = 'No Action' # 'No Action', 'Create', 'Acknowledge', 'Update', 'Upgrade', 'Suppress', 'SkipNotification', 'Clear', 'UnClear', 'UnSuppress', 'Resolve'
+
         self.header = None # goes in table dbo.sma_alert_history
         self.header_slack_markdown = None
         self.description = None
@@ -38,7 +41,6 @@ class SmaAlert():
         self.logged_by = self.alert_job_name # alert logging job or person using portal
         self.exists = None
         self.generate_alert = None
-        self.action_to_take = 'No Action' # 'No Action', 'Create', 'Acknowledge', 'Update', 'Upgrade', 'Suppress', 'SkipNotification', 'Clear', 'Resolve'
         self.verbose = None
         self.sql_connection = None
         self.credential_manager_database = None
@@ -195,7 +197,7 @@ select [rows_affected] = isnull(@_rows_affected,0);
         if self.alert_method == 'pagerduty':
             self.__alert_owner_team_pagerduty_service_key = get_sm_credential(self.sql_connection, self.credential_manager_database, 'dba_pagerduty_service_key')
 
-        # set action_to_take -- 'No Action', 'Create', 'Acknowledge', 'Clear', 'SkipNotification', 'Update', 'Upgrade'
+        # set action_to_take # 'No Action', 'Create', 'Acknowledge', 'Update', 'Upgrade', 'Suppress', 'SkipNotification', 'Clear', 'UnClear', 'UnSuppress', 'Resolve'
         if self.generate_alert is None:
             if self.verbose:
                 self.logger.info(f"self.generate_alert is None. So no compute for self.action_to_take.")
@@ -343,7 +345,17 @@ select [rows_affected] = isnull(@_rows_affected,0);
         if self.verbose:
             self.logger.info(f"executing SmaAlert.__send_pagerduty_alert_notification()..")
 
+    def __compute_action_to_take(self):
+        if self.state == 'Cleared' and self.generate_alert is True and self.action_to_take != 'UnClear':
+            self.action_to_take = 'UnClear'
+        #if self.state == 'Suppressed' and self.generate_alert is True and self.action_to_take != 'UnClear':
+            #self.action_to_take = 'UnClear'
+
     def take_required_action(self): # Reimplement this in child class if to override
+        if self.verbose:
+            self.logger.info(f"Recompute self.action_to_take using self.__compute_action_to_take()..")
+        self.__compute_action_to_take()
+
         if self.verbose:
             self.logger.info(f"Perform '{self.action_to_take}' action under function take_required_action()..")
             self.__get_pretty_alert()
