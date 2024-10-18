@@ -78,7 +78,7 @@ if 'Print Variables' == 'Print Variables':
 
 # Get Alert Raw Data
 if 'Get Alert Raw Data' == 'Get Alert Raw Data':
-    logger.info(f"Query table dbo.disk_space_all_servers..")
+    logger.info(f"Query table dbo.all_server_volatile_info_history..")
     query_params = dict(logger = logger,
                         verbose = verbose,
                         cpu_warning_pct = cpu_warning_pct,
