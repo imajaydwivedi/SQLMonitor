@@ -66,6 +66,8 @@ go
 	SET NOCOUNT ON;
 
 	declare @_tbl_sma_alert table (alert_id bigint);
+	/* action_to_take in ()
+	*/
 
 	--select * from dbo.sma_oncall_teams
 	--dbo.sma_oncall_schedule
@@ -101,7 +103,7 @@ go
 	if @action_to_take in ('Acknowledge','Upgrade','Clear','Resolve')
 	begin
 		if @verbose > 0
-			print 'Upgrade alert for key ['+@alert_key+']..';
+			print @action_to_take+' alert for key ['+@alert_key+']..';
 
 		update	a
 		set		[state] = case when @action_to_take = 'Acknowledge' then 'Acknowledged' 
@@ -129,6 +131,23 @@ go
 				[suppress_start_date_utc] = isnull(@suppress_start_date_utc, GETUTCDATE()),
 				[suppress_end_date_utc] = isnull(@suppress_end_date_utc, dateadd(hour,@duration_hours_for_suppress_action,GETUTCDATE()) )
 		from dbo.sma_alert a 
+		where 1=1
+		--and a.alert_key = @alert_key
+		and a.id = @alert_id_OUTPUT
+		and a.id_part_no = @alert_id_OUTPUT % 10
+		--and a.state in ('Active','Suppressed','Cleared');
+	end
+
+	-- Change alert severity or Clear the alert
+	if @action_to_take in ('UnClear')
+	begin
+		if @verbose > 0
+			print @action_to_take+' alert for key ['+@alert_key+']..';
+
+		update	a
+		set		[state] = 'Active', 
+				[severity] = @severity
+		from dbo.sma_alert a
 		where 1=1
 		--and a.alert_key = @alert_key
 		and a.id = @alert_id_OUTPUT
