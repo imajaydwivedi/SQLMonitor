@@ -17,6 +17,21 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="192.168.1.2:sa">
+          <Created>2024-10-18T19:30:53.0720765+05:30</Created>
+          <Type>SQL</Type>
+          <Server>192.168.1.2</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <HostNameInServerCertificate />
+          <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="localhost:LAB\adwivedi">
           <Created>2023-10-09T17:55:17.115376+05:30</Created>
           <Type>SQL</Type>
@@ -59,11 +74,23 @@
           <AssociatedConnUserName />
           <FullPath>__DEMO__LogSaver-Test.sql</FullPath>
         </FileNode>
+        <FileNode Name="__DEMO__LogSaver-Test-2.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>__DEMO__LogSaver-Test-2.sql</FullPath>
+        </FileNode>
         <FileNode Name="__DEMO__TempDbSaver-Test.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>__DEMO__TempDbSaver-Test.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__DEMO__TempDbSaver-Test-2.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>__DEMO__TempDbSaver-Test-2.sql</FullPath>
         </FileNode>
         <FileNode Name="_Other-Scripts-Links.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
