@@ -99,14 +99,18 @@ foreach($srv in $allServersListFiltered)
                 "16__CreateJobCollectWaitStats", "17__CreateJobCollectXEvents", "18__CreateJobCollectFileIOStats",
                 "19__CreateJobPartitionsMaintenance", "20__CreateJobPurgeTables", "21__CreateJobRemoveXEventFiles",
                 "22__CreateJobRunLogSaver", "23__CreateJobRunTempDbSaver", "24__CreateJobRunWhoIsActive",
-                "25__CreateJobRunBlitzIndex", "26__CreateJobRunBlitz", "27__CreateJobRunBlitzIndexWeekly",
+                "25__CreateJobRunBlitz", "25__CreateJobRunBlitzIndex", "27__CreateJobRunBlitzIndexWeekly",
                 "28__CreateJobCollectMemoryClerks", "29__CreateJobCollectPrivilegedInfo", "30__CreateJobCollectAgHealthState",
                 "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
-                "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
-                "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
-                "40__WhoIsActivePartition", "41__BlitzIndexPartition", "42__BlitzPartition",
-                "43__EnablePageCompression", "44__GrafanaLogin", "45__LinkedServerOnInventory",
-                "46__LinkedServerForDataDestinationInstance", "47__AlterViewsForDataDestinationInstance")
+                "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerStableInfo",
+                "37__CreateJobGetAllServerVolatileInfo", "38__CreateJobGetAllServerCollectionLatencyInfo", "39__CreateJobGetAllServerSqlAgentJobs",
+                "40__CreateJobGetAllServerDiskSpace", "41__CreateJobGetAllServerLogSpaceConsumers", "42__CreateJobGetAllServerTempdbSpaceUsage",
+                "43__CreateJobGetAllServerAgHealthState", "44__CreateJobGetAllServerServices", "45__CreateJobGetAllServerBackups",
+                "46__CreateJobGetAllServerDashboardMail", "47__CreateJobStopStuckSQLMonitorJobs", "48__CreateJobCollectLoginExpirationInfo",
+                "49__CreateJobPopulateInventoryTables", "50__CreateJobSendLoginExpiryEmails", "51__WhoIsActivePartition",
+                "52__BlitzIndexPartition", "53__BlitzPartition", "54__EnablePageCompression",
+                "55__GrafanaLogin", "56__LinkedServerOnInventory", "57__LinkedServerForDataDestinationInstance",
+                "58__AlterViewsForDataDestinationInstance")
             #>
             OnlySteps = @( "2__AllDatabaseObjects","32__CreateJobCaptureAlertMessages","33__CreateSQLAgentAlerts" )
             #StartAtStep = '21__CreateJobRemoveXEventFiles'
