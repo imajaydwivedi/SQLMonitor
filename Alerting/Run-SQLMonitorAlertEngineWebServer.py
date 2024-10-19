@@ -314,26 +314,44 @@ select [is_found] = isnull(@_rows_affected,0);
             else:
                 logger.info(f"Threshold not met for {alert_key}. frequency_minutes = {frequency_minutes}, minutes_since_last_log = {minutes_since_last_log}, threshold = {frequency_minutes*frequency_multiplier}")
 
-def call_30_minute_job_script():
-    logger.info(f"Inside call_30_minute_job_script()")
+def call_15_minute_job_script():
+    logger.info(f"Inside call_15_minute_job_script()")
 
     alert_script_path = os.path.join(script_directory, "Alert-DiskSpace.py")
+    os.system(f"python {alert_script_path}")
+
+def call_10_minute_job_script():
+    logger.info(f"Inside call_10_minute_job_script()")
+
+    alert_script_path = os.path.join(script_directory, "Alert-Cpu.py")
+    os.system(f"python {alert_script_path}")
+
+    alert_script_path = os.path.join(script_directory, "Alert-SqlBlocking.py")
+    os.system(f"python {alert_script_path}")
+
+def call_5_minute_job_script():
+    logger.info(f"Inside call_5_minute_job_script()")
+    auto_resolve_cleared_alerts()
+
+    alert_script_path = os.path.join(script_directory, "Alert-OfflineAgent.py")
     os.system(f"python {alert_script_path}")
 
     alert_script_path = os.path.join(script_directory, "Alert-OfflineServer.py")
     os.system(f"python {alert_script_path}")
 
-def call_5_minute_job_script():
-    logger.info(f"Inside call_5_minute_job_script()")
+    alert_script_path = os.path.join(script_directory, "Alert-LogSpace.py")
+    os.system(f"python {alert_script_path}")
 
-    auto_resolve_cleared_alerts()
+    alert_script_path = os.path.join(script_directory, "Alert-Tempdb.py")
+    os.system(f"python {alert_script_path}")
 
 # execute scheduler
 if run_scheduled_jobs:
     logger.info(f"Using WebServer for running Alert Jobs as run_scheduled_jobs is True.")
     scheduler = BackgroundScheduler()
 
-    #scheduler.add_job(func=call_30_minute_job_script, trigger="interval", minutes=30)
+    scheduler.add_job(func=call_15_minute_job_script, trigger="interval", minutes=15)
+    scheduler.add_job(func=call_10_minute_job_script, trigger="interval", minutes=10)
     scheduler.add_job(func=call_5_minute_job_script, trigger="interval", minutes=5)
 
     scheduler.start()
