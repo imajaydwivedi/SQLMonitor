@@ -9,14 +9,24 @@ into dbo.Posts_TempdbSaver
 from StackOverflow2013.dbo.Posts
 go
 
-insert dbo.Posts_TempdbSaver (AcceptedAnswerId, AnswerCount, Body, ClosedDate, CommentCount, CommunityOwnedDate, CreationDate, FavoriteCount, LastActivityDate, LastEditDate, LastEditorDisplayName, LastEditorUserId, OwnerUserId, ParentId, PostTypeId, Score, Tags, Title, ViewCount)
-select top 200 AcceptedAnswerId, AnswerCount, Body, ClosedDate, CommentCount, CommunityOwnedDate, CreationDate, FavoriteCount, LastActivityDate, LastEditDate, LastEditorDisplayName, LastEditorUserId, OwnerUserId, ParentId, PostTypeId, Score, Tags, Title, ViewCount
-from StackOverflow2013.dbo.Posts order by newid()
-go 2
+select top 5000 *
+into #Posts_TempdbSaver
+from StackOverflow2013.dbo.Posts
+go
+
+begin tran
+	insert dbo.#Posts_TempdbSaver (AcceptedAnswerId, AnswerCount, Body, ClosedDate, CommentCount, CommunityOwnedDate, CreationDate, FavoriteCount, LastActivityDate, LastEditDate, LastEditorDisplayName, LastEditorUserId, OwnerUserId, ParentId, PostTypeId, Score, Tags, Title, ViewCount)
+	select top 200000 AcceptedAnswerId, AnswerCount, Body, ClosedDate, CommentCount, CommunityOwnedDate, CreationDate, FavoriteCount, LastActivityDate, LastEditDate, LastEditorDisplayName, LastEditorUserId, OwnerUserId, ParentId, PostTypeId, Score, Tags, Title, ViewCount
+	from StackOverflow2013.dbo.Posts 
+	go 20
+	--order by newid()
+
+-- Stop here
+go
 
 
 begin tran
-	update top (10) percent dbo.Posts_TempdbSaver
+	update top (20) percent dbo.Posts_TempdbSaver
 	set ViewCount = ViewCount+1
 
 	--delete top (10) percent from dbo.Posts_TempdbSaver
