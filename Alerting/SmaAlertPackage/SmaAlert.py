@@ -404,3 +404,57 @@ select [rows_affected] = isnull(@_rows_affected,0);
         #if self.alert_method == 'slack':
         self.header_slack_markdown = f"`{self.alert_key}` {state} by @{self.logged_by}"
         self.description = f"{self.header} from Slack"
+
+    def get_pretty_data_size(self, size:float, unit:str='mb', precision:int=2):
+        unit = unit.lower()
+        suffixes=['b', 'kb','mb','gb','tb']
+        suffixIndex = suffixes.index(unit)
+        while size > 1024 and suffixIndex < (len(suffixes)-1):
+            suffixIndex += 1 #increment the index of the suffix
+            size = size/1024.0 #apply the division
+
+        return "%.*f %s"%(precision,size,suffixes[suffixIndex])
+
+    def get_pretty_time(self, time_value:int, time_unit:str='seconds'):
+        """
+        Converts the given time value to a more human-readable format (minutes, hours, days, or weeks).
+
+        Args:
+            time_value (float): The time value to convert.
+            time_unit (str): The unit of the input time ('seconds', 'minutes', 'hours', 'days', or 'weeks').
+
+        Returns:
+            str: The time in a more readable format.
+        """
+
+        # Conversion factors from the base unit (seconds)
+        time_units_in_seconds = {
+            'seconds': 1,
+            'minutes': 60,
+            'hours': 3600,
+            'days': 86400,
+            'weeks': 604800
+        }
+
+        # Validate time_unit
+        if time_unit not in time_units_in_seconds:
+            raise ValueError("Invalid time unit. Please use 'seconds', 'minutes', 'hours', 'days', or 'weeks'.")
+
+        # Convert the input time value to seconds
+        time_in_seconds = time_value * time_units_in_seconds[time_unit]
+
+        # Define thresholds for different time units
+        if time_in_seconds < 60:
+            return f"{time_in_seconds:.2f} seconds"
+        elif time_in_seconds < 3600:
+            minutes = time_in_seconds / 60
+            return f"{minutes:.2f} minutes"
+        elif time_in_seconds < 86400:
+            hours = time_in_seconds / 3600
+            return f"{hours:.2f} hours"
+        elif time_in_seconds < 604800:
+            days = time_in_seconds / 86400
+            return f"{days:.2f} days"
+        else:
+            weeks = time_in_seconds / 604800
+            return f"{weeks:.2f} weeks"

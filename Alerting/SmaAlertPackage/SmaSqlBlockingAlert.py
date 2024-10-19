@@ -127,6 +127,7 @@ class SmaSqlBlockingAlert(SmaAlert):
 
         if self.generate_alert:
             pt = get_pretty_table(self.alert_pyodbc_resultset)
+            pt.custom_format = { "blocked_duration_max_seconds": lambda field, value: self.get_pretty_time(int(value),'seconds') }
             self.description = pt.get_string(fields=self.__fields_for_display)
         else:
             self.description = f"Alert cleared."
