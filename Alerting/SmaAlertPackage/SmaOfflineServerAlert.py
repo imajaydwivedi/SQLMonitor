@@ -8,7 +8,7 @@ class SmaOfflineServerAlert(SmaAlert):
     SYNOPSIS: Class to represent offline server alert
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=30):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15):
         ''' SYNOPSIS: Constructor
         '''
         super().__init__(alert_key, alert_owner_team, frequency_minutes)
