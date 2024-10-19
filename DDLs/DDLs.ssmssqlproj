@@ -205,11 +205,29 @@
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Enable-PageCompression].sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerAgHealthState].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerAgHealthState].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerBackups].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerBackups].sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-Job-[(dba) Get-AllServerCollectedData].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Get-AllServerCollectedData].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerCollectionLatencyInfo].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerCollectionLatencyInfo].sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Job-[(dba) Get-AllServerDashboardMail].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
@@ -217,11 +235,53 @@
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Get-AllServerDashboardMail].sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerDiskSpace].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerDiskSpace].sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-Job-[(dba) Get-AllServerInfo].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Get-AllServerInfo].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerLogSpaceConsumers].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerLogSpaceConsumers].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerServices].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerServices].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerSqlAgentJobs].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerSqlAgentJobs].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerStableInfo].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerStableInfo].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerTempdbSpaceUsage].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerTempdbSpaceUsage].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerVolatileInfo].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerVolatileInfo].sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Job-[(dba) Partitions-Maintenance].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>

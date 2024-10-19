@@ -1354,7 +1354,8 @@ begin
 			('smtp_server','smtp.gmail.com','SMTP Server for Database Mail'),
 			('smtp_server_port','587','SMTP Server Port'),
 			('smtp_account_name','some_smtp_account@gmail.com','Account having access to SMTP Server'),
-			('alert_sender_email','alert_sender_email@gmail.com','EMail used for sending Email alerts')
+			('alert_sender_email','alert_sender_email@gmail.com','EMail used for sending Email alerts'),
+			('send_sqlmonitor_job_failure_mail','1','When enabled, then job failure mail is send to DBA team')
 		) my_keys (param_key, param_value, remarks)
 	left join dbo.sma_params p
 		on p.param_key = my_keys.param_key

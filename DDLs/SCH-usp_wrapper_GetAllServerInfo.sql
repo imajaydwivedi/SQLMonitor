@@ -19,11 +19,9 @@ ALTER PROCEDURE dbo.usp_wrapper_GetAllServerInfo
 	@notification_delay_minutes tinyint = 10, /* Send mail only after a gap of x minutes from last mail */ 
 	@is_test_alert bit = 0, /* enable for alert testing */
 	@verbose tinyint = 0, /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
-	@recipients varchar(500) = 'dba_team@gmail.com', /* Folks who receive the failure mail */
 	@alert_key varchar(100) = 'Get-AllServerInfo', /* Subject of Failure Mail */
-	@send_error_mail bit = 1, /* Send mail on failure */
 	@step_name varchar(100) = 'dbo.all_server_stable_info',
-	@schedule_minutes int = 10 /* schedule for execution in minutes */
+	@schedule_minutes int = 0 /* schedule for execution in minutes. 0 means execute immediately */
 )
 AS 
 BEGIN
@@ -61,6 +59,8 @@ BEGIN
 	DECLARE @_continous_failures tinyint = 0;
 	DECLARE @_send_mail bit = 0;
 	DECLARE @_caller_program nvarchar(255);
+	DECLARE @recipients varchar(500); /* Folks who receive the failure mail */
+	DECLARE @send_error_mail bit /* Send mail on failure */
 
 	set @_caller_program = case when HOST_NAME() like '(dba) Get-AllServerInfo%'
 								then HOST_NAME()
@@ -68,6 +68,9 @@ BEGIN
 								end;
 
 	SET @_job_name = '(dba) '+@alert_key;
+
+	select @recipients = p.param_value from dbo.sma_params p where p.param_key = 'dba_team_email_id';
+	select @send_error_mail = convert(bit,p.param_value) from dbo.sma_params p where p.param_key = 'send_sqlmonitor_job_failure_mail';
 
 	IF (@recipients IS NULL OR @recipients = 'dba_team@gmail.com') AND @verbose = 0
 		raiserror ('@recipients is mandatory parameter', 20, -1) with log;
@@ -92,8 +95,7 @@ BEGIN
 			IF @verbose > 0
 				PRINT 'dbo.all_server_stable_info';
 			SET @_sql = N'-- Stable Info Every 30 Minutes
-if	( (select count(distinct srv_name) from dbo.all_server_stable_info) <> (select count(distinct sql_instance) from dbo.instance_details where is_available = 1 and is_enabled = 1 and is_alias = 0) )
-	or ( (select max(collection_time) from  dbo.all_server_stable_info) < dateadd(minute, -@schedule_minutes, SYSDATETIME()) )
+if	( @schedule_minutes = 0 or (select max(collection_time) from  dbo.all_server_stable_info) < dateadd(minute, -@schedule_minutes, SYSDATETIME()) )
 begin
 	--host_distribution, processor_name,
 	exec dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_stable_info'', @verbose = @verbose,
@@ -123,7 +125,7 @@ exec dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_volatile_info'
 			IF @verbose > 0
 				PRINT 'dbo.all_server_collection_latency_info';
 			SET @_sql = N'-- Fetch Collection Info Every 15 Minutes
-if not exists (select 1/0 from dbo.all_server_collection_latency_info where collection_time >= dateadd(minute,-@schedule_minutes,getdate()))
+if @schedule_minutes = 0 or not exists (select 1/0 from dbo.all_server_collection_latency_info where collection_time >= dateadd(minute,-@schedule_minutes,getdate()))
 begin
 	exec dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_collection_latency_info'', @verbose = @verbose, 
 				@output = ''srv_name, host_name, performance_counters__latency_minutes, xevent_metrics__latency_minutes, WhoIsActive__latency_minutes, os_task_list__latency_minutes, disk_space__latency_minutes, file_io_stats__latency_minutes, sql_agent_job_stats__latency_minutes, memory_clerks__latency_minutes, wait_stats__latency_minutes, BlitzIndex__latency_days, BlitzIndex_Mode0__latency_days, BlitzIndex_Mode1__latency_days, BlitzIndex_Mode4__latency_days'';

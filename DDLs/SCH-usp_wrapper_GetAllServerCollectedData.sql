@@ -16,16 +16,14 @@ GO
 
 ALTER PROCEDURE dbo.usp_wrapper_GetAllServerCollectedData
 (	@verbose tinyint = 0, /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
-	@recipients varchar(500) = 'dba_team@gmail.com', /* Folks who receive the failure mail */
 	@alert_key varchar(100) = 'Wrapper-GetAllServerCollectedData', /* Subject of Failure Mail */
-	@send_error_mail bit = 1, /* Send mail on failure */
 	@is_test_alert bit = 0, /* enable for alert testing */
 	@step_name varchar(100),
 	@threshold_continous_failure tinyint = 2, /* Send mail only when failure is x times continously */
 	@notification_delay_minutes tinyint = 10, /* Send mail only after a gap of x minutes from last mail */ 
 	@truncate_table bit = 1, /* when enabled, table would be truncated */
 	@has_staging_table bit = 1, /* when enabled, assume there is no staging table */
-	@schedule_minutes int = 10 /* schedule for execution in minutes */
+	@schedule_minutes int = 0 /* schedule for execution in minutes */
 )
 AS 
 BEGIN
@@ -68,6 +66,8 @@ BEGIN
 	DECLARE @_continous_failures tinyint = 0;
 	DECLARE @_send_mail bit = 0;
 	DECLARE @_caller_program nvarchar(255);
+	DECLARE @recipients varchar(500); /* Folks who receive the failure mail */
+	DECLARE @send_error_mail bit; /* Send mail on failure */
 
 	set @_caller_program = case when HOST_NAME() like '(dba) Get-AllServerCollectedData%'
 								then HOST_NAME()
@@ -75,6 +75,9 @@ BEGIN
 								end;
 
 	SET @_job_name = '(dba) '+@alert_key;
+
+	select @recipients = p.param_value from dbo.sma_params p where p.param_key = 'dba_team_email_id';
+	select @send_error_mail = convert(bit,p.param_value) from dbo.sma_params p where p.param_key = 'send_sqlmonitor_job_failure_mail';
 
 	IF (@recipients IS NULL OR @recipients = 'dba_team@gmail.com') AND @verbose = 0
 		raiserror ('@recipients is mandatory parameter', 20, -1) with log;
