@@ -54,8 +54,11 @@ if(-not ($AllSteps -is [array])) {
 
 
 # Check if $StepName is already present
-if($StepName -in $AllSteps) {
+if( ($StepName -in $AllSteps) -and ($Action -eq 'AddStep') ) {
     "Seems specified step is already present in Script File." | Write-Error -ErrorAction Stop
+}
+if( ($StepName -notin $AllSteps) -and ($Action -eq 'RemoveStep') ) {
+    "Seems specified step is not present in Script File." | Write-Error -ErrorAction Stop
 }
 
 # Calculations of Step Index
@@ -93,6 +96,8 @@ else { # Remove Existing Step
 
 # Validate Steps for Overlapping while Replacing
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Validating if new step placement is OK.."
+$newFinalStepsCount = $newFinalSteps.Count
+$newFinalStepsLastIndex = $newFinalStepsCount-1
 foreach($rowStep in $newFinalSteps[$paramStepNo..$newFinalStepsLastIndex]) {
     $rowStepWithOutNo = $rowStep -replace "\d+", ""
     #"Working on '$rowStepWithOutNo'.."
@@ -104,8 +109,6 @@ foreach($rowStep in $newFinalSteps[$paramStepNo..$newFinalStepsLastIndex]) {
 
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating String Matrix of `"New Steps`" (`$newFinalStepsStringMatrix)..`n " | Write-Host -ForegroundColor Green
-$newFinalStepsCount = $newFinalSteps.Count
-$newFinalStepsLastIndex = $newFinalStepsCount-1
 [String]$newFinalStepsStringMatrix = ''
 [String]$newFinalStepsStringMatrix2Replace = ''
 if($PrintUserFriendlyFormat) {

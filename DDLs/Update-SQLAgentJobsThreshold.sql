@@ -672,3 +672,209 @@ and sajt.JobName like '(dba) Application Job Cleanup'
 and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
 go
 
+update sajt
+set		[Expected-Max-Duration(Min)] = 5,
+		Continous_Failure_Threshold = 3,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 30,
+		StopJob_If_LongRunning =  0,
+		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_Failed = 0,
+		Kill_Job_Blocker = 0,
+		Alert_When_Blocked = 0,
+		EnableJob_If_Found_Disabled = 0,
+		IgnoreJob = 0,
+		Include_In_MailNotification = 0
+from dbo.sql_agent_job_thresholds sajt
+where 1=1
+and sajt.JobCategory = '(dba) SQLMonitor'
+and sajt.JobName like '(dba) Get-AllServerAgHealthState%'
+and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
+go
+
+update sajt
+set		[Expected-Max-Duration(Min)] = 10,
+		Continous_Failure_Threshold = 3,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 45,
+		StopJob_If_LongRunning =  0,
+		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_Failed = 0,
+		Kill_Job_Blocker = 0,
+		Alert_When_Blocked = 0,
+		EnableJob_If_Found_Disabled = 0,
+		IgnoreJob = 0,
+		Include_In_MailNotification = 0
+from dbo.sql_agent_job_thresholds sajt
+where 1=1
+and sajt.JobCategory = '(dba) SQLMonitor'
+and sajt.JobName like '(dba) Get-AllServerBackups%'
+and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
+go
+
+update sajt
+set		[Expected-Max-Duration(Min)] = 10,
+		Continous_Failure_Threshold = 3,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 45,
+		StopJob_If_LongRunning =  0,
+		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_Failed = 0,
+		Kill_Job_Blocker = 0,
+		Alert_When_Blocked = 0,
+		EnableJob_If_Found_Disabled = 0,
+		IgnoreJob = 0,
+		Include_In_MailNotification = 0
+from dbo.sql_agent_job_thresholds sajt
+where 1=1
+and sajt.JobCategory = '(dba) SQLMonitor'
+and sajt.JobName like '(dba) Get-AllServerCollectionLatencyInfo%'
+and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
+go
+
+update sajt
+set		[Expected-Max-Duration(Min)] = 10,
+		Continous_Failure_Threshold = 3,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 30,
+		StopJob_If_LongRunning =  0,
+		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_Failed = 0,
+		Kill_Job_Blocker = 0,
+		Alert_When_Blocked = 0,
+		EnableJob_If_Found_Disabled = 0,
+		IgnoreJob = 0,
+		Include_In_MailNotification = 0
+from dbo.sql_agent_job_thresholds sajt
+where 1=1
+and sajt.JobCategory = '(dba) SQLMonitor'
+and sajt.JobName like '(dba) Get-AllServerDiskSpace%'
+and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
+go
+
+update sajt
+set		[Expected-Max-Duration(Min)] = 10,
+		Continous_Failure_Threshold = 3,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 15,
+		StopJob_If_LongRunning =  0,
+		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_Failed = 0,
+		Kill_Job_Blocker = 0,
+		Alert_When_Blocked = 0,
+		EnableJob_If_Found_Disabled = 0,
+		IgnoreJob = 0,
+		Include_In_MailNotification = 0
+from dbo.sql_agent_job_thresholds sajt
+where 1=1
+and sajt.JobCategory = '(dba) SQLMonitor'
+and sajt.JobName like '(dba) Get-AllServerLogSpaceConsumers%'
+and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
+go
+
+update sajt
+set		[Expected-Max-Duration(Min)] = 10,
+		Continous_Failure_Threshold = 3,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 40,
+		StopJob_If_LongRunning =  0,
+		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_Failed = 0,
+		Kill_Job_Blocker = 0,
+		Alert_When_Blocked = 0,
+		EnableJob_If_Found_Disabled = 0,
+		IgnoreJob = 0,
+		Include_In_MailNotification = 0
+from dbo.sql_agent_job_thresholds sajt
+where 1=1
+and sajt.JobCategory = '(dba) SQLMonitor'
+and sajt.JobName like '(dba) Get-AllServerServices%'
+and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
+go
+
+update sajt
+set		[Expected-Max-Duration(Min)] = 10,
+		Continous_Failure_Threshold = 3,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 40,
+		StopJob_If_LongRunning =  0,
+		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_Failed = 0,
+		Kill_Job_Blocker = 0,
+		Alert_When_Blocked = 0,
+		EnableJob_If_Found_Disabled = 0,
+		IgnoreJob = 0,
+		Include_In_MailNotification = 0
+from dbo.sql_agent_job_thresholds sajt
+where 1=1
+and sajt.JobCategory = '(dba) SQLMonitor'
+and sajt.JobName like '(dba) Get-AllServerSqlAgentJobs%'
+and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
+go
+
+
+update sajt
+set		[Expected-Max-Duration(Min)] = 10,
+		Continous_Failure_Threshold = 3,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 40,
+		StopJob_If_LongRunning =  0,
+		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_Failed = 0,
+		Kill_Job_Blocker = 0,
+		Alert_When_Blocked = 0,
+		EnableJob_If_Found_Disabled = 0,
+		IgnoreJob = 0,
+		Include_In_MailNotification = 0
+from dbo.sql_agent_job_thresholds sajt
+where 1=1
+and sajt.JobCategory = '(dba) SQLMonitor'
+and sajt.JobName like '(dba) Get-AllServerStableInfo%'
+and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
+go
+
+update sajt
+set		[Expected-Max-Duration(Min)] = 10,
+		Continous_Failure_Threshold = 3,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 15,
+		StopJob_If_LongRunning =  0,
+		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_Failed = 0,
+		Kill_Job_Blocker = 0,
+		Alert_When_Blocked = 0,
+		EnableJob_If_Found_Disabled = 0,
+		IgnoreJob = 0,
+		Include_In_MailNotification = 0
+from dbo.sql_agent_job_thresholds sajt
+where 1=1
+and sajt.JobCategory = '(dba) SQLMonitor'
+and sajt.JobName like '(dba) Get-AllServerTempdbSpaceUsage%'
+and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
+go
+
+update sajt
+set		[Expected-Max-Duration(Min)] = 10,
+		Continous_Failure_Threshold = 3,
+		Successfull_Execution_ClockTime_Threshold_Minutes = 15,
+		StopJob_If_LongRunning =  0,
+		StopJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_NotSuccessful_In_ThresholdTime = 0,
+		RestartJob_If_Failed = 0,
+		Kill_Job_Blocker = 0,
+		Alert_When_Blocked = 0,
+		EnableJob_If_Found_Disabled = 0,
+		IgnoreJob = 0,
+		Include_In_MailNotification = 0
+from dbo.sql_agent_job_thresholds sajt
+where 1=1
+and sajt.JobCategory = '(dba) SQLMonitor'
+and sajt.JobName like '(dba) Get-AllServerVolatileInfo%'
+and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
+go
+
+--select *
+--from dbo.sql_agent_job_thresholds sajt
+--where sajt.CollectionTimeUTC >= dateadd(day,-1,GETUTCDATE())
+--and sajt.Successfull_Execution_ClockTime_Threshold_Minutes = -1
+

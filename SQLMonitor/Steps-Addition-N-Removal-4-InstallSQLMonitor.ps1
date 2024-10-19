@@ -2,113 +2,224 @@
 Param (
     [Parameter(Mandatory=$false)]
     [ValidateSet("AddStep", "RemoveStep")]
-    [String]$Action = "AddStep",
+    [String]$Action = "RemoveStep",
 
     [Parameter(Mandatory=$false)]
-    [String]$StepName = "42__CreateJobSendLoginExpiryEmails",
-    
-    [Parameter(Mandatory=$false)]
-    [String[]]$AllSteps = @( "1__sp_WhoIsActive", "2__AllDatabaseObjects", "3__XEventSession",
-                "4__FirstResponderKitObjects", "5__DarlingDataObjects", "6__OlaHallengrenSolutionObjects",
-                "7__sp_WhatIsRunning", "8__usp_GetAllServerInfo", "9__CopyDbaToolsModule2Host",
-                "10__CopyPerfmonFolder2Host", "11__SetupPerfmonDataCollector", "12__CreateCredentialProxy",
-                "13__CreateJobCollectDiskSpace", "14__CreateJobCollectOSProcesses", "15__CreateJobCollectPerfmonData",
-                "16__CreateJobCollectWaitStats", "17__CreateJobCollectXEvents", "18__CreateJobCollectFileIOStats",
-                "19__CreateJobPartitionsMaintenance", "20__CreateJobPurgeTables", "21__CreateJobRemoveXEventFiles",
-                "22__CreateJobRunLogSaver", "23__CreateJobRunTempDbSaver", "24__CreateJobRunWhoIsActive",
-                "25__CreateJobRunBlitzIndex", "26__CreateJobRunBlitz", "27__CreateJobRunBlitzIndexWeekly",
-                "28__CreateJobCollectMemoryClerks", "29__CreateJobCollectPrivilegedInfo", "30__CreateJobCollectAgHealthState",
-                "31__CreateJobCheckSQLAgentJobs", "32__CreateJobCaptureAlertMessages", "33__CreateSQLAgentAlerts",
-                "34__CreateJobUpdateSqlServerVersions", "35__CreateJobCheckInstanceAvailability", "36__CreateJobGetAllServerInfo",
-                "37__CreateJobGetAllServerCollectedData", "38__CreateJobGetAllServerDashboardMail", "39__CreateJobStopStuckSQLMonitorJobs",
-                "40__CreateJobCollectLoginExpirationInfo", "41__CreateJobPopulateInventoryTables", "42__CreateJobSendLoginExpiryEmails",
-                "43__WhoIsActivePartition", "44__BlitzIndexPartition", "45__BlitzPartition",
-                "46__EnablePageCompression", "47__GrafanaLogin", "48__LinkedServerOnInventory",
-                "49__LinkedServerForDataDestinationInstance", "50__AlterViewsForDataDestinationInstance"
-                ),
+    [String]$StepName = "46__CreateJobGetAllServerInfo",
 
     [Parameter(Mandatory=$false)]
     [Bool]$PrintUserFriendlyFormat = $true,
 
     [Parameter(Mandatory=$false)]
-    [String]$ScriptFile = 'D:\GitHub-Personal\SQLMonitor\SQLMonitor\Install-SQLMonitor.ps1'
+    [String]$ScriptFile = 'D:\GitHub-Personal\SQLMonitor\SQLMonitor\Install-SQLMonitor.ps1',
+
+    [Parameter(Mandatory=$false)]
+    [bool]$SkipFileContentWriting = $false
 )
 
 cls
 
 # Placeholders
-$finalSteps = @()
+$newFinalSteps = @()
 
-# Calculations
-[int]$paramStepNo = $StepName -replace "__\w+", ''
-$preStep = $paramStepNo-2;
-if($Action -eq "AddStep") { # Add New Step
-    $postStep = $paramStepNo-1;
-    $lastStep = $AllSteps.Count-1;
-}
-else { # Remove Existing Step
-    $postStep = $paramStepNo;
-    $lastStep = $AllSteps.Count-1;
-}
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Working for `$StepName = '$StepName'.." | Write-Host -ForegroundColor Yellow
 
-Write-Debug "Step here for debugging"
-
-#"Pre-Steps" | Write-Host -ForegroundColor Green
-$preNewSteps = @()
-if( ($Action -eq "AddStep") -and ($preStep -ne -1) ) {
-    $preNewSteps += $AllSteps[0..$preStep]
-}
-
-#"`nAdd step '$StepName' here`n" | Write-Host -ForegroundColor Cyan
-
-#"Post-Steps" | Write-Host -ForegroundColor Green
-$postNewSteps = @()
-if($Action -eq "AddStep") { # Add New Step
-    $postNewSteps += $AllSteps[$postStep..$lastStep] | 
-        ForEach-Object {[int]$stepNo = $_ -replace "__\w+", ''; $_.Replace("$stepNo", "$($stepNo+1)")}
-    $finalSteps = $preNewSteps + @($StepName) + $postNewSteps
-}
-else { # Remove Existing Step
-    $postNewSteps += $AllSteps[$postStep..$lastStep] | 
-        ForEach-Object {[int]$stepNo = $_ -replace "__\w+", ''; $_.Replace("$stepNo", "$($stepNo-1)")}
-    $finalSteps = $preNewSteps + $postNewSteps
-}
-
-
-
-"All New Steps => `n`n " | Write-Host -ForegroundColor Green
-if($PrintUserFriendlyFormat) {
-    foreach($num in $(0..$([Math]::Floor($finalSteps.Count/3)))) {
-        $numStart = ($num*3)
-        $numEnd = ($num*3)+2
-        #"`$num = $num, `$numStart = $numStart, `$numEnd = $numEnd"        
-        
-        "                " + $(($finalSteps[$numStart..$numEnd] | ForEach-Object {'"'+$_+'"'}) -join ', ') + $(if($num -ne $([Math]::Floor($finalSteps.Count/3))){","})
-        
-    }
+# Read Script File Content
+if(-not (Test-Path $ScriptFile)) {
+    "Kindly provide ScriptFile." | Write-Error -ErrorAction Stop
 }
 else {
-    $finalSteps
-}
-
-if([String]::IsNullOrEmpty($ScriptFile)) {
-    "`n`nNo file provided to replace the content."
-} else {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Read file content.."
     $fileContent = [System.IO.File]::ReadAllText($ScriptFile)
-    foreach($index in $($postStep..$($AllSteps.Count-1))) 
+
+    if([String]::IsNullOrEmpty($fileContent)) {
+        "Provided ScriptFile seems empty." | Write-Error -ErrorAction Stop
+    }
+}
+
+# Extract AllSteps from Script File Content, and dynamically create a $AllSteps variable
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Extract `$AllSteps from Script File.."
+$allStepsPatternInFile = '\$AllSteps = \@\((\s*(?<steps>(\"\d+_{2}\w+\",?\s?)+\n)+(\s+\"\d+_{2}\w+\",?)+)\n?\s*\)'
+if($fileContent -match $allStepsPatternInFile) {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "AllSteps pattern found in script file.."
+    $cmd2CreateStepsVariable = $Matches[0]
+    Invoke-Expression $cmd2CreateStepsVariable
+}
+
+# Check if $AllSteps is present
+if(-not ($AllSteps -is [array])) {
+    "Seems could not extract AllSteps from Script File content." | Write-Error -ErrorAction Stop
+}
+
+
+# Check if $StepName is already present
+if( ($StepName -in $AllSteps) -and ($Action -eq 'AddStep') ) {
+    "Seems specified step is already present in Script File." | Write-Error -ErrorAction Stop
+}
+if( ($StepName -notin $AllSteps) -and ($Action -eq 'RemoveStep') ) {
+    "Seems specified step is not present in Script File." | Write-Error -ErrorAction Stop
+}
+
+
+# Calculations of Step Index
+[int]$paramStepNo = $StepName -replace "__\w+", ''
+[String]$paramStepWithoutNo = $StepName -replace "\d+", ""
+$preStepIndex = $paramStepNo-2;
+if($Action -eq "AddStep") { # Add New Step
+    $existingPostStepIndex = $paramStepNo-1;
+    $existingLastStepIndex = $AllSteps.Count-1;
+}
+else { # Remove Existing Step
+    $existingPostStepIndex = $paramStepNo;
+    $existingLastStepIndex = $AllSteps.Count-1;
+}
+
+# Logically previous steps remain same irrespective of Addition/Removal of steps
+$newPreSteps = @()
+if( $preStepIndex -ne -1) {
+    $newPreSteps += $AllSteps[0..$preStepIndex]
+}
+
+# Create array with all the new steps including pre & post
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating `$newFinalSteps array with new steps.."
+$newPostSteps = @()
+if($Action -eq "AddStep") { # Add New Step
+    $newPostSteps += $AllSteps[$existingPostStepIndex..$existingLastStepIndex] | 
+        ForEach-Object {[int]$stepNo = $_ -replace "__\w+", ''; $_.Replace("$stepNo", "$($stepNo+1)")}
+    $newFinalSteps = $newPreSteps + @($StepName) + $newPostSteps
+}
+else { # Remove Existing Step
+    $newPostSteps += $AllSteps[$existingPostStepIndex..$existingLastStepIndex] | 
+        ForEach-Object {[int]$stepNo = $_ -replace "__\w+", ''; $_.Replace("$stepNo", "$($stepNo-1)")}
+    $newFinalSteps = $newPreSteps + $newPostSteps
+}
+
+# Validate Steps for Overlapping while Replacing
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Validating if new step placement is OK.."
+$newFinalStepsCount = $newFinalSteps.Count
+$newFinalStepsLastIndex = $newFinalStepsCount-1
+foreach($rowStep in $newFinalSteps[$paramStepNo..$newFinalStepsLastIndex]) {
+    $rowStepWithOutNo = $rowStep -replace "\d+", ""
+    #"Working on '$rowStepWithOutNo'.."
+    if($paramStepWithoutNo -like "$rowStepWithOutNo*") {
+        
+        Write-Debug "Before error line"
+
+        "Step `"$StepName`" should be placed after `"$rowStep`" due to String Replacement issues in PowerShell." | Write-Host -ForegroundColor Red
+        "Fix above issues."  | Write-Error -ErrorAction Stop
+    }
+}
+
+
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating String Matrix of `"New Steps`" (`$newFinalStepsStringMatrix)..`n " | Write-Host -ForegroundColor Green
+[String]$newFinalStepsStringMatrix = ''
+[String]$newFinalStepsStringMatrix2Replace = ''
+if($PrintUserFriendlyFormat) {
+    foreach($num in $(0..$([Math]::Floor($newFinalStepsCount/3)))) {
+        $numStart = ($num*3)
+        $numEnd = ($num*3)+2
+        if($numEnd -gt $newFinalStepsLastIndex) {$numEnd = $newFinalStepsLastIndex}
+        
+        $currentRowStepsCSV = $(($newFinalSteps[$numStart..$numEnd] | ForEach-Object {'"'+$_+'"'}) -join ', ') + $( if($numEnd -ne $newFinalStepsLastIndex) {","})
+        $currentRowSteps = "                " + $currentRowStepsCSV
+        
+        $newFinalStepsStringMatrix = $newFinalStepsStringMatrix + "`n" + $currentRowSteps
+        if($num -eq 0) {
+            $newFinalStepsStringMatrix2Replace = $currentRowStepsCSV
+        }
+        else {
+            $newFinalStepsStringMatrix2Replace = $newFinalStepsStringMatrix2Replace + "`n" + $currentRowSteps
+        }
+        #"`$num = $num, `$numStart = $numStart, `$numEnd = $numEnd, `$newFinalStepsCount = $newFinalStepsCount, `$newFinalStepsLastIndex = $newFinalStepsLastIndex, `$newFinalStepsCount/3 = $($newFinalStepsCount/3)"        
+        
+        #"                " + $(($newFinalSteps[$numStart..$numEnd] | ForEach-Object {'"'+$_+'"'}) -join ', ') + $(if($num -ne $([Math]::Floor($newFinalSteps.Count/3))){","})
+        #"                " + $(($newFinalSteps[$numStart..$numEnd] | ForEach-Object {'"'+$_+'"'}) -join ', ') + $( if($numEnd -ne $newFinalStepsLastIndex) {","})
+        
+        if($numEnd -eq $newFinalStepsLastIndex) {
+            break;
+        }   
+    }
+
+    "$newFinalStepsStringMatrix`n"
+}
+
+
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating String Matrix of `"Old Steps`" (`$oldStepsStringMatrix).."
+$oldStepsCount = $AllSteps.Count
+$oldStepsLastIndex = $oldStepsCount-1
+[String]$oldStepsStringMatrix = ''
+if($PrintUserFriendlyFormat) {
+    foreach($num in $(0..$([Math]::Floor($oldStepsCount/3)))) {
+        $numStart = ($num*3)
+        $numEnd = ($num*3)+2
+        if($numEnd -gt $oldStepsLastIndex) {$numEnd = $oldStepsLastIndex}
+
+        $currentRowStepsCSV = $(($AllSteps[$numStart..$numEnd] | ForEach-Object {'"'+$_+'"'}) -join ', ') + $( if($numEnd -ne $oldStepsLastIndex) {","})        
+        $currentRowSteps = "                " + $currentRowStepsCSV
+        $oldStepsStringMatrix = $oldStepsStringMatrix + "`n" + $currentRowSteps     
+
+        if($numEnd -eq $oldStepsLastIndex) {
+            break;
+        }   
+    }
+
+    #"$oldStepsStringMatrix`n"
+}
+
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Replace old step array `$oldStepsStringMatrix with new step array `$newFinalStepsStringMatrix in `$newFilecontent..`n "
+$newFilecontent = $fileContent
+$oldStepsPattern = '(\s*(\"\d+_{2}\w+\",?\s?)+\n){'+$([Math]::Floor($oldStepsCount/3)-1)+'}(\s+\"\d+_{2}\w+\",?)+'
+if($fileContent -match $oldStepsPattern) {
+    $oldStepsStringMatched = $Matches[0]
+    $newFilecontent = $fileContent -replace $oldStepsStringMatched, $newFinalStepsStringMatrix2Replace
+}
+else {
+    "Match not found"
+}
+
+
+# Replace nos of Steps one at a time
+if( (-not [String]::IsNullOrEmpty($newFilecontent)) ) 
+{
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Update step no of old steps with new nos in `$newFilecontent..`n "
+    foreach($index in $($existingPostStepIndex..$($AllSteps.Count-1))) 
     {
         if($Action -eq "AddStep") { # Add New Step
-            $fileContent = $fileContent.Replace($AllSteps[$index],$finalSteps[$index+1]);
+            $newFilecontent = $newFilecontent.Replace($AllSteps[$index],$newFinalSteps[$index+1]);
         }
         else { # Remove Existing Step
-            $fileContent = $fileContent.Replace($AllSteps[$index],$finalSteps[$index-1]);
+            $newFilecontent = $newFilecontent.Replace($AllSteps[$index],$newFinalSteps[$index-1]);
         }
     }
-    $newScriptFile = $ScriptFile.Replace('.ps1',' __bak.ps1')
-    $fileContent | Out-File -FilePath $newScriptFile
-    notepad $newScriptFile
-    "Updated data saved into file '$newScriptFile'." | Write-Host -ForegroundColor Green
-    "Opening saved file '$newScriptFile'." | Write-Host -ForegroundColor Green
+
+    # Check if script file is temp or original
+    if(Test-Path $ScriptFile) {
+        $scriptFileObj = Get-Item $ScriptFile
+        $scriptFileName = $scriptFileObj.Name
+    }
+    
+    if($scriptFileName -eq 'Remove-SQLMonitor') {
+        $newScriptFile = $ScriptFile.Replace('.ps1',' __bak.ps1')
+    }
+    else {
+        $newScriptFile = $ScriptFile
+    }
+
+    if($SkipFileContentWriting -eq $false) {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Create/Update '$newScriptFile' with `$newFilecontent..`n "
+        $newFilecontent | Out-File -FilePath $newScriptFile
+
+        if($scriptFileName -eq 'Remove-SQLMonitor') {
+            notepad $newScriptFile
+        }
+        "Updated data saved into file '$newScriptFile'." | Write-Host -ForegroundColor Green
+        "Opening saved file '$newScriptFile'." | Write-Host -ForegroundColor Green
+    }
+    else {
+        "`n$("*"*60)" | Write-Host -ForegroundColor Cyan
+        "`n*"*10 | Write-Host -ForegroundColor Cyan
+        $newFilecontent
+    }
 }
+
 
