@@ -1,42 +1,37 @@
 import pyodbc
 
-def get_cpu(sql_connection, logger:None, verbose:bool=False, **kwargs):
+def get_tempdb(sql_connection, logger:None, verbose:bool=False, **kwargs):
     cursor = sql_connection.cursor()
 
     # Extract parameters
-    cpu_warning_pct = kwargs['cpu_warning_pct']
-    cpu_critical_pct = kwargs['cpu_critical_pct']
-    average_duration_minutes = kwargs['average_duration_minutes']
+    data_used_warning_pct = kwargs['data_used_warning_pct']
+    data_used_critical_pct = kwargs['data_used_critical_pct']
+    data_used_threshold_gb = kwargs['data_used_threshold_gb']
 
     sql_query = f"""
-declare @_cpu_warning_pct decimal(20,2) = {cpu_warning_pct};
-declare @_cpu_critical_pct decimal(20,2) = {cpu_critical_pct};
-declare @_average_duration_minutes int = {average_duration_minutes};
+declare @_data_used_warning_pct float = {data_used_warning_pct};
+declare @_data_used_critical_pct float = {data_used_critical_pct};
+declare @_data_used_threshold_gb float = {data_used_threshold_gb};
 
-declare @_sql nvarchar(max);
+declare @_sqltext nvarchar(max);
 declare @_params nvarchar(max);
 
-set @_params = N'@cpu_warning_pct decimal(20,2), @cpu_critical_pct decimal(20,2), @average_duration_minutes int';
-
-set quoted_identifier off;
-set @_sql = "
-select	[sql_instance] = srv_name, collection_time_latest = max(collection_time),
-		os_cpu_avg = avg(os_cpu), sql_cpu_avg = avg(sql_cpu),
-		[state] = case when avg(os_cpu) >= @cpu_critical_pct or avg(sql_cpu) >= @cpu_critical_pct
-						then 'Critical'
-						else 'Warning'
-						end,
-		data_points = count(*)
-from dbo.all_server_volatile_info_history vih
-where 1=1
-and vih.collection_time >= dateadd(minute,-@average_duration_minutes,getdate())
-group by srv_name
-having avg(os_cpu) >= @cpu_warning_pct or avg(sql_cpu) >= @cpu_warning_pct
-and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = vih.srv_name)
-";
-set quoted_identifier off;
-
-exec sp_executesql @_sql, @_params, @_cpu_warning_pct, @_cpu_critical_pct, @_average_duration_minutes;
+set @_params = '@data_used_warning_pct float, @data_used_critical_pct float, @data_used_threshold_gb float';
+set @_sqltext = '
+select	[sql_instance], [data_size_mb], [data_used_pct],
+		[version_store_mb], [version_store_pct],
+		[state] = case when su.data_used_pct > @data_used_critical_pct then ''Critical'' else ''Warning'' end,
+		[collection_time_utc] = [updated_date_utc]
+from dbo.tempdb_space_usage_all_servers su
+where (su.data_used_pct > @data_used_warning_pct
+	or su.data_used_mb > (@data_used_threshold_gb*1024)
+	)
+and (su.updated_date_utc >= dateadd(minute,-60,getutcdate())
+  and su.collection_time_utc >= dateadd(minute,-20,getutcdate())
+	)
+and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = su.sql_instance)
+'
+exec sp_executesql @_sqltext, @_params, @_data_used_warning_pct, @_data_used_critical_pct, @_data_used_threshold_gb;
 """
     if verbose:
         logger.info(f"following query is being executed inside {__name__}()..")

@@ -6,7 +6,7 @@ from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
-from SmaAlertPackage.CustomFunctions.get_cpu import get_tempdb
+from SmaAlertPackage.CustomFunctions.get_tempdb import get_tempdb
 import SmaAlertPackage.SmaTempdbAlert as sma
 
 # get Script Name
@@ -56,9 +56,9 @@ alert_obj = sma.SmaTempdbAlert()
 
 if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
     frequency_minutes = alert_obj.frequency_minutes
-    cpu_warning_pct = alert_obj.cpu_warning_pct
-    cpu_critical_pct = alert_obj.cpu_critical_pct
-    average_duration_minutes = alert_obj.average_duration_minutes
+    data_used_warning_pct = alert_obj.data_used_warning_pct
+    data_used_critical_pct = alert_obj.data_used_critical_pct
+    data_used_threshold_gb = alert_obj.data_used_threshold_gb
 
 # Print variables values
 if 'Print Variables' == 'Print Variables':
@@ -72,20 +72,21 @@ if 'Print Variables' == 'Print Variables':
     logger.info(f"alert_job_name = '{alert_job_name}'")
     logger.info(f"alert_owner_team = '{alert_owner_team}'")
     logger.info(f"frequency_minutes = '{frequency_minutes}'")
-    logger.info(f"cpu_warning_pct = '{cpu_warning_pct}'")
-    logger.info(f"cpu_critical_pct = '{cpu_critical_pct}'")
+    logger.info(f"data_used_warning_pct = '{data_used_warning_pct}'")
+    logger.info(f"data_used_critical_pct = '{data_used_critical_pct}'")
+    logger.info(f"data_used_threshold_gb = '{data_used_threshold_gb}'")
     logger.info(f"verbose = '{verbose}'")
 
 # Get Alert Raw Data
 if 'Get Alert Raw Data' == 'Get Alert Raw Data':
-    logger.info(f"Query table dbo.disk_space_all_servers..")
+    logger.info(f"Query table dbo.tempdb_consumers_all_servers..")
     query_params = dict(logger = logger,
                         verbose = verbose,
-                        cpu_warning_pct = cpu_warning_pct,
-                        cpu_critical_pct = cpu_critical_pct,
-                        average_duration_minutes = average_duration_minutes
+                        data_used_warning_pct = data_used_warning_pct,
+                        data_used_critical_pct = data_used_critical_pct,
+                        data_used_threshold_gb = data_used_threshold_gb
                         )
-    alert_pyodbc_resultset = get_cpu(cnxn, **query_params)
+    alert_pyodbc_resultset = get_tempdb(cnxn, **query_params)
 
     if len(alert_pyodbc_resultset) > 0:
         logger.info(f"Before creating pt & df on alert_pyodbc_resultset..")
