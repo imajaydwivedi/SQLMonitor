@@ -76,7 +76,7 @@ class SmaDiskSpaceAlert(SmaAlert):
             self.severity = 'Low'
 
         # upgrade severity if required
-        if self.severity_dictionary[existing_severity] < self.severity_dictionary[self.severity]:
+        if existing_severity is not None and (self.severity_dictionary[existing_severity] < self.severity_dictionary[self.severity]):
             self.action_to_take = 'Upgrade'
 
     def __compute_state(self):
