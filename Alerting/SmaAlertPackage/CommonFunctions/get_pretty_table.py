@@ -24,7 +24,6 @@ def get_pretty_table(pyodbc_query_resultset, return_pretty_data:bool=True):
             for col in col_names:
                 for unit in suffixes:
                     if col.endswith(f"_{unit}"):
-                        print(f"col={col}, unit={unit}")
                         if init:
                             pt_results.custom_format = { col: lambda field, value: get_pretty_data_size(float(value),field[-2:]) }
                             init = False
