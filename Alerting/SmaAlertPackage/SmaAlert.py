@@ -406,6 +406,20 @@ select [rows_affected] = isnull(@_rows_affected,0);
         self.description = f"{self.header} from Slack"
 
     def get_pretty_data_size(self, size:float, unit:str='mb', precision:int=2):
+        """_summary_
+
+        Args:
+            size (float): _description_
+            unit (str, optional): _description_. Defaults to 'mb'.
+            precision (int, optional): _description_. Defaults to 2.
+
+        Returns:
+            _type_: _description_
+
+        Examples:
+            pt.custom_format = { "free_memory_kb": lambda field, value: self.get_pretty_data_size(int(value),'kb') }
+            pt.custom_format["threshold_kb"] = lambda field, value: self.get_pretty_data_size(int(value),'kb')
+        """
         unit = unit.lower()
         suffixes=['b', 'kb','mb','gb','tb']
         suffixIndex = suffixes.index(unit)
@@ -425,6 +439,10 @@ select [rows_affected] = isnull(@_rows_affected,0);
 
         Returns:
             str: The time in a more readable format.
+
+        Examples:
+            pt.custom_format = { "ColumnName": lambda field, value: self.get_pretty_time(int(value),'minutes') }
+            pt.custom_format["ColumnName"] = lambda field, value: self.get_pretty_time(int(value),'minutes')
         """
 
         # Conversion factors from the base unit (seconds)
@@ -461,6 +479,3 @@ select [rows_affected] = isnull(@_rows_affected,0);
 
     def get_pretty_date(self, my_datetime):
         return my_datetime.strftime("%Y-%m-%d %H:%M")
-
-        #pt.custom_format = { "ColumnName": lambda field, value: self.get_pretty_time(int(value),'minutes') }
-        #pt.custom_format["ColumnName"] = lambda field, value: self.get_pretty_time(int(value),'minutes')

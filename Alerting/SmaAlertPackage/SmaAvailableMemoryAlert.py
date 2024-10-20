@@ -3,22 +3,23 @@ from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_data
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 
-class SmaCpuAlert(SmaAlert):
+class SmaAvailableMemoryAlert(SmaAlert):
     '''
     SYNOPSIS: Class to represent cpu alert
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=10, cpu_warning_pct:float=45, cpu_critical_pct:float=70, average_duration_minutes:int = 5):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15, free_memory_ratio:float=8, low_memory_threshold_gb:float=16, average_duration_minutes:int = 10):
         ''' SYNOPSIS: Constructor
         '''
         super().__init__(alert_key, alert_owner_team, frequency_minutes)
-        self.cpu_warning_pct = cpu_warning_pct
-        self.cpu_critical_pct = cpu_critical_pct
+        self.free_memory_ratio = free_memory_ratio
+        self.low_memory_threshold_gb = low_memory_threshold_gb
         self.average_duration_minutes = average_duration_minutes
         self.alert_pyodbc_resultset = None
 
         self.__df_alert_pyodbc_resultset = None
-        self.__fields_for_display = ["sql_instance", "collection_time_latest", "os_cpu_avg", "sql_cpu_avg", "state", "data_points"]
+        #self.__fields_for_display = None
+        self.__fields_for_display = ["sql_instance", "free_memory", "threshold", "ram", "sql_ram", "grants_pending", "state", "collection_time"]
 
         # severity counts
         self.__critical_count = 0
@@ -128,7 +129,15 @@ class SmaCpuAlert(SmaAlert):
 
         if self.generate_alert:
             pt = get_pretty_table(self.alert_pyodbc_resultset)
-            self.description = pt.get_string(fields=self.__fields_for_display)
+            if self.__fields_for_display is not None:
+                pt.custom_format = { "free_memory": lambda field, value: self.get_pretty_data_size(int(value),'kb') }
+                pt.custom_format["threshold"] = lambda field, value: self.get_pretty_data_size(int(value),'kb')
+                pt.custom_format["ram"] = lambda field, value: self.get_pretty_data_size(int(value),'kb')
+                pt.custom_format["sql_ram"] = lambda field, value: self.get_pretty_data_size(int(value),'kb')
+                pt.custom_format["collection_time"] = lambda field, value: self.get_pretty_date(value)
+                self.description = pt.get_string(fields=self.__fields_for_display)
+            else:
+                self.description = pt.get_string()
         else:
             self.description = f"Alert cleared."
 
