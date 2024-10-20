@@ -461,3 +461,6 @@ select [rows_affected] = isnull(@_rows_affected,0);
 
     def get_pretty_date(self, my_datetime):
         return my_datetime.strftime("%Y-%m-%d %H:%M")
+
+        #pt.custom_format = { "ColumnName": lambda field, value: self.get_pretty_time(int(value),'minutes') }
+        #pt.custom_format["ColumnName"] = lambda field, value: self.get_pretty_time(int(value),'minutes')

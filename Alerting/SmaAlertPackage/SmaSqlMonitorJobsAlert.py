@@ -125,14 +125,13 @@ class SmaSqlMonitorJobsAlert(SmaAlert):
         if self.verbose:
             self.logger.info(f"compute alert description for alert..")
 
-        # ["sql_instance", "JobName", "Job-Delay", "Threshold", "Success_Time", "state", "Collection Time"]
         if self.generate_alert:
             pt = get_pretty_table(self.alert_pyodbc_resultset)
-            pt.custom_format = { "Job-Delay": lambda field, value: self.get_pretty_time(int(value),'minutes') }
-            pt.custom_format["Threshold"] = lambda field, value: self.get_pretty_time(int(value),'minutes')
-            pt.custom_format["Success_Time"] = lambda field, value: self.get_pretty_date(value)
-            pt.custom_format["Collection Time"] = lambda field, value: self.get_pretty_date(value)
             if self.__fields_for_display is not None:
+                pt.custom_format = { "Job-Delay": lambda field, value: self.get_pretty_time(int(value),'minutes') }
+                pt.custom_format["Threshold"] = lambda field, value: self.get_pretty_time(int(value),'minutes')
+                pt.custom_format["Success_Time"] = lambda field, value: self.get_pretty_date(value)
+                pt.custom_format["Collection Time"] = lambda field, value: self.get_pretty_date(value)
                 self.description = pt.get_string(fields=self.__fields_for_display)
             else:
                 self.description = pt.get_string()
