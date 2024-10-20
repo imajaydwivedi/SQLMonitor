@@ -339,6 +339,9 @@ def call_5_minute_job_script():
     logger.info(f"Inside call_5_minute_job_script()")
     auto_resolve_cleared_alerts()
 
+    alert_script_path = os.path.join(script_directory, "Alert-MemoryGrantsPending.py")
+    os.system(f"python {alert_script_path}")
+
     alert_script_path = os.path.join(script_directory, "Alert-OfflineAgent.py")
     os.system(f"python {alert_script_path}")
 
