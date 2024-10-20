@@ -22,7 +22,7 @@ set @_params = '@disk_warning_pct decimal(20,2), @disk_critical_pct decimal(20,2
 
 set quoted_identifier off;
 set @_sql = "
-select	ds.updated_date_utc, ds.sql_instance, ds.host_name, ds.disk_volume, ds.label, ds.capacity_mb, ds.free_mb,
+select	/* {__name__} */ ds.updated_date_utc, ds.sql_instance, ds.host_name, ds.disk_volume, ds.label, ds.capacity_mb, ds.free_mb,
 		[state] = case when (ds.free_mb*100.0/ds.capacity_mb) < (100.0-@disk_critical_pct) then 'Critical' else 'Warning' end,
 		--[free_pct] = convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb),
 		[used_pct] = 100.0-convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb)

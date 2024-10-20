@@ -20,7 +20,7 @@ set @_params = N'@cpu_warning_pct decimal(20,2), @cpu_critical_pct decimal(20,2)
 
 set quoted_identifier off;
 set @_sql = "
-select	[sql_instance] = srv_name, collection_time_latest = max(collection_time),
+select	/* {__name__} */ [sql_instance] = srv_name, collection_time_latest = max(collection_time),
 		os_cpu_avg = avg(os_cpu), sql_cpu_avg = avg(sql_cpu),
 		[state] = case when avg(os_cpu) >= @cpu_critical_pct or avg(sql_cpu) >= @cpu_critical_pct
 						then 'Critical'

@@ -8,8 +8,7 @@ declare @sql nvarchar(max);
 
 set quoted_identifier off;
 set @sql = "
-/* Monitoring - Live - All Servers */
-select sql_instance, port = sql_instance_port, [host_name], online = is_available,
+select /* {__name__} */ sql_instance, port = sql_instance_port, [host_name], online = is_available,
 			link_active = case when is_available = 0 then null else is_linked_server_working end,
 			--[tsql jobs server] = collector_tsql_jobs_server,
 		--[powershell jobs server] = collector_powershell_jobs_server,

@@ -21,7 +21,7 @@ declare @_params nvarchar(max);
 
 set @_params = '@only_threshold_validated bit, @log_used_warning_pct float, @log_used_critical_pct float, @log_used_threshold_gb float';
 set @_sqltext = '
-select	[collection_time_utc] = [updated_date_utc], [sql_instance], [database_name], [log_reuse_wait_desc],
+select	/* {__name__} */ [collection_time_utc] = [updated_date_utc], [sql_instance], [database_name], [log_reuse_wait_desc],
 		[log_size_mb], [log_used_pct], [pre_validated] = @only_threshold_validated,
 		[state] = case when ls.log_used_pct > @log_used_critical_pct then ''Critical'' else ''Warning'' end
 from dbo.log_space_consumers_all_servers ls

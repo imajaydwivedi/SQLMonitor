@@ -8,7 +8,7 @@ declare @sql nvarchar(max);
 
 set quoted_identifier off;
 set @sql = "
-select sas.sql_instance, sas.startup_type_desc, sas.status_desc,
+select /* {__name__} */ sas.sql_instance, sas.startup_type_desc, sas.status_desc,
 		sas.servicename, sas.service_account, state = 'Critical'
 from dbo.services_all_servers sas
 where 1=1

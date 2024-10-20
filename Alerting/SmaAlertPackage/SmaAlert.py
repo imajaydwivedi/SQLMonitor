@@ -458,3 +458,6 @@ select [rows_affected] = isnull(@_rows_affected,0);
         else:
             weeks = time_in_seconds / 604800
             return f"{weeks:.2f} weeks"
+
+    def get_pretty_date(self, my_datetime):
+        return my_datetime.strftime("%Y-%m-%d %H:%M")
