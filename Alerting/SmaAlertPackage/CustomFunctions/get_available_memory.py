@@ -30,9 +30,9 @@ select	/* {__name__} */ [sql_instance] = srv_name, collection_time_latest = max(
 from dbo.all_server_volatile_info_history vih
 where 1=1
 and vih.collection_time >= dateadd(minute,-@average_duration_minutes,getdate())
-and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = vih.srv_name)
 group by srv_name
 having avg(os_cpu) >= @cpu_warning_pct or avg(sql_cpu) >= @cpu_warning_pct
+and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = vih.srv_name)
 ";
 set quoted_identifier off;
 
