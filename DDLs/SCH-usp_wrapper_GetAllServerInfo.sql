@@ -114,7 +114,7 @@ else
 				PRINT 'dbo.all_server_volatile_info';
 			SET @_sql = N'-- Volatile Info
 exec dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_volatile_info'', @verbose = @verbose, 
-			@output = ''srv_name, os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, active_requests_count, waits_per_core_per_minute, avg_disk_wait_ms'';';
+			@output = ''srv_name, os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, active_requests_count, waits_per_core_per_minute, avg_disk_wait_ms, page_life_expectancy, target_server_memory_kb, total_server_memory_kb, memory_consumers'';';
 			IF @verbose > 0
 				PRINT @_sql;
 			EXEC sp_executesql @_sql, @_params, @verbose, @schedule_minutes;

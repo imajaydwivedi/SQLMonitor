@@ -267,6 +267,10 @@ CREATE TABLE [dbo].[all_server_volatile_info]
 	[active_requests_count] [int] NULL DEFAULT 0,
 	[waits_per_core_per_minute] [decimal](20, 2) NULL DEFAULT 0,
 	[avg_disk_wait_ms] [decimal](20, 2) NULL DEFAULT 0,
+	[page_life_expectancy] int NULL DEFAULT 0,
+	[memory_consumers] int NULL DEFAULT 0,
+	[target_server_memory_kb] bigint NULL DEFAULT 0,
+	[total_server_memory_kb] bigint NULL DEFAULT 0,
 	[collection_time] [datetime2] NULL default sysdatetime(),
 
 	'+(case when @MemoryOptimizedObjectUsage = 1 then '' else '--' end)+'CONSTRAINT pk_all_server_volatile_info primary key nonclustered ([srv_name])
@@ -327,6 +331,11 @@ CREATE TABLE [dbo].[all_server_volatile_info_history]
 	[active_requests_count] [int] NULL DEFAULT 0,
 	[waits_per_core_per_minute] [decimal](20, 2) NULL DEFAULT 0,
 	[avg_disk_wait_ms] [decimal](20, 2) NULL DEFAULT 0,
+	[page_life_expectancy] int NULL DEFAULT 0,
+	[memory_consumers] int NULL DEFAULT 0,
+	[target_server_memory_kb] bigint NULL DEFAULT 0,
+	[total_server_memory_kb] bigint NULL DEFAULT 0,
+
 	INDEX ci_all_server_volatile_info_history clustered ([collection_time],[srv_name])
 )
 GO
@@ -734,9 +743,14 @@ alter view dbo.vw_all_server_info
 as
 	select	si.srv_name, 
 			/* stable info */
-			at_server_name, machine_name, server_name, ip, domain, host_name, host_distribution, processor_name, product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb, os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number,
+			at_server_name, machine_name, server_name, ip, domain, host_name, host_distribution, processor_name,
+			product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb,
+			os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number,
 			/* volatile info */
-			os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, active_requests_count, waits_per_core_per_minute, avg_disk_wait_ms
+			os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, 
+			available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb,
+			memory_grants_pending, connection_count, active_requests_count, waits_per_core_per_minute,
+			avg_disk_wait_ms, page_life_expectancy, target_server_memory_kb, total_server_memory_kb, memory_consumers
 	from dbo.all_server_stable_info as si
 	left join dbo.all_server_volatile_info as vi
 	on si.srv_name = vi.srv_name;
@@ -759,7 +773,7 @@ BEGIN
 	-- Volatile Info
 	exec dbo.usp_GetAllServerInfo @result_to_table = 'dbo.all_server_volatile_info',
 				@output = 'srv_name, os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, active_requests_count, 
-					waits_per_core_per_minute, avg_disk_wait_ms';
+					waits_per_core_per_minute, avg_disk_wait_ms, page_life_expectancy, memory_consumers, target_server_memory_kb, total_server_memory_kb';
 	--select * from dbo.all_server_volatile_info;
 
 	select * 

@@ -84,7 +84,7 @@ BEGIN
 			physical_memory_in_use_kb decimal(20,2), memory_grants_pending int, connection_count int, 
 			active_requests_count int, waits_per_core_per_minute decimal(20,2), avg_disk_wait_ms decimal(20,2), 
 			os_start_time_utc datetime2, cpu_count smallint, scheduler_count smallint, major_version_number smallint, 
-			minor_version_number smallint,
+			minor_version_number smallint, page_life_expectancy int, memory_consumers int, target_server_memory_kb bigint, total_server_memory_kb bigint,
 
 			performance_counters__latency_minutes int, xevent_metrics__latency_minutes int, WhoIsActive__latency_minutes int,
 			os_task_list__latency_minutes int, disk_space__latency_minutes int, file_io_stats__latency_minutes int,
@@ -126,6 +126,10 @@ BEGIN
 	declare @_scheduler_count int;
 	declare @_major_version_number smallint;
 	declare @_minor_version_number smallint;
+	declare @_page_life_expectancy int;
+	declare @_memory_consumers int;
+	declare @_target_server_memory_kb bigint;
+	declare @_total_server_memory_kb bigint;
 
 	declare @_BlitzIndex__latency_days int;
 	declare @_BlitzIndex_Mode0__latency_days int;
@@ -283,6 +287,10 @@ BEGIN
 		set @_scheduler_count = NULL;
 		set @_major_version_number = NULL;
 		set @_minor_version_number = NULL;
+		set @_page_life_expectancy = NULL;
+		set @_memory_consumers = NULL;
+		set @_target_server_memory_kb = NULL;
+		set @_total_server_memory_kb = NULL;
 		set @_BlitzIndex__latency_days = NULL;
 		set @_BlitzIndex_Mode0__latency_days = NULL;
 		set @_BlitzIndex_Mode1__latency_days = NULL;
@@ -1835,6 +1843,199 @@ SELECT	[@server_minor_version_number] = @server_minor_version_number
 		end
 
 
+		-- [page_life_expectancy] => Create SQL Statement to Execute
+		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'page_life_expectancy') )
+		begin
+			delete from @_result;
+			set @_sql = "
+declare @object_name varchar(255);
+set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
+
+SELECT [page_life_expectancy] = cntr_value 
+FROM sys.dm_os_performance_counters WITH (NOLOCK) 
+WHERE 1=1
+and [object_name] like (@object_name+':Buffer Manager%') 
+and counter_name = N'Page life expectancy'
+";
+			
+			-- Decorate for remote query if LinkedServer
+			if @_isLocalHost = 0
+				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
+		
+			begin try
+				insert @_result (col_int)
+				exec (@_sql);
+
+				-- set @_ip
+				select @_page_life_expectancy = col_int from @_result;
+			end try
+			begin catch
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerInfo', 
+						[function_call_arguments] = 'page_life_expectancy', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
+			end catch
+		end
+
+
+		-- [memory_consumers] => Create SQL Statement to Execute
+		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'memory_consumers') )
+		begin
+			delete from @_result;
+			set @_sql = "
+declare @granted_memory_threshold_mb int = 500;
+select [memory_consumers] = count(*)
+from sys.dm_exec_requests der
+where 1=1
+and (der.granted_query_memory*8) > (@granted_memory_threshold_mb*1024) -- convert to kb for comparision
+";
+			
+			-- Decorate for remote query if LinkedServer
+			if @_isLocalHost = 0
+				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
+		
+			begin try
+				insert @_result (col_int)
+				exec (@_sql);
+
+				-- set @_ip
+				select @_memory_consumers = col_int from @_result;
+			end try
+			begin catch
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerInfo', 
+						[function_call_arguments] = 'memory_consumers', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
+			end catch
+		end
+
+
+		-- [target_server_memory_kb] => Create SQL Statement to Execute
+		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'target_server_memory_kb') )
+		begin
+			delete from @_result;
+			set @_sql = "
+declare @object_name varchar(255);
+set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
+
+SELECT [target_server_memory_kb] = cntr_value
+FROM sys.dm_os_performance_counters WITH (NOLOCK) 
+WHERE 1=1
+and [object_name] like (@object_name+':Memory Manager%') 
+AND counter_name = N'Target Server Memory (KB)'
+";
+			
+			-- Decorate for remote query if LinkedServer
+			if @_isLocalHost = 0
+				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
+		
+			begin try
+				insert @_result (col_int)
+				exec (@_sql);
+
+				-- set @_ip
+				select @_target_server_memory_kb = col_int from @_result;
+			end try
+			begin catch
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerInfo', 
+						[function_call_arguments] = 'target_server_memory_kb', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
+			end catch
+		end
+
+
+		-- [total_server_memory_kb] => Create SQL Statement to Execute
+		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'total_server_memory_kb') )
+		begin
+			delete from @_result;
+			set @_sql = "
+declare @object_name varchar(255);
+set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
+
+SELECT [total_server_memory_kb] = cntr_value
+FROM sys.dm_os_performance_counters WITH (NOLOCK) 
+WHERE 1=1
+and [object_name] like (@object_name+':Memory Manager%') 
+AND counter_name = N'Total Server Memory (KB)'
+";
+			
+			-- Decorate for remote query if LinkedServer
+			if @_isLocalHost = 0
+				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
+		
+			begin try
+				insert @_result (col_int)
+				exec (@_sql);
+
+				-- set @_ip
+				select @_total_server_memory_kb = col_int from @_result;
+			end try
+			begin catch
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerInfo', 
+						[function_call_arguments] = 'total_server_memory_kb', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
+			end catch
+		end
+
+
 		-- [performance_counters__latency_minutes] => Create SQL Statement to Execute
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'performance_counters__latency_minutes') )
 		begin
@@ -2467,7 +2668,8 @@ on 1=1";
 				[pcnt_kernel_mode], [page_faults_kb], [blocked_counts], [blocked_duration_max_seconds], [total_physical_memory_kb], 
 				[available_physical_memory_kb], [system_high_memory_signal_state], [physical_memory_in_use_kb], [memory_grants_pending], 
 				[connection_count], [active_requests_count], [waits_per_core_per_minute], [avg_disk_wait_ms], [os_start_time_utc],
-				[cpu_count], [scheduler_count], [major_version_number], [minor_version_number], [performance_counters__latency_minutes],
+				[cpu_count], [scheduler_count], [major_version_number], [minor_version_number], [page_life_expectancy], [memory_consumers], 
+				[target_server_memory_kb], [total_server_memory_kb], [performance_counters__latency_minutes],
 				[xevent_metrics__latency_minutes], [WhoIsActive__latency_minutes], [os_task_list__latency_minutes], 
 				[disk_space__latency_minutes], [file_io_stats__latency_minutes], [sql_agent_job_stats__latency_minutes], 
 				[memory_clerks__latency_minutes], [wait_stats__latency_minutes], [BlitzIndex__latency_days],
@@ -2506,6 +2708,10 @@ on 1=1";
 					,[scheduler_count] = @_scheduler_count
 					,[major_version_number] = @_major_version_number
 					,[minor_version_number] = @_minor_version_number
+					,[page_life_expectancy] = @_page_life_expectancy
+					,[memory_consumers] = @_memory_consumers
+					,[target_server_memory_kb] = @_target_server_memory_kb
+					,[total_server_memory_kb] = @_total_server_memory_kb
 					,[performance_counters__latency_minutes] = @_performance_counters__latency_minutes
 					,[xevent_metrics__latency_minutes] = @_xevent_metrics__latency_minutes
 					,[WhoIsActive__latency_minutes] = @_WhoIsActive__latency_minutes
