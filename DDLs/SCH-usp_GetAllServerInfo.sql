@@ -85,7 +85,7 @@ BEGIN
 			blocked_counts int, blocked_duration_max_seconds bigint, total_physical_memory_kb bigint, 
 			available_physical_memory_kb bigint, system_high_memory_signal_state varchar(20), 
 			physical_memory_in_use_kb decimal(20,2), memory_grants_pending int, connection_count int, 
-			active_requests_count int, waits_per_core_per_minute decimal(20,2), avg_disk_wait_ms decimal(20,2), 
+			active_requests_count int, waits_per_core_per_minute decimal(20,2), avg_disk_wait_ms decimal(20,2), [avg_disk_latency_ms] int,
 			os_start_time_utc datetime2, cpu_count smallint, scheduler_count smallint, major_version_number smallint, 
 			minor_version_number smallint, page_life_expectancy int, memory_consumers int, target_server_memory_kb bigint, total_server_memory_kb bigint,
 
@@ -124,6 +124,7 @@ BEGIN
 	declare @_active_requests_count	int;
 	declare @_waits_per_core_per_minute	decimal(20,2);
 	declare @_avg_disk_wait_ms	decimal(20,2);
+	declare @_avg_disk_latency_ms int;
 	declare @_os_start_time_utc	datetime2;
 	declare @_cpu_count int;
 	declare @_scheduler_count int;
@@ -294,6 +295,7 @@ BEGIN
 		set @_active_requests_count = NULL;
 		set @_waits_per_core_per_minute = NULL;
 		set @_avg_disk_wait_ms = NULL;
+		set @_avg_disk_latency_ms = NULL;
 		set @_os_start_time_utc	= NULL;
 		set @_cpu_count = NULL;
 		set @_scheduler_count = NULL;
@@ -1610,6 +1612,49 @@ exec usp_avg_disk_wait_ms;
 		end
 
 
+		-- [avg_disk_latency_ms] => Create SQL Statement to Execute
+		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'avg_disk_latency_ms') )
+		begin
+			delete from @_result;
+			set @_sql =  "
+SET NOCOUNT ON;
+SET LOCK_TIMEOUT 60000;
+exec usp_avg_disk_latency_ms;
+"
+			-- Decorate for remote query if LinkedServer
+			if @_isLocalHost = 0
+				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
+		
+			begin try
+				insert @_result (col_int)
+				exec (@_sql);
+
+				-- set @_avg_disk_latency_ms
+				select @_avg_disk_latency_ms = col_int from @_result;
+			end try
+			begin catch
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerInfo', 
+						[function_call_arguments] = 'avg_disk_latency_ms', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
+			end catch
+		end
+
+
 		-- [os_start_time_utc] => Create SQL Statement to Execute
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'os_start_time_utc') )
 		begin
@@ -2679,7 +2724,7 @@ on 1=1";
 				[processor_name], [product_version], [edition], [sqlserver_start_time_utc], [os_cpu], [sql_cpu], 
 				[pcnt_kernel_mode], [page_faults_kb], [blocked_counts], [blocked_duration_max_seconds], [total_physical_memory_kb], 
 				[available_physical_memory_kb], [system_high_memory_signal_state], [physical_memory_in_use_kb], [memory_grants_pending], 
-				[connection_count], [active_requests_count], [waits_per_core_per_minute], [avg_disk_wait_ms], [os_start_time_utc],
+				[connection_count], [active_requests_count], [waits_per_core_per_minute], [avg_disk_wait_ms], [avg_disk_latency_ms], [os_start_time_utc],
 				[cpu_count], [scheduler_count], [major_version_number], [minor_version_number], [page_life_expectancy], [memory_consumers], 
 				[target_server_memory_kb], [total_server_memory_kb], [performance_counters__latency_minutes],
 				[xevent_metrics__latency_minutes], [WhoIsActive__latency_minutes], [os_task_list__latency_minutes], 
@@ -2715,6 +2760,7 @@ on 1=1";
 					,[active_requests_count] = @_active_requests_count
 					,[waits_per_core_per_minute] = @_waits_per_core_per_minute
 					,[avg_disk_wait_ms] = @_avg_disk_wait_ms
+					,[avg_disk_latency_ms] = @_avg_disk_latency_ms
 					,[os_start_time_utc] = @_os_start_time_utc
 					,[cpu_count] = @_cpu_count
 					,[scheduler_count] = @_scheduler_count

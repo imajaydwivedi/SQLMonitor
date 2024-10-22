@@ -1,6 +1,6 @@
 /*
-	Version:		2024-08-21
-	Date:			2024-08-21 - Enhancement#51 - Add few objects required for DBA Inventory & Alerting
+	Version:		2024-10-22
+	Date:			2024-10-22 - Enhancement#51 - Add few objects required for DBA Inventory & Alerting
 					2024-08-07 - Enhancement#45 - Add Preventive Triggers on dbo.instance_details to avoid mistakes
 					2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
 					2024-04-26 - Enhancement#40 - Change Retention of dbo.all_server_volatile_info_history to 15 Days
@@ -273,6 +273,7 @@ CREATE TABLE [dbo].[all_server_volatile_info__staging]
 	[active_requests_count] [int] NULL DEFAULT 0,
 	[waits_per_core_per_minute] [decimal](20, 2) NULL DEFAULT 0,
 	[avg_disk_wait_ms] [decimal](20, 2) NULL DEFAULT 0,
+	[avg_disk_latency_ms] int NULL DEFAULT 0,
 	[page_life_expectancy] int NULL DEFAULT 0,
 	[memory_consumers] int NULL DEFAULT 0,
 	[target_server_memory_kb] bigint NULL DEFAULT 0,
@@ -308,6 +309,7 @@ CREATE TABLE [dbo].[all_server_volatile_info]
 	[active_requests_count] [int] NULL DEFAULT 0,
 	[waits_per_core_per_minute] [decimal](20, 2) NULL DEFAULT 0,
 	[avg_disk_wait_ms] [decimal](20, 2) NULL DEFAULT 0,
+	[avg_disk_latency_ms] int NULL DEFAULT 0,
 	[page_life_expectancy] int NULL DEFAULT 0,
 	[memory_consumers] int NULL DEFAULT 0,
 	[target_server_memory_kb] bigint NULL DEFAULT 0,
@@ -373,6 +375,7 @@ CREATE TABLE [dbo].[all_server_volatile_info_history]
 	[active_requests_count] [int] NULL DEFAULT 0,
 	[waits_per_core_per_minute] [decimal](20, 2) NULL DEFAULT 0,
 	[avg_disk_wait_ms] [decimal](20, 2) NULL DEFAULT 0,
+	[avg_disk_latency_ms] int NULL DEFAULT 0,
 	[page_life_expectancy] int NULL DEFAULT 0,
 	[memory_consumers] int NULL DEFAULT 0,
 	[target_server_memory_kb] bigint NULL DEFAULT 0,
@@ -763,11 +766,11 @@ BEGIN
 	(	[collection_time], [srv_name], [os_cpu], [sql_cpu], [pcnt_kernel_mode], [page_faults_kb], [blocked_counts], 
 		[blocked_duration_max_seconds], [available_physical_memory_kb], [system_high_memory_signal_state], 
 		[physical_memory_in_use_kb], [memory_grants_pending], [connection_count], [active_requests_count], 
-		[waits_per_core_per_minute], [avg_disk_wait_ms], [page_life_expectancy], [target_server_memory_kb], [total_server_memory_kb], [memory_consumers] )
+		[waits_per_core_per_minute], [avg_disk_wait_ms], [avg_disk_latency_ms], [page_life_expectancy], [target_server_memory_kb], [total_server_memory_kb], [memory_consumers] )
 	select [collection_time], [srv_name], [os_cpu], [sql_cpu], [pcnt_kernel_mode], [page_faults_kb], [blocked_counts], 
 		[blocked_duration_max_seconds], [available_physical_memory_kb], [system_high_memory_signal_state], 
 		[physical_memory_in_use_kb], [memory_grants_pending], [connection_count], [active_requests_count], 
-		[waits_per_core_per_minute], [avg_disk_wait_ms], page_life_expectancy, target_server_memory_kb, total_server_memory_kb, memory_consumers
+		[waits_per_core_per_minute], [avg_disk_wait_ms], [avg_disk_latency_ms], page_life_expectancy, target_server_memory_kb, total_server_memory_kb, memory_consumers
 	from dbo.all_server_volatile_info vi
 END
 go
@@ -792,7 +795,7 @@ as
 			os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, 
 			available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb,
 			memory_grants_pending, connection_count, active_requests_count, waits_per_core_per_minute,
-			avg_disk_wait_ms, page_life_expectancy, target_server_memory_kb, total_server_memory_kb, memory_consumers
+			avg_disk_wait_ms, avg_disk_latency_ms, page_life_expectancy, target_server_memory_kb, total_server_memory_kb, memory_consumers
 	from dbo.all_server_stable_info as si
 	left join dbo.all_server_volatile_info as vi
 	on si.srv_name = vi.srv_name;
@@ -815,7 +818,7 @@ BEGIN
 	-- Volatile Info
 	exec dbo.usp_GetAllServerInfo @result_to_table = 'dbo.all_server_volatile_info',
 				@output = 'srv_name, os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, active_requests_count, 
-					waits_per_core_per_minute, avg_disk_wait_ms, page_life_expectancy, memory_consumers, target_server_memory_kb, total_server_memory_kb';
+					waits_per_core_per_minute, avg_disk_wait_ms, avg_disk_latency_ms, page_life_expectancy, memory_consumers, target_server_memory_kb, total_server_memory_kb';
 	--select * from dbo.all_server_volatile_info;
 
 	select * 

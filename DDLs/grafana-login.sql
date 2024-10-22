@@ -93,6 +93,11 @@ if OBJECT_ID('dbo.usp_avg_disk_wait_ms') is not null
 go
 
 use [DBA]
+if OBJECT_ID('dbo.usp_avg_disk_latency_ms') is not null
+	exec ('grant execute on object::dbo.usp_avg_disk_latency_ms to [grafana]')
+go
+
+use [DBA]
 if OBJECT_ID('dbo.sma_sql_servers') is not null
 	exec ('grant select on object::dbo.sma_sql_servers to [grafana]')
 go

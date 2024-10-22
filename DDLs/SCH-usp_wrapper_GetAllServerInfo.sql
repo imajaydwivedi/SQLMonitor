@@ -27,8 +27,8 @@ AS
 BEGIN
 
 	/*
-		Version:		2024-19-21
-		Date:			2024-10-21 - Enhancement#10 - For alerting, need more data points of Volatile info. So adding parallelize option
+		Version:		2024-10-22
+		Date:			2024-10-22 - Enhancement#10 - For alerting, need more data points of Volatile info. So adding parallelize option
 						2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
 						2023-07-14 - Enhancement#268 - Add tables sql_agent_job_stats & memory_clerks in Collection Latency Dashboard
 						2023-06-19 - Enhancement#262 - Add is_enabled field
@@ -130,7 +130,7 @@ else
 		BEGIN
 			DECLARE @_output_columns nvarchar(max);
 
-			SET @_output_columns = 'srv_name, os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, active_requests_count, waits_per_core_per_minute, avg_disk_wait_ms, page_life_expectancy, target_server_memory_kb, total_server_memory_kb, memory_consumers';
+			SET @_output_columns = 'srv_name, os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, active_requests_count, waits_per_core_per_minute, avg_disk_wait_ms, avg_disk_latency_ms, page_life_expectancy, target_server_memory_kb, total_server_memory_kb, memory_consumers';
 
 			IF @_parallelize_volatile_info = 0
 			BEGIN
