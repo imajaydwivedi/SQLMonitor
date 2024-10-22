@@ -22,64 +22,66 @@
 	3) Alter inventory database with MemoryOptimized filegroup file
 	4) Drop all self created tables
 	5) Create table dbo.all_server_stable_info
-	6) Create table dbo.all_server_volatile_info
-	7) Create table dbo.all_server_collection_latency_info
-	8) Create table dbo.all_server_volatile_info_history
-	9) Create table dbo.sql_agent_jobs_all_servers
-	10) Create table dbo.sql_agent_jobs_all_servers__staging
-	11) Create table dbo.disk_space_all_servers
-	12) Create table dbo.disk_space_all_servers__staging
-	13) Create table dbo.log_space_consumers_all_servers
-	14) Create table dbo.log_space_consumers_all_servers__staging
-	15) Create table dbo.tempdb_space_usage_all_servers
-	16) Create table dbo.tempdb_space_usage_all_servers__staging
-	17) Create table dbo.ag_health_state_all_servers
-	18) Create table dbo.ag_health_state_all_servers__staging
-	19) Add dbo.purge_table entry for dbo.all_server_volatile_info_history
-	20) Create procedure dbo.usp_populate__all_server_volatile_info_history
-	21) Create view dbo.vw_all_server_info
-	22) Alter multiple tables and add few columns
-	23) Create table dbo.instance_details_history
-	24) Create trigger tgr_dml__instance_details on dbo.instance_details
-	25) Create trigger tgr_dml__instance_details__prevent_bulk_udpate on dbo.instance_details
-	26) Add dbo.purge_table entry for dbo.instance_details_history
-	27) Create table dbo.backups_all_servers
-	28) Create table dbo.backups_all_servers__staging
-	29) Create table dbo.services_all_servers
-	30) Create table dbo.services_all_servers__staging
-	31) Create table dbo.alert_history_all_servers
-	32) Add dbo.purge_table entry for dbo.alert_history_all_servers
-	33) Create table dbo.sent_alert_history_all_servers
-	34) Create table dbo.alert_history_all_servers_last_actioned
-	35) Create table dbo.sma_errorlog
-	36) Add dbo.purge_table entry for dbo.sma_errorlog
-	37) Create table dbo.sma_params
+	6) Create table dbo.all_server_volatile_info__staging
+	7) Create table dbo.all_server_volatile_info
+	8) Create table dbo.all_server_collection_latency_info
+	9) Create table dbo.all_server_volatile_info_history
+	10) Create table dbo.sql_agent_jobs_all_servers
+	11) Create table dbo.sql_agent_jobs_all_servers__staging
+	12) Create table dbo.disk_space_all_servers
+	13) Create table dbo.disk_space_all_servers__staging
+	14) Create table dbo.log_space_consumers_all_servers
+	15) Create table dbo.log_space_consumers_all_servers__staging
+	16) Create table dbo.tempdb_space_usage_all_servers
+	17) Create table dbo.tempdb_space_usage_all_servers__staging
+	18) Create table dbo.ag_health_state_all_servers
+	19) Create table dbo.ag_health_state_all_servers__staging
+	20) Add dbo.purge_table entry for dbo.all_server_volatile_info_history
+	21) Create procedure dbo.usp_populate__all_server_volatile_info_history
+	22) Create view dbo.vw_all_server_info
+	23) Alter multiple tables and add few columns
+	24) Create table dbo.instance_details_history
+	25) Create trigger tgr_dml__instance_details on dbo.instance_details
+	26) Create trigger tgr_dml__instance_details__prevent_bulk_udpate on dbo.instance_details
+	27) Add dbo.purge_table entry for dbo.instance_details_history
+	28) Create table dbo.backups_all_servers
+	29) Create table dbo.backups_all_servers__staging
+	30) Create table dbo.services_all_servers
+	31) Create table dbo.services_all_servers__staging
+	32) Create table dbo.alert_history_all_servers
+	33) Add dbo.purge_table entry for dbo.alert_history_all_servers
+	34) Create table dbo.sent_alert_history_all_servers
+	35) Create table dbo.alert_history_all_servers_last_actioned
+	36) Create table dbo.sma_errorlog
+	37) Add dbo.purge_table entry for dbo.sma_errorlog
+	38) Create table dbo.sma_params
 
-	38) Create table dbo.sma_servers
-	39) Create table dbo.sma_sql_server_extended_info
-	40) Create table dbo.sma_sql_server_hosts
-	41) Create table dbo.sma_hadr_ag
-	42) Create table dbo.sma_hadr_sql_cluster
-	43) Create table dbo.sma_hadr_mirroring
-	44) Create table dbo.sma_hadr_log_shipping
-	45) Create table dbo.sma_hadr_transaction_replication_publishers
-	46) Create table dbo.sma_applications
-	47) Create table dbo.sma_applications_server_xref
-	48) Create table dbo.sma_applications_database_xref
-	49) Create view dbo.sma_sql_servers
-	50) Create view dbo.sma_sql_servers_including_offline
-	51) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers
-	52) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers
-	53) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications
-	54) Create table dbo.login_email_mapping
-	55) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping
-	56) Create table dbo.all_server_login_expiry_info
-	57) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails]
-	58) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails]
-	59) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance]
-	60) Create table dbo.sma_wrapper_sql_server_hosts 
-	61) Create view dbo.vw_all_server_logins
-	62) Create table dbo.sma_server_aliases
+	39) Create table dbo.sma_servers
+	40) Create table dbo.sma_sql_server_extended_info
+	41) Create table dbo.sma_sql_server_hosts
+	42) Create table dbo.sma_hadr_ag
+	43) Create table dbo.sma_hadr_sql_cluster
+	44) Create table dbo.sma_hadr_mirroring
+	45) Create table dbo.sma_hadr_log_shipping
+	46) Create table dbo.sma_hadr_transaction_replication_publishers
+	47) Create table dbo.sma_applications
+	48) Create table dbo.sma_applications_server_xref
+	49) Create table dbo.sma_applications_database_xref
+	50) Create view dbo.sma_sql_servers
+	51) Create view dbo.sma_sql_servers_including_offline
+	52) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers
+	53) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers
+	54) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications
+	55) Create table dbo.login_email_mapping
+	56) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping
+	57) Create table dbo.all_server_login_expiry_info
+	58) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails]
+	59) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails]
+	60) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance]
+	61) Create table dbo.sma_wrapper_sql_server_hosts 
+	62) Create view dbo.vw_all_server_logins
+	63) Create table dbo.sma_server_aliases
+	64) 64) Create function dbo.fn_IsJobRunning
 
 */
 
@@ -127,6 +129,10 @@ if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 	print '4) Drop all self created tables';
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[all_server_stable_info]') AND type in (N'U'))
 	DROP TABLE [dbo].[all_server_stable_info]
+GO
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[all_server_volatile_info__staging]') AND type in (N'U'))
+	DROP TABLE [dbo].[all_server_volatile_info__staging]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[all_server_volatile_info]') AND type in (N'U'))
@@ -243,9 +249,44 @@ CREATE TABLE [dbo].[all_server_stable_info]
 EXEC (@_sql);
 GO
 
-/* ****** 6) Create table dbo.all_server_volatile_info ******* */
+/* ****** 6) Create table dbo.all_server_volatile_info__staging ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '6) Create table dbo.all_server_volatile_info';
+	print '6) Create table dbo.all_server_volatile_info__staging';
+DECLARE @_sql NVARCHAR(MAX);
+DECLARE @MemoryOptimizedObjectUsage bit = 1;
+
+SET @_sql = '
+CREATE TABLE [dbo].[all_server_volatile_info__staging]
+(
+	[srv_name] [varchar](125) NOT NULL,
+	[os_cpu] [decimal](20, 2) NULL,
+	[sql_cpu] [decimal](20, 2) NULL,
+	[pcnt_kernel_mode] [decimal](20, 2) NULL,
+	[page_faults_kb] [decimal](20, 2) NULL,
+	[blocked_counts] [int] NULL DEFAULT 0,
+	[blocked_duration_max_seconds] [bigint] NULL DEFAULT 0,
+	[available_physical_memory_kb] [bigint] NULL,
+	[system_high_memory_signal_state] [varchar](20) NULL,
+	[physical_memory_in_use_kb] [decimal](20, 2) NULL,
+	[memory_grants_pending] [int] NULL,
+	[connection_count] [int] NULL DEFAULT 0,
+	[active_requests_count] [int] NULL DEFAULT 0,
+	[waits_per_core_per_minute] [decimal](20, 2) NULL DEFAULT 0,
+	[avg_disk_wait_ms] [decimal](20, 2) NULL DEFAULT 0,
+	[page_life_expectancy] int NULL DEFAULT 0,
+	[memory_consumers] int NULL DEFAULT 0,
+	[target_server_memory_kb] bigint NULL DEFAULT 0,
+	[total_server_memory_kb] bigint NULL DEFAULT 0,
+	[collection_time] [datetime2] NULL default sysdatetime()
+)';
+
+EXEC (@_sql);
+GO
+
+
+/* ****** 7) Create table dbo.all_server_volatile_info ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '7) Create table dbo.all_server_volatile_info';
 DECLARE @_sql NVARCHAR(MAX);
 DECLARE @MemoryOptimizedObjectUsage bit = 1;
 
@@ -281,9 +322,10 @@ CREATE TABLE [dbo].[all_server_volatile_info]
 EXEC (@_sql);
 GO
 
-/* ****** 7) Create table dbo.all_server_collection_latency_info ******* */
+
+/* ****** 8) Create table dbo.all_server_collection_latency_info ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '7) Create table dbo.all_server_collection_latency_info';
+	print '8) Create table dbo.all_server_collection_latency_info';
 go
 
 CREATE TABLE [dbo].[all_server_collection_latency_info]
@@ -308,9 +350,9 @@ CREATE TABLE [dbo].[all_server_collection_latency_info]
 )
 GO
 
-/* ****** 8) Create table dbo.all_server_volatile_info_history ******* */
+/* ****** 9) Create table dbo.all_server_volatile_info_history ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '8) Create table dbo.all_server_volatile_info_history';
+	print '9) Create table dbo.all_server_volatile_info_history';
 go
 
 CREATE TABLE [dbo].[all_server_volatile_info_history]
@@ -340,9 +382,9 @@ CREATE TABLE [dbo].[all_server_volatile_info_history]
 )
 GO
 
-/* ****** 9) Create table dbo.sql_agent_jobs_all_servers ******* */
+/* ****** 10) Create table dbo.sql_agent_jobs_all_servers ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '9) Create table dbo.sql_agent_jobs_all_servers';
+	print '10) Create table dbo.sql_agent_jobs_all_servers';
 go
 
 CREATE TABLE [dbo].[sql_agent_jobs_all_servers]
@@ -393,9 +435,9 @@ CREATE TABLE [dbo].[sql_agent_jobs_all_servers]
 )
 GO
 
-/* ****** 10) Create table dbo.sql_agent_jobs_all_servers__staging ******* */
+/* ****** 11) Create table dbo.sql_agent_jobs_all_servers__staging ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '10) Create table dbo.sql_agent_jobs_all_servers__staging';
+	print '11) Create table dbo.sql_agent_jobs_all_servers__staging';
 go
 
 CREATE TABLE [dbo].[sql_agent_jobs_all_servers__staging]
@@ -446,9 +488,9 @@ CREATE TABLE [dbo].[sql_agent_jobs_all_servers__staging]
 )
 GO
 
-/* ****** 11) Create table dbo.disk_space_all_servers ******* */
+/* ****** 12) Create table dbo.disk_space_all_servers ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '11) Create table dbo.disk_space_all_servers';
+	print '12) Create table dbo.disk_space_all_servers';
 go
 
 CREATE TABLE [dbo].[disk_space_all_servers]
@@ -469,9 +511,9 @@ CREATE TABLE [dbo].[disk_space_all_servers]
 )
 go
 
-/* ****** 12) Create table dbo.disk_space_all_servers__staging ******* */
+/* ****** 13) Create table dbo.disk_space_all_servers__staging ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '12) Create table dbo.disk_space_all_servers__staging';
+	print '13) Create table dbo.disk_space_all_servers__staging';
 go
 
 CREATE TABLE [dbo].[disk_space_all_servers__staging]
@@ -492,9 +534,9 @@ CREATE TABLE [dbo].[disk_space_all_servers__staging]
 )
 go
 
-/* ****** 13) Create table dbo.log_space_consumers_all_servers ******* */
+/* ****** 14) Create table dbo.log_space_consumers_all_servers ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '13) Create table dbo.log_space_consumers_all_servers';
+	print '14) Create table dbo.log_space_consumers_all_servers';
 go
 
 CREATE TABLE [dbo].[log_space_consumers_all_servers]
@@ -531,9 +573,9 @@ CREATE TABLE [dbo].[log_space_consumers_all_servers]
 );
 go
 
-/* ****** 14) Create table dbo.log_space_consumers_all_servers__staging ******* */
+/* ****** 15) Create table dbo.log_space_consumers_all_servers__staging ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '14) Create table dbo.log_space_consumers_all_servers__staging';
+	print '15) Create table dbo.log_space_consumers_all_servers__staging';
 go
 
 CREATE TABLE [dbo].[log_space_consumers_all_servers__staging]
@@ -570,9 +612,9 @@ CREATE TABLE [dbo].[log_space_consumers_all_servers__staging]
 );
 go
 
-/* ****** 15) Create table dbo.tempdb_space_usage_all_servers ******* */
+/* ****** 16) Create table dbo.tempdb_space_usage_all_servers ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '15) Create table dbo.tempdb_space_usage_all_servers';
+	print '16) Create table dbo.tempdb_space_usage_all_servers';
 go
 
 CREATE TABLE dbo.tempdb_space_usage_all_servers
@@ -594,9 +636,9 @@ CREATE TABLE dbo.tempdb_space_usage_all_servers
 );
 go
 
-/* ****** 16) Create table dbo.tempdb_space_usage_all_servers__staging ******* */
+/* ****** 17) Create table dbo.tempdb_space_usage_all_servers__staging ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '16) Create table dbo.tempdb_space_usage_all_servers__staging';
+	print '17) Create table dbo.tempdb_space_usage_all_servers__staging';
 go
 
 CREATE TABLE dbo.tempdb_space_usage_all_servers__staging
@@ -618,9 +660,9 @@ CREATE TABLE dbo.tempdb_space_usage_all_servers__staging
 );
 go
 
-/* ****** 17) Create table dbo.ag_health_state_all_servers ******* */
+/* ****** 18) Create table dbo.ag_health_state_all_servers ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '17) Create table dbo.ag_health_state_all_servers';
+	print '18) Create table dbo.ag_health_state_all_servers';
 go
 
 CREATE TABLE dbo.ag_health_state_all_servers
@@ -654,9 +696,9 @@ CREATE TABLE dbo.ag_health_state_all_servers
 );
 go
 
-/* ****** 18) Create table dbo.ag_health_state_all_servers__staging ******* */
+/* ****** 19) Create table dbo.ag_health_state_all_servers__staging ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '18) Create table dbo.ag_health_state_all_servers__staging';
+	print '19) Create table dbo.ag_health_state_all_servers__staging';
 go
 
 CREATE TABLE dbo.ag_health_state_all_servers__staging
@@ -690,9 +732,9 @@ CREATE TABLE dbo.ag_health_state_all_servers__staging
 );
 go
 
-/* ****** 19) Add dbo.purge_table entry for dbo.all_server_volatile_info_history ******* */
+/* ****** 20) Add dbo.purge_table entry for dbo.all_server_volatile_info_history ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '19) Add dbo.purge_table entry for dbo.all_server_volatile_info_history';
+	print '20) Add dbo.purge_table entry for dbo.all_server_volatile_info_history';
 if not exists (select 1 from dbo.purge_table where table_name = 'dbo.all_server_volatile_info_history')
 begin
 	insert dbo.purge_table
@@ -705,9 +747,9 @@ begin
 end
 go
 
-/* ****** 20) Create procedure dbo.usp_populate__all_server_volatile_info_history ******* */
+/* ****** 21) Create procedure dbo.usp_populate__all_server_volatile_info_history ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '20) Create procedure dbo.usp_populate__all_server_volatile_info_history';
+	print '21) Create procedure dbo.usp_populate__all_server_volatile_info_history';
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_NAME = 'usp_populate__all_server_volatile_info_history')
     EXEC ('CREATE PROC dbo.usp_populate__all_server_volatile_info_history AS SELECT ''stub version, to be replaced''')
@@ -730,9 +772,9 @@ BEGIN
 END
 go
 
-/* ****** 21) Create view dbo.vw_all_server_info ******* */
+/* ****** 22) Create view dbo.vw_all_server_info ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '21) Create view dbo.vw_all_server_info';
+	print '22) Create view dbo.vw_all_server_info';
 
 if OBJECT_ID('dbo.vw_all_server_info') is null
 	exec ('create view dbo.vw_all_server_info as select 1 as dummy;');
@@ -782,9 +824,9 @@ BEGIN
 END
 GO
 
-/* ****** 22) Alter multiple tables and add few columns ******* */
+/* ****** 23) Alter multiple tables and add few columns ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '22) Alter multiple tables and add few columns';
+	print '23) Alter multiple tables and add few columns';
 
 if not exists (select * from sys.columns c where c.object_id = OBJECT_ID('dbo.instance_details') and c.name = 'is_available')
     alter table dbo.instance_details add [is_available] bit NOT NULL default 1;
@@ -808,9 +850,9 @@ if not exists (select * from sys.columns c where c.object_id = OBJECT_ID('dbo.in
     alter table dbo.instance_details add [remarks] nvarchar(500) NULL;
 go
 
-/* ****** 23) Create table dbo.instance_details_history ******* */
+/* ****** 24) Create table dbo.instance_details_history ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '23) Create table dbo.instance_details_history';
+	print '24) Create table dbo.instance_details_history';
 go
 
 if OBJECT_ID('dbo.instance_details_history') is null
@@ -848,9 +890,9 @@ begin
 end
 go
 
-/* ****** 24) Create trigger tgr_dml__instance_details on dbo.instance_details ******* */
+/* ****** 25) Create trigger tgr_dml__instance_details on dbo.instance_details ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '24) Create trigger tgr_dml__instance_details on dbo.instance_details';
+	print '25) Create trigger tgr_dml__instance_details on dbo.instance_details';
 go
 
 -- drop trigger [dbo].[tgr_dml__instance_details] on dbo.instance_details
@@ -992,9 +1034,9 @@ begin
 end
 go
 
-/* ****** 25) Create trigger tgr_dml__instance_details__prevent_bulk_udpate on dbo.instance_details ******* */
+/* ****** 26) Create trigger tgr_dml__instance_details__prevent_bulk_udpate on dbo.instance_details ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '25) Create trigger tgr_dml__instance_details__prevent_bulk_udpate on dbo.instance_details';
+	print '26) Create trigger tgr_dml__instance_details__prevent_bulk_udpate on dbo.instance_details';
 go
 
 -- drop trigger [dbo].[tgr_dml__instance_details__prevent_bulk_udpate] on dbo.instance_details
@@ -1054,9 +1096,9 @@ begin
 end
 go
 
-/* ****** 26) Add dbo.purge_table entry for dbo.instance_details_history ******* */
+/* ****** 27) Add dbo.purge_table entry for dbo.instance_details_history ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '26) Add dbo.purge_table entry for dbo.instance_details_history';
+	print '27) Add dbo.purge_table entry for dbo.instance_details_history';
 go
 insert dbo.purge_table (table_name, date_key, retention_days, purge_row_size, reference)
 select	table_name, date_key, retention_days, purge_row_size = 100000, reference = 'Login Expiry Infra'
@@ -1067,9 +1109,9 @@ where 1=1
 and not exists (select * from dbo.purge_table pt where pt.table_name = login_expiry_infra_tables.table_name)
 go
 
-/* ****** 27) Create table dbo.backups_all_servers ******* */
+/* ****** 28) Create table dbo.backups_all_servers ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '27) Create table dbo.backups_all_servers';
+	print '28) Create table dbo.backups_all_servers';
 go
 CREATE TABLE [dbo].[backups_all_servers]
 (
@@ -1099,9 +1141,9 @@ CREATE TABLE [dbo].[backups_all_servers]
 ) ON [PRIMARY]
 GO
 
-/* ****** 28) Create table dbo.backups_all_servers__staging ******* */
+/* ****** 29) Create table dbo.backups_all_servers__staging ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '28) Create table dbo.backups_all_servers__staging';
+	print '29) Create table dbo.backups_all_servers__staging';
 go
 CREATE TABLE [dbo].[backups_all_servers__staging]
 (
@@ -1131,9 +1173,9 @@ CREATE TABLE [dbo].[backups_all_servers__staging]
 ) ON [PRIMARY]
 GO
 
-/* ****** 29) Create table dbo.services_all_servers ******* */
+/* ****** 30) Create table dbo.services_all_servers ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '29) Create table dbo.services_all_servers';
+	print '30) Create table dbo.services_all_servers';
 go
 CREATE TABLE [dbo].[services_all_servers]
 (
@@ -1155,9 +1197,9 @@ CREATE TABLE [dbo].[services_all_servers]
 ) ON [PRIMARY]
 GO
 
-/* ****** 30) Create table dbo.services_all_servers__staging ******* */
+/* ****** 31) Create table dbo.services_all_servers__staging ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '30) Create table dbo.services_all_servers__staging';
+	print '31) Create table dbo.services_all_servers__staging';
 go
 CREATE TABLE [dbo].[services_all_servers__staging]
 (
@@ -1178,9 +1220,9 @@ CREATE TABLE [dbo].[services_all_servers__staging]
 ) ON [PRIMARY]
 GO
 
-/* ****** 31) Create table dbo.alert_history_all_servers ******* */
+/* ****** 32) Create table dbo.alert_history_all_servers ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '31) Create table dbo.alert_history_all_servers';
+	print '32) Create table dbo.alert_history_all_servers';
 go
 create table [dbo].[alert_history_all_servers]
 (
@@ -1198,9 +1240,9 @@ create table [dbo].[alert_history_all_servers]
 ) on ps_dba_datetime2_daily ([collection_time_utc]);
 go
 
-/* ****** 32) Add dbo.purge_table entry for dbo.alert_history_all_servers ******* */
+/* ****** 33) Add dbo.purge_table entry for dbo.alert_history_all_servers ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '32) Add dbo.purge_table entry for dbo.alert_history_all_servers';
+	print '33) Add dbo.purge_table entry for dbo.alert_history_all_servers';
 go
 if not exists (select 1 from dbo.purge_table where table_name = 'dbo.alert_history_all_servers')
 begin
@@ -1214,9 +1256,9 @@ begin
 end
 go
 
-/* ****** 33) Create table dbo.sent_alert_history_all_servers ******* */
+/* ****** 34) Create table dbo.sent_alert_history_all_servers ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '33) Create table dbo.sent_alert_history_all_servers';
+	print '34) Create table dbo.sent_alert_history_all_servers';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sent_alert_history_all_servers]') AND type in (N'U'))
 BEGIN
@@ -1226,18 +1268,18 @@ BEGIN
 END
 go
 
-/* ****** 34) Create table dbo.alert_history_all_servers_last_actioned ******* */
+/* ****** 35) Create table dbo.alert_history_all_servers_last_actioned ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '34) Create table dbo.alert_history_all_servers_last_actioned';
+	print '35) Create table dbo.alert_history_all_servers_last_actioned';
 go
 create table dbo.alert_history_all_servers_last_actioned
 (	updated_time_utc datetime2 not null  );
 go
 
 
-/* ****** 35) Create table dbo.sma_errorlog ******* */
+/* ****** 36) Create table dbo.sma_errorlog ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '35) Create table dbo.sma_errorlog';
+	print '36) Create table dbo.sma_errorlog';
 go
 -- drop table [dbo].[sma_errorlog]
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sma_errorlog]') AND type in (N'U'))
@@ -1258,9 +1300,9 @@ BEGIN
 END
 go
 
-/* ****** 36) Add dbo.purge_table entry for dbo.sma_errorlog ******* */
+/* ****** 37) Add dbo.purge_table entry for dbo.sma_errorlog ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '36) Add dbo.purge_table entry for dbo.sma_errorlog';
+	print '37) Add dbo.purge_table entry for dbo.sma_errorlog';
 go
 if not exists (select 1 from dbo.purge_table where table_name = 'dbo.sma_errorlog')
 begin
@@ -1274,9 +1316,9 @@ begin
 end
 go
 
-/* ****** 37) Create table dbo.sma_params ******* */
+/* ****** 38) Create table dbo.sma_params ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '37) Create table dbo.sma_params';
+	print '38) Create table dbo.sma_params';
 go
 --drop table dbo.sma_params
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sma_params]') AND type in (N'U'))
@@ -1298,7 +1340,7 @@ END
 go
 
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '37.a) Populate table dbo.sma_params';
+	print '38.a) Populate table dbo.sma_params';
 go
 if OBJECT_ID('dbo.sma_params') is not null
 begin
@@ -1369,7 +1411,9 @@ begin
 			('smtp_server_port','587','SMTP Server Port'),
 			('smtp_account_name','some_smtp_account@gmail.com','Account having access to SMTP Server'),
 			('alert_sender_email','alert_sender_email@gmail.com','EMail used for sending Email alerts'),
-			('send_sqlmonitor_job_failure_mail','1','When enabled, then job failure mail is send to DBA team')
+			('send_sqlmonitor_job_failure_mail','1','When enabled, then job failure mail is send to DBA team'),
+			('all_server_volatile_info-parallelize','no','When enabled, then volatile info is collected in parallel threads'),
+			('all_server_volatile_info-parallel-threads',(select case when cpu_count > 4 then 4 else cpu_count end from sys.dm_os_sys_info as osi),'parallel threads/jobs for Volatile Info collection')
 		) my_keys (param_key, param_value, remarks)
 	left join dbo.sma_params p
 		on p.param_key = my_keys.param_key
@@ -1378,9 +1422,9 @@ end
 go
 
 
-/* ***** 38) Create table dbo.sma_servers ***************************** */
+/* ***** 39) Create table dbo.sma_servers ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '38) Create table dbo.sma_servers';
+	print '39) Create table dbo.sma_servers';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_servers') AND type in (N'U'))
 BEGIN	
@@ -1430,9 +1474,9 @@ BEGIN
 END
 go
 
-/* ***** 39) Create table dbo.sma_sql_server_extended_info ***************************** */
+/* ***** 40) Create table dbo.sma_sql_server_extended_info ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '39) Create table dbo.sma_sql_server_extended_inf';
+	print '40) Create table dbo.sma_sql_server_extended_inf';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_sql_server_extended_info') AND type in (N'U'))
 BEGIN	
@@ -1478,7 +1522,7 @@ END
 go
 
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '39.a) Add constraint chk_data_center on table dbo.sma_sql_server_extended_info';
+	print '40.a) Add constraint chk_data_center on table dbo.sma_sql_server_extended_info';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'chk_data_center') and parent_object_id = OBJECT_ID(N'dbo.sma_sql_server_extended_info'))
 BEGIN	
@@ -1488,11 +1532,11 @@ END
 go
 
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '40) Create table dbo.sma_sql_server_hosts';
+	print '41) Create table dbo.sma_sql_server_hosts';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_sql_server_hosts') AND type in (N'U'))
 BEGIN	
-	/* ***** 40) Create table dbo.sma_sql_server_hosts ***************************** */
+	/* ***** 41) Create table dbo.sma_sql_server_hosts ***************************** */
 		/*
 			ALTER TABLE dbo.sma_sql_server_hosts SET ( SYSTEM_VERSIONING = OFF);
 			drop table dbo.sma_sql_server_hosts;
@@ -1526,11 +1570,11 @@ END
 go
 
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '41) Create table dbo.sma_hadr_ag';
+	print '42) Create table dbo.sma_hadr_ag';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_hadr_ag') AND type in (N'U'))
 BEGIN
-	/* ***** 41) Create table dbo.sma_hadr_ag ***************************** */
+	/* ***** 42) Create table dbo.sma_hadr_ag ***************************** */
 		/*
 			ALTER TABLE dbo.sma_hadr_ag SET ( SYSTEM_VERSIONING = OFF);
 			drop table dbo.sma_hadr_ag;
@@ -1570,11 +1614,11 @@ go
 
 
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '42) Create table dbo.sma_hadr_sql_cluster';
+	print '43) Create table dbo.sma_hadr_sql_cluster';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_hadr_sql_cluster') AND type in (N'U'))
 BEGIN
-	/* ***** 42) Create table dbo.sma_hadr_sql_cluster ***************************** */
+	/* ***** 43) Create table dbo.sma_hadr_sql_cluster ***************************** */
 		/*
 			ALTER TABLE dbo.sma_hadr_sql_cluster SET ( SYSTEM_VERSIONING = OFF);
 			drop table dbo.sma_hadr_sql_cluster;
@@ -1606,11 +1650,11 @@ go
 
 
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '43) Create table dbo.sma_hadr_mirroring';
+	print '44) Create table dbo.sma_hadr_mirroring';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_hadr_mirroring') AND type in (N'U'))
 BEGIN
-	/* ***** 43) Create table dbo.sma_hadr_mirroring ***************************** */
+	/* ***** 44) Create table dbo.sma_hadr_mirroring ***************************** */
 		/*
 			ALTER TABLE dbo.sma_hadr_mirroring SET ( SYSTEM_VERSIONING = OFF);
 			drop table dbo.sma_hadr_mirroring;
@@ -1638,11 +1682,11 @@ go
 
 
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '44) Create table dbo.sma_hadr_log_shipping';
+	print '45) Create table dbo.sma_hadr_log_shipping';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_hadr_log_shipping') AND type in (N'U'))
 BEGIN
-	/* ***** 44) Create table dbo.sma_hadr_log_shipping ***************************** */
+	/* ***** 45) Create table dbo.sma_hadr_log_shipping ***************************** */
 		/*
 			ALTER TABLE dbo.sma_hadr_log_shipping SET ( SYSTEM_VERSIONING = OFF);
 			drop table dbo.sma_hadr_log_shipping;
@@ -1669,11 +1713,11 @@ go
 
 
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '45) Create table dbo.sma_hadr_transaction_replication_publishers';
+	print '46) Create table dbo.sma_hadr_transaction_replication_publishers';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_hadr_transaction_replication_publishers') AND type in (N'U'))
 BEGIN
-	/* ***** 45) Create table dbo.sma_hadr_transaction_replication_publishers ***************************** */
+	/* ***** 46) Create table dbo.sma_hadr_transaction_replication_publishers ***************************** */
 		/*
 			ALTER TABLE dbo.sma_hadr_transaction_replication_publishers SET ( SYSTEM_VERSIONING = OFF);
 			drop table dbo.sma_hadr_transaction_replication_publishers;
@@ -1701,11 +1745,11 @@ go
 
 
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '46) Create table dbo.sma_applications';
+	print '47) Create table dbo.sma_applications';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_applications') AND type in (N'U'))
 BEGIN
-	/* ***** 46) Create table dbo.sma_applications ***************************** */
+	/* ***** 47) Create table dbo.sma_applications ***************************** */
 		/*
 			ALTER TABLE dbo.sma_applications SET ( SYSTEM_VERSIONING = OFF);
 			drop table dbo.sma_applications;
@@ -1733,11 +1777,11 @@ go
 
 
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '47) Create table dbo.sma_applications_server_xref';
+	print '48) Create table dbo.sma_applications_server_xref';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_applications_server_xref') AND type in (N'U'))
 BEGIN
-	/* ***** 47) Create table dbo.sma_applications_server_xref ***************************** */
+	/* ***** 48) Create table dbo.sma_applications_server_xref ***************************** */
 		/*
 			ALTER TABLE dbo.sma_applications_server_xref SET ( SYSTEM_VERSIONING = OFF);
 			drop table dbo.sma_applications_server_xref;
@@ -1766,11 +1810,11 @@ go
 
 
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '48) Create table dbo.sma_applications_database_xref';
+	print '49) Create table dbo.sma_applications_database_xref';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_applications_database_xref') AND type in (N'U'))
 BEGIN
-	/* ***** 48) Create table dbo.sma_applications_database_xref ***************************** */
+	/* ***** 49) Create table dbo.sma_applications_database_xref ***************************** */
 		/*
 			ALTER TABLE dbo.sma_applications_database_xref SET ( SYSTEM_VERSIONING = OFF);
 			drop table dbo.sma_applications_database_xref;
@@ -1799,9 +1843,9 @@ END
 go
 
 
-/*	***** 49) Create view dbo.sma_sql_servers **************************** */
+/*	***** 50) Create view dbo.sma_sql_servers **************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '49) Create view dbo.sma_sql_servers';
+	print '50) Create view dbo.sma_sql_servers';
 go
 create or alter view dbo.sma_sql_servers
 as
@@ -1878,9 +1922,9 @@ and s.is_decommissioned = 0;
 go
 
 
-/*	***** 50) Create view dbo.sma_sql_servers_including_offline **************************** */
+/*	***** 51) Create view dbo.sma_sql_servers_including_offline **************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '50) Create view dbo.sma_sql_servers_including_offline';
+	print '51) Create view dbo.sma_sql_servers_including_offline';
 go
 create or alter view dbo.sma_sql_servers_including_offline
 as
@@ -1957,9 +2001,9 @@ where 1=1
 go
 
 
-/* ***** 51) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers ***************************** */
+/* ***** 52) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '51) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers';
+	print '52) Create Trigger dbo.tgr_dml__fk_validation_sma_servers__server on dbo.sma_servers';
 GO
 -- drop trigger dbo.tgr_dml__fk_validation_sma_servers__server;
 create or alter trigger dbo.tgr_dml__fk_validation_sma_servers__server
@@ -1976,9 +2020,9 @@ begin
 end
 go
 
-/* ***** 52) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers ***************************** */
+/* ***** 53) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '52) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers';
+	print '53) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers';
 GO
 create or alter trigger dbo.tgr_dml__sma_servers__server_owner_email__validation
 	on dbo.sma_servers
@@ -2009,9 +2053,9 @@ end
 go
 
 
-/* ***** 53) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications ***************************** */
+/* ***** 54) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '53) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications';
+	print '54) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications';
 GO
 create or alter trigger dbo.tgr_dml__sma_applications__email__validation
 	on dbo.sma_applications
@@ -2049,9 +2093,9 @@ end
 go
 
 
-/* ***** 54) Create table dbo.login_email_mapping ***************************** */
+/* ***** 55) Create table dbo.login_email_mapping ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '54) Create table dbo.login_email_mapping';
+	print '55) Create table dbo.login_email_mapping';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.login_email_mapping') AND type in (N'U'))
 BEGIN	
@@ -2078,9 +2122,9 @@ END
 go
 
 
-/* ***** 55) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping ***************************** */
+/* ***** 56) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '55) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping';
+	print '56) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping';
 go
 create or alter trigger dbo.tgr_dml__login_email_mapping__email__validation
 	on dbo.login_email_mapping
@@ -2111,9 +2155,9 @@ end
 go
 
 
-/* ***** 56) Create table dbo.all_server_login_expiry_info ***************************** */
+/* ***** 57) Create table dbo.all_server_login_expiry_info ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '56) Create table dbo.all_server_login_expiry_info';
+	print '57) Create table dbo.all_server_login_expiry_info';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.all_server_login_expiry_info') AND type in (N'U'))
 BEGIN	
@@ -2143,9 +2187,9 @@ BEGIN
 END
 go
 
--- 56.a) Add dbo.purge_table entry for dbo.all_server_login_expiry_info
+-- 57.a) Add dbo.purge_table entry for dbo.all_server_login_expiry_info
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '56.a) Add dbo.purge_table entry for dbo.all_server_login_expiry_info';
+	print '57.a) Add dbo.purge_table entry for dbo.all_server_login_expiry_info';
 go
 if not exists (select 1 from dbo.purge_table where table_name = 'dbo.all_server_login_expiry_info')
 begin
@@ -2160,9 +2204,9 @@ end
 go
 
 
-/* ***** 57) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails] ***************************** */
+/* ***** 58) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails] ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '57) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails]';
+	print '58) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails]';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.server_login_expiry_collection_computed') AND type in (N'U'))
 BEGIN	
@@ -2179,9 +2223,9 @@ END
 go
 
 
-/* ***** 58) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails] ***************************** */
+/* ***** 59) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails] ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '58) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails]';
+	print '59) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails]';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.all_server_login_expiry_info_dashboard') AND type in (N'U'))
 BEGIN	
@@ -2209,9 +2253,9 @@ END
 go
 
 
-/* ***** 59) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance] ***************************** */
+/* ***** 60) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance] ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '59) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance]';
+	print '60) Create table dbo.sma_servers_logs used for [usp_wrapper_populate_sma_sql_instance]';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_servers_logs') AND type in (N'U'))
 BEGIN	
@@ -2229,9 +2273,9 @@ BEGIN
 END
 go
 
-/* ***** 60) Create table dbo.sma_wrapper_sql_server_hosts  ***************************** */
+/* ***** 61) Create table dbo.sma_wrapper_sql_server_hosts  ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '60) Create table dbo.sma_wrapper_sql_server_hosts';
+	print '61) Create table dbo.sma_wrapper_sql_server_hosts';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_wrapper_sql_server_hosts') AND type in (N'U'))
 BEGIN	
@@ -2242,9 +2286,9 @@ BEGIN
 END
 go
 
-/* ***** 61) Create view dbo.vw_all_server_logins ***************************** */
+/* ***** 62) Create view dbo.vw_all_server_logins ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '61) Create view dbo.vw_all_server_logins';
+	print '62) Create view dbo.vw_all_server_logins';
 go
 create or alter view dbo.vw_all_server_logins
 as
@@ -2269,9 +2313,9 @@ left join dbo.sma_servers s
 where 1=1;
 go
 
-/* ***** 62) Create table dbo.sma_server_aliases  ***************************** */
+/* ***** 63) Create table dbo.sma_server_aliases  ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '62) Create table dbo.sma_server_aliases';
+	print '63) Create table dbo.sma_server_aliases';
 go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.sma_server_aliases') AND type in (N'U'))
 BEGIN
@@ -2289,6 +2333,49 @@ BEGIN
 	)
 END
 go
+
+
+/* ***** 64) Create function dbo.fn_IsJobRunning  ***************************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '64) Create function dbo.fn_IsJobRunning';
+go
+IF OBJECT_ID('dbo.fn_IsJobRunning') IS NULL
+	EXEC ('CREATE FUNCTION dbo.fn_IsJobRunning() RETURNS BIT BEGIN RETURN 1 END');
+GO
+ALTER FUNCTION dbo.fn_IsJobRunning(@p_JobName VARCHAR(2000)) 
+	RETURNS BIT
+AS
+BEGIN
+	/*
+		Created By:		Ajay Dwivedi
+		Created Date:	Apr 07, 2019
+		Version:			0.0
+	*/
+	DECLARE @returnValue BIT
+	SET @returnValue = 0;
+
+	IF EXISTS(	SELECT	1
+				FROM msdb.dbo.sysjobactivity ja 
+				LEFT JOIN msdb.dbo.sysjobhistory jh 
+					ON ja.job_history_id = jh.instance_id
+				JOIN msdb.dbo.sysjobs j 
+				ON ja.job_id = j.job_id
+				JOIN msdb.dbo.sysjobsteps js
+					ON ja.job_id = js.job_id
+					AND ISNULL(ja.last_executed_step_id,0)+1 = js.step_id
+				WHERE ja.session_id = (SELECT TOP 1 session_id FROM msdb.dbo.syssessions ORDER BY agent_start_date DESC)
+				AND ja.start_execution_date is not null
+				AND ja.stop_execution_date is null
+				AND LTRIM(RTRIM(j.name)) = @p_JobName
+	)
+	BEGIN
+		SET @returnValue = 1;
+	END
+
+	RETURN @returnValue
+END
+GO
+
 
 
 /*

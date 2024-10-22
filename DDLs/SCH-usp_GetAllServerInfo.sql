@@ -25,6 +25,9 @@ ALTER PROCEDURE dbo.usp_GetAllServerInfo
 	@blocked_threshold_seconds int = 60, 
 	@output nvarchar(max) = null, /* comma separated list of columns required in output */
 	@result_to_table nvarchar(125) = null, /* temp table that should be populated with result */
+	@paginate bit = 0, /* when true, means this proc is running in multiple sessions. So table should not be truncated */
+	@page_count int = 1, /* Divide the server count in these pages */
+	@page_no int = 1, /* Compulate info for servers of this page */
 	@verbose tinyint = 0 /* display debugging messages. 0 = No messages. 1 = Only print messages. 2 = Print & Table Results */
 )
 	--WITH EXECUTE AS OWNER --,RECOMPILE
@@ -216,23 +219,10 @@ BEGIN
 		FROM @_tbl_output_columns;
 	END
 
-	IF @verbose >= 2
-	BEGIN
-		select distinct [RunningQuery] = 'Cursor-Servers', [srvname] = sql_instance
-		from dbo.instance_details
-		where is_available = 1 and is_enabled = 1
-		and	(	(	@servers is null
-				and	is_alias = 0
-				)
-			or	(	@servers is not null
-				and	(	sql_instance in (select srv_name from @_tbl_servers) 
-					--or	source_sql_instance in (select srv_name from @_tbl_servers)
-					)
-				)
-			);
-	END
-
-	DECLARE cur_servers CURSOR LOCAL FORWARD_ONLY FOR
+	-- Populate table to get list of Servers to process
+	if object_id('tempdb..#instance_details') is not null
+		drop table #instance_details
+	;with cte_instance_details as (
 		select distinct [srvname] = sql_instance
 		from dbo.instance_details
 		where is_available = 1 and is_enabled = 1
@@ -244,7 +234,29 @@ BEGIN
 					--or	source_sql_instance in (select srv_name from @_tbl_servers)
 					)
 				)
+			)
+	)
+	,cte_instance_details_paged as (
+		select srvname, page_no = NTILE(@page_count) over (order by srvname)
+		from cte_instance_details
+	)
+	select srvname
+	into #instance_details
+	from cte_instance_details_paged
+	where 1=1
+		and (	@paginate = 0
+			or	( @paginate = 1 and page_no = @page_no )
 			);
+
+	IF @verbose >= 2
+	BEGIN
+		select [RunningQuery] = 'Cursor-Servers', srvname
+		from #instance_details
+	END
+
+	DECLARE cur_servers CURSOR LOCAL FORWARD_ONLY FOR
+		select srvname
+		from #instance_details;
 
 	OPEN cur_servers;
 	FETCH NEXT FROM cur_servers INTO @_srv_name;
@@ -2756,8 +2768,8 @@ on 1=1";
 				set @table_name = 'dbo.'+@result_to_table;
 		end
 
-		-- delete table data
-		if object_id(@table_name) is not null
+		-- delete table data if not running in parallel sessions
+		if object_id(@table_name) is not null and @paginate = 0
 		begin
 			set @_sql = "delete from "+@table_name;
 			exec (@_sql);

@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="(local):LAB\adwivedi">
+        <ConnectionNode Name="(local):21L-LTPABL-1187\Ajay">
           <Created>2022-10-11T15:39:50.2848444+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
@@ -11,8 +11,6 @@
           <Authentication>Windows Authentication</Authentication>
           <InitialDB />
           <LoginTimeout>30</LoginTimeout>
-          <TrustServerCertificate>False</TrustServerCertificate>
-          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -25,14 +23,11 @@
           <Authentication>SQL</Authentication>
           <InitialDB />
           <LoginTimeout>30</LoginTimeout>
-          <TrustServerCertificate>True</TrustServerCertificate>
-          <HostNameInServerCertificate />
-          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="localhost:LAB\adwivedi">
+        <ConnectionNode Name="localhost:21L-LTPABL-1187\Ajay">
           <Created>2023-10-09T17:55:17.115376+05:30</Created>
           <Type>SQL</Type>
           <Server>localhost</Server>
@@ -40,8 +35,6 @@
           <Authentication>Windows Authentication</Authentication>
           <InitialDB>master</InitialDB>
           <LoginTimeout>30</LoginTimeout>
-          <TrustServerCertificate>False</TrustServerCertificate>
-          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -273,8 +266,8 @@
           <FullPath>QRY-XEventMetrics-Workload-Delta-By-Reads.sql</FullPath>
         </FileNode>
         <FileNode Name="RingBuffer-PerfMon-CPU-Memory.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>RingBuffer-PerfMon-CPU-Memory.sql</FullPath>
         </FileNode>

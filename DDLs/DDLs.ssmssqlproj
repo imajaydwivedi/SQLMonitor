@@ -27,6 +27,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="10.253.33.160:bidba.adwivedi">
+          <Created>2024-10-22T16:14:28.5358432+05:30</Created>
+          <Type>SQL</Type>
+          <Server>10.253.33.160</Server>
+          <UserName>bidba.adwivedi</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="localhost:21L-LTPABL-1187\Ajay">
           <Created>2023-10-09T13:26:06.1703448+05:30</Created>
           <Type>SQL</Type>
@@ -572,9 +584,9 @@
           <FullPath>SCH-usp_wrapper_GetAllServerCollectedData.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_wrapper_GetAllServerInfo.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:10.253.33.160:False:bidba.adwivedi</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>10.253.33.160</AssociatedConnSrvName>
+          <AssociatedConnUserName>bidba.adwivedi</AssociatedConnUserName>
           <FullPath>SCH-usp_wrapper_GetAllServerInfo.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_wrapper_populate_sma_sql_instance.sql">
