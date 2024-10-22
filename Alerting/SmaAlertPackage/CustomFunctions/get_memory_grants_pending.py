@@ -24,6 +24,7 @@ set @_sql = "
 			--[free_memory] = avg(available_physical_memory_kb),
 			[ram] = max(si.total_physical_memory_kb),
 			[sql_ram] = ceiling(avg(vih.physical_memory_in_use_kb)),
+      [memory_consumers] = avg(memory_consumers),
 			[collection_time] = max(vih.collection_time)
 	from dbo.all_server_volatile_info_history vih
 	join dbo.all_server_stable_info si on si.srv_name = vih.srv_name
@@ -32,7 +33,7 @@ set @_sql = "
 	and vih.collection_time >= dateadd(minute,-@average_duration_minutes,getdate())
 	group by vih.srv_name
 )
-select 	sql_instance, grants_pending, ram, sql_ram,
+select 	sql_instance, grants_pending, ram, sql_ram, memory_consumers,
 		[state] = case when grants_pending > (@grants_pending_threshold*3) then 'Critical'
 						when grants_pending > (@grants_pending_threshold*2) then 'High'
 						else 'Warning'

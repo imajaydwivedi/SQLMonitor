@@ -18,7 +18,7 @@ class SmaMemoryGrantsPendingAlert(SmaAlert):
 
         self.__df_alert_pyodbc_resultset = None
         #self.__fields_for_display = None
-        self.__fields_for_display = ["sql_instance", "grants_pending", "ram", "sql_ram", "state", "collection_time"]
+        self.__fields_for_display = ["sql_instance", "grants_pending", "ram", "sql_ram", "memory_consumers", "state", "collection_time"]
 
         # severity counts
         self.__critical_count = 0
