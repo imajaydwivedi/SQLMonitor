@@ -763,11 +763,11 @@ BEGIN
 	(	[collection_time], [srv_name], [os_cpu], [sql_cpu], [pcnt_kernel_mode], [page_faults_kb], [blocked_counts], 
 		[blocked_duration_max_seconds], [available_physical_memory_kb], [system_high_memory_signal_state], 
 		[physical_memory_in_use_kb], [memory_grants_pending], [connection_count], [active_requests_count], 
-		[waits_per_core_per_minute], [avg_disk_wait_ms] )
+		[waits_per_core_per_minute], [avg_disk_wait_ms], [page_life_expectancy], [target_server_memory_kb], [total_server_memory_kb], [memory_consumers] )
 	select [collection_time], [srv_name], [os_cpu], [sql_cpu], [pcnt_kernel_mode], [page_faults_kb], [blocked_counts], 
 		[blocked_duration_max_seconds], [available_physical_memory_kb], [system_high_memory_signal_state], 
 		[physical_memory_in_use_kb], [memory_grants_pending], [connection_count], [active_requests_count], 
-		[waits_per_core_per_minute], [avg_disk_wait_ms]
+		[waits_per_core_per_minute], [avg_disk_wait_ms], page_life_expectancy, target_server_memory_kb, total_server_memory_kb, memory_consumers
 	from dbo.all_server_volatile_info vi
 END
 go
