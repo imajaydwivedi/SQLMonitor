@@ -62,7 +62,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.3.1"
+      "version": "11.2.0"
     },
     {
       "type": "datasource",
@@ -149,7 +149,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "Specifies the memory model used by SQL Server to allocate memory. Not nullable.\n\nCONVENTIONAL = SQL Server is using Conventional Memory model to allocate memory. This is default sql memory model when SQL Server service account does not have Lock Pages in Memory privileges during startup.\n\nLOCK_PAGES = SQL Server is using Lock Pages in Memory to allocate memory. This is the default sql memory manager when SQL Server service account possess Lock Pages in Memory privilege during SQL Server startup.\n\nLARGE_PAGES = SQL Server is using Large Pages in Memory to allocate memory. SQL Server uses Large Pages allocator to allocate memory only with Enterprise edition when SQL Server service account possess Lock Pages in Memory privilege during server startup and when Trace Flag 834 is turned ON.",
       "fieldConfig": {
@@ -176,8 +176,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -193,6 +192,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -208,7 +208,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -227,7 +227,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "Memory State on OS",
       "fieldConfig": {
@@ -242,8 +242,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": [
           {
@@ -288,6 +287,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -300,7 +300,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -319,7 +319,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -334,8 +334,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -351,6 +350,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -361,7 +361,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -380,7 +380,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -396,8 +396,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -413,6 +412,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -428,7 +428,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -466,7 +466,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -482,8 +482,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -499,6 +498,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -514,7 +514,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -552,7 +552,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -568,8 +568,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -585,6 +584,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -600,7 +600,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -619,7 +619,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -642,8 +642,7 @@
                 "value": null
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": [
           {
@@ -751,7 +750,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -789,7 +788,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -804,8 +803,7 @@
               }
             ]
           },
-          "unit": "kbytes",
-          "unitScale": true
+          "unit": "kbytes"
         },
         "overrides": []
       },
@@ -821,6 +819,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -832,7 +831,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -851,7 +850,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -878,8 +877,7 @@
               }
             ]
           },
-          "unit": "kbytes",
-          "unitScale": true
+          "unit": "kbytes"
         },
         "overrides": []
       },
@@ -895,6 +893,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "mean"
@@ -906,7 +905,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -925,7 +924,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -941,8 +940,7 @@
               }
             ]
           },
-          "unit": "string",
-          "unitScale": true
+          "unit": "string"
         },
         "overrides": []
       },
@@ -958,6 +956,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -967,7 +966,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -986,7 +985,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1002,8 +1001,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1019,6 +1017,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -1031,7 +1030,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1050,7 +1049,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1078,8 +1077,7 @@
               }
             ]
           },
-          "unit": "percent",
-          "unitScale": true
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -1095,6 +1093,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -1104,7 +1103,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1123,7 +1122,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1138,8 +1137,7 @@
               }
             ]
           },
-          "unit": "percent",
-          "unitScale": true
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -1155,6 +1153,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -1164,7 +1163,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1183,7 +1182,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1214,8 +1213,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1231,6 +1229,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -1240,7 +1239,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1286,7 +1285,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "select count(*) as blocked_counts\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000)",
       "fieldConfig": {
@@ -1315,8 +1314,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": []
       },
@@ -1332,6 +1330,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "",
@@ -1341,7 +1340,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1360,7 +1359,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "Total RAM Used by SQL Server Instance Process",
       "fieldConfig": {
@@ -1377,8 +1376,7 @@
               }
             ]
           },
-          "unit": "kbytes",
-          "unitScale": true
+          "unit": "kbytes"
         },
         "overrides": []
       },
@@ -1394,6 +1392,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -1405,7 +1404,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1443,7 +1442,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "% Usage of memory that is allocated to SQL Server",
       "fieldConfig": {
@@ -1471,8 +1470,7 @@
               }
             ]
           },
-          "unit": "percent",
-          "unitScale": true
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -1498,7 +1496,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1517,7 +1515,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "select * from sys.dm_exec_connections",
       "fieldConfig": {
@@ -1541,8 +1539,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": []
       },
@@ -1558,6 +1555,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "",
@@ -1567,7 +1565,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1586,7 +1584,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1600,8 +1598,7 @@
                 "value": null
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": []
       },
@@ -1617,6 +1614,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -1629,7 +1627,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1648,7 +1646,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1676,8 +1674,7 @@
               }
             ]
           },
-          "unit": "percent",
-          "unitScale": true
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -1693,6 +1690,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -1702,7 +1700,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1721,7 +1719,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1736,8 +1734,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": [
           {
@@ -1769,6 +1766,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -1781,7 +1779,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1800,7 +1798,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1815,8 +1813,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": [
           {
@@ -1848,6 +1845,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -1860,7 +1858,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1879,7 +1877,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -1895,8 +1893,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1912,6 +1909,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -1926,7 +1924,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1945,7 +1943,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "select max(wait_time)/1000 as wait_time_s\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000)",
       "fieldConfig": {
@@ -1990,8 +1988,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -2007,6 +2004,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "",
@@ -2016,7 +2014,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2035,7 +2033,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2071,8 +2069,7 @@
                 "value": 25
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": []
       },
@@ -2088,6 +2085,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -2099,7 +2097,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2118,7 +2116,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "Physical Disk Operation being done for Queries",
       "fieldConfig": {
@@ -2145,8 +2143,7 @@
               }
             ]
           },
-          "unit": "kbytes",
-          "unitScale": true
+          "unit": "kbytes"
         },
         "overrides": []
       },
@@ -2162,6 +2159,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -2174,7 +2172,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2193,7 +2191,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "Should be > 70%",
       "fieldConfig": {
@@ -2212,8 +2210,7 @@
               }
             ]
           },
-          "unit": "percent",
-          "unitScale": true
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -2229,6 +2226,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -2239,7 +2237,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2257,8 +2255,9 @@
     },
     {
       "datasource": {
+        "default": false,
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "Should be < 10 ms",
       "fieldConfig": {
@@ -2302,8 +2301,7 @@
               }
             ]
           },
-          "unit": "ms",
-          "unitScale": true
+          "unit": "ms"
         },
         "overrides": []
       },
@@ -2319,6 +2317,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -2329,7 +2328,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2340,7 +2339,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select $avg_disk_wait_ms",
+          "rawSql": "select $avg_disk_latency_ms",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2367,7 +2366,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -2407,8 +2406,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -2424,6 +2422,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -2436,7 +2435,7 @@
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2474,7 +2473,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -2489,8 +2488,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": []
       },
@@ -2506,6 +2504,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -2518,7 +2517,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2537,7 +2536,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -2552,8 +2551,7 @@
               }
             ]
           },
-          "unit": "dateTimeAsSystem",
-          "unitScale": true
+          "unit": "dateTimeAsSystem"
         },
         "overrides": []
       },
@@ -2569,6 +2567,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -2581,7 +2580,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2600,7 +2599,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLMONITOR}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2640,8 +2639,7 @@
                 "value": null
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": [
           {
@@ -2806,7 +2804,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2854,7 +2852,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -3317,7 +3315,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "https://sqlperformance.com/2014/10/sql-performance/knee-jerk-page-life-expectancy",
           "fieldConfig": {
@@ -3461,7 +3459,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "Blocking Details____In Selected Time Duration____Since____${__from:date:YYYY-MM-DD HH.mm}___till___${whoisactive_collection_time_utc:date:YYYY-MM-DD HH.mm}____",
           "fieldConfig": {
@@ -3697,7 +3695,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from $whoisactive_table_name\nwhere (w.blocking_session_id is null and blocked_session_count > 0)",
           "fieldConfig": {
@@ -3795,7 +3793,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from $whoisactive_table_name\nwhere (w.blocking_session_id is null and blocked_session_count > 0)",
           "fieldConfig": {
@@ -3921,7 +3919,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -4067,7 +4065,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -4311,7 +4309,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select [collection_time], [data_size_mb], [data_used_mb], [data_used_pct], [log_size_mb], [log_used_mb], [log_used_pct], [version_store_mb], [version_store_pct]\nfrom dbo.tempdb_space_usage tsu\nwhere 1=1\nand tsu.collection_time = (select top 1 i.collection_time from dbo.tempdb_space_usage i order by i.collection_time desc)",
           "fieldConfig": {
@@ -4720,7 +4718,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select [collection_time], [usage_rank], [spid], [login_name], [program_name], [host_name], [host_process_id], [is_active_session], [open_transaction_count], [transaction_isolation_level], [size_bytes], [transaction_begin_time], [is_snapshot], [log_bytes], [log_rsvd], [action_taken] \nfrom dbo.tempdb_space_consumers tsc \nwhere 1=1 \nand tsc.collection_time = (select top 1 i.collection_time from dbo.tempdb_space_usage i order by i.collection_time desc)\nand (tsc.size_bytes > 0 or tsc.is_snapshot = 1)",
           "fieldConfig": {
@@ -5143,7 +5141,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select [collection_time], [database_name], [recovery_model], [log_reuse_wait_desc], [log_size_mb], [log_used_mb], [exists_valid_autogrowing_file], [log_used_pct], [log_used_pct_threshold], [log_used_gb_threshold], [spid], [transaction_start_time], [login_name], [program_name], [host_name], [host_process_id], [command], [additional_info], [action_taken], [sql_text], [is_pct_threshold_valid], [is_gb_threshold_valid], [threshold_condition], [thresholds_validated]\nfrom dbo.log_space_consumers lsc\nwhere 1=1\nand lsc.collection_time = (select top 1 i.collection_time from dbo.log_space_consumers i order by i.collection_time desc)",
           "fieldConfig": {
@@ -5617,7 +5615,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "",
           "fieldConfig": {
@@ -5802,7 +5800,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -6059,7 +6057,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "https://sqlperformance.com/2014/10/sql-performance/knee-jerk-page-life-expectancy",
           "fieldConfig": {
@@ -6203,7 +6201,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "https://sqlperformance.com/2014/10/sql-performance/knee-jerk-page-life-expectancy",
           "fieldConfig": {
@@ -6349,7 +6347,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from sys.dm_exec_requests r where blocking_session_id <> 0",
           "fieldConfig": {
@@ -6424,7 +6422,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from sys.dm_exec_connections",
           "fieldConfig": {
@@ -6516,7 +6514,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from sys.dm_exec_connections",
           "fieldConfig": {
@@ -6608,7 +6606,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from sys.dm_exec_connections",
           "fieldConfig": {
@@ -6700,7 +6698,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from sys.dm_exec_connections",
           "fieldConfig": {
@@ -6809,7 +6807,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from [$inventory_db].$os_task_list_table_name",
           "fieldConfig": {
@@ -6935,7 +6933,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from [$inventory_db].$os_task_list_table_name",
           "fieldConfig": {
@@ -7092,7 +7090,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from [$inventory_db].$os_task_list_table_name",
           "fieldConfig": {
@@ -7199,7 +7197,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from [$inventory_db].$os_task_list_table_name",
           "fieldConfig": {
@@ -7337,7 +7335,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -7590,7 +7588,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "",
           "fieldConfig": {
@@ -8247,7 +8245,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -8475,7 +8473,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLMONITOR}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from dbo.BlitzFirst_WaitStats_Deltas\nhttps://www.sqlskills.com/blogs/paul/wait-statistics-or-please-tell-me-where-it-hurts/",
           "fieldConfig": {
@@ -8664,11 +8662,7 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "SQLMonitor",
-          "value": "ygPVA4snk"
-        },
+        "current": {},
         "description": "Inventory Server Name",
         "hide": 2,
         "includeAll": false,
@@ -8687,7 +8681,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"\nselect distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "hide": 0,
@@ -8727,7 +8721,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
         "hide": 2,
@@ -8767,7 +8761,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select host_name from dbo.instance_details\nwhere sql_instance = @sql_instance order by created_date_utc\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "hide": 0,
@@ -8807,7 +8801,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect case when @@servicename = 'MSSQLSERVER' then @@servicename else 'mssql$'+@@servicename end;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "hide": 0,
@@ -8890,7 +8884,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "description": "IP Address of Sql Instance",
@@ -8931,7 +8925,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"declare @server_product_version varchar(20);\n\nSET @server_product_version = CONVERT(varchar,SERVERPROPERTY('ProductVersion'));\nSELECT\t[@server_product_version] = @server_product_version\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "hide": 2,
@@ -8971,7 +8965,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar, @@servicename) as [instance_name]\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "hide": 2,
@@ -9051,7 +9045,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select top 1 collection_time_utc\nfrom $os_task_list_table_name with (nolock)\nwhere host_name = @perfmon_host_name\norder by collection_time_utc desc;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9111,7 +9105,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @start_time datetime = $__timeFrom()\ndeclare @end_time datetime = $__timeTo();\n\ndeclare @_duration_minute int = datediff(minute,@start_time,@end_time);\nselect [@delta_minutes] = (case when @_duration_minute <= 30 then 1 \n                                                           when @_duration_minute <= 60 then 2\n                                                           when @_duration_minute <= 120 then 5\n                                                           when @_duration_minute <= 480 then 10\n                                                           when @_duration_minute <= 1440 then 15\n                                                           when @_duration_minute <= 2880 then 20\n                                                           when @_duration_minute <= 10080 then 30\n                                                           else 60 end);\n",
         "hide": 2,
@@ -9150,7 +9144,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9190,7 +9184,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\tevent_time_utc\n\t\t*/\n\t\tsystem_cpu\n\t\t/*\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9230,7 +9224,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t*/\n\t\tidle_system_cpu\n\t\t/*\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9270,7 +9264,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t*/\n\t\tkernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t/*\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9330,7 +9324,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect count(*) as blocked_counts --, max(wait_time)/1000 as wait_time_s\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000) -- Over 60 seconds\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9370,7 +9364,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\tosm.total_physical_memory_kb\n\t\t--,osm.available_physical_memory_kb\n\t\t--,case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]\n\t\t--,opm.physical_memory_in_use_kb\n\t\t--,opm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9410,7 +9404,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\t--osm.total_physical_memory_kb\n\t\t--osm.available_physical_memory_kb\n\t\tconvert(int,system_high_memory_signal_state)\n\t\t--,opm.physical_memory_in_use_kb\n\t\t--,opm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9450,7 +9444,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\t--osm.total_physical_memory_kb\n\t\t--osm.available_physical_memory_kb\n\t\t--case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]\n\t\t--opm.physical_memory_in_use_kb\n\t\topm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9490,7 +9484,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"declare @object_name varchar(255);\nset @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);\n\nSELECT cntr_value \nFROM sys.dm_os_performance_counters WITH (NOLOCK) \nWHERE [object_name] like (@object_name+':Buffer Manager%') AND counter_name = N'Page life expectancy'\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9530,7 +9524,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\ndeclare @server_product_version varchar(20);\ndeclare @server_major_version_number tinyint;\ndeclare @server_minor_version_number smallint;\n\nSET @server_product_version = CONVERT(varchar,SERVERPROPERTY('ProductVersion'));\nSET @server_major_version_number = CONVERT(tinyint, SERVERPROPERTY('ProductMajorVersion'));\n\nif @server_major_version_number is null\nbegin\n\t;with t_versions as \n\t( select CONVERT(varchar,SERVERPROPERTY('ProductVersion')) as ProductVersion\n\t\t\t ,LEFT(CONVERT(varchar,SERVERPROPERTY('ProductVersion')), CHARINDEX('.',CONVERT(varchar,SERVERPROPERTY('ProductVersion')))-1) AS MajorVersion\n\t)\n\tselect @server_major_version_number = MajorVersion from t_versions;\nend\n\ndeclare @server_minor_version_number_intermediate varchar(20);\nset @server_minor_version_number_intermediate = REPLACE(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.'+CONVERT(varchar, SERVERPROPERTY('ProductMinorVersion'))+'.','');\n\nif(@server_minor_version_number_intermediate is null)\nbegin\n\t;with t_versions as\n\t( select replace(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.','') as VrsnString )\n\tselect @server_minor_version_number_intermediate = REPLACE(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.'+LEFT(VrsnString,CHARINDEX('.',VrsnString)-1)+'.','')\n\tfrom t_versions;\nend\n\nset @server_minor_version_number = left(@server_minor_version_number_intermediate,charindex('.',@server_minor_version_number_intermediate)-1);\n\nSELECT\t[@server_minor_version_number] = @server_minor_version_number\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9570,7 +9564,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\n--\tQuery to find what's is running on server\nSELECT\tCOUNT(*) as active_request_count\nFROM\tsys.dm_exec_sessions AS s\nLEFT JOIN sys.dm_exec_requests AS r ON r.session_id = s.session_id\nOUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS st\nOUTER APPLY sys.dm_exec_query_plan(r.plan_handle) AS bqp\nOUTER APPLY sys.dm_exec_text_query_plan(r.plan_handle,r.statement_start_offset, r.statement_end_offset) as sqp\nWHERE\ts.session_id != @@SPID\n\tAND (\t(CASE\tWHEN\ts.session_id IN (select ri.blocking_session_id from sys.dm_exec_requests as ri )\n\t\t\t\t\t--\tGet sessions involved in blocking (including system sessions)\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tWHEN\tr.blocking_session_id IS NOT NULL AND r.blocking_session_id <> 0\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tELSE\t0\n\t\t\tEND) = 1\n\t\t\tOR\n\t\t\t(CASE\tWHEN\ts.session_id > 50\n\t\t\t\t\t\t\tAND r.session_id IS NOT NULL -- either some part of session has active request\n\t\t\t\t\t\t\t--AND ISNULL(open_resultset_count,0) > 0 -- some result is open\n\t\t\t\t\t\t\tAND s.status <> 'sleeping'\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tELSE\t0\n\t\t\tEND) = 1\n\t\t\tOR\n\t\t\t(CASE\tWHEN\ts.session_id > 50\n\t\t\t\t\t\t\tAND ISNULL(r.open_transaction_count,0) > 0\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tELSE\t0\n\t\t\tEND) = 1\n\t\t);\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9630,7 +9624,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 collection_time_utc\nfrom $diskspace_table_name with (nolock)\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9670,7 +9664,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(tinyint,SERVERPROPERTY('IsClustered')) as IsClustered;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9710,7 +9704,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select case when $is_hadr_enabled = 1 then 'AG' else 'Cluster' end",
         "hide": 2,
@@ -9820,7 +9814,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server'\n\t\t\t\t,@output = 'host_distribution'",
         "hide": 2,
@@ -9860,7 +9854,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 [collection_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time)\nfrom [dbo].[tempdb_space_usage] tsu\norder by collection_time desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
@@ -9900,7 +9894,7 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLMONITOR}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"declare @avg_disk_wait_ms bigint;\nexec usp_avg_disk_wait_ms @avg_disk_wait_ms = @avg_disk_wait_ms output;\nselect [avg_disk_wait_ms] = @avg_disk_wait_ms;\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "hide": 2,
@@ -9910,6 +9904,26 @@
         "name": "avg_disk_wait_ms",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"declare @avg_disk_wait_ms bigint;\nexec usp_avg_disk_wait_ms @avg_disk_wait_ms = @avg_disk_wait_ms output;\nselect [avg_disk_wait_ms] = @avg_disk_wait_ms;\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLMONITOR}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"exec usp_avg_disk_latency_ms\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Avg Disk Latency MilliSeconds",
+        "multi": false,
+        "name": "avg_disk_latency_ms",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"exec usp_avg_disk_latency_ms\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -9934,6 +9948,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - Distributed",
   "uid": "distributed_live_dashboard",
-  "version": 91,
+  "version": 93,
   "weekStart": ""
 }

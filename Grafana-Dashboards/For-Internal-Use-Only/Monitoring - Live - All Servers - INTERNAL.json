@@ -25,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 21,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -69,8 +69,7 @@
                     "color": "green"
                   }
                 ]
-              },
-              "unitScale": true
+              }
             },
             "overrides": [
               {
@@ -384,7 +383,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 9
+            "y": 1
           },
           "id": 219,
           "options": {
@@ -399,7 +398,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "10.3.1",
+          "pluginVersion": "11.2.0",
           "targets": [
             {
               "alias": "",
@@ -483,8 +482,7 @@
                   }
                 ]
               },
-              "unit": "string",
-              "unitScale": true
+              "unit": "string"
             },
             "overrides": [
               {
@@ -782,7 +780,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 10
+            "y": 2
           },
           "id": 850,
           "options": {
@@ -799,7 +797,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "10.3.1",
+          "pluginVersion": "11.2.0",
           "targets": [
             {
               "datasource": {
@@ -873,8 +871,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent",
-                    "value": null
+                    "color": "transparent"
                   }
                 ]
               }
@@ -916,8 +913,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1086,7 +1082,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.2.0",
           "targets": [
             {
               "alias": "",
@@ -1146,8 +1142,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent",
-                    "value": null
+                    "color": "transparent"
                   }
                 ]
               }
@@ -1189,8 +1184,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1313,8 +1307,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1395,7 +1388,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.2.0",
           "targets": [
             {
               "alias": "",
@@ -1711,8 +1704,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -1734,8 +1726,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "purple",
-                          "value": null
+                          "color": "purple"
                         }
                       ]
                     }
@@ -1758,8 +1749,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple",
-                          "value": null
+                          "color": "super-light-purple"
                         }
                       ]
                     }
@@ -1806,8 +1796,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "dark-blue",
-                          "value": null
+                          "color": "dark-blue"
                         }
                       ]
                     }
@@ -1970,8 +1959,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "orange",
@@ -2013,8 +2001,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "yellow",
@@ -2060,8 +2047,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "#EAB839",
@@ -2140,7 +2126,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.2.0",
           "targets": [
             {
               "alias": "",
@@ -2200,8 +2186,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -2223,8 +2208,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "purple",
-                          "value": null
+                          "color": "purple"
                         }
                       ]
                     }
@@ -2247,8 +2231,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple",
-                          "value": null
+                          "color": "super-light-purple"
                         }
                       ]
                     }
@@ -2295,8 +2278,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "dark-blue",
-                          "value": null
+                          "color": "dark-blue"
                         }
                       ]
                     }
@@ -2459,8 +2441,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "orange",
@@ -2502,8 +2483,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "yellow",
@@ -2549,8 +2529,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "#EAB839",
@@ -2629,7 +2608,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.2.0",
           "targets": [
             {
               "alias": "",
@@ -2681,6 +2660,7 @@
       "panels": [
         {
           "datasource": {
+            "default": false,
             "type": "mssql",
             "uid": "${sqlmonitor_datasource}"
           },
@@ -3048,7 +3028,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 6
           },
           "id": 864,
           "options": {
@@ -3063,7 +3043,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.2.0",
           "targets": [
             {
               "datasource": {
@@ -3073,7 +3053,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "declare @_buffer_time_minutes int = 30;\r\ndeclare @_sql nvarchar(max);\r\ndeclare @_params nvarchar(max);\r\n\r\nset @_params = N'@_buffer_time_minutes int';\r\nset quoted_identifier off;\r\nset @_sql = \"\r\nselect\t/* [Tsql-Stop-Job] = 'exec msdb.dbo.sp_stop_job @job_name = '''+sj.JobName+'''' ,\r\n\t\t[Tsql-Start-Job] = 'exec msdb.dbo.sp_start_job @job_name = '''+sj.JobName+'''' , \r\n\t\t*/\r\n\t\t[CollectionTimeUTC] = [UpdatedDateUTC],\r\n\t\tsj.[sql_instance], [JobName],\r\n\t\t[Job-Delay-Minutes] = case when sj.Last_Successful_ExecutionTime is null then 10080 else datediff(minute, sj.Last_Successful_ExecutionTime, dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@_buffer_time_minutes),getutcdate())) end,\r\n\t\t [Last_RunTime], [Last_Run_Duration_Seconds], [Last_Run_Outcome], \r\n\t\t [Successfull_Execution_ClockTime_Threshold_Minutes], \r\n\t\t [Expected_Max_Duration_Minutes],\r\n\t\t [Last_Successful_ExecutionTime], [Last_Successful_Execution_Hours], \r\n\t\t [Running_Since], [Running_StepName], [Running_Since_Min] \r\nfrom dbo.sql_agent_jobs_all_servers sj\r\ninner join dbo.services_all_servers sas\r\n\ton sas.sql_instance = sj.sql_instance\r\n\tand sas.service_type = 'Agent'\r\n\tand sas.status_desc = 'Running'\r\nwhere 1=1\r\nand exists (select 1/0 from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1)\r\nand sj.JobCategory = '(dba) SQLMonitor'\r\nand sj.JobName like '(dba) %'\r\nand sj.IsDisabled = 0\r\nand (\tdateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@_buffer_time_minutes),getutcdate()) > sj.Last_Successful_ExecutionTime\r\n\t\t\tor sj.Last_Successful_ExecutionTime is null\r\n\t\t)\r\n--order by Last_Run_Outcome\r\n\"\r\nset quoted_identifier off;\r\n\r\nexec sp_executesql @_sql, @_params, @_buffer_time_minutes = @_buffer_time_minutes;",
+              "rawSql": "declare @_buffer_time_minutes int = 30;\r\ndeclare @_sql nvarchar(max);\r\ndeclare @_params nvarchar(max);\r\n\r\nset @_params = N'@_buffer_time_minutes int';\r\nset quoted_identifier off;\r\nset @_sql = \"\r\nselect\t/* [Tsql-Stop-Job] = 'exec msdb.dbo.sp_stop_job @job_name = '''+sj.JobName+'''' ,\r\n\t\t[Tsql-Start-Job] = 'exec msdb.dbo.sp_start_job @job_name = '''+sj.JobName+'''' , \r\n\t\t*/\r\n\t\t[CollectionTimeUTC] = [UpdatedDateUTC],\r\n\t\tsj.[sql_instance], [JobName],\r\n\t\t[Job-Delay-Minutes] = case when sj.Last_Successful_ExecutionTime is null then 10080 else datediff(minute, sj.Last_Successful_ExecutionTime, dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@_buffer_time_minutes),getutcdate())) end,\r\n\t\t [Last_RunTime], [Last_Run_Duration_Seconds], [Last_Run_Outcome], \r\n\t\t [Successfull_Execution_ClockTime_Threshold_Minutes], \r\n\t\t [Expected_Max_Duration_Minutes],\r\n\t\t [Last_Successful_ExecutionTime], [Last_Successful_Execution_Hours], \r\n\t\t [Running_Since], [Running_StepName], [Running_Since_Min] \r\nfrom dbo.sql_agent_jobs_all_servers sj\r\ninner join dbo.services_all_servers sas\r\n\ton sas.sql_instance = sj.sql_instance\r\n\tand sas.service_type = 'Agent'\r\n\tand sas.status_desc = 'Running'\r\nwhere 1=1\r\nand exists (select 1/0 from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1)\r\nand sj.JobCategory = '(dba) SQLMonitor'\r\nand sj.JobName like '(dba) %'\r\nand sj.IsDisabled = 0\r\nand (\tisnull(sj.Last_Successful_ExecutionTime,sj.Last_RunTime) < dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@_buffer_time_minutes),getutcdate())\r\n\t\tand (sj.Last_Successful_ExecutionTime is not null or sj.Last_RunTime is not null)\r\n\t)\r\n--order by Last_Run_Outcome\r\n\"\r\nset quoted_identifier off;\r\n\r\nexec sp_executesql @_sql, @_params, @_buffer_time_minutes = @_buffer_time_minutes;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -5492,7 +5472,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 19
+            "y": 11
           },
           "id": 873,
           "options": {
@@ -5507,7 +5487,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.2.0",
           "targets": [
             {
               "dataset": "AdventureWorks2019",
@@ -5574,6 +5554,7 @@
     },
     {
       "datasource": {
+        "default": false,
         "type": "mssql",
         "uid": "${sqlmonitor_datasource}"
       },
@@ -6184,7 +6165,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "avg_disk_wait_ms"
+              "options": "avg_disk_latency_ms"
             },
             "properties": [
               {
@@ -6269,7 +6250,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -6280,7 +6261,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "declare @os_cpu_threshold decimal(20,2) = 70;\ndeclare @sql_cpu_threshold decimal(20,2) = 65;\ndeclare @blocked_counts_threshold int = 1;\ndeclare @blocked_duration_max_seconds_threshold bigint = 60;\ndeclare @available_physical_memory_kb_threshold bigint = (4*1024*1024);\ndeclare @system_high_memory_signal_state_threshold varchar(20) = 'Low';\n--declare @physical_memory_in_use_kb_threshold decimal(20,2);\ndeclare @memory_grants_pending_threshold int = 1;\ndeclare @connection_count_threshold int = 1000;\ndeclare @waits_per_core_per_minute_threshold decimal(20,2) = 180;\ndeclare @avg_disk_wait_ms decimal(20,2) = 10;\ndeclare @_has_inventory bit = 0;\n\nset @_has_inventory = convert(bit,'${has_inventory}');\n\ndeclare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n\nset @params = N'@os_cpu_threshold decimal(20,2), @sql_cpu_threshold decimal(20,2), @blocked_counts_threshold int, \n\t\t\t\t@blocked_duration_max_seconds_threshold bigint, @available_physical_memory_kb_threshold bigint, \n\t\t\t\t@system_high_memory_signal_state_threshold varchar(20), @memory_grants_pending_threshold int, \n\t\t\t\t@connection_count_threshold int, @waits_per_core_per_minute_threshold decimal(20,2), @avg_disk_wait_ms decimal(20,2)';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_cte as (\n\tselect\tsrv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, avg_disk_wait_ms, available_physical_memory_kb,\n            physical_memory_in_use_kb, memory_grants_pending, connection_count, waits_per_core_per_minute, system_high_memory_signal_state\n\tfrom dbo.vw_all_server_info\n)\nselect  *\nfrom t_cte cte\nwhere 1=1\nand (   os_cpu >= @os_cpu_threshold\n    or  sql_cpu >= @sql_cpu_threshold \n    or  blocked_counts >= @blocked_counts_threshold\n    or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold\n    or  ( available_physical_memory_kb < @available_physical_memory_kb_threshold and system_high_memory_signal_state = @system_high_memory_signal_state_threshold )\n    or  memory_grants_pending > @memory_grants_pending_threshold\n    or  connection_count >= @connection_count_threshold\n    or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold\n    or  avg_disk_wait_ms >= @avg_disk_wait_ms\n)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = cte.srv_name)\n\";\nset quoted_identifier off;\n\n--print @sql\nexec dbo.sp_executesql @sql, @params, @os_cpu_threshold, @sql_cpu_threshold, @blocked_counts_threshold, @blocked_duration_max_seconds_threshold, \n@available_physical_memory_kb_threshold, @system_high_memory_signal_state_threshold, @memory_grants_pending_threshold, \n@connection_count_threshold, @waits_per_core_per_minute_threshold, @avg_disk_wait_ms;",
+          "rawSql": "declare @os_cpu_threshold decimal(20,2) = 70;\ndeclare @sql_cpu_threshold decimal(20,2) = 65;\ndeclare @blocked_counts_threshold int = 1;\ndeclare @blocked_duration_max_seconds_threshold bigint = 60;\ndeclare @available_physical_memory_kb_threshold bigint = (4*1024*1024);\ndeclare @system_high_memory_signal_state_threshold varchar(20) = 'Low';\n--declare @physical_memory_in_use_kb_threshold decimal(20,2);\ndeclare @memory_grants_pending_threshold int = 1;\ndeclare @connection_count_threshold int = 1000;\ndeclare @waits_per_core_per_minute_threshold decimal(20,2) = 180;\ndeclare @avg_disk_latency_ms int = 10;\ndeclare @_has_inventory bit = 0;\n\nset @_has_inventory = convert(bit,'${has_inventory}');\n\ndeclare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n\nset @params = N'@os_cpu_threshold decimal(20,2), @sql_cpu_threshold decimal(20,2), @blocked_counts_threshold int, \n\t\t\t\t@blocked_duration_max_seconds_threshold bigint, @available_physical_memory_kb_threshold bigint, \n\t\t\t\t@system_high_memory_signal_state_threshold varchar(20), @memory_grants_pending_threshold int, \n\t\t\t\t@connection_count_threshold int, @waits_per_core_per_minute_threshold decimal(20,2), @avg_disk_latency_ms int';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_cte as (\n\tselect\tsrv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, avg_disk_latency_ms, available_physical_memory_kb,\n            physical_memory_in_use_kb, memory_grants_pending, connection_count, waits_per_core_per_minute, system_high_memory_signal_state\n\tfrom dbo.vw_all_server_info\n)\nselect  *\nfrom t_cte cte\nwhere 1=1\nand (   os_cpu >= @os_cpu_threshold\n    or  sql_cpu >= @sql_cpu_threshold \n    or  blocked_counts >= @blocked_counts_threshold\n    or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold\n    or  ( available_physical_memory_kb < @available_physical_memory_kb_threshold and system_high_memory_signal_state = @system_high_memory_signal_state_threshold )\n    or  memory_grants_pending > @memory_grants_pending_threshold\n    or  connection_count >= @connection_count_threshold\n    or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold\n    or  avg_disk_latency_ms >= @avg_disk_latency_ms\n)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = cte.srv_name)\n\";\nset quoted_identifier off;\n\n--print @sql\nexec dbo.sp_executesql @sql, @params, @os_cpu_threshold, @sql_cpu_threshold, @blocked_counts_threshold, @blocked_duration_max_seconds_threshold, \n@available_physical_memory_kb_threshold, @system_high_memory_signal_state_threshold, @memory_grants_pending_threshold, \n@connection_count_threshold, @waits_per_core_per_minute_threshold, @avg_disk_latency_ms;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6324,25 +6305,21 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 25
+            "y": 66
           },
           "id": 119,
+          "links": [],
           "options": {
             "folderId": 4,
-            "includeVars": false,
-            "keepTime": false,
             "maxItems": 10,
             "query": "",
-            "showFolderNames": false,
             "showHeadings": false,
             "showRecentlyViewed": false,
             "showSearch": true,
             "showStarred": false,
-            "tags": [
-              "sqlmonitor"
-            ]
+            "tags": []
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "9.4.7",
           "title": "Other Dashboards",
           "type": "dashlist"
         }
@@ -6360,7 +6337,7 @@
       "type": "row"
     }
   ],
-  "refresh": "1m",
+  "refresh": "5s",
   "revision": 1,
   "schemaVersion": 39,
   "tags": [
@@ -6375,7 +6352,7 @@
         "current": {
           "selected": false,
           "text": "SQLMonitor",
-          "value": "a28aeb06-bb6e-4c74-81af-65de433776c8"
+          "value": "ygPVA4snk"
         },
         "description": "SQLMonitor Inventory Server Name",
         "hide": 2,
@@ -6413,7 +6390,7 @@
         "name": "server",
         "options": [],
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\nselect distinct srvname = sql_instance from dbo.instance_details\nwhere is_available = 1 and is_enabled =1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,
@@ -6446,8 +6423,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724770060881",
-          "value": "1724770060881"
+          "text": "1729613551080",
+          "value": "1729613551080"
         },
         "datasource": {
           "type": "mssql",
@@ -7150,8 +7127,8 @@
       {
         "current": {
           "selected": false,
-          "text": "7",
-          "value": "7"
+          "text": "4",
+          "value": "4"
         },
         "datasource": {
           "type": "mssql",
@@ -7222,8 +7199,8 @@
       {
         "current": {
           "selected": false,
-          "text": "5",
-          "value": "5"
+          "text": "1",
+          "value": "1"
         },
         "datasource": {
           "type": "mssql",
@@ -7294,8 +7271,8 @@
       {
         "current": {
           "selected": false,
-          "text": "25",
-          "value": "25"
+          "text": "14",
+          "value": "14"
         },
         "datasource": {
           "type": "mssql",
@@ -7318,8 +7295,8 @@
       {
         "current": {
           "selected": false,
-          "text": "5",
-          "value": "5"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -7342,8 +7319,8 @@
       {
         "current": {
           "selected": false,
-          "text": "5",
-          "value": "5"
+          "text": "1",
+          "value": "1"
         },
         "datasource": {
           "type": "mssql",
@@ -7390,8 +7367,8 @@
       {
         "current": {
           "selected": false,
-          "text": "0",
-          "value": "0"
+          "text": "2",
+          "value": "2"
         },
         "datasource": {
           "type": "mssql",
@@ -7535,8 +7512,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724770001384",
-          "value": "1724770001384"
+          "text": "1729613400623",
+          "value": "1729613400623"
         },
         "datasource": {
           "type": "mssql",
@@ -7559,8 +7536,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724770060881",
-          "value": "1724770060881"
+          "text": "1729613551080",
+          "value": "1729613551080"
         },
         "datasource": {
           "type": "mssql",
@@ -7583,8 +7560,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724769546005",
-          "value": "1724769546005"
+          "text": "1729612803062",
+          "value": "1729612803062"
         },
         "datasource": {
           "type": "mssql",
@@ -7607,8 +7584,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724769605043",
-          "value": "1724769605043"
+          "text": "1729613402253",
+          "value": "1729613402253"
         },
         "datasource": {
           "type": "mssql",
@@ -7631,8 +7608,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724767762743",
-          "value": "1724767762743"
+          "text": "1729612801860",
+          "value": "1729612801860"
         },
         "datasource": {
           "type": "mssql",
@@ -7655,8 +7632,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724769300556",
-          "value": "1724769300556"
+          "text": "1729613400723",
+          "value": "1729613400723"
         },
         "datasource": {
           "type": "mssql",
@@ -7679,8 +7656,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724767760840",
-          "value": "1724767760840"
+          "text": "1729607633166",
+          "value": "1729607633166"
         },
         "datasource": {
           "type": "mssql",
@@ -7703,8 +7680,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724769901236",
-          "value": "1724769901236"
+          "text": "",
+          "value": ""
         },
         "datasource": {
           "type": "mssql",
@@ -7727,8 +7704,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724769900896",
-          "value": "1724769900896"
+          "text": "1729613520800",
+          "value": "1729613520800"
         },
         "datasource": {
           "type": "mssql",
@@ -7751,8 +7728,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1724769901120",
-          "value": "1724769901120"
+          "text": "1729613520753",
+          "value": "1729613520753"
         },
         "datasource": {
           "type": "mssql",
@@ -7814,6 +7791,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - All Servers",
   "uid": "distributed_live_dashboard_all_servers",
-  "version": 12,
+  "version": 184,
   "weekStart": ""
 }

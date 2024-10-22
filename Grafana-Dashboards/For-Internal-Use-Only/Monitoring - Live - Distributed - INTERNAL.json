@@ -86,8 +86,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -103,6 +102,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -118,7 +118,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -152,8 +152,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": [
           {
@@ -198,6 +197,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -210,7 +210,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -244,8 +244,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -261,6 +260,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -271,7 +271,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -306,8 +306,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -323,6 +322,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -338,7 +338,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -392,8 +392,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -409,6 +408,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -424,7 +424,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -478,8 +478,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -495,6 +494,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -510,7 +510,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -552,8 +552,7 @@
                 "value": null
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": [
           {
@@ -661,7 +660,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -714,8 +713,7 @@
               }
             ]
           },
-          "unit": "kbytes",
-          "unitScale": true
+          "unit": "kbytes"
         },
         "overrides": []
       },
@@ -731,6 +729,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -742,7 +741,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -788,8 +787,7 @@
               }
             ]
           },
-          "unit": "kbytes",
-          "unitScale": true
+          "unit": "kbytes"
         },
         "overrides": []
       },
@@ -805,6 +803,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "mean"
@@ -816,7 +815,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -851,8 +850,7 @@
               }
             ]
           },
-          "unit": "string",
-          "unitScale": true
+          "unit": "string"
         },
         "overrides": []
       },
@@ -868,6 +866,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -877,7 +876,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -912,8 +911,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -929,6 +927,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -941,7 +940,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -988,8 +987,7 @@
               }
             ]
           },
-          "unit": "percent",
-          "unitScale": true
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -1005,6 +1003,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -1014,7 +1013,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1048,8 +1047,7 @@
               }
             ]
           },
-          "unit": "percent",
-          "unitScale": true
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -1065,6 +1063,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -1074,7 +1073,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1124,8 +1123,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1141,6 +1139,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -1150,7 +1149,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1225,8 +1224,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": []
       },
@@ -1242,6 +1240,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "",
@@ -1251,7 +1250,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1287,8 +1286,7 @@
               }
             ]
           },
-          "unit": "kbytes",
-          "unitScale": true
+          "unit": "kbytes"
         },
         "overrides": []
       },
@@ -1304,6 +1302,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -1315,7 +1314,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1381,8 +1380,7 @@
               }
             ]
           },
-          "unit": "percent",
-          "unitScale": true
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -1408,7 +1406,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1451,8 +1449,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": []
       },
@@ -1468,6 +1465,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "",
@@ -1477,7 +1475,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1510,8 +1508,7 @@
                 "value": null
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": []
       },
@@ -1527,6 +1524,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -1539,7 +1537,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1586,8 +1584,7 @@
               }
             ]
           },
-          "unit": "percent",
-          "unitScale": true
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -1603,6 +1600,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -1612,7 +1610,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1646,8 +1644,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": [
           {
@@ -1679,6 +1676,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -1691,7 +1689,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1725,8 +1723,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": [
           {
@@ -1758,6 +1755,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -1770,7 +1768,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1805,8 +1803,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1822,6 +1819,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -1836,7 +1834,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1900,8 +1898,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1917,6 +1914,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "",
@@ -1926,7 +1924,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -1981,8 +1979,7 @@
                 "value": 25
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": []
       },
@@ -1998,6 +1995,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -2009,7 +2007,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2055,8 +2053,7 @@
               }
             ]
           },
-          "unit": "kbytes",
-          "unitScale": true
+          "unit": "kbytes"
         },
         "overrides": []
       },
@@ -2072,6 +2069,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -2084,7 +2082,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2122,8 +2120,7 @@
               }
             ]
           },
-          "unit": "percent",
-          "unitScale": true
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -2139,6 +2136,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -2149,7 +2147,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2167,6 +2165,7 @@
     },
     {
       "datasource": {
+        "default": false,
         "type": "mssql",
         "uid": "${sqlmonitor_datasource}"
       },
@@ -2212,8 +2211,7 @@
               }
             ]
           },
-          "unit": "ms",
-          "unitScale": true
+          "unit": "ms"
         },
         "overrides": []
       },
@@ -2229,6 +2227,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [],
           "fields": "/.*/",
@@ -2239,7 +2238,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2250,7 +2249,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select $avg_disk_wait_ms",
+          "rawSql": "select $avg_disk_latency_ms",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2317,8 +2316,7 @@
               }
             ]
           },
-          "unit": "s",
-          "unitScale": true
+          "unit": "s"
         },
         "overrides": []
       },
@@ -2334,6 +2332,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -2346,7 +2345,7 @@
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2399,8 +2398,7 @@
               }
             ]
           },
-          "unit": "none",
-          "unitScale": true
+          "unit": "none"
         },
         "overrides": []
       },
@@ -2416,6 +2414,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -2428,7 +2427,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2462,8 +2461,7 @@
               }
             ]
           },
-          "unit": "dateTimeAsSystem",
-          "unitScale": true
+          "unit": "dateTimeAsSystem"
         },
         "overrides": []
       },
@@ -2479,6 +2477,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "last"
@@ -2491,7 +2490,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -2550,8 +2549,7 @@
                 "value": null
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": [
           {
@@ -2716,7 +2714,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "alias": "",
@@ -8831,8 +8829,8 @@
       {
         "current": {
           "selected": false,
-          "text": "fe80::92e0:20cc:952c:1b57%9",
-          "value": "fe80::92e0:20cc:952c:1b57%9"
+          "text": "192.168.1.2",
+          "value": "192.168.1.2"
         },
         "datasource": {
           "type": "mssql",
@@ -8880,8 +8878,8 @@
       {
         "current": {
           "selected": false,
-          "text": "15.0.4360.2",
-          "value": "15.0.4360.2"
+          "text": "15.0.4395.2",
+          "value": "15.0.4395.2"
         },
         "datasource": {
           "type": "mssql",
@@ -8960,8 +8958,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717588009756",
-          "value": "1717588009756"
+          "text": "1729613571078",
+          "value": "1729613571078"
         },
         "datasource": {
           "type": "mssql",
@@ -8992,8 +8990,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717587966859",
-          "value": "1717587966859"
+          "text": "1729613524181",
+          "value": "1729613524181"
         },
         "datasource": {
           "type": "mssql",
@@ -9024,8 +9022,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717588082300",
-          "value": "1717588082300"
+          "text": "1729613521500",
+          "value": "1729613521500"
         },
         "datasource": {
           "type": "mssql",
@@ -9095,8 +9093,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717147202257",
-          "value": "1717147202257"
+          "text": "1729306010863",
+          "value": "1729306010863"
         },
         "datasource": {
           "type": "mssql",
@@ -9119,8 +9117,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717588085057",
-          "value": "1717588085057"
+          "text": "1729613572020",
+          "value": "1729613572020"
         },
         "datasource": {
           "type": "mssql",
@@ -9143,8 +9141,8 @@
       {
         "current": {
           "selected": false,
-          "text": "15",
-          "value": "15"
+          "text": "44",
+          "value": "44"
         },
         "datasource": {
           "type": "mssql",
@@ -9167,8 +9165,8 @@
       {
         "current": {
           "selected": false,
-          "text": "0",
-          "value": "0"
+          "text": "2",
+          "value": "2"
         },
         "datasource": {
           "type": "mssql",
@@ -9191,8 +9189,8 @@
       {
         "current": {
           "selected": false,
-          "text": "85",
-          "value": "85"
+          "text": "56",
+          "value": "56"
         },
         "datasource": {
           "type": "mssql",
@@ -9215,8 +9213,8 @@
       {
         "current": {
           "selected": false,
-          "text": "81",
-          "value": "81"
+          "text": "88",
+          "value": "88"
         },
         "datasource": {
           "type": "mssql",
@@ -9239,8 +9237,8 @@
       {
         "current": {
           "selected": false,
-          "text": "18",
-          "value": "18"
+          "text": "11",
+          "value": "11"
         },
         "datasource": {
           "type": "mssql",
@@ -9263,8 +9261,8 @@
       {
         "current": {
           "selected": false,
-          "text": "412064",
-          "value": "412064"
+          "text": "412248",
+          "value": "412248"
         },
         "datasource": {
           "type": "mssql",
@@ -9295,8 +9293,8 @@
       {
         "current": {
           "selected": false,
-          "text": "0",
-          "value": "0"
+          "text": "6",
+          "value": "6"
         },
         "datasource": {
           "type": "mssql",
@@ -9319,8 +9317,8 @@
       {
         "current": {
           "selected": false,
-          "text": "",
-          "value": ""
+          "text": "261199",
+          "value": "261199"
         },
         "datasource": {
           "type": "mssql",
@@ -9367,8 +9365,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1571320",
-          "value": "1571320"
+          "text": "2033896",
+          "value": "2033896"
         },
         "datasource": {
           "type": "mssql",
@@ -9391,8 +9389,8 @@
       {
         "current": {
           "selected": false,
-          "text": "0",
-          "value": "0"
+          "text": "1",
+          "value": "1"
         },
         "datasource": {
           "type": "mssql",
@@ -9415,8 +9413,8 @@
       {
         "current": {
           "selected": false,
-          "text": "13136516",
-          "value": "13136516"
+          "text": "14624940",
+          "value": "14624940"
         },
         "datasource": {
           "type": "mssql",
@@ -9487,8 +9485,8 @@
       {
         "current": {
           "selected": false,
-          "text": "33829",
-          "value": "33829"
+          "text": "132151",
+          "value": "132151"
         },
         "datasource": {
           "type": "mssql",
@@ -9535,8 +9533,8 @@
       {
         "current": {
           "selected": false,
-          "text": "4360",
-          "value": "4360"
+          "text": "4395",
+          "value": "4395"
         },
         "datasource": {
           "type": "mssql",
@@ -9583,8 +9581,8 @@
       {
         "current": {
           "selected": false,
-          "text": "2",
-          "value": "2"
+          "text": "9",
+          "value": "9"
         },
         "datasource": {
           "type": "mssql",
@@ -9607,8 +9605,8 @@
       {
         "current": {
           "selected": false,
-          "text": "9",
-          "value": "9"
+          "text": "2",
+          "value": "2"
         },
         "datasource": {
           "type": "mssql",
@@ -9639,8 +9637,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717587020861",
-          "value": "1717587020861"
+          "text": "1729612812440",
+          "value": "1729612812440"
         },
         "datasource": {
           "type": "mssql",
@@ -9801,8 +9799,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717587903552",
-          "value": "1717587903552"
+          "text": "1729613404694",
+          "value": "1729613404694"
         },
         "datasource": {
           "type": "mssql",
@@ -9901,8 +9899,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717587902093",
-          "value": "1717587902093"
+          "text": "1729613402153",
+          "value": "1729613402153"
         },
         "datasource": {
           "type": "mssql",
@@ -9925,8 +9923,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1717587902093",
-          "value": "1717587902093"
+          "text": "1729613401038",
+          "value": "1729613401038"
         },
         "datasource": {
           "type": "mssql",
@@ -9949,8 +9947,8 @@
       {
         "current": {
           "selected": false,
-          "text": "7",
-          "value": "7"
+          "text": "2",
+          "value": "2"
         },
         "datasource": {
           "type": "mssql",
@@ -9964,6 +9962,30 @@
         "name": "avg_disk_wait_ms",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"declare @avg_disk_wait_ms bigint;\nexec usp_avg_disk_wait_ms @avg_disk_wait_ms = @avg_disk_wait_ms output;\nselect [avg_disk_wait_ms] = @avg_disk_wait_ms;\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"exec usp_avg_disk_latency_ms\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Avg Disk Latency MilliSeconds",
+        "multi": false,
+        "name": "avg_disk_latency_ms",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"exec usp_avg_disk_latency_ms\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -9988,6 +10010,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - Distributed",
   "uid": "distributed_live_dashboard",
-  "version": 91,
+  "version": 93,
   "weekStart": ""
 }
