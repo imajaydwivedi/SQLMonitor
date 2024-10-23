@@ -6207,7 +6207,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Avg Disk Wait"
+                "value": "Disk Latency"
               },
               {
                 "id": "custom.cellOptions",
@@ -7700,6 +7700,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - All Servers",
   "uid": "distributed_live_dashboard_all_servers",
-  "version": 184,
+  "version": 185,
   "weekStart": ""
 }

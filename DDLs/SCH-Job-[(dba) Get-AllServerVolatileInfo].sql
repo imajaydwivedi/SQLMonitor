@@ -44,7 +44,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.all_
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerVolatileInfo - all_server_volatile_info" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerInfo @step_name = ''dbo.all_server_volatile_info'', @verbose = 0;"', 
+		@command=N'sqlcmd -E -b -S localhost -H "(dba) Get-AllServerVolatileInfo - all_server_volatile_info" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerInfo @step_name = ''dbo.all_server_volatile_info'', @verbose = 0, @enable_lock_timeout = 0;"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 /****** Object:  Step [dbo.usp_populate__all_server_volatile_info_history]    Script Date: Sat, 19 Oct 10:51:24 ******/

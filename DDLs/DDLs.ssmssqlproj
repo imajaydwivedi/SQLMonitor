@@ -415,6 +415,12 @@
           <AssociatedConnUserName />
           <FullPath>SCH-usp_active_requests_count.sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-usp_avg_disk_latency_ms.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_avg_disk_latency_ms.sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-usp_avg_disk_wait_ms.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -584,9 +590,9 @@
           <FullPath>SCH-usp_wrapper_GetAllServerCollectedData.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_wrapper_GetAllServerInfo.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:10.253.33.160:False:bidba.adwivedi</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>10.253.33.160</AssociatedConnSrvName>
-          <AssociatedConnUserName>bidba.adwivedi</AssociatedConnUserName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
           <FullPath>SCH-usp_wrapper_GetAllServerInfo.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_wrapper_populate_sma_sql_instance.sql">
