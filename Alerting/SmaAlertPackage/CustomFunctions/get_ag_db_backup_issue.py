@@ -1,6 +1,6 @@
 import pyodbc
 
-def get_nonag_db_backup_issue(sql_connection, logger:None, verbose:bool=False, **kwargs):
+def get_ag_db_backup_issue(sql_connection, logger:None, verbose:bool=False, **kwargs):
     cursor = sql_connection.cursor()
 
     # Extract parameters
@@ -21,11 +21,16 @@ set quoted_identifier off;
 set @sql = "
 set nocount on;
 ;with t_backups as ( /* {__name__} */
-		select [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]
-		from dbo.backups_all_servers bas
+	select [collection_time_utc], [sql_instance], s.ag_replicas, [database_name], [backup_type], [log_backups_count],
+			[backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]
+			,db_rowid = ROW_NUMBER()over(partition by s.ag_replicas, [database_name], [backup_type] order by [backup_start_date_utc] desc)
+	from dbo.backups_all_servers bas
+	join dbo.sma_sql_servers s on s.server = bas.sql_instance and s.is_decommissioned = 0 and s.is_onboarded = 1 and s.hadr_strategy = 'ag'
+	where 1=1
+	and charindex(',',s.ag_replicas) > 0
 )
 ,t_pivot as (
-		select	[sql_instance], [database_name]
+		select	ag_replicas, [sql_instance], [database_name]
 				,[recovery_model] = max([recovery_model])
 				,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)
 				,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)
@@ -43,41 +48,42 @@ set nocount on;
 				,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)
 		from t_backups bkp
 		where 1=1
-		group by [sql_instance], [database_name]
+		and db_rowid = 1
+		group by ag_replicas, [sql_instance], [database_name]
 )
 ,t_latency as (
-			select 	[sql_instance], [database_name], recovery_model,
-                    [full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10
-                                                else datediff(day,[full_backup_time_utc],getutcdate())
-                                                end,
-                    [diff_latency_hours] = case when [diff_backup_time_utc] is null
-                                            then	case when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)
-                                                        then @full_threshold_days * 24
-                                                        when (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours
-                                                        then ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )
+			select 	ag_replicas, [sql_instance], [database_name], [recovery_model],
+							[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10
+                                                        else datediff(day,[full_backup_time_utc],getutcdate())
+                                                        end,
+							[diff_latency_hours] = case when [diff_backup_time_utc] is null
+                                                        then	case when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)
+                                                                    then @full_threshold_days * 24
+                                                                    when (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours
+                                                                    then ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )
+                                                                    else null
+                                                                    end
+                                                        else datediff(hour,[diff_backup_time_utc],getutcdate())
+                                                        end,
+							[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null
+                                                        when recovery_model <> 'SIMPLE'
+                                                        then	case when [tlog_backup_time_utc] is null then @full_threshold_days * 1440
+                                                                                when [tlog_backup_time_utc] is not null
+                                                                                then datediff(minute,[tlog_backup_time_utc],getutcdate())
+                                                                                else null
+                                                                                end
                                                         else null
-                                                        end
-                                        else datediff(hour,[diff_backup_time_utc],getutcdate())
-                                        end,
-                    [tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null
-                                                when recovery_model <> 'SIMPLE'
-                                                then	case when [tlog_backup_time_utc] is null then @full_threshold_days * 1440
-                                                            when [tlog_backup_time_utc] is not null
-                                                            then datediff(minute,[tlog_backup_time_utc],getutcdate())
-                                                            else null
-                                                            end
-                                                else null
-                                                end,
-                    [full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc],
-                    [full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],
-                    [tlog_compressed_size_mb], [log_backups_count],
-                    [database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]
+                                                        end,
+							[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc],
+							[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],
+							[tlog_compressed_size_mb], [log_backups_count],
+							[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]
 			from t_pivot as bkp
 			where 1=1
 )
 select [sql_instance], [database_name], --[rev_model] = recovery_model, [create_dt] = database_creation_date_utc,
         [full_latency] = full_latency_days, [diff_latency] = diff_latency_hours, [tlog_latency] = tlog_latency_minutes,
-        [state] = 'Critical'
+        [state] = 'Critical', ag_replicas
         --[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc],
         --[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb],
         --[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count],
@@ -89,6 +95,7 @@ AND (		(full_latency_days is null or full_latency_days >= @full_threshold_days)
 		OR	(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)
 		)
 and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = l.sql_instance and (s.hadr_strategy is null or s.hadr_strategy <> 'ag'))
+order by sql_instance --, ag_replicas, database_name
 "
 set quoted_identifier on;
 
