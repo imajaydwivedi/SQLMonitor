@@ -445,6 +445,9 @@ select [rows_affected] = isnull(@_rows_affected,0);
             pt.custom_format["ColumnName"] = lambda field, value: self.get_pretty_time(int(value),'minutes')
         """
 
+        if time_value is None:
+            return f"None"
+
         # Conversion factors from the base unit (seconds)
         time_units_in_seconds = {
             'seconds': 1,
