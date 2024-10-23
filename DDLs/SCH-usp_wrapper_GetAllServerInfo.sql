@@ -21,7 +21,6 @@ ALTER PROCEDURE dbo.usp_wrapper_GetAllServerInfo
 	@verbose tinyint = 0, /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
 	@alert_key varchar(100) = 'Get-AllServerInfo', /* Subject of Failure Mail */
 	@step_name varchar(100) = 'dbo.all_server_stable_info',
-	@enable_lock_timeout bit = 1, /* when enabled, lock timeout is used for each remote query connection */
 	@schedule_minutes int = 0 /* schedule for execution in minutes. 0 means execute immediately */
 )
 AS 
@@ -102,7 +101,7 @@ BEGIN
 			@_errorLine int,
 			@_errorMessage nvarchar(4000);
 
-	SET @_params = N'@verbose tinyint, @schedule_minutes int, @enable_lock_timeout bit';
+	SET @_params = N'@verbose tinyint, @schedule_minutes int';
 
 	BEGIN TRY
 
@@ -117,14 +116,14 @@ BEGIN
 if	( @schedule_minutes = 0 or (select max(collection_time) from  dbo.all_server_stable_info) < dateadd(minute, -@schedule_minutes, SYSDATETIME()) )
 begin
 	--host_distribution, processor_name,
-	exec dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_stable_info'', @verbose = @verbose, @enable_lock_timeout = @enable_lock_timeout,
+	exec dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_stable_info'', @verbose = @verbose, 
 				@output = ''srv_name, at_server_name, machine_name, server_name, ip, domain, host_name, fqdn, host_distribution, processor_name, product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb, os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number'';
 end
 else
 	print ''Did not meet schedule requirement.''+char(13);';
 			IF @verbose > 0
 				PRINT @_sql;
-			EXEC sp_executesql @_sql, @_params, @verbose, @schedule_minutes, @enable_lock_timeout;
+			EXEC sp_executesql @_sql, @_params, @verbose, @schedule_minutes;
 		END
 		
 		IF @step_name = 'dbo.all_server_volatile_info'
@@ -137,7 +136,7 @@ else
 			BEGIN
 				IF @verbose > 0
 					PRINT 'dbo.all_server_volatile_info';
-				EXEC dbo.usp_GetAllServerInfo @result_to_table = 'dbo.all_server_volatile_info', @verbose = @verbose, @output = @_output_columns, @enable_lock_timeout = @enable_lock_timeout; 
+				EXEC dbo.usp_GetAllServerInfo @result_to_table = 'dbo.all_server_volatile_info', @verbose = @verbose, @output = @_output_columns; 
 			END
 			ELSE
 			BEGIN -- Parallelize
@@ -162,7 +161,7 @@ else
 							IF @verbose > 0
 								PRINT 'Creating temp job '+QUOTENAME(@_parallel_job_name)+'..'
 							SET @_parallel_job_command = N'EXEC dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_volatile_info__staging'', @verbose = 0, @output = '''+@_output_columns+''',
-												@paginate = 1, @page_count = '+convert(varchar,@_parallel_threads)+', @page_no = '+convert(varchar,@_thread_counter)+', @enable_lock_timeout = '+convert(varchar,@enable_lock_timeout)+';';
+												@paginate = 1, @page_count = '+convert(varchar,@_parallel_threads)+', @page_no = '+convert(varchar,@_thread_counter)+';';
 
 							EXEC msdb.dbo.sp_add_job @job_name=@_parallel_job_name, @category_name=N'(dba) SQLMonitor', @enabled=1, @job_id = @_parallel_job_id OUTPUT, @notify_level_eventlog=0,
 										@description=N'Job created as part of [(dba) Get-AllServerVolatileInfo] to collect VolatileInfo in parallel threads. https://ajaydwivedi.com/github/sqlmonitor';
@@ -301,14 +300,14 @@ else
 			SET @_sql = N'-- Fetch Collection Info Every 15 Minutes
 if @schedule_minutes = 0 or not exists (select 1/0 from dbo.all_server_collection_latency_info where collection_time >= dateadd(minute,-@schedule_minutes,getdate()))
 begin
-	exec dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_collection_latency_info'', @verbose = @verbose, @enable_lock_timeout = @enable_lock_timeout,
+	exec dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_collection_latency_info'', @verbose = @verbose,
 				@output = ''srv_name, host_name, performance_counters__latency_minutes, xevent_metrics__latency_minutes, WhoIsActive__latency_minutes, os_task_list__latency_minutes, disk_space__latency_minutes, file_io_stats__latency_minutes, sql_agent_job_stats__latency_minutes, memory_clerks__latency_minutes, wait_stats__latency_minutes, BlitzIndex__latency_days, BlitzIndex_Mode0__latency_days, BlitzIndex_Mode1__latency_days, BlitzIndex_Mode4__latency_days'';
 end
 else
 	print ''Did not meet schedule requirement.''+char(13);';
 			IF @verbose > 0
 				PRINT @_sql;
-			EXEC sp_executesql @_sql, @_params, @verbose, @schedule_minutes, @enable_lock_timeout;
+			EXEC sp_executesql @_sql, @_params, @verbose, @schedule_minutes;
 		END
 
 		IF @step_name = 'dbo.usp_populate__all_server_volatile_info_history'
@@ -319,7 +318,7 @@ else
 exec dbo.usp_populate__all_server_volatile_info_history';
 			IF @verbose > 0
 				PRINT @_sql;
-			EXEC sp_executesql @_sql, @_params, @verbose, @schedule_minutes, @enable_lock_timeout;
+			EXEC sp_executesql @_sql, @_params, @verbose, @schedule_minutes;
 		END
 
 	END TRY  -- Perform main logic inside Try/Catch

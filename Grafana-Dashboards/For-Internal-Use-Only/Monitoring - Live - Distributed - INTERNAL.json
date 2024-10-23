@@ -2270,7 +2270,7 @@
           }
         }
       ],
-      "title": "Avg Disk Wait",
+      "title": "Disk Latency",
       "type": "stat"
     },
     {
@@ -8958,8 +8958,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1729613571078",
-          "value": "1729613571078"
+          "text": "1729667209957",
+          "value": "1729667209957"
         },
         "datasource": {
           "type": "mssql",
@@ -8990,8 +8990,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1729613524181",
-          "value": "1729613524181"
+          "text": "1729667164028",
+          "value": "1729667164028"
         },
         "datasource": {
           "type": "mssql",
@@ -9022,8 +9022,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1729613521500",
-          "value": "1729613521500"
+          "text": "1729667286180",
+          "value": "1729667286180"
         },
         "datasource": {
           "type": "mssql",
@@ -9117,8 +9117,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1729613572020",
-          "value": "1729613572020"
+          "text": "1729667247703",
+          "value": "1729667247703"
         },
         "datasource": {
           "type": "mssql",
@@ -9141,8 +9141,8 @@
       {
         "current": {
           "selected": false,
-          "text": "44",
-          "value": "44"
+          "text": "38",
+          "value": "38"
         },
         "datasource": {
           "type": "mssql",
@@ -9165,8 +9165,8 @@
       {
         "current": {
           "selected": false,
-          "text": "2",
-          "value": "2"
+          "text": "1",
+          "value": "1"
         },
         "datasource": {
           "type": "mssql",
@@ -9189,8 +9189,8 @@
       {
         "current": {
           "selected": false,
-          "text": "56",
-          "value": "56"
+          "text": "62",
+          "value": "62"
         },
         "datasource": {
           "type": "mssql",
@@ -9213,8 +9213,8 @@
       {
         "current": {
           "selected": false,
-          "text": "88",
-          "value": "88"
+          "text": "89",
+          "value": "89"
         },
         "datasource": {
           "type": "mssql",
@@ -9237,8 +9237,8 @@
       {
         "current": {
           "selected": false,
-          "text": "11",
-          "value": "11"
+          "text": "10",
+          "value": "10"
         },
         "datasource": {
           "type": "mssql",
@@ -9261,8 +9261,8 @@
       {
         "current": {
           "selected": false,
-          "text": "412248",
-          "value": "412248"
+          "text": "412328",
+          "value": "412328"
         },
         "datasource": {
           "type": "mssql",
@@ -9317,8 +9317,8 @@
       {
         "current": {
           "selected": false,
-          "text": "261199",
-          "value": "261199"
+          "text": "314889",
+          "value": "314889"
         },
         "datasource": {
           "type": "mssql",
@@ -9365,8 +9365,8 @@
       {
         "current": {
           "selected": false,
-          "text": "2033896",
-          "value": "2033896"
+          "text": "918776",
+          "value": "918776"
         },
         "datasource": {
           "type": "mssql",
@@ -9389,8 +9389,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -9413,8 +9413,8 @@
       {
         "current": {
           "selected": false,
-          "text": "14624940",
-          "value": "14624940"
+          "text": "12537456",
+          "value": "12537456"
         },
         "datasource": {
           "type": "mssql",
@@ -9485,8 +9485,8 @@
       {
         "current": {
           "selected": false,
-          "text": "132151",
-          "value": "132151"
+          "text": "23281",
+          "value": "23281"
         },
         "datasource": {
           "type": "mssql",
@@ -9557,8 +9557,8 @@
       {
         "current": {
           "selected": false,
-          "text": "32",
-          "value": "32"
+          "text": "35",
+          "value": "35"
         },
         "datasource": {
           "type": "mssql",
@@ -9581,8 +9581,8 @@
       {
         "current": {
           "selected": false,
-          "text": "9",
-          "value": "9"
+          "text": "8",
+          "value": "8"
         },
         "datasource": {
           "type": "mssql",
@@ -9637,8 +9637,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1729612812440",
-          "value": "1729612812440"
+          "text": "1729666829181",
+          "value": "1729666829181"
         },
         "datasource": {
           "type": "mssql",
@@ -9799,8 +9799,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1729613404694",
-          "value": "1729613404694"
+          "text": "1729667102321",
+          "value": "1729667102321"
         },
         "datasource": {
           "type": "mssql",
@@ -9899,8 +9899,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1729613402153",
-          "value": "1729613402153"
+          "text": "1729667100902",
+          "value": "1729667100902"
         },
         "datasource": {
           "type": "mssql",
@@ -9923,8 +9923,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1729613401038",
-          "value": "1729613401038"
+          "text": "1729667100968",
+          "value": "1729667100968"
         },
         "datasource": {
           "type": "mssql",
@@ -9947,8 +9947,8 @@
       {
         "current": {
           "selected": false,
-          "text": "2",
-          "value": "2"
+          "text": "3",
+          "value": "3"
         },
         "datasource": {
           "type": "mssql",
@@ -9971,8 +9971,8 @@
       {
         "current": {
           "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "2",
+          "value": "2"
         },
         "datasource": {
           "type": "mssql",
@@ -10010,6 +10010,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - Distributed",
   "uid": "distributed_live_dashboard",
-  "version": 93,
+  "version": 94,
   "weekStart": ""
 }

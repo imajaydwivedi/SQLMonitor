@@ -1416,7 +1416,9 @@ begin
 			('alert_sender_email','alert_sender_email@gmail.com','EMail used for sending Email alerts'),
 			('send_sqlmonitor_job_failure_mail','1','When enabled, then job failure mail is send to DBA team'),
 			('all_server_volatile_info-parallelize','no','When enabled, then volatile info is collected in parallel threads'),
-			('all_server_volatile_info-parallel-threads',(select case when cpu_count > 4 then 4 else cpu_count end from sys.dm_os_sys_info as osi),'parallel threads/jobs for Volatile Info collection')
+			('all_server_volatile_info-parallel-threads',(select case when cpu_count > 4 then 4 else cpu_count end from sys.dm_os_sys_info as osi),'parallel threads/jobs for Volatile Info collection'),
+			('usp_wrapper_GetAllServerInfo-enable-LOCK_TIMEOUT','0','Enable/Disable LOCK_TIMEOUT in procedure dbo.usp_wrapper_GetAllServerInfo'),
+			('usp_GetAllServerInfo-enable-LOCK_TIMEOUT','0','Enable/Disable LOCK_TIMEOUT in procedure dbo.usp_GetAllServerInfo')
 		) my_keys (param_key, param_value, remarks)
 	left join dbo.sma_params p
 		on p.param_key = my_keys.param_key

@@ -25,7 +25,6 @@ ALTER PROCEDURE dbo.usp_GetAllServerInfo
 	@blocked_threshold_seconds int = 60, 
 	@output nvarchar(max) = null, /* comma separated list of columns required in output */
 	@result_to_table nvarchar(125) = null, /* temp table that should be populated with result */
-	@enable_lock_timeout bit = 1, /* when enabled, lock timeout is used for each remote query connection */
 	@paginate bit = 0, /* when true, means this proc is running in multiple sessions. So table should not be truncated */
 	@page_count int = 1, /* Divide the server count in these pages */
 	@page_no int = 1, /* Compulate info for servers of this page */
@@ -61,8 +60,6 @@ BEGIN
 	*/
 	SET NOCOUNT ON; 
 	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-	--IF @enable_lock_timeout = 1
-	--	SET LOCK_TIMEOUT 60000; -- 60 seconds
 
 	declare @_start_time datetime2 = sysdatetime();
 	declare @_crlf nchar(2) = char(10)+char(13);
@@ -160,6 +157,10 @@ BEGIN
 	declare @_datetime_variable datetime;
 	declare @_datetime2_variable datetime2;
 	declare @_date_variable date;
+	DECLARE @enable_lock_timeout bit = 1 /* when enabled, lock timeout is used for each remote query connection */
+
+	if (@servers is null and @output is not null) or @verbose > 0
+		select @enable_lock_timeout = convert(bit,param_value) from dbo.sma_params where param_key = 'usp_GetAllServerInfo-enable-LOCK_TIMEOUT';
 
 	declare @_result table (col_bigint bigint null, col_int int null, col_varchar varchar(255) null, 
 							col_decimal decimal(20,2) null, col_datetime datetime2 null, col_datetime2 datetime2 null);

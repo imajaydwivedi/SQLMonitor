@@ -2360,7 +2360,7 @@
           }
         }
       ],
-      "title": "Avg Disk Wait",
+      "title": "Disk Latency",
       "type": "stat"
     },
     {
@@ -9948,6 +9948,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - Distributed",
   "uid": "distributed_live_dashboard",
-  "version": 93,
+  "version": 94,
   "weekStart": ""
 }
