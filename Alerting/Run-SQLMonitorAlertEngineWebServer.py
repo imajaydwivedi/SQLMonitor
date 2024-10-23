@@ -326,6 +326,9 @@ def call_15_minute_job_script():
     alert_script_path = os.path.join(script_directory, "Alert-NonAgDbBackupIssue.py")
     os.system(f"python {alert_script_path}")
 
+    alert_script_path = os.path.join(script_directory, "Alert-AgDbBackupIssue.py")
+    os.system(f"python {alert_script_path}")
+
 def call_10_minute_job_script():
     logger.info(f"Inside call_10_minute_job_script()")
 
