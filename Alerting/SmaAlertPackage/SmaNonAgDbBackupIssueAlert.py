@@ -3,7 +3,7 @@ from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_data
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 
-class SmaBackupIssueAlert(SmaAlert):
+class SmaNonAgDbBackupIssueAlert(SmaAlert):
     '''
     SYNOPSIS: Class to represent backup issue alert
     '''

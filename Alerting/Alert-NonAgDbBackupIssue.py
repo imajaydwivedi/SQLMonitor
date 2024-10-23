@@ -6,8 +6,8 @@ from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
-from SmaAlertPackage.CustomFunctions.get_backup_issue import get_backup_issue
-import SmaAlertPackage.SmaBackupIssueAlert as sma
+from SmaAlertPackage.CustomFunctions.get_nonag_db_backup_issue import get_nonag_db_backup_issue
+import SmaAlertPackage.SmaNonAgDbBackupIssueAlert as sma
 
 # get Script Name
 script_name = os.path.basename(__file__)
@@ -18,8 +18,8 @@ parser.add_argument("--inventory_database", type=str, required=False, action="st
 parser.add_argument("--credential_manager_database", type=str, required=False, action="store", default="DBA", help="Credential Manager Database")
 parser.add_argument("--login_name", type=str, required=False, action="store", default="sa", help="Login name for sql authentication")
 parser.add_argument("--login_password", type=str, required=False, action="store", default="", help="Login password for sql authentication")
-parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-BackupIssue", help="Alert Name")
-parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-BackupIssue", help="Script/Job calling this script")
+parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-NonAgDbBackupIssue", help="Alert Name")
+parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-NonAgDbBackupIssue", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
 
@@ -52,7 +52,7 @@ cursor = cnxn.cursor()
 
 # Create SmaAlert object to retrieve defaults
 logger.info(f"Create SmaAlert child class object with default values..")
-alert_obj = sma.SmaBackupIssueAlert()
+alert_obj = sma.SmaNonAgDbBackupIssueAlert()
 
 if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
     frequency_minutes = alert_obj.frequency_minutes
@@ -86,7 +86,7 @@ if 'Get Alert Raw Data' == 'Get Alert Raw Data':
                         diff_threshold_hours = diff_threshold_hours,
                         tlog_threshold_minutes = tlog_threshold_minutes
                         )
-    alert_pyodbc_resultset = get_backup_issue(cnxn, **query_params)
+    alert_pyodbc_resultset = get_nonag_db_backup_issue(cnxn, **query_params)
 
     if len(alert_pyodbc_resultset) > 0:
         logger.info(f"Before creating pt & df on alert_pyodbc_resultset..")

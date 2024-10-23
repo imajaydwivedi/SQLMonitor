@@ -1,6 +1,6 @@
 import pyodbc
 
-def get_backup_issue(sql_connection, logger:None, verbose:bool=False, **kwargs):
+def get_nonag_db_backup_issue(sql_connection, logger:None, verbose:bool=False, **kwargs):
     cursor = sql_connection.cursor()
 
     # Extract parameters
