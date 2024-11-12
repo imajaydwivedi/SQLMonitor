@@ -1,0 +1,592 @@
+<?xml version="1.0"?>
+<SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="DDLs">
+  <Items>
+    <LogicalFolder Name="Connections" Type="2" Sorted="true">
+      <Items>
+        <ConnectionNode Name="(local):sa">
+          <Created>2024-10-29T10:22:26.6143799+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+      </Items>
+    </LogicalFolder>
+    <LogicalFolder Name="Queries" Type="0" Sorted="true">
+      <Items>
+        <FileNode Name="DatabaseMail_Using_GMail.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>DatabaseMail_Using_GMail.sql</FullPath>
+        </FileNode>
+        <FileNode Name="FirstResponderKit-Install-All-Scripts.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>FirstResponderKit-Install-All-Scripts.sql</FullPath>
+        </FileNode>
+        <FileNode Name="grafana-login.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>grafana-login.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-BlitzIndex_Mode0-Partitioning.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-BlitzIndex_Mode0-Partitioning.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-BlitzIndex_Mode1-Partitioning.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-BlitzIndex_Mode1-Partitioning.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-BlitzIndex_Mode4-Partitioning.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-BlitzIndex_Mode4-Partitioning.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-BlitzIndex-Partitioning.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-BlitzIndex-Partitioning.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Blitz-Partitioning.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Blitz-Partitioning.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Create-All-Objects.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Create-All-Objects.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Create-Inventory-Specific-Objects.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <FullPath>SCH-Create-Inventory-Specific-Objects.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Create-XEvents.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Create-XEvents.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-fn_get_hash_for_string.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-fn_get_hash_for_string.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Capture-AlertMessages].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Capture-AlertMessages].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Check-InstanceAvailability].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Check-InstanceAvailability].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Check-SQLAgentJobs].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Check-SQLAgentJobs].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect Login Expiration Info].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect Login Expiration Info].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-AgHealthState].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-AgHealthState].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-AllServerAlertMessages].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-AllServerAlertMessages].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-DiskSpace].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-DiskSpace].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-FileIOStats].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-FileIOStats].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-MemoryClerks].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-MemoryClerks].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-OSProcesses].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-OSProcesses].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-PerfmonData].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-PerfmonData].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-PrivilegedInfo].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-PrivilegedInfo].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-WaitStats].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-WaitStats].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-XEvents].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-XEvents].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Enable-PageCompression].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Enable-PageCompression].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerAgHealthState].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerAgHealthState].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerBackups].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerBackups].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerCollectedData].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerCollectedData].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerCollectionLatencyInfo].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerCollectionLatencyInfo].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerDashboardMail].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerDashboardMail].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerDiskSpace].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerDiskSpace].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerInfo].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerInfo].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerLogSpaceConsumers].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerLogSpaceConsumers].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerServices].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerServices].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerSqlAgentJobs].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerSqlAgentJobs].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerStableInfo].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerStableInfo].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerTempdbSpaceUsage].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerTempdbSpaceUsage].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerVolatileInfo].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerVolatileInfo].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Partitions-Maintenance].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Partitions-Maintenance].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Populate Inventory Tables].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Populate Inventory Tables].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Purge-Tables].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Purge-Tables].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Remove-XEventFiles].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Remove-XEventFiles].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Run-Blitz].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Run-Blitz].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Run-BlitzIndex - Weekly].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Run-BlitzIndex - Weekly].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Run-BlitzIndex].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Run-BlitzIndex].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Run-LogSaver].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Run-LogSaver].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Run-TempDbSaver].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Run-TempDbSaver].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Run-WhoIsActive].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Run-WhoIsActive].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Send Login Expiry EMails].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Send Login Expiry EMails].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Stop-StuckSQLMonitorJobs].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Stop-StuckSQLMonitorJobs].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Test-WindowsAdminAccess].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Test-WindowsAdminAccess].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Update-SQLMonitorIP].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Update-SQLMonitorIP].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Update-SqlServerVersions].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Update-SqlServerVersions].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[Update-SQLMonitorIPAddress].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[Update-SQLMonitorIPAddress].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Linked-Servers-Sample.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-Linked-Servers-Sample.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-sp_WhatIsRunning.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-sp_WhatIsRunning.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-sp_WhoIsActive_v12_00(Modified).sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-sp_WhoIsActive_v12_00(Modified).sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_active_requests_count.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_active_requests_count.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_avg_disk_latency_ms.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_avg_disk_latency_ms.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_avg_disk_wait_ms.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_avg_disk_wait_ms.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_capture_alert_messages.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_capture_alert_messages.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_check_instance_availability.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_check_instance_availability.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_check_sql_agent_jobs.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_check_sql_agent_jobs.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_collect_ag_health_state.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_collect_ag_health_state.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_collect_all_server_login_expiration_info.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_collect_all_server_login_expiration_info.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_collect_file_io_stats.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_collect_file_io_stats.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_collect_memory_clerks.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_collect_memory_clerks.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_collect_privileged_info.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_collect_privileged_info.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_collect_wait_stats.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_collect_wait_stats.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_collect_xevent_metrics.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_collect_xevent_metrics.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_collect_xevent_metrics_hashed.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_collect_xevent_metrics_hashed.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_compute_LAMA_targets.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <FullPath>SCH-usp_compute_LAMA_targets.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_create_agent_alerts.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_create_agent_alerts.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_enable_page_compression.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_enable_page_compression.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_GetAllServerCollectedData.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_GetAllServerCollectedData.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_GetAllServerDashboardMail.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_GetAllServerDashboardMail.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_GetAllServerInfo.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_GetAllServerInfo.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_LogSaver.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_LogSaver.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_partition_maintenance.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_partition_maintenance.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_populate_sma_servers.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_populate_sma_servers.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_purge_tables.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_purge_tables.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_rebuilt_xevent_metrics.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_rebuilt_xevent_metrics.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_run_WhoIsActive.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_run_WhoIsActive.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_send_login_expiry_emails.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_send_login_expiry_emails.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_TempDbSaver.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_TempDbSaver.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_waits_per_core_per_minute.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_waits_per_core_per_minute.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_wrapper_CollectPrivilegedInfo.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_wrapper_CollectPrivilegedInfo.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_wrapper_GetAllServerCollectedData.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_wrapper_GetAllServerCollectedData.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_wrapper_GetAllServerInfo.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_wrapper_GetAllServerInfo.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_wrapper_populate_sma_sql_instance.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_wrapper_populate_sma_sql_instance.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-WhoIsActive-Partitioning.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SCH-WhoIsActive-Partitioning.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Update-SQLAgentJobsThreshold.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Update-SQLAgentJobsThreshold.sql</FullPath>
+        </FileNode>
+      </Items>
+    </LogicalFolder>
+    <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
+      <Items />
+    </LogicalFolder>
+  </Items>
+</SqlWorkbenchSqlProject>
