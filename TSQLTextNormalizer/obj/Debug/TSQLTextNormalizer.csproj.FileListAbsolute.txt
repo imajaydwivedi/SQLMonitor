@@ -1,0 +1,10 @@
+D:\GitHub-Personal\SQLMonitor\TSQLTextNormalizer\bin\Debug\TSQLTextNormalizer.dll
+D:\GitHub-Personal\SQLMonitor\TSQLTextNormalizer\bin\Debug\TSQLTextNormalizer.pdb
+D:\GitHub-Personal\SQLMonitor\TSQLTextNormalizer\bin\Debug\Microsoft.SqlServer.TransactSql.ScriptDom.dll
+D:\GitHub-Personal\SQLMonitor\TSQLTextNormalizer\bin\Debug\Newtonsoft.Json.dll
+D:\GitHub-Personal\SQLMonitor\TSQLTextNormalizer\bin\Debug\Newtonsoft.Json.xml
+D:\GitHub-Personal\SQLMonitor\TSQLTextNormalizer\obj\Debug\TSQLTextNormalizer.csproj.AssemblyReference.cache
+D:\GitHub-Personal\SQLMonitor\TSQLTextNormalizer\obj\Debug\TSQLTextNormalizer.csproj.CoreCompileInputs.cache
+D:\GitHub-Personal\SQLMonitor\TSQLTextNormalizer\obj\Debug\TSQLTextNormalizer.csproj.CopyComplete
+D:\GitHub-Personal\SQLMonitor\TSQLTextNormalizer\obj\Debug\TSQLTextNormalizer.dll
+D:\GitHub-Personal\SQLMonitor\TSQLTextNormalizer\obj\Debug\TSQLTextNormalizer.pdb

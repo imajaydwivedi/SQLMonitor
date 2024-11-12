@@ -1,0 +1,455 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 11,
+  "iteration": 1652564910539,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "panels": [
+        {
+          "datasource": {},
+          "description": "select * from dbo.BlitzWho",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto",
+                "filterable": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 2,
+          "options": {
+            "footer": {
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "8.4.6",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${datasource}"
+              },
+              "format": "table",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\ndeclare @start_time datetime = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), $__timeFrom())\n\t\t,@end_time datetime = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), $__timeTo());\n\nselect\t[CheckDate], [elapsed_time], [session_id], [database_name], [query_text], [outer_command], [cached_parameter_info], [live_parameter_info], [query_cost], [status], [wait_info], [wait_resource], [top_session_waits], [blocking_session_id], [open_transaction_count], [is_implicit_transaction], [nt_domain], [host_name], [login_name], [nt_user_name], [program_name], [client_interface_name], [login_time], [start_time], [request_time], [request_cpu_time], [request_logical_reads], [request_writes], [request_physical_reads], [session_cpu], [session_logical_reads], [session_physical_reads], [session_writes], [tempdb_allocations_mb], [memory_usage], [estimated_completion_time], [percent_complete], [deadlock_priority], [transaction_isolation_level], [degree_of_parallelism], [last_dop], [min_dop], [max_dop], [last_grant_kb], [min_grant_kb], [max_grant_kb], [last_used_grant_kb], [min_used_grant_kb], [max_used_grant_kb], [last_ideal_grant_kb], [min_ideal_grant_kb], [max_ideal_grant_kb], [last_reserved_threads], [min_reserved_threads], [max_reserved_threads], [last_used_threads], [min_used_threads], [max_used_threads], [grant_time], [requested_memory_kb], [grant_memory_kb], [is_request_granted], [required_memory_kb], [query_memory_grant_used_memory_kb], [ideal_memory_kb], [is_small], [timeout_sec], [resource_semaphore_id], [wait_order], [wait_time_ms], [next_candidate_for_memory_grant], [target_memory_kb], [max_target_memory_kb], [total_memory_kb], [available_memory_kb], [granted_memory_kb], [query_resource_semaphore_used_memory_kb], [grantee_count], [waiter_count], [timeout_error_count], [forced_grant_count], [workload_group_name], [resource_pool_name], [context_info], ID\nfrom dbo.BlitzWho b\nwhere b.CheckDate between TODATETIMEOFFSET(@start_time,DATEPART(TZOFFSET, SYSDATETIMEOFFSET())) and TODATETIMEOFFSET(@end_time,DATEPART(TZOFFSET, SYSDATETIMEOFFSET()))\norder by b.CheckDate desc, start_time\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
+              "refId": "A"
+            }
+          ],
+          "title": "BlitzWho",
+          "type": "table"
+        }
+      ],
+      "title": "First Responder Kit - BlitzWho",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 12,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${datasource}"
+          },
+          "description": "select * from dbo.BlitzFirst",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto",
+                "filterable": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 14,
+            "w": 24,
+            "x": 0,
+            "y": 2
+          },
+          "id": 10,
+          "options": {
+            "footer": {
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "8.4.6",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${datasource}"
+              },
+              "format": "table",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\ndeclare @start_time datetime = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), $__timeFrom())\n\t\t,@end_time datetime = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), $__timeTo());\n\nselect\t[CheckDate], [Priority], [FindingsGroup], [Finding], [URL], [Details], [QueryText], [StartTime], [LoginName], [NTUserName], [OriginalLoginName], [ProgramName], [HostName], [DatabaseID], [DatabaseName], [OpenTransactionCount], [QueryHash]\nfrom dbo.BlitzFirst b\nwhere b.CheckDate between TODATETIMEOFFSET(@start_time,DATEPART(TZOFFSET, SYSDATETIMEOFFSET())) and TODATETIMEOFFSET(@end_time,DATEPART(TZOFFSET, SYSDATETIMEOFFSET()))\nand (CheckID > -1) and (Priority between 2 and 250)\norder by b.CheckDate desc, ID\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
+              "refId": "A"
+            }
+          ],
+          "title": "BlitzFirst",
+          "type": "table"
+        }
+      ],
+      "title": "First Responder Kit - BlitzFirst",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 8,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${datasource}"
+          },
+          "description": "select * from dbo.BlitzCache",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto",
+                "filterable": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 24,
+            "x": 0,
+            "y": 3
+          },
+          "id": 6,
+          "options": {
+            "footer": {
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "8.4.6",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${datasource}"
+              },
+              "format": "table",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\ndeclare @start_time datetime = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), $__timeFrom())\n\t\t,@end_time datetime = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), $__timeTo());\n\nselect\t[CheckDate], [QueryType], [QueryText], [Warnings], [DatabaseName], [SerialDesiredMemory], [SerialRequiredMemory], [AverageCPU], [TotalCPU], \n        [PercentCPUByType], [AverageDuration], [TotalDuration], [PercentDurationByType], [AverageReads], [TotalReads], [PercentReadsByType], \n        [AverageWrites], [TotalWrites], [PercentWritesByType], [ExecutionCount], [PercentExecutionsByType], [ExecutionsPerMinute], \n        [PlanCreationTime], [PlanCreationTimeHours], [LastExecutionTime], [LastCompletionTime], [PlanGenerationNum], [MinReturnedRows], \n        [MaxReturnedRows], [AverageReturnedRows], [TotalReturnedRows], [NumberOfPlans], [NumberOfDistinctPlans], [MinGrantKB], [MaxGrantKB], \n        [MinUsedGrantKB], [MaxUsedGrantKB], [PercentMemoryGrantUsed], [AvgMaxMemoryGrant], [MinSpills], [MaxSpills], [TotalSpills], [AvgSpills], \n        [QueryPlanCost], ID \nfrom dbo.BlitzCache b\nwhere b.CheckDate between TODATETIMEOFFSET(@start_time,DATEPART(TZOFFSET, SYSDATETIMEOFFSET())) and TODATETIMEOFFSET(@end_time,DATEPART(TZOFFSET, SYSDATETIMEOFFSET()))\norder by b.CheckDate desc, ID\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
+              "refId": "A"
+            }
+          ],
+          "title": "BlitzCache",
+          "type": "table"
+        }
+      ],
+      "title": "First Responder Kit - BlitzCache",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 16,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${datasource}"
+          },
+          "description": "select * from dbo.BlitzFirst_FileStats",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "displayMode": "auto",
+                "filterable": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 4
+          },
+          "id": 14,
+          "options": {
+            "footer": {
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "8.4.6",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${datasource}"
+              },
+              "format": "table",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\ndeclare @start_time datetime = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), $__timeFrom())\n\t\t,@end_time datetime = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), $__timeTo());\n\nselect\t[CheckDate], [DatabaseName], [FileLogicalName], [TypeDesc], [SizeOnDiskMB], [io_stall_read_ms], [num_of_reads], [bytes_read], [io_stall_write_ms], [num_of_writes], [bytes_written], [PhysicalName]\nfrom dbo.BlitzFirst_FileStats b\nwhere b.CheckDate between TODATETIMEOFFSET(@start_time,DATEPART(TZOFFSET, SYSDATETIMEOFFSET())) and TODATETIMEOFFSET(@end_time,DATEPART(TZOFFSET, SYSDATETIMEOFFSET()))\norder by b.CheckDate desc, DatabaseName, FileLogicalName\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
+              "refId": "A"
+            }
+          ],
+          "title": "BlitzFirst_FileStats",
+          "transformations": [],
+          "type": "table"
+        }
+      ],
+      "title": "First Responder Kit - FileStats",
+      "type": "row"
+    }
+  ],
+  "schemaVersion": 35,
+  "style": "dark",
+  "tags": [
+    "MSSQL",
+    "SqlServer"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "SqlMonitor",
+          "value": "SqlMonitor"
+        },
+        "description": "Inventory Server Name",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "mssql",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "SQLMONITOR",
+          "value": "SQLMONITOR"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${datasource}"
+        },
+        "definition": "select srvname from sys.sysservers where providername = 'SQLOLEDB'",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Sql Instance",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": "select srvname from sys.sysservers where providername = 'SQLOLEDB'",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${datasource}"
+        },
+        "definition": "SELECT DB_NAME() as [db_name]",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Inventory Database",
+        "multi": false,
+        "name": "inventory_db",
+        "options": [],
+        "query": "SELECT DB_NAME() as [db_name]",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${datasource}"
+        },
+        "definition": "select '$inventory_db'",
+        "hide": 2,
+        "includeAll": false,
+        "label": "DBA Database",
+        "multi": false,
+        "name": "dba_db",
+        "options": [],
+        "query": "select '$inventory_db'",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "First Responder Kit",
+  "uid": "first_responder_kit",
+  "version": 8,
+  "weekStart": ""
+}

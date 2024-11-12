@@ -1,0 +1,910 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Display Workload Details Captured using Extended Events",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 29,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 145,
+      "panels": [
+        {
+          "datasource": {
+            "default": false,
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 17,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 143,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "sum"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Mean",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "9.2.5",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\n\ndeclare @database nvarchar(500) = '$database';\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hour,Day\ndeclare @hour_of_day int = ${hour_of_day};\ndeclare @grouping_key varchar(500) = '${grouping_key:raw}'; --Login,Program,Host,Database\ndeclare @group_by_sql varchar(500) = '';\ndeclare @group_by_metric varchar(500);\ndeclare @login varchar(125) = '$login';\ndeclare @program varchar(500) = '$program';\nset @login = case when ltrim(rtrim(@login)) = '' then null else @login end;\nset @program = case when ltrim(rtrim(@program)) = '' then null else @program end;\n\nset @sql_instance = '$server';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @database nvarchar(500), @login varchar(125), @program varchar(500), @hour_of_day int';\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nif @grouping_key like '%Login%'\nbegin\n\t\tset @group_by_sql += ', username'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'username' else @group_by_metric +'+'' || ''+username' end;\nend\nif @grouping_key like '%Program%'\nbegin\n\t\tset @group_by_sql += ', client_app_name'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'client_app_name' else @group_by_metric +'+'' || ''+client_app_name' end;\nend\nif @grouping_key like '%Host%'\nbegin\n\t\tset @group_by_sql += ', client_hostname'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'client_hostname' else @group_by_metric +'+'' || ''+client_hostname' end;\nend\nif @grouping_key like '%Database%'\nbegin\n\t\tset @group_by_sql += ', database_name'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'database_name' else @group_by_metric +'+'' || ''+database_name' end;\nend\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor XEvent Dashboard */\nset nocount on;\t\t\t\n\n;with t_xevent_metrics as \n(\n\tselect --top 1000 \n\t\t[time] = \"+(case when @trend_by = 'Daily' \n\t\t\t\t\t\t\t\t\t\tthen 'cast(convert(date,rc.event_time) as datetime)' \n\t\t\t\t\t\t\t\t\t\telse 'dateadd(hour,DATEPART(hour,rc.event_time),cast(convert(date,rc.event_time) as datetime))' \n\t\t\t\t\t\t\t\tend)+@group_by_sql+\" ,cpu_time_ms ,logical_reads ,result\n\tfrom $xevent_table_name rc with (nolock)\n\twhere 1=1\n\tand rc.event_time between DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc) and DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n\t\"+(case when @database is null then '-- ' else '' end)+\"and rc.database_name like ('%'+@database+'%')\n\t\"+(case when @login is null then '-- ' else '' end)+\"and rc.username = @login\n\t\"+(case when @program is null then '-- ' else '' end)+\"and rc.client_app_name = @program\n\t\"+(case when @trend_by = 'Daily' then '-- ' else '' end)+\"and DATEPART(hour,rc.event_time) = @hour_of_day\n)\nselect \t[time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), [time]) ,\n\t\t\t\t[metric] = \"+@group_by_metric+\" ,cpu_time_ms = sum(cpu_time_ms) --,logical_reads ,result\nfrom t_xevent_metrics rc\nwhere 1=1\ngroup by [time] \"+@group_by_sql+\"\norder by [time]\n\"\nset quoted_identifier on;\nprint @sql\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @database, @login, @program, @hour_of_day;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @database, @login, @program, @hour_of_day;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "XEvent - ${trend_by} TREND - CPU - By - {${grouping_key:pipe}}",
+          "type": "timeseries"
+        }
+      ],
+      "title": "XEvent - ${trend_by} TREND - CPU - By - {${grouping_key:pipe}}",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 153,
+      "panels": [],
+      "title": "XEvent - ${trend_by} TREND - Counts - By - {${grouping_key:pipe}}",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 10,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 17,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 151,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "9.2.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\ndeclare @login varchar(125) = '$login';\ndeclare @program varchar(500) = '$program';\n\ndeclare @database nvarchar(500) = '$database';\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hourly,Daily\ndeclare @hour_of_day int = ${hour_of_day};\ndeclare @grouping_key varchar(500) = '${grouping_key:raw}'; --Login,Program,Host,Database\ndeclare @group_by_sql varchar(500) = '';\ndeclare @group_by_metric varchar(500);\n\nset @sql_instance = '$server';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @login = case when ltrim(rtrim(@login)) = '' then null else @login end;\nset @program = case when ltrim(rtrim(@program)) = '' then null else @program end;\nif @grouping_key like '%Login%'\nbegin\n\t\tset @group_by_sql += ', username'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'username' else @group_by_metric +'+'' || ''+username' end;\nend\nif @grouping_key like '%Program%'\nbegin\n\t\tset @group_by_sql += ', client_app_name'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'client_app_name' else @group_by_metric +'+'' || ''+client_app_name' end;\nend\nif @grouping_key like '%Host%'\nbegin\n\t\tset @group_by_sql += ', client_hostname'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'client_hostname' else @group_by_metric +'+'' || ''+client_hostname' end;\nend\nif @grouping_key like '%Database%'\nbegin\n\t\tset @group_by_sql += ', database_name'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'database_name' else @group_by_metric +'+'' || ''+database_name' end;\nend\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @database nvarchar(500), @login varchar(125), @program varchar(500), @hour_of_day int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor Dashboard WhoIsActive - SQL Server Queries - Workload: LongRunningQueries  */\nset nocount on;\t\t\t\n\n;with t_xevent_metrics as \n(\n\tselect --top 1000 \n\t\t[time] = \"+(case when @trend_by = 'Daily' \n\t\t\t\t\t\t\t\t\t\tthen 'cast(convert(date,rc.event_time) as datetime)' \n\t\t\t\t\t\t\t\t\t\telse 'dateadd(hour,DATEPART(hour,rc.event_time),cast(convert(date,rc.event_time) as datetime))' \n\t\t\t\t\t\t\t\tend)+@group_by_sql+\" ,cpu_time_ms ,logical_reads ,result\n\tfrom $xevent_table_name rc with (nolock)\n\twhere 1=1\n\tand rc.event_time between DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc) and DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n\t\"+(case when @database is null then '-- ' else '' end)+\"and rc.database_name like ('%'+@database+'%')\n\t\"+(case when @login is null then '-- ' else '' end)+\"and rc.username = @login\n\t\"+(case when @program is null then '-- ' else '' end)+\"and rc.client_app_name = @program\n\t\"+(case when @trend_by = 'Daily' then '-- ' else '' end)+\"and DATEPART(hour,rc.event_time) = @hour_of_day\n)\nselect \t[time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), [time]) ,\n\t\t\t\t[metric] = \"+@group_by_metric+\" ,counts = count(1) -- cpu_time_ms,logical_reads ,result\nfrom t_xevent_metrics rc\nwhere 1=1\ngroup by [time] \"+@group_by_sql+\"\norder by [time]\n\"\nset quoted_identifier on;\nprint @sql\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @database, @login, @program, @hour_of_day;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @database, @login, @program, @hour_of_day;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "XEvent - ${trend_by} TREND - Counts - By - {${grouping_key:pipe}}",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 149,
+      "panels": [
+        {
+          "datasource": {
+            "default": false,
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "mbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 17,
+            "w": 24,
+            "x": 0,
+            "y": 3
+          },
+          "id": 147,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "sum"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Mean",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "9.2.5",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\n\ndeclare @database nvarchar(500) = '$database';\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hour,Day\ndeclare @hour_of_day int = ${hour_of_day};\ndeclare @grouping_key varchar(500) = '${grouping_key:raw}'; --Login,Program,Host,Database\ndeclare @group_by_sql varchar(500) = '';\ndeclare @group_by_metric varchar(500);\ndeclare @login varchar(125) = '$login';\ndeclare @program varchar(500) = '$program';\nset @login = case when ltrim(rtrim(@login)) = '' then null else @login end;\nset @program = case when ltrim(rtrim(@program)) = '' then null else @program end;\n\nset @sql_instance = '$server';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @database nvarchar(500), @login varchar(125), @program varchar(500), @hour_of_day int';\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nif @grouping_key like '%Login%'\nbegin\n\t\tset @group_by_sql += ', username'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'username' else @group_by_metric +'+'' || ''+username' end;\nend\nif @grouping_key like '%Program%'\nbegin\n\t\tset @group_by_sql += ', client_app_name'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'client_app_name' else @group_by_metric +'+'' || ''+client_app_name' end;\nend\nif @grouping_key like '%Host%'\nbegin\n\t\tset @group_by_sql += ', client_hostname'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'client_hostname' else @group_by_metric +'+'' || ''+client_hostname' end;\nend\nif @grouping_key like '%Database%'\nbegin\n\t\tset @group_by_sql += ', database_name'\n\t\tset @group_by_metric = case when @group_by_metric is null then 'database_name' else @group_by_metric +'+'' || ''+database_name' end;\nend\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor Dashboard WhoIsActive - SQL Server Queries - Workload: LongRunningQueries  */\nset nocount on;\t\t\t\n\n;with t_xevent_metrics as \n(\n\tselect --top 1000 \n\t\t[time] = \"+(case when @trend_by = 'Daily' \n\t\t\t\t\t\t\t\t\t\tthen 'cast(convert(date,rc.event_time) as datetime)' \n\t\t\t\t\t\t\t\t\t\telse 'dateadd(hour,DATEPART(hour,rc.event_time),cast(convert(date,rc.event_time) as datetime))' \n\t\t\t\t\t\t\t\tend)+@group_by_sql+\" ,cpu_time_ms ,logical_reads ,result\n\tfrom $xevent_table_name rc with (nolock)\n\twhere 1=1\n\tand rc.event_time between DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc) and DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n\t\"+(case when @database is null then '-- ' else '' end)+\"and rc.database_name like ('%'+@database+'%')\n\t\"+(case when @login is null then '-- ' else '' end)+\"and rc.username = @login\n\t\"+(case when @program is null then '-- ' else '' end)+\"and rc.client_app_name = @program\n\t\"+(case when @trend_by = 'Daily' then '-- ' else '' end)+\"and DATEPART(hour,rc.event_time) = @hour_of_day\n)\nselect \t[time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), [time]) ,\n\t\t\t\t[metric] = \"+@group_by_metric+\" ,logical_reads_mb = sum(logical_reads)*8/128 --,logical_reads ,result\nfrom t_xevent_metrics rc\nwhere 1=1\ngroup by [time] \"+@group_by_sql+\"\norder by [time]\n\"\nset quoted_identifier on;\nprint @sql\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @database, @login, @program, @hour_of_day;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @database, @login, @program, @hour_of_day;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "XEvent - ${trend_by} TREND - Reads - By - {${grouping_key:pipe}}",
+          "type": "timeseries"
+        }
+      ],
+      "title": "XEvent - ${trend_by} TREND - READS - By - {${grouping_key:pipe}}",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "mssql",
+        "uid": "5Qr_lHw7z"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "id": 121,
+      "panels": [
+        {
+          "description": "",
+          "gridPos": {
+            "h": 20,
+            "w": 24,
+            "x": 0,
+            "y": 4
+          },
+          "id": 119,
+          "links": [],
+          "options": {
+            "folderId": 1,
+            "maxItems": 50,
+            "query": "",
+            "showHeadings": false,
+            "showRecentlyViewed": false,
+            "showSearch": true,
+            "showStarred": false,
+            "tags": []
+          },
+          "pluginVersion": "9.3.2",
+          "title": "Other Dashboards",
+          "type": "dashlist"
+        }
+      ],
+      "repeat": "datasource",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "5Qr_lHw7z"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Other Dashboards",
+      "type": "row"
+    }
+  ],
+  "refresh": "30m",
+  "revision": 1,
+  "schemaVersion": 39,
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "XEvents"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "SQLMonitor",
+          "value": "ygPVA4snk"
+        },
+        "description": "Inventory Server Name",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "sqlmonitor_datasource",
+        "options": [],
+        "query": "mssql",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "21L-LTPABL-1187",
+          "value": "21L-LTPABL-1187"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Sql Instance",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__All__",
+          "value": "__All__"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Database",
+        "multi": false,
+        "name": "database",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SELECT DB_NAME() as [db_name]",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Inventory Database",
+        "multi": false,
+        "name": "inventory_db",
+        "options": [],
+        "query": "SELECT DB_NAME() as [db_name]",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Is Local SQL Instance",
+        "multi": false,
+        "name": "is_local",
+        "options": [],
+        "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "fe80::79b8:2aef:cb0:40f6%17",
+          "value": "fe80::79b8:2aef:cb0:40f6%17"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "description": "IP Address of Sql Instance",
+        "hide": 2,
+        "includeAll": false,
+        "label": "IP Address",
+        "multi": false,
+        "name": "ip",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "21L-LTPABL-1187",
+          "value": "21L-LTPABL-1187"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Host Name",
+        "multi": false,
+        "name": "host_name",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "WORKGROUP",
+          "value": "WORKGROUP"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Fully Qualified Domain Name",
+        "multi": false,
+        "name": "fqdn",
+        "options": [],
+        "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "DBA Database",
+        "multi": false,
+        "name": "dba_db",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1729672486280",
+          "value": "1729672486280"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), event_time )\nfrom $xevent_table_name\norder by event_time desc\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "hide": 2,
+        "includeAll": false,
+        "label": "XEvent Collection Time UTC",
+        "multi": false,
+        "name": "xevent_collection_time_utc",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), event_time )\nfrom $xevent_table_name\norder by event_time desc\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "hide": 2,
+        "label": "XEvent View",
+        "name": "xevent_view_name",
+        "query": "dbo.vw_xevent_metrics",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "description": "Resource Consumption Table Name",
+        "hide": 2,
+        "label": "XEvent Table",
+        "name": "xevent_table_name",
+        "query": "dbo.xevent_metrics",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "hide": 2,
+        "label": "XEvent Queries Table",
+        "name": "xevent_queries_table_name",
+        "query": "dbo.xevent_metrics_queries",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "Login"
+          ],
+          "value": [
+            "Login"
+          ]
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Group By",
+        "multi": true,
+        "name": "grouping_key",
+        "options": [
+          {
+            "selected": true,
+            "text": "Login",
+            "value": "Login"
+          },
+          {
+            "selected": false,
+            "text": "Program",
+            "value": "Program"
+          },
+          {
+            "selected": false,
+            "text": "Host",
+            "value": "Host"
+          },
+          {
+            "selected": false,
+            "text": "Database",
+            "value": "Database"
+          }
+        ],
+        "query": "Login,Program,Host,Database",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Daily",
+          "value": "Daily"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Trend By",
+        "multi": false,
+        "name": "trend_by",
+        "options": [
+          {
+            "selected": false,
+            "text": "Hourly",
+            "value": "Hourly"
+          },
+          {
+            "selected": true,
+            "text": "Daily",
+            "value": "Daily"
+          }
+        ],
+        "query": "Hourly,Daily",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "9",
+          "value": "9"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": ";with t_hours as (\n\tselect [hour] = 0\n\tunion all\n\tselect [hour] = u.hour+1\n\tfrom t_hours u\n\twhere u.hour < 23\n)\nselect [hour] from t_hours",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Hour",
+        "multi": false,
+        "name": "hour_of_day",
+        "options": [],
+        "query": ";with t_hours as (\n\tselect [hour] = 0\n\tunion all\n\tselect [hour] = u.hour+1\n\tfrom t_hours u\n\twhere u.hour < 23\n)\nselect [hour] from t_hours",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Login",
+        "name": "login",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {},
+        "hide": 0,
+        "label": "Program",
+        "name": "program",
+        "options": [],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-15d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "2m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "XEvent - Trend",
+  "uid": "XEvents-Trends",
+  "version": 10,
+  "weekStart": ""
+}

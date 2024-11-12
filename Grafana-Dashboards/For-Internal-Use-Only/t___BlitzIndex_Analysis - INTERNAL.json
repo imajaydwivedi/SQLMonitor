@@ -1,0 +1,1683 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Data of BlitzIndex",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 36,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 38,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "exec sp_BlitzIndex @Mode = 2",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": ".*\\_gb"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "gbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": ".*\\_count"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": ".*\\_count\\_over\\_[0-9]*gb"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 15,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 36,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255) = '$server';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @delta_days_threshold int = ${delta_days_threshold};\ndeclare @buffer_days int = 2;\ndeclare @database varchar(255) = '$database';\ndeclare @page_no int;\ndeclare @page_size int;\ndeclare @table_name varchar(255);\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nif len(ltrim(rtrim('$page_no'))) > 0 and (case when '$page_no' like '%[^0-9.]%' then 'invalid' when '$page_no' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_no = convert(int,ltrim(rtrim('$page_no')));\nif len(ltrim(rtrim('$page_size'))) > 0 and (case when '$page_size' like '%[^0-9.]%' then 'invalid' when '$page_size' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_size = convert(int,ltrim(rtrim('$page_size')));\nif len(ltrim(rtrim('$table_name'))) > 0\n  set @table_name = '$table_name'\n\nset @params = N'@database varchar(255), @delta_days_threshold int, @buffer_days int, @page_no int, @page_size int, @table_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - BlitzIndex Analysis - 0 Delta Rows */\nset nocount on;\n\nselect \trun_datetime = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.run_datetime),\n\t\t\t\tbi.[database_name], bi.[object_count], bi.[reserved_gb], \n        bi.[reserved_lob_gb], bi.[reserved_row_overflow_gb], bi.[clustered_table_count], \n        bi.[clustered_table_gb], bi.[nc_index_count], bi.[nc_index_gb], \n        bi.[table_nc_index_ratio], bi.[heap_count], bi.[heap_gb], bi.[partitioned_table_count], \n        bi.[partitioned_nc_count], bi.[partitioned_gb], bi.[filtered_index_count], \n        bi.[indexed_view_count], bi.[max_table_row_count], bi.[max_table_gb], \n        bi.[max_nc_index_gb], bi.[table_count_over_1gb], bi.[table_count_over_10gb], \n        bi.[table_count_over_100gb], bi.[nc_index_count_over_1gb], bi.[nc_index_count_over_10gb], \n        bi.[nc_index_count_over_100gb], bi.[min_create_date], \n        [max_create_date] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.max_create_date), \n        [max_modify_date] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.max_modify_date)\nfrom ${blitzindex_mode1_table_name} bi\nwhere bi.run_datetime = (select max(i.run_datetime) from ${blitzindex_mode1_table_name} i)\n\"+(case when @database is null then '-- ' else '' end)+\"and bi.database_name = @database\norder by bi.reserved_gb desc, bi.object_count desc, bi.database_name\noffset ((@page_no-1)*@page_size) rows fetch next @page_size rows only;\n\"\nset quoted_identifier on;\n\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Database Size Summary -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode1_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+          "type": "table"
+        }
+      ],
+      "title": "Database Size Summary -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode1_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "mssql",
+        "uid": "5Qr_lHw7z"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 12,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "exec sp_BlitzIndex @Mode = 2",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 121
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "object_name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 177
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 18,
+            "w": 24,
+            "x": 0,
+            "y": 2
+          },
+          "id": 22,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255) = '$server';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @delta_days_threshold int = ${delta_days_threshold};\ndeclare @buffer_days int = 2;\ndeclare @database varchar(255) = '$database';\ndeclare @page_no int;\ndeclare @page_size int;\ndeclare @table_name varchar(255);\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nif len(ltrim(rtrim('$page_no'))) > 0 and (case when '$page_no' like '%[^0-9.]%' then 'invalid' when '$page_no' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_no = convert(int,ltrim(rtrim('$page_no')));\nif len(ltrim(rtrim('$page_size'))) > 0 and (case when '$page_size' like '%[^0-9.]%' then 'invalid' when '$page_size' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_size = convert(int,ltrim(rtrim('$page_size')));\nif len(ltrim(rtrim('$table_name'))) > 0\n  set @table_name = '$table_name'\n\nset @params = N'@database varchar(255), @delta_days_threshold int, @buffer_days int, @page_no int, @page_size int, @table_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - BlitzIndex Analysis - 0 Delta Rows */\nset nocount on;\n\nif object_id('tempdb..#delta_tables') is not null\n\tdrop table #delta_tables;\nselect  [database_name], [schema_name], [table_name]\n\t\t--,total_rows_max = max(total_rows)\n\t\t--,total_rows_min = min(total_rows)\n\t\t--,total_rows_avg = avg(total_rows)\n\t\t--,days_count = datediff(day,min(run_datetime),max(run_datetime))\n\t\t,total_reserved_GB = max(convert(numeric(20,2),bi.total_reserved_MB/1024.0))\ninto #delta_tables\nfrom ${blitzindex_table_name} bi\nwhere bi.run_datetime >= dateadd(day,-(@delta_days_threshold+@buffer_days),getdate())\nand index_id <= 1\n\"+(case when @database is null then '-- ' else '' end)+\"and bi.database_name = @database\n\"+(case when @table_name is null then '-- ' else '' end)+\"and bi.table_name like ('%'+@table_name+'%')\ngroup by [database_name], [schema_name], [table_name]\nhaving min(total_rows) = max(total_rows) and max(total_rows) = avg(total_rows)\n\tand datediff(day,min(run_datetime),max(run_datetime)) > @delta_days_threshold\norder by total_reserved_GB desc\noffset ((@page_no-1)*@page_size) rows fetch next @page_size rows only;\n\nselect \t--collection_time = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.run_datetime),\n\t\t\t\tbi.database_name, [object_name] = quotename(bi.schema_name)+'.'+quotename(bi.table_name), \n\t\t\t\t/* bi.index_name, bi.object_type, */ \n\t\t\t\tbi.index_size_summary, bi.index_definition,\n\t\t\t\tbi.index_usage_summary, bi.index_op_stats, --bi.total_rows, bi.total_reserved_MB, bi.total_reserved_LOB_MB,\n\t\t\t\tbi.data_compression_desc, bi.create_date, bi.more_info\nfrom ${blitzindex_table_name} bi\ninner join #delta_tables dt\n\ton bi.run_datetime = (select max(i.run_datetime) from ${blitzindex_table_name} i)\n\tand bi.database_name = dt.database_name and bi.schema_name = dt.schema_name and bi.table_name = dt.table_name\n\tand bi.index_id <= 1\norder by bi.total_reserved_MB desc, bi.total_rows desc\n\"\nset quoted_identifier on;\n\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Tables with 0 Delta rows in Last __\"$delta_days_threshold\"__Days -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}",
+          "type": "table"
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "5Qr_lHw7z"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Tables with \"Zero Growth\" in Last __\"$delta_days_threshold\"__Days -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 26,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "exec sp_BlitzIndex @Mode = 2",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 121
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "object_name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 177
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "total_growth_mb"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Growth"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Growth"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 101
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 18,
+            "w": 24,
+            "x": 0,
+            "y": 3
+          },
+          "id": 24,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255) = '$server';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @delta_days_threshold int = ${delta_days_threshold};\ndeclare @buffer_days int = 2;\ndeclare @database varchar(255) = '$database';\ndeclare @page_no int;\ndeclare @page_size int;\ndeclare @table_name varchar(255);\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nif len(ltrim(rtrim('$page_no'))) > 0 and (case when '$page_no' like '%[^0-9.]%' then 'invalid' when '$page_no' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_no = convert(int,ltrim(rtrim('$page_no')));\nif len(ltrim(rtrim('$page_size'))) > 0 and (case when '$page_size' like '%[^0-9.]%' then 'invalid' when '$page_size' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_size = convert(int,ltrim(rtrim('$page_size')));\nif len(ltrim(rtrim('$table_name'))) > 0\n  set @table_name = '$table_name'\n\nset @params = N'@database varchar(255), @delta_days_threshold int, @buffer_days int, @page_no int, @page_size int, @table_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - BlitzIndex Analysis - 0 Delta Rows */\nset nocount on;\n\nif object_id('tempdb..#delta_tables') is not null\n\tdrop table #delta_tables;\nselect  [database_name], [schema_name], [table_name]\n\t\t--,total_rows_max = max(total_rows)\n\t\t--,total_rows_min = min(total_rows)\n\t\t--,total_rows_avg = avg(total_rows)\n\t\t--,days_count = datediff(day,min(run_datetime),max(run_datetime))\n\t\t,total_reserved_GB = max(convert(numeric(20,2),bi.total_reserved_MB/1024.0))\n\t\t,total_growth_mb = MAX(total_reserved_MB)-MIN(total_reserved_MB)\ninto #delta_tables\nfrom ${blitzindex_table_name} bi\nwhere bi.run_datetime >= dateadd(day,-(@delta_days_threshold+@buffer_days),getdate())\nand index_id <= 1\n\"+(case when @database is null then '-- ' else '' end)+\"and bi.database_name = @database\n\"+(case when @table_name is null then '-- ' else '' end)+\"and bi.table_name like ('%'+@table_name+'%')\ngroup by [database_name], [schema_name], [table_name]\nhaving (max(total_reserved_MB) - min(total_reserved_MB)) > 0\n\tand datediff(day,min(run_datetime),max(run_datetime)) > @delta_days_threshold\norder by (MAX(total_reserved_MB)-MIN(total_reserved_MB)) DESC, total_reserved_GB desc\noffset ((@page_no-1)*@page_size) rows fetch next @page_size rows only;\n\nselect \t--collection_time = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.run_datetime),\n\t\t\t\tbi.database_name, [object_name] = quotename(bi.schema_name)+'.'+quotename(bi.table_name), \n\t\t\t\t/* bi.index_name, bi.object_type, */ \n\t\t\t\tdt.total_growth_mb, bi.index_size_summary, bi.index_definition,\n\t\t\t\tbi.index_usage_summary, bi.index_op_stats, --bi.total_rows, bi.total_reserved_MB, bi.total_reserved_LOB_MB,\n\t\t\t\tbi.data_compression_desc, bi.create_date, bi.more_info\nfrom ${blitzindex_table_name} bi\ninner join #delta_tables dt\n\ton bi.run_datetime = (select max(i.run_datetime) from ${blitzindex_table_name} i)\n\tand bi.database_name = dt.database_name and bi.schema_name = dt.schema_name and bi.table_name = dt.table_name\n\tand bi.index_id <= 1\norder by dt.total_growth_mb desc, bi.total_reserved_MB desc, bi.total_rows desc\n\"\nset quoted_identifier on;\n\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Tables with \"Highest Growth\" in Last __\"$delta_days_threshold\"__Days -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+          "type": "table"
+        }
+      ],
+      "title": "Tables with \"Highest Growth\" in Last __\"$delta_days_threshold\"__Days -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 30,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "exec sp_BlitzIndex @Mode = 2",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 121
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "object_name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 177
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "total_growth_mb"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Growth"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Growth"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 101
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "priority"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 84
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "finding"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 300
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Help",
+                        "url": "${__data.fields.url}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "details"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 350
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "index_definition"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 350
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "index_usage_summary"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 250
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "index_size_summary"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 200
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "more_info"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 350
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "url"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "total_forwarded_fetch_count"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 17,
+            "w": 24,
+            "x": 0,
+            "y": 4
+          },
+          "id": 28,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255) = '$server';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @delta_days_threshold int = ${delta_days_threshold};\ndeclare @buffer_days int = 2;\ndeclare @database varchar(255) = '$database';\ndeclare @page_no int;\ndeclare @page_size int;\ndeclare @table_name varchar(255);\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nif len(ltrim(rtrim('$page_no'))) > 0 and (case when '$page_no' like '%[^0-9.]%' then 'invalid' when '$page_no' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_no = convert(int,ltrim(rtrim('$page_no')));\nif len(ltrim(rtrim('$page_size'))) > 0 and (case when '$page_size' like '%[^0-9.]%' then 'invalid' when '$page_size' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_size = convert(int,ltrim(rtrim('$page_size')));\nif len(ltrim(rtrim('$table_name'))) > 0\n  set @table_name = '$table_name'\n\nset @params = N'@database varchar(255), @delta_days_threshold int, @buffer_days int, @page_no int, @page_size int, @table_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - BlitzIndex Analysis - 0 Delta Rows */\nset nocount on;\n\nselect \trun_datetime = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.run_datetime),\n\t\t\t\tbi.priority, bi.finding, bi.database_name, bi.details,\n\t\t    bi.index_definition, bi.secret_columns, bi.index_usage_summary, bi.index_size_summary,\n\t\t    bi.more_info, bi.url, bi.total_forwarded_fetch_count, bi.create_tsql\nfrom ${blitzindex_mode0_table_name} bi\nwhere bi.run_datetime = (select max(i.run_datetime) from ${blitzindex_mode0_table_name} i)\n\"+(case when @database is null then '-- ' else '' end)+\"and (bi.database_name = @database or bi.priority = -1)\n\"+(case when @table_name is null then '-- ' else '' end)+\"and (bi.more_info like ('%'+@table_name+'%') or bi.priority = -1)\norder by bi.priority asc\noffset ((@page_no-1)*@page_size) rows fetch next @page_size rows only;\n\"\nset quoted_identifier on;\n\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "High Priority Recommendations -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode0_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+          "type": "table"
+        }
+      ],
+      "title": "High Priority Recommendations -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode0_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 34,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "exec sp_BlitzIndex @Mode = 2",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 121
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "object_name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 177
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "total_growth_mb"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Growth"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Growth"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 101
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "priority"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 84
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "finding"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 300
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Help",
+                        "url": "${__data.fields.url}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "details"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 350
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "index_definition"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 350
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "index_usage_summary"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 250
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "index_size_summary"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 200
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "more_info"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 350
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "url"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "total_forwarded_fetch_count"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 17,
+            "w": 24,
+            "x": 0,
+            "y": 5
+          },
+          "id": 32,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255) = '$server';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @delta_days_threshold int = ${delta_days_threshold};\ndeclare @buffer_days int = 2;\ndeclare @database varchar(255) = '$database';\ndeclare @page_no int;\ndeclare @page_size int;\ndeclare @table_name varchar(255);\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nif len(ltrim(rtrim('$page_no'))) > 0 and (case when '$page_no' like '%[^0-9.]%' then 'invalid' when '$page_no' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_no = convert(int,ltrim(rtrim('$page_no')));\nif len(ltrim(rtrim('$page_size'))) > 0 and (case when '$page_size' like '%[^0-9.]%' then 'invalid' when '$page_size' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_size = convert(int,ltrim(rtrim('$page_size')));\nif len(ltrim(rtrim('$table_name'))) > 0\n  set @table_name = '$table_name'\n\nset @params = N'@database varchar(255), @delta_days_threshold int, @buffer_days int, @page_no int, @page_size int, @table_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - BlitzIndex Analysis - 0 Delta Rows */\nset nocount on;\n\nselect \trun_datetime = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.run_datetime),\n\t\t\t\tbi.priority, bi.finding, bi.database_name, bi.details,\n\t\t    bi.index_definition, bi.secret_columns, bi.index_usage_summary, bi.index_size_summary,\n\t\t    bi.more_info, bi.url, bi.create_tsql\nfrom ${blitzindex_mode4_table_name} bi\nwhere bi.run_datetime = (select max(i.run_datetime) from ${blitzindex_mode4_table_name} i)\n\"+(case when @database is null then '-- ' else '' end)+\"and (bi.database_name = @database or bi.priority = -1)\n\"+(case when @table_name is null then '-- ' else '' end)+\"and (bi.more_info like ('%'+@table_name+'%') or bi.priority = -1)\norder by bi.priority asc\noffset ((@page_no-1)*@page_size) rows fetch next @page_size rows only;\n\"\nset quoted_identifier on;\n\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "All Recommendations -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode4_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+          "type": "table"
+        }
+      ],
+      "title": "All Recommendations -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode4_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 42,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "exec sp_BlitzIndex @Mode = 2",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 18,
+            "w": 24,
+            "x": 0,
+            "y": 6
+          },
+          "id": 40,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "10.1.0",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255) = '$server';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @delta_days_threshold int = ${delta_days_threshold};\ndeclare @buffer_days int = 2;\ndeclare @database varchar(255) = '$database';\ndeclare @page_no int;\ndeclare @page_size int;\ndeclare @table_name varchar(255);\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nif len(ltrim(rtrim('$page_no'))) > 0 and (case when '$page_no' like '%[^0-9.]%' then 'invalid' when '$page_no' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_no = convert(int,ltrim(rtrim('$page_no')));\nif len(ltrim(rtrim('$page_size'))) > 0 and (case when '$page_size' like '%[^0-9.]%' then 'invalid' when '$page_size' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_size = convert(int,ltrim(rtrim('$page_size')));\nif len(ltrim(rtrim('$table_name'))) > 0\n  set @table_name = '$table_name'\n\nset @params = N'@database varchar(255), @delta_days_threshold int, @buffer_days int, @page_no int, @page_size int, @table_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - BlitzIndex Analysis - 0 Delta Rows */\nset nocount on;\n\nselect \trun_datetime = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), bi.run_datetime),\n\t\t\t\tbi.database_name, [object_name] = quotename(bi.schema_name)+'.'+quotename(bi.table_name), \n\t\t\t\t/* bi.index_name, bi.object_type, */ \n\t\t\t\tbi.index_size_summary, bi.index_definition,\n\t\t\t\tbi.index_usage_summary, bi.index_op_stats, --bi.total_rows, bi.total_reserved_MB, bi.total_reserved_LOB_MB,\n\t\t\t\tbi.data_compression_desc, bi.create_date, bi.more_info\nfrom ${blitzindex_table_name} bi\nwhere bi.run_datetime = (select max(i.run_datetime) from ${blitzindex_table_name} i)\n\"+(case when @database is null then '-- ' else '' end)+\"and bi.database_name = @database\n\"+(case when @table_name is null then '-- ' else '' end)+\"and bi.table_name like ('%'+@table_name+'%')\norder by bi.run_datetime, bi.id\noffset ((@page_no-1)*@page_size) rows fetch next @page_size rows only\n\"\nset quoted_identifier on;\n\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @database, @delta_days_threshold, @buffer_days, @page_no, @page_size, @table_name;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "All INDEX -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+          "transformations": [],
+          "type": "table"
+        }
+      ],
+      "title": "All INDEX -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+      "type": "row"
+    }
+  ],
+  "refresh": "15m",
+  "schemaVersion": 39,
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "sp_BlitzIndex"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "SQLMonitor",
+          "value": "ygPVA4snk"
+        },
+        "description": "Inventory Server Name",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "sqlmonitor_datasource",
+        "options": [],
+        "query": "mssql",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "21L-LTPABL-1187",
+          "value": "21L-LTPABL-1187"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_enabled = 1 and is_available = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Sql Instance",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_enabled = 1 and is_available = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SELECT DB_NAME()",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Inventory Database",
+        "multi": false,
+        "name": "inventory_db",
+        "options": [],
+        "query": "SELECT DB_NAME()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Is Local SQL Instance",
+        "multi": false,
+        "name": "is_local",
+        "options": [],
+        "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "DBA Database",
+        "multi": false,
+        "name": "dba_db",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "192.168.1.2",
+          "value": "192.168.1.2"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "IP Address",
+        "multi": false,
+        "name": "ip",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "WORKGROUP",
+          "value": "WORKGROUP"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "hide": 2,
+        "includeAll": false,
+        "label": "FQDN",
+        "multi": false,
+        "name": "fqdn",
+        "options": [],
+        "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1725402600000",
+          "value": "1725402600000"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "BlitzIndex_Mode2 - Collection Time UTC",
+        "multi": false,
+        "name": "mode2_collection_time_utc",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "8",
+          "value": "8"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_os_schedulers dos where status = 'VISIBLE ONLINE' and is_online = 1;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "SQL Schedulers",
+        "multi": false,
+        "name": "sql_schedulers",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_os_schedulers dos where status = 'VISIBLE ONLINE' and is_online = 1;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1725330621173",
+          "value": "1725330621173"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "SqlInstance Start Time UTC",
+        "multi": false,
+        "name": "sqlserver_start_time_utc",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__All__",
+          "value": "__All__"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select ds.disk_volume as disk_drive\n\tfrom dbo.disk_space ds\n\twhere ds.collection_time_utc = (select max(i.collection_time_utc) from dbo.disk_space i)\n\tunion all\n\tselect '__All__' as disk_drive\n\torder by disk_drive\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Disk Drive",
+        "multi": false,
+        "name": "disk_drive",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select ds.disk_volume as disk_drive\n\tfrom dbo.disk_space ds\n\twhere ds.collection_time_utc = (select max(i.collection_time_utc) from dbo.disk_space i)\n\tunion all\n\tselect '__All__' as disk_drive\n\torder by disk_drive\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__All__",
+          "value": "__All__"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Database",
+        "multi": false,
+        "name": "database",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "hide": 2,
+        "label": "BlitzIndex Table",
+        "name": "blitzindex_table_name",
+        "query": "dbo.BlitzIndex",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "5",
+          "value": "5"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Delta Days",
+        "multi": false,
+        "name": "delta_days_threshold",
+        "options": [
+          {
+            "selected": true,
+            "text": "5",
+            "value": "5"
+          },
+          {
+            "selected": false,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": false,
+            "text": "15",
+            "value": "15"
+          },
+          {
+            "selected": false,
+            "text": "20",
+            "value": "20"
+          },
+          {
+            "selected": false,
+            "text": "30",
+            "value": "30"
+          },
+          {
+            "selected": false,
+            "text": "60",
+            "value": "60"
+          },
+          {
+            "selected": false,
+            "text": "90",
+            "value": "90"
+          },
+          {
+            "selected": false,
+            "text": "180",
+            "value": "180"
+          },
+          {
+            "selected": false,
+            "text": "365",
+            "value": "365"
+          }
+        ],
+        "query": "5,10,15,20,30,60,90,180,365",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "1",
+          "value": "1"
+        },
+        "description": "Page No Used for Paginated Res",
+        "hide": 0,
+        "label": "Page No",
+        "name": "page_no",
+        "options": [
+          {
+            "selected": true,
+            "text": "1",
+            "value": "1"
+          }
+        ],
+        "query": "1",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "100",
+          "value": "100"
+        },
+        "description": "Page Size Used for Paginated Res",
+        "hide": 0,
+        "label": "Page Size",
+        "name": "page_size",
+        "options": [
+          {
+            "selected": true,
+            "text": "100",
+            "value": "100"
+          }
+        ],
+        "query": "100",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "description": "Table Name Filter",
+        "hide": 0,
+        "label": "Table Name",
+        "name": "table_name",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "hide": 2,
+        "label": "BlitzIndex Table",
+        "name": "blitzindex_mode0_table_name",
+        "query": "dbo.BlitzIndex_Mode0",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "hide": 2,
+        "label": "BlitzIndex Table",
+        "name": "blitzindex_mode1_table_name",
+        "query": "dbo.BlitzIndex_Mode1",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "hide": 2,
+        "label": "BlitzIndex Table",
+        "name": "blitzindex_mode4_table_name",
+        "query": "dbo.BlitzIndex_Mode4",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1724765580000",
+          "value": "1724765580000"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_mode0_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "BlitzIndex_Mode0 - Collection Time UTC",
+        "multi": false,
+        "name": "mode0_collection_time_utc",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_mode0_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1724765580000",
+          "value": "1724765580000"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_mode1_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "BlitzIndex_Mode1 - Collection Time UTC",
+        "multi": false,
+        "name": "mode1_collection_time_utc",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_mode1_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1724765580000",
+          "value": "1724765580000"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_mode4_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "BlitzIndex_Mode4 - Collection Time UTC",
+        "multi": false,
+        "name": "mode4_collection_time_utc",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_mode4_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-2h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "t___BlitzIndex_Analysis",
+  "uid": "t___BlitzIndex_Analysis",
+  "version": 4,
+  "weekStart": ""
+}

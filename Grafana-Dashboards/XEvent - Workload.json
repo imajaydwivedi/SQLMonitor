@@ -1,0 +1,1222 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_SQLSERVER",
+      "label": "SqlServer",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "mssql",
+      "pluginName": "Microsoft SQL Server"
+    },
+    {
+      "name": "VAR_XEVENT_TABLE_NAME",
+      "type": "constant",
+      "label": "XEvent Table",
+      "value": "dbo.xevent_metrics",
+      "description": ""
+    },
+    {
+      "name": "VAR_XEVENT_QUERIES_TABLE_NAME",
+      "type": "constant",
+      "label": "XEvent Queries Table",
+      "value": "dbo.xevent_metrics_queries",
+      "description": ""
+    },
+    {
+      "name": "VAR_XEVENT_VIEW_NAME",
+      "type": "constant",
+      "label": "XEvent View",
+      "value": "dbo.vw_xevent_metrics",
+      "description": ""
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "dashlist",
+      "name": "Dashboard list",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.1.0"
+    },
+    {
+      "type": "datasource",
+      "id": "mssql",
+      "name": "Microsoft SQL Server",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Display Workload Details Captured using Extended Events",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 139,
+      "panels": [],
+      "title": "XEvent Data - FILTERED - For Duration - Paginated - Page No {$page_no} - Page Size {$page_size}",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${DS_SQLSERVER}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "session_id"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 60
+              },
+              {
+                "id": "displayName",
+                "value": "spid"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "result"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cpu_time_ms"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "custom.width",
+                "value": 101
+              },
+              {
+                "id": "displayName",
+                "value": "cpu"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_seconds"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "displayName",
+                "value": "duration"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "logical_reads_kb"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kbytes"
+              },
+              {
+                "id": "displayName",
+                "value": "reads"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "physical_reads_kb"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kbytes"
+              },
+              {
+                "id": "displayName",
+                "value": "physical_reads"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "row_count"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "displayName",
+                "value": "rows"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "writes"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.width",
+                "value": 82
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "spills"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.width",
+                "value": 95
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 98
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "reads"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 99
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "physical_reads"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 129
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_text"
+            },
+            "properties": [
+              {
+                "id": "custom.minWidth",
+                "value": 500
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rows"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 87
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 17,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 141,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "10.1.0",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_SQLSERVER}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\n\n--declare @delta_minutes int;\ndeclare @program_name nvarchar(500);\ndeclare @login_name nvarchar(255);\ndeclare @database nvarchar(500) = '$database';\ndeclare @session_id int;\ndeclare @session_host_name nvarchar(125);\ndeclare @query_pattern nvarchar(500);\ndeclare @duration_minutes int = $duration_minutes;\ndeclare @page_no int;\ndeclare @page_size int;\ndeclare @cpu_time_minutes int = $cpu_time_minutes;\ndeclare @reads_mb int;\ndeclare @has_spills varchar(10) = '$has_spills';\ndeclare @result varchar(10) = '$result';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @duration_minutes = case when ltrim(rtrim('$duration_minutes')) <> '' then $duration_minutes else 0 end;\nif len(ltrim(rtrim('$program_name'))) > 0\n  set @program_name = '$program_name'\nif len(ltrim(rtrim('$login_name'))) > 0\n  set @login_name = '$login_name'\nif len(ltrim(rtrim('$session_host_name'))) > 0\n  set @session_host_name = '$session_host_name'\nif len(ltrim(rtrim('$query_pattern'))) > 0\n  set @query_pattern = '$query_pattern'\nif len(ltrim(rtrim('$session_id'))) > 0 and (case when '$session_id' like '%[^0-9.]%' then 'invalid' when '$session_id' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @session_id = convert(int,ltrim(rtrim('$session_id')));\nif len(ltrim(rtrim('$page_no'))) > 0 and (case when '$page_no' like '%[^0-9.]%' then 'invalid' when '$page_no' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_no = convert(int,ltrim(rtrim('$page_no')));\nif len(ltrim(rtrim('$page_size'))) > 0 and (case when '$page_size' like '%[^0-9.]%' then 'invalid' when '$page_size' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @page_size = convert(int,ltrim(rtrim('$page_size')));\nif len(ltrim(rtrim('$reads_mb'))) > 0 and (case when '$reads_mb' like '%-.[^0-9.]%' then 'invalid' when '$reads_mb' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\n  set @reads_mb = convert(int,ltrim(rtrim('$reads_mb')));\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\n--set @start_time_utc = dateadd(second,$sqlserver_start_time_utc/1000,'1970-01-01 00:00:00');\nset @end_time_utc = $__timeTo();\n--set @end_time_utc = $__timeFrom();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2,\n\t\t\t\t@program_name nvarchar(500), @login_name nvarchar(255), @database nvarchar(500),\n\t\t\t\t@session_id int, @session_host_name nvarchar(125), @query_pattern nvarchar(500),\n\t\t\t\t@duration_minutes int, @page_no int, @page_size int, @cpu_time_minutes int, @reads_mb int, \n\t\t\t\t@has_spills varchar(10), @result varchar(10)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor Dashboard - XEvent Workload  */\nset nocount on;\t\t\t\n\n;with t_xevent_metrics as \n(\n\tselect *\n\tfrom $xevent_table_name rc with (nolock)\n\twhere 1=1\n\tand rc.event_time between DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc) and DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n\t\"+(case when @duration_minutes is null then '-- ' else '' end)+\"and duration_seconds >= (@duration_minutes*60)\n\t\"+(case when @program_name is null then '-- ' else '' end)+\"and rc.client_app_name like ('%'+@program_name+'%')\n\t\"+(case when @database is null then '-- ' else '' end)+\"and rc.database_name like ('%'+@database+'%')\n\t\"+(case when @login_name is null then '-- ' else '' end)+\"and rc.username like ('%'+@login_name+'%')\n\t\"+(case when @session_host_name is null then '-- ' else '' end)+\"and rc.client_hostname like ('%'+@session_host_name+'%')\n\t\"+(case when @session_id is null then '-- ' else '' end)+\"and rc.session_id = @session_id\n\t\"+(case when @cpu_time_minutes is null then '-- ' else '' end)+\"and rc.cpu_time_ms >= (@cpu_time_minutes*60*1000)\n\t\"+(case when @reads_mb <= 0 then '-- ' else '' end)+\"and rc.logical_reads >= (@reads_mb*1024/8)\n\t\"+(case when @reads_mb <= 0 then '-- ' else '' end)+\"and rc.logical_reads >= (@reads_mb*1024/8)\n\t\"+(case when @has_spills = 'No Choice' then '-- ' else '' end)+\"and (case when @has_spills = 'Yes' and rc.spills is not null and rc.spills > 0 then 1 when @has_spills = 'No' and (rc.spills is null or rc.spills <= 0) then 1 else 0 end) = 1\n\t\"+(case when @result = 'No Choice' then '-- ' else '' end)+\"and rc.result = @result\n\torder by event_time, start_time, row_id\n\toffset ((@page_no-1)*@page_size) rows fetch next @page_size rows only\n)\nselect \t[session_id], \n\t\t\t\t[start_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), rc.[start_time]), \n\t\t\t\t[event_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), rc.[event_time]), \n\t\t\t\t[event_name], [result], [cpu_time_ms], [duration_seconds], [logical_reads_kb] = [logical_reads]*8, \n\t\t\t\t[physical_reads_kb] = [physical_reads]*8, \n\t\t\t\t[row_count], [writes], [spills], [database_name], [client_app_name], [username], \n\t\t\t\t[client_hostname], q.sql_text\n\t\t\t\t--, [session_resource_pool_id], [session_resource_group_id]\nfrom t_xevent_metrics rc\njoin $xevent_queries_table_name q\n\ton q.event_time = rc.event_time and q.start_time = rc.start_time and q.row_id = rc.row_id\nwhere 1=1\n  \"+(case when @query_pattern is null then '-- ' else '' end)+\" and q.sql_text like ('%'+@query_pattern+'%')\n\"\nset quoted_identifier on;\n--print @sql\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @perfmon_host_name, @start_time_utc, @end_time_utc, \n\t\t\t\t\t@program_name, @login_name, @database, @session_id, @session_host_name, \n\t\t\t\t\t@query_pattern, @duration_minutes, @page_no, @page_size, @cpu_time_minutes, @reads_mb, @has_spills, @result;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @perfmon_host_name, @start_time_utc, @end_time_utc,\n\t\t\t\t\t@program_name, @login_name, @database, @session_id, @session_host_name, \n\t\t\t\t\t@query_pattern, @duration_minutes, @page_no, @page_size, @cpu_time_minutes, @reads_mb, @has_spills, @result;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "XEvent Data - FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size} - Between - ___${__from:date:YYYY-MM-DD HH.mm}___&___${xevent_collection_time_utc:date:YYYY-MM-DD HH.mm}___",
+      "type": "table"
+    },
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "mssql",
+        "uid": "5Qr_lHw7z"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 121,
+      "panels": [
+        {
+          "description": "",
+          "gridPos": {
+            "h": 20,
+            "w": 24,
+            "x": 0,
+            "y": 2
+          },
+          "id": 119,
+          "links": [],
+          "options": {
+            "folderId": 1,
+            "maxItems": 50,
+            "query": "",
+            "showHeadings": false,
+            "showRecentlyViewed": false,
+            "showSearch": true,
+            "showStarred": false,
+            "tags": []
+          },
+          "pluginVersion": "9.3.2",
+          "title": "Other Dashboards",
+          "type": "dashlist"
+        }
+      ],
+      "repeat": "datasource",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "5Qr_lHw7z"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Other Dashboards",
+      "type": "row"
+    }
+  ],
+  "refresh": "2m",
+  "revision": 1,
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "XEvents"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "SqlServer",
+          "value": "ygPVA4snk"
+        },
+        "description": "Inventory Server Name",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "sqlmonitor_datasource",
+        "options": [],
+        "query": "mssql",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Sql Instance",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Database",
+        "multi": false,
+        "name": "database",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Session ID",
+        "name": "session_id",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "SELECT DB_NAME() as [db_name]",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Inventory Database",
+        "multi": false,
+        "name": "inventory_db",
+        "options": [],
+        "query": "SELECT DB_NAME() as [db_name]",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Is Local SQL Instance",
+        "multi": false,
+        "name": "is_local",
+        "options": [],
+        "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "0",
+          "value": "0"
+        },
+        "description": "Threshold duration in minutes for Long Running Queries",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Duration (Min)",
+        "multi": false,
+        "name": "duration_minutes",
+        "options": [
+          {
+            "selected": true,
+            "text": "0",
+            "value": "0"
+          },
+          {
+            "selected": false,
+            "text": "1",
+            "value": "1"
+          },
+          {
+            "selected": false,
+            "text": "2",
+            "value": "2"
+          },
+          {
+            "selected": false,
+            "text": "5",
+            "value": "5"
+          },
+          {
+            "selected": false,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": false,
+            "text": "15",
+            "value": "15"
+          },
+          {
+            "selected": false,
+            "text": "20",
+            "value": "20"
+          },
+          {
+            "selected": false,
+            "text": "30",
+            "value": "30"
+          },
+          {
+            "selected": false,
+            "text": "45",
+            "value": "45"
+          },
+          {
+            "selected": false,
+            "text": "60",
+            "value": "60"
+          },
+          {
+            "selected": false,
+            "text": "90",
+            "value": "90"
+          },
+          {
+            "selected": false,
+            "text": "120",
+            "value": "120"
+          },
+          {
+            "selected": false,
+            "text": "180",
+            "value": "180"
+          },
+          {
+            "selected": false,
+            "text": "260",
+            "value": "260"
+          },
+          {
+            "selected": false,
+            "text": "300",
+            "value": "300"
+          },
+          {
+            "selected": false,
+            "text": "480",
+            "value": "480"
+          }
+        ],
+        "query": "0,1,2,5,10,15,20,30,45,60,90,120,180,260,300,480",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "description": "IP Address of Sql Instance",
+        "hide": 2,
+        "includeAll": false,
+        "label": "IP Address",
+        "multi": false,
+        "name": "ip",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Host Name",
+        "multi": false,
+        "name": "host_name",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Fully Qualified Domain Name",
+        "multi": false,
+        "name": "fqdn",
+        "options": [],
+        "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "description": "program_name in sys.dm_exec_sessions",
+        "hide": 0,
+        "label": "Program",
+        "name": "program_name",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Login",
+        "name": "login_name",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Host Name",
+        "name": "session_host_name",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Query Pattern",
+        "name": "query_pattern",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "DBA Database",
+        "multi": false,
+        "name": "dba_db",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "500",
+          "value": "500"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "M/r Grant (MB)",
+        "multi": false,
+        "name": "memory_grant_threshold_mb",
+        "options": [
+          {
+            "selected": true,
+            "text": "500",
+            "value": "500"
+          },
+          {
+            "selected": false,
+            "text": "2048",
+            "value": "2048"
+          },
+          {
+            "selected": false,
+            "text": "5120",
+            "value": "5120"
+          },
+          {
+            "selected": false,
+            "text": "10240",
+            "value": "10240"
+          },
+          {
+            "selected": false,
+            "text": "20480",
+            "value": "20480"
+          }
+        ],
+        "query": "500, 2048, 5120, 10240, 20480",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "1",
+          "value": "1"
+        },
+        "description": "Page No Used for Paginated Result",
+        "hide": 0,
+        "label": "Page No",
+        "name": "page_no",
+        "options": [
+          {
+            "selected": true,
+            "text": "1",
+            "value": "1"
+          }
+        ],
+        "query": "1",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "200",
+          "value": "200"
+        },
+        "description": "Page Size for Paginated Result",
+        "hide": 0,
+        "label": "Page Size",
+        "name": "page_size",
+        "options": [
+          {
+            "selected": true,
+            "text": "20",
+            "value": "20"
+          }
+        ],
+        "query": "20",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), event_time )\nfrom $xevent_table_name\norder by event_time desc\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "hide": 2,
+        "includeAll": false,
+        "label": "XEvent Collection Time UTC",
+        "multi": false,
+        "name": "xevent_collection_time_utc",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), event_time )\nfrom $xevent_table_name\norder by event_time desc\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "description": "Resource Consumption Table Name",
+        "hide": 2,
+        "label": "XEvent Table",
+        "name": "xevent_table_name",
+        "query": "${VAR_XEVENT_TABLE_NAME}",
+        "skipUrlSync": false,
+        "type": "constant",
+        "current": {
+          "value": "${VAR_XEVENT_TABLE_NAME}",
+          "text": "${VAR_XEVENT_TABLE_NAME}",
+          "selected": false
+        },
+        "options": [
+          {
+            "value": "${VAR_XEVENT_TABLE_NAME}",
+            "text": "${VAR_XEVENT_TABLE_NAME}",
+            "selected": false
+          }
+        ]
+      },
+      {
+        "hide": 2,
+        "label": "XEvent Queries Table",
+        "name": "xevent_queries_table_name",
+        "query": "${VAR_XEVENT_QUERIES_TABLE_NAME}",
+        "skipUrlSync": false,
+        "type": "constant",
+        "current": {
+          "value": "${VAR_XEVENT_QUERIES_TABLE_NAME}",
+          "text": "${VAR_XEVENT_QUERIES_TABLE_NAME}",
+          "selected": false
+        },
+        "options": [
+          {
+            "value": "${VAR_XEVENT_QUERIES_TABLE_NAME}",
+            "text": "${VAR_XEVENT_QUERIES_TABLE_NAME}",
+            "selected": false
+          }
+        ]
+      },
+      {
+        "hide": 2,
+        "label": "XEvent View",
+        "name": "xevent_view_name",
+        "query": "${VAR_XEVENT_VIEW_NAME}",
+        "skipUrlSync": false,
+        "type": "constant",
+        "current": {
+          "value": "${VAR_XEVENT_VIEW_NAME}",
+          "text": "${VAR_XEVENT_VIEW_NAME}",
+          "selected": false
+        },
+        "options": [
+          {
+            "value": "${VAR_XEVENT_VIEW_NAME}",
+            "text": "${VAR_XEVENT_VIEW_NAME}",
+            "selected": false
+          }
+        ]
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "-1",
+          "value": "-1"
+        },
+        "description": "Logical Reads Threshold MB",
+        "hide": 0,
+        "label": "Reads (MB)",
+        "name": "reads_mb",
+        "options": [
+          {
+            "selected": true,
+            "text": "-1",
+            "value": "-1"
+          }
+        ],
+        "query": "-1",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "No Choice",
+          "value": "No Choice"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Spills",
+        "multi": false,
+        "name": "has_spills",
+        "options": [
+          {
+            "selected": true,
+            "text": "No Choice",
+            "value": "No Choice"
+          },
+          {
+            "selected": false,
+            "text": "Yes",
+            "value": "Yes"
+          },
+          {
+            "selected": false,
+            "text": "No",
+            "value": "No"
+          }
+        ],
+        "query": "No Choice,Yes,No",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "No Choice",
+          "value": "No Choice"
+        },
+        "description": "Result of Query",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Result",
+        "multi": false,
+        "name": "result",
+        "options": [
+          {
+            "selected": true,
+            "text": "No Choice",
+            "value": "No Choice"
+          },
+          {
+            "selected": false,
+            "text": "OK",
+            "value": "OK"
+          },
+          {
+            "selected": false,
+            "text": "Abort",
+            "value": "Abort"
+          },
+          {
+            "selected": false,
+            "text": "Error",
+            "value": "Error"
+          }
+        ],
+        "query": "No Choice,OK,Abort,Error",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "0",
+          "value": "0"
+        },
+        "description": "CPU time in minutes",
+        "hide": 0,
+        "includeAll": false,
+        "label": "CPU (Min)",
+        "multi": false,
+        "name": "cpu_time_minutes",
+        "options": [
+          {
+            "selected": true,
+            "text": "0",
+            "value": "0"
+          },
+          {
+            "selected": false,
+            "text": "1",
+            "value": "1"
+          },
+          {
+            "selected": false,
+            "text": "2",
+            "value": "2"
+          },
+          {
+            "selected": false,
+            "text": "5",
+            "value": "5"
+          },
+          {
+            "selected": false,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": false,
+            "text": "15",
+            "value": "15"
+          },
+          {
+            "selected": false,
+            "text": "20",
+            "value": "20"
+          },
+          {
+            "selected": false,
+            "text": "30",
+            "value": "30"
+          },
+          {
+            "selected": false,
+            "text": "45",
+            "value": "45"
+          },
+          {
+            "selected": false,
+            "text": "60",
+            "value": "60"
+          },
+          {
+            "selected": false,
+            "text": "90",
+            "value": "90"
+          },
+          {
+            "selected": false,
+            "text": "120",
+            "value": "120"
+          },
+          {
+            "selected": false,
+            "text": "180",
+            "value": "180"
+          },
+          {
+            "selected": false,
+            "text": "260",
+            "value": "260"
+          },
+          {
+            "selected": false,
+            "text": "300",
+            "value": "300"
+          },
+          {
+            "selected": false,
+            "text": "480",
+            "value": "480"
+          }
+        ],
+        "query": "0,1,2,5,10,15,20,30,45,60,90,120,180,260,300,480",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-2h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "2m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "XEvent - Workload",
+  "uid": "XEvents",
+  "version": 6,
+  "weekStart": ""
+}

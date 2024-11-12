@@ -1,0 +1,1383 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Data of sys.dm_os_wait_stats",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 24,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "mssql",
+        "uid": "5Qr_lHw7z"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 12,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "exec sp_BlitzFirst @seconds = 60, @ExpertMode = 1",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unitScale": true
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Wait Time (Sec)"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 86
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Wait Time"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time Sampled (Sec)"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 100
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Time Sampled"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Pcnt"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 90
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Signal Wait Time (Sec)"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 125
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Signal Wait Time"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Waits(Sec) Per Core Per Minute"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 190
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Waits Per Core Per Minute"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "% Signal Waits"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 110
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Avg Time (ms) Per Wait"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 135
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Avg Time Per Wait"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "WaitType"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "",
+                        "url": "https://www.sqlskills.com/help/waits/${__value.raw}"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.minWidth",
+                    "value": 300
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Number of Waits"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 130
+                  },
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Pcnt"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 66
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 11,
+            "w": 18,
+            "x": 0,
+            "y": 1
+          },
+          "id": 10,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "10.3.1",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\ndeclare @start_time datetime;\ndeclare @schedulers smallint;\ndeclare @cpu_time_min decimal(18,1);\ndeclare @WaitStatsTop tinyint = 10;\ndeclare @WaitsPercentTop int = 99;\n\nselect @start_time = sqlserver_start_time from sys.dm_os_sys_info;\nselect @schedulers = count(*) from sys.dm_os_schedulers where status = 'VISIBLE ONLINE' and is_online = 1;\n-- @cpu_time_min = sum(total_cpu_usage_ms/1000.0)/60.0\n\n-- Last updated October 1, 2021\n;WITH [Waits] AS\n    (SELECT\n        [wait_type],\n        [wait_time_ms] / 1000.0 AS [WaitS],\n\t\t    [wait_time_ms],\n        ([wait_time_ms] - [signal_wait_time_ms]) / 1000.0 AS [ResourceS],\n        [signal_wait_time_ms] / 1000.0 AS [SignalS],\n        [waiting_tasks_count] AS [WaitCount],\n        100.0 * [wait_time_ms] / SUM ([wait_time_ms]) OVER() AS [Percentage],\n        ROW_NUMBER() OVER(ORDER BY [wait_time_ms] DESC) AS [RowNum]\n    FROM sys.dm_os_wait_stats\n    WHERE 1=1\n    and [wait_type] NOT IN ( select wc.[WaitType] from [dbo].[BlitzFirst_WaitStats_Categories] wc where coalesce(wc.IgnorableOnDashboard,wc.Ignorable,0) = 1 )\n    AND [waiting_tasks_count] > 0\n    )\nSELECT\n\t--@schedulers as [CPUs],\n\t--GETUTCDATE() AS [Sample Ended],\n\t  datediff(second,@start_time,getdate()) AS [Time Sampled (Sec)],\n\t  --convert(DECIMAL(18,1),datediff(minute,@start_time,getdate())/60.0) AS [Hours Sample],\n\t--@cpu_time_min/60.0 AS [Thread Time (Hours)],\n    MAX ([W1].[wait_type]) AS [WaitType],\n    MAX([W1].[Percentage]) AS [Pcnt],\n    --CAST (MAX ([W1].[WaitS])/60.0/60.0 AS DECIMAL (16,1)) AS [Wait Time (Hours)],\n    MAX([W1].[WaitS]) AS [Wait Time (Sec)],\n\t  --CONVERT(DECIMAL(18,1), CAST (MAX ([W1].[WaitS])/60.0/60.0 AS DECIMAL (16,1)) / @schedulers / convert(DECIMAL(18,1),datediff(minute,@start_time,getdate())/60.0)) AS [Per Core Per Hour],\n\t  --MAX([W1].[WaitS]) / @schedulers AS [Waits Per Core],\n\t  --MAX([W1].[WaitS]) / @schedulers / (datediff(Minute,@start_time,getdate())) AS [Waits(Sec) Per Core Per Minute],\n\t  [Waits(Sec) Per Core Per Minute] = convert(numeric(20,2), MAX([W1].[WaitS])*1.0 / @schedulers / datediff(Minute,@start_time,getdate())),\n    --CAST (MAX ([W1].[SignalS]) / 60.0/60.0 AS DECIMAL (16,1)) AS [Signal Wait Time (Hours)],\n    MAX([W1].[SignalS]) AS [Signal Wait Time (Sec)],\n\t  CONVERT(DECIMAL(18,1), MAX([W1].[SignalS]) * 100.0 / MAX([W1].[WaitS]) ) AS [% Signal Waits],\n\t  MAX([W1].[WaitCount]) AS [Number of Waits],\n\t  CONVERT(DECIMAL(18,1), MAX([W1].[wait_time_ms])*1.0 / MAX([W1].[WaitCount]) ) AS [Avg Time (ms) Per Wait]\n\t  --'https://www.sqlskills.com/help/waits/' + MAX ([W1].[wait_type]) AS [URL]\n\n    --CAST (MAX ([W1].[ResourceS]) AS DECIMAL (16,2)) AS [Resource_S],\n    --CAST (MAX ([W1].[SignalS]) AS DECIMAL (16,2)) AS [Signal_S],\n    --MAX ([W1].[WaitCount]) AS [WaitCount],\n    --CAST (MAX ([W1].[Percentage]) AS DECIMAL (5,2)) AS [Percentage],\n    --CAST ((MAX ([W1].[WaitS]) / MAX ([W1].[WaitCount])) AS DECIMAL (16,4)) AS [AvgWait_S],\n    --CAST ((MAX ([W1].[ResourceS]) / MAX ([W1].[WaitCount])) AS DECIMAL (16,4)) AS [AvgRes_S],\n    --CAST ((MAX ([W1].[SignalS]) / MAX ([W1].[WaitCount])) AS DECIMAL (16,4)) AS [AvgSig_S],\n    --CAST ('https://www.sqlskills.com/help/waits/' + MAX ([W1].[wait_type]) as XML) AS [Help/Info URL]\nFROM [Waits] AS [W1]\nINNER JOIN [Waits] AS [W2] ON [W2].[RowNum] <= [W1].[RowNum]\nGROUP BY [W1].[RowNum]\nHAVING (SUM ([W2].[Percentage]) - MAX( [W1].[Percentage] ) < @WaitsPercentTop) -- percentage threshold\nAND ([W1].[RowNum] <= @WaitStatsTop)\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Wait Stats with \"__${sql_schedulers} CPUs__\" since Startup",
+          "type": "table"
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "5Qr_lHw7z"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Wait Stats since Startup - \"__${sql_schedulers} CPUs__\"  - [$fqdn] - [$ip]",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "mssql",
+        "uid": "5Qr_lHw7z"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 16,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "5Qr_lHw7z"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Selective - WaitStats - \"__${sql_schedulers} CPUs__\" @ ${collection_time_utc:date:YYYY-MM-DD HH.mm}",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "description": "exec sp_BlitzFirst @seconds = 60, @ExpertMode = 1",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unitScale": true
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Wait_S"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 86
+              },
+              {
+                "id": "displayName",
+                "value": "Wait Time"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration (Sec)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              },
+              {
+                "id": "displayName",
+                "value": "Time Sampled"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Percentage"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              },
+              {
+                "id": "displayName",
+                "value": "Pcnt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Signal_S"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 125
+              },
+              {
+                "id": "displayName",
+                "value": "Signal Wait Time"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Waits(Sec) Per Core Per Minute"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 190
+              },
+              {
+                "id": "displayName",
+                "value": "Waits Per Core Per Minute"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "% Signal Waits"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Avg Time (ms) Per Wait"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "custom.width",
+                "value": 135
+              },
+              {
+                "id": "displayName",
+                "value": "Avg Time Per Wait"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "WaitType"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "",
+                    "url": "https://www.sqlskills.com/help/waits/${__value.raw}"
+                  }
+                ]
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "WaitCount"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "displayName",
+                "value": "Number of Waits"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Pcnt"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 66
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Resource_S"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AvgRes_S"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AvgWait_S"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AvgSig_S"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 18,
+        "x": 0,
+        "y": 2
+      },
+      "id": 13,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "10.3.1",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\n--set @start_time_utc = $__timeFrom();\nset @start_time_utc = dateadd(second,$sqlserver_start_time_utc/1000,'1970-01-01 00:00:00');\n--set @end_time_utc = $__timeTo();\nset @end_time_utc = $__timeFrom();\n--select @start_time_utc as start_time, @end_time_utc as end_time;\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\ndeclare @schedulers smallint;\ndeclare @WaitStatsTop tinyint = 10;\ndeclare @WaitsPercentTop int = 99;\ndeclare @collect_time_utc_snap1 datetime2;\ndeclare @collect_time_utc_snap2 datetime2;\n\n--select @start_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info;\nselect @schedulers = count(*) from sys.dm_os_schedulers where status = 'VISIBLE ONLINE' and is_online = 1;\n\nselect top 1 @collect_time_utc_snap2 = collection_time_utc\nfrom dbo.wait_stats s2\nwhere s2.collection_time_utc <= @end_time_utc\norder by collection_time_utc desc;\n\nselect top 1 @collect_time_utc_snap1 = collection_time_utc\nfrom dbo.wait_stats s1\nwhere collection_time_utc >= @start_time_utc\norder by collection_time_utc asc;\n\n--select @collect_time_utc_snap1, @collect_time_utc_snap2;\n\nWITH [DiffWaits] AS\n(\tSELECT\n\t-- Waits that weren't in the first snapshot\n\t\t\t[ts2].[wait_type],\n\t\t\t[ts2].[wait_time_ms],\n\t\t\t[ts2].[signal_wait_time_ms],\n\t\t\t[ts2].[waiting_tasks_count]\n\t\tFROM dbo.wait_stats AS [ts2]\n\t\tLEFT OUTER JOIN dbo.wait_stats AS [ts1]\n\t\t\tON [ts2].[wait_type] = [ts1].[wait_type]\n\t\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\t\tWHERE [ts1].[wait_type] IS NULL\n\t\tAND [ts2].[wait_time_ms] > 0\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\tUNION\n\tSELECT\n\t-- Diff of waits in both snapshots\n\t\t\t[ts2].[wait_type],\n\t\t\t[ts2].[wait_time_ms] - [ts1].[wait_time_ms] AS [wait_time_ms],\n\t\t\t[ts2].[signal_wait_time_ms] - [ts1].[signal_wait_time_ms] AS [signal_wait_time_ms],\n\t\t\t[ts2].[waiting_tasks_count] - [ts1].[waiting_tasks_count] AS [waiting_tasks_count]\n\t\tFROM dbo.wait_stats AS [ts2]\n\t\tLEFT OUTER JOIN dbo.wait_stats AS [ts1]\n\t\t\tON [ts2].[wait_type] = [ts1].[wait_type]\n\t\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\t\tWHERE [ts1].[wait_type] IS NOT NULL\n\t\tAND [ts2].[waiting_tasks_count] - [ts1].[waiting_tasks_count] > 0\n\t\tAND [ts2].[wait_time_ms] - [ts1].[wait_time_ms] > 0\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n),\n[Waits] AS\n    (SELECT\n        [wait_type],\n        [wait_time_ms] / 1000.0 AS [WaitS],\n        [wait_time_ms],\n        ([wait_time_ms] - [signal_wait_time_ms]) / 1000.0 AS [ResourceS],\n        [signal_wait_time_ms] / 1000.0 AS [SignalS],\n        [waiting_tasks_count] AS [WaitCount],\n        100.0 * [wait_time_ms] / SUM ([wait_time_ms]) OVER() AS [Percentage],\n        ROW_NUMBER() OVER(ORDER BY [wait_time_ms] DESC) AS [RowNum]\n    FROM [DiffWaits]\n    WHERE 1=1\n    and [wait_type] NOT IN ( select wc.[WaitType] from [dbo].[BlitzFirst_WaitStats_Categories] wc where coalesce(wc.IgnorableOnDashboard,wc.Ignorable,0) = 1 )\n    )\nSELECT [Duration (Sec)] = datediff(second,@collect_time_utc_snap1,@collect_time_utc_snap2),\n        [W1].[wait_type] AS [WaitType],\n        CAST ([W1].[Percentage] AS DECIMAL (5, 2)) AS [Percentage],\n        CAST ([W1].[WaitS] AS DECIMAL (16, 2)) AS [Wait_S],\n\t      [Waits(Sec) Per Core Per Minute] = convert(numeric(20,2), [W1].[WaitS]*1.0 / @schedulers / datediff(minute,@collect_time_utc_snap1,@collect_time_utc_snap2)),\n    \n    --CAST ([W1].[ResourceS] AS DECIMAL (16, 2)) AS [Resource_S],\n    CAST ([W1].[SignalS] AS DECIMAL (16, 2)) AS [Signal_S],\n    CONVERT(DECIMAL(18,1), MAX([W1].[SignalS]) * 100.0 / MAX([W1].[WaitS]) ) AS [% Signal Waits],\n    [W1].[WaitCount] AS [WaitCount],\n    CONVERT(DECIMAL(18,1), MAX([W1].[wait_time_ms])*1.0 / MAX([W1].[WaitCount]) ) AS [Avg Time (ms) Per Wait]\n    --CAST (([W1].[WaitS] / [W1].[WaitCount]) AS DECIMAL (16, 4)) AS [AvgWait_S],\n    --CAST (([W1].[ResourceS] / [W1].[WaitCount]) AS DECIMAL (16, 4)) AS [AvgRes_S],\n    --CAST (([W1].[SignalS] / [W1].[WaitCount]) AS DECIMAL (16, 4)) AS [AvgSig_S]\n    --,CAST ('https://www.sqlskills.com/help/waits/' + MAX ([W1].[wait_type]) as XML) AS [Help/Info URL]\nFROM [Waits] AS [W1]\nINNER JOIN [Waits] AS [W2]\n    ON [W2].[RowNum] <= [W1].[RowNum]\nGROUP BY [W1].[RowNum], [W1].[wait_type], [W1].[WaitS],\n    [W1].[ResourceS], [W1].[SignalS], [W1].[WaitCount], [W1].[Percentage]\nHAVING (SUM([W2].[Percentage]) - [W1].[Percentage] < @WaitsPercentTop) -- percentage threshold\nAND ([W1].[RowNum] <= @WaitStatsTop)\nOPTION(RECOMPILE);\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Wait Stats ____Since Startup ___ till ___ ${__from:date:YYYY-MM-DD HH.mm}___",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "description": "exec sp_BlitzFirst @seconds = 60, @ExpertMode = 1",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unitScale": true
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Wait_S"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 86
+              },
+              {
+                "id": "displayName",
+                "value": "Wait Time"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration (Sec)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              },
+              {
+                "id": "displayName",
+                "value": "Time Sampled"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Percentage"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              },
+              {
+                "id": "displayName",
+                "value": "Pcnt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Signal_S"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 125
+              },
+              {
+                "id": "displayName",
+                "value": "Signal Wait Time"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Waits(Sec) Per Core Per Minute"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 190
+              },
+              {
+                "id": "displayName",
+                "value": "Waits Per Core Per Minute"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "% Signal Waits"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Avg Time (ms) Per Wait"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "custom.width",
+                "value": 135
+              },
+              {
+                "id": "displayName",
+                "value": "Avg Time Per Wait"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "WaitType"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "",
+                    "url": "https://www.sqlskills.com/help/waits/${__value.raw}"
+                  }
+                ]
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "WaitCount"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "displayName",
+                "value": "Number of Waits"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Pcnt"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 66
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 18,
+        "x": 0,
+        "y": 9
+      },
+      "id": 14,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "10.3.1",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\n--set @start_time_utc = dateadd(second,$sqlserver_start_time_utc/1000,'1970-01-01 00:00:00');\nset @end_time_utc = $__timeTo();\n--set @end_time_utc = $__timeFrom();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\ndeclare @schedulers smallint;\ndeclare @WaitStatsTop tinyint = 10;\ndeclare @WaitsPercentTop int = 99;\ndeclare @collect_time_utc_snap1 datetime2;\ndeclare @collect_time_utc_snap2 datetime2;\n\n--select @start_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info;\nselect @schedulers = count(*) from sys.dm_os_schedulers where status = 'VISIBLE ONLINE' and is_online = 1;\n\nselect top 1 @collect_time_utc_snap2 = collection_time_utc\nfrom dbo.wait_stats s2\nwhere s2.collection_time_utc <= @end_time_utc\norder by collection_time_utc desc;\n\nselect top 1 @collect_time_utc_snap1 = collection_time_utc\nfrom dbo.wait_stats s1\nwhere collection_time_utc >= @start_time_utc\norder by collection_time_utc asc;\n\n--select @collect_time_utc_snap1, @collect_time_utc_snap2;\n\nWITH [DiffWaits] AS\n(\tSELECT\n\t-- Waits that weren't in the first snapshot\n\t\t\t[ts2].[wait_type],\n\t\t\t[ts2].[wait_time_ms],\n\t\t\t[ts2].[signal_wait_time_ms],\n\t\t\t[ts2].[waiting_tasks_count]\n\t\tFROM dbo.wait_stats AS [ts2]\n\t\tLEFT OUTER JOIN dbo.wait_stats AS [ts1]\n\t\t\tON [ts2].[wait_type] = [ts1].[wait_type]\n\t\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\t\tWHERE [ts1].[wait_type] IS NULL\n\t\tAND [ts2].[wait_time_ms] > 0\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\tUNION\n\tSELECT\n\t-- Diff of waits in both snapshots\n\t\t\t[ts2].[wait_type],\n\t\t\t[ts2].[wait_time_ms] - [ts1].[wait_time_ms] AS [wait_time_ms],\n\t\t\t[ts2].[signal_wait_time_ms] - [ts1].[signal_wait_time_ms] AS [signal_wait_time_ms],\n\t\t\t[ts2].[waiting_tasks_count] - [ts1].[waiting_tasks_count] AS [waiting_tasks_count]\n\t\tFROM dbo.wait_stats AS [ts2]\n\t\tLEFT OUTER JOIN dbo.wait_stats AS [ts1]\n\t\t\tON [ts2].[wait_type] = [ts1].[wait_type]\n\t\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\t\tWHERE [ts1].[wait_type] IS NOT NULL\n\t\tAND [ts2].[waiting_tasks_count] - [ts1].[waiting_tasks_count] > 0\n\t\tAND [ts2].[wait_time_ms] - [ts1].[wait_time_ms] > 0\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n),\n[Waits] AS\n    (SELECT\n        [wait_type],\n        [wait_time_ms] / 1000.0 AS [WaitS],\n        [wait_time_ms],\n        ([wait_time_ms] - [signal_wait_time_ms]) / 1000.0 AS [ResourceS],\n        [signal_wait_time_ms] / 1000.0 AS [SignalS],\n        [waiting_tasks_count] AS [WaitCount],\n        100.0 * [wait_time_ms] / SUM ([wait_time_ms]) OVER() AS [Percentage],\n        ROW_NUMBER() OVER(ORDER BY [wait_time_ms] DESC) AS [RowNum]\n    FROM [DiffWaits]\n    WHERE 1=1\n    and [wait_type] NOT IN ( select wc.[WaitType] from [dbo].[BlitzFirst_WaitStats_Categories] wc where coalesce(wc.IgnorableOnDashboard,wc.Ignorable,0) = 1 )\n    )\nSELECT [Duration (Sec)] = datediff(second,@collect_time_utc_snap1,@collect_time_utc_snap2),\n        [W1].[wait_type] AS [WaitType],\n        CAST ([W1].[Percentage] AS DECIMAL (5, 2)) AS [Percentage],\n        CAST ([W1].[WaitS] AS DECIMAL (16, 2)) AS [Wait_S],\n\t      [Waits(Sec) Per Core Per Minute] = convert(numeric(20,2), [W1].[WaitS]*1.0 / @schedulers / datediff(minute,@collect_time_utc_snap1,@collect_time_utc_snap2)),\n    \n    --CAST ([W1].[ResourceS] AS DECIMAL (16, 2)) AS [Resource_S],\n    CAST ([W1].[SignalS] AS DECIMAL (16, 2)) AS [Signal_S],\n    CONVERT(DECIMAL(18,1), MAX([W1].[SignalS]) * 100.0 / MAX([W1].[WaitS]) ) AS [% Signal Waits],\n    [W1].[WaitCount] AS [WaitCount],\n    CONVERT(DECIMAL(18,1), MAX([W1].[wait_time_ms])*1.0 / MAX([W1].[WaitCount]) ) AS [Avg Time (ms) Per Wait]\n    --CAST (([W1].[WaitS] / [W1].[WaitCount]) AS DECIMAL (16, 4)) AS [AvgWait_S],\n    --CAST (([W1].[ResourceS] / [W1].[WaitCount]) AS DECIMAL (16, 4)) AS [AvgRes_S],\n    --CAST (([W1].[SignalS] / [W1].[WaitCount]) AS DECIMAL (16, 4)) AS [AvgSig_S]\n    --,CAST ('https://www.sqlskills.com/help/waits/' + MAX ([W1].[wait_type]) as XML) AS [Help/Info URL]\nFROM [Waits] AS [W1]\nINNER JOIN [Waits] AS [W2]\n    ON [W2].[RowNum] <= [W1].[RowNum]\nGROUP BY [W1].[RowNum], [W1].[wait_type], [W1].[WaitS],\n    [W1].[ResourceS], [W1].[SignalS], [W1].[WaitCount], [W1].[Percentage]\nHAVING (SUM([W2].[Percentage]) - [W1].[Percentage] < @WaitsPercentTop) -- percentage threshold\nAND ([W1].[RowNum] <= @WaitStatsTop)\nOPTION(RECOMPILE);\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Wait Stats ____In Selected Time Duration____Since____${__from:date:YYYY-MM-DD HH.mm}___till___${__to:date:YYYY-MM-DD HH.mm}____",
+      "type": "table"
+    },
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "mssql",
+        "uid": "5Qr_lHw7z"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 4,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "select * from dbo.BlitzFirst_WaitStats_Deltas\nhttps://www.sqlskills.com/blogs/paul/wait-statistics-or-please-tell-me-where-it-hurts/",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "Wait Stats (ms)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "bars",
+                "fillOpacity": 100,
+                "gradientMode": "hue",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 1,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "ms"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "A"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 19,
+            "w": 24,
+            "x": 0,
+            "y": 3
+          },
+          "id": 2,
+          "options": {
+            "legend": {
+              "calcs": [
+                "sum",
+                "last"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Total",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "8.4.4",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\n--set @start_time_utc = dateadd(second,$sqlserver_start_time_utc/1000,'1970-01-01 00:00:00');\nset @end_time_utc = $__timeTo();\n--set @end_time_utc = $__timeFrom();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\ndeclare @WaitStatsTop tinyint = 10;\ndeclare @WaitsPercentTop int = 99;\n\n;WITH [Waits] AS\n(\n\tSELECT\t[collection_time_utc], \n\t\t\t[wait_type], \n\t\t\t[WaitCategory], \n\t\t\t[Ignorable], \n\t\t\t[ElapsedSeconds], \n\t\t\t[wait_time_ms_delta], \n\t\t\t[wait_time_minutes_delta], \n\t\t\t[wait_time_minutes_per_minute], \n\t\t\t([wait_time_ms_delta] - [signal_wait_time_ms_delta]) as [resource_wait_time_ms_delta],\n\t\t\t[signal_wait_time_ms_delta], \n\t\t\t[waiting_tasks_count_delta],\n\t\t\tROW_NUMBER() OVER(PARTITION BY [collection_time_utc] ORDER BY [wait_time_ms_delta] DESC) AS [WaitsRank],\n\t\t\t(100.0 * [wait_time_ms_delta]) / (SUM ([wait_time_ms_delta]) OVER (PARTITION BY [collection_time_utc])) AS [Percentage]\n\t\t\t,(100.0 * (SUM([wait_time_ms_delta]) OVER(PARTITION BY [collection_time_utc] ORDER BY [wait_time_ms_delta] DESC, [waiting_tasks_count_delta] DESC, [wait_type]))) / (SUM ([wait_time_ms_delta]) OVER (PARTITION BY [collection_time_utc])) AS [PercentageTotal]\n\tFROM dbo.[vw_wait_stats_deltas] AS [Waits]\n\tWHERE collection_time_utc between @start_time_utc and @end_time_utc\n\tand [wait_type] NOT IN ( select wc.[WaitType] from [dbo].[BlitzFirst_WaitStats_Categories] wc where coalesce(wc.IgnorableOnDashboard,wc.Ignorable,0) = 1 )\n)\nSELECT\ttime = [collection_time_utc]\n\t\t,[metric] =  [WaitCategory]+ ' (__ '+[wait_type]+' __)'\n\t\t--,[WaitCategory]\n\t\t--,[WaitsRank]\n\t\t--,[Percentage]\n\t\t--,[Ignorable]\n\t\t--,[ElapsedSeconds]\n\t\t,[value] = [wait_time_ms_delta]\n\t\t--,[wait_time_minutes_delta]\n\t\t--,[wait_time_minutes_per_minute]\n\t\t--,[signal_wait_time_ms_delta]\n\t\t--,[waiting_tasks_count_delta]\n\t\t--,ISNULL((CAST([wait_time_ms_delta] AS DECIMAL(38,2))/NULLIF(CAST([waiting_tasks_count_delta] AS DECIMAL(38,2)),0)),0) AS [wait_time_ms_per_wait]\n\t\t--,[PercentageTotal]\nFROM [Waits] as cur\nWHERE [WaitsRank] <= @WaitStatsTop\nAND [PercentageTotal] <= @WaitsPercentTop\nORDER BY [time] ASC, [wait_time_ms_delta] DESC, [waiting_tasks_count_delta] DESC\nOPTION(RECOMPILE);\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "[${server}] - WaitStats",
+          "type": "timeseries"
+        }
+      ],
+      "repeat": "datasource",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "5Qr_lHw7z"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "WaitStats - Histogram -  [$fqdn] - [$ip] - @ ${collection_time_utc:date:YYYY-MM-DD HH.mm}",
+      "type": "row"
+    }
+  ],
+  "refresh": "5m",
+  "revision": 1,
+  "schemaVersion": 39,
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "Wait Stats"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "SQLMonitor",
+          "value": "ygPVA4snk"
+        },
+        "description": "Inventory Server Name",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "sqlmonitor_datasource",
+        "options": [],
+        "query": "mssql",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "21L-LTPABL-1187",
+          "value": "21L-LTPABL-1187"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Sql Instance",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SELECT DB_NAME()",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Inventory Database",
+        "multi": false,
+        "name": "inventory_db",
+        "options": [],
+        "query": "SELECT DB_NAME()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Is Local SQL Instance",
+        "multi": false,
+        "name": "is_local",
+        "options": [],
+        "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "DBA Database",
+        "multi": false,
+        "name": "dba_db",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "fe80::92e0:20cc:952c:1b57%9",
+          "value": "fe80::92e0:20cc:952c:1b57%9"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "IP Address",
+        "multi": false,
+        "name": "ip",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "WORKGROUP",
+          "value": "WORKGROUP"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "hide": 2,
+        "includeAll": false,
+        "label": "FQDN",
+        "multi": false,
+        "name": "fqdn",
+        "options": [],
+        "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1717587601050",
+          "value": "1717587601050"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 collection_time_utc\nfrom [dbo].[wait_stats]\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Collection Time UTC",
+        "multi": false,
+        "name": "collection_time_utc",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 collection_time_utc\nfrom [dbo].[wait_stats]\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "8",
+          "value": "8"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_os_schedulers dos where status = 'VISIBLE ONLINE' and is_online = 1;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "SQL Schedulers",
+        "multi": false,
+        "name": "sql_schedulers",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_os_schedulers dos where status = 'VISIBLE ONLINE' and is_online = 1;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1717147202257",
+          "value": "1717147202257"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "SqlInstance Start Time UTC",
+        "multi": false,
+        "name": "sqlserver_start_time_utc",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Wait Stats",
+  "uid": "wait_stats",
+  "version": 8,
+  "weekStart": ""
+}

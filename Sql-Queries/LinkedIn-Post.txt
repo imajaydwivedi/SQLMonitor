@@ -1,0 +1,12 @@
+Open-source SQLMonitor helps you monitor all servers on one screen with ease.
+
+CPU/Memory/Blocking/Disk/MemoryGrants/Backups/AGLatency/DbSpace.
+
+Even abnormal behaviour could be easily identified using 'Waits Per Core Per Minute' metric.
+
+Github -> https://github.com/imajaydwivedi/SQLMonitor
+Demo -> https://sqlmonitor.ajaydwivedi.com:3000/dashboards?tag=sqlmonitor
+
+#performancetuning #sqlmonitor #sqlserver
+
+<Image><SQLMonitor/Live-All-Servers-Localhost-CPU-Blocking-High-Disk-Latency.png></image>

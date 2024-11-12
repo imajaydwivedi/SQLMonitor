@@ -1,0 +1,20 @@
+apiVersion: 1
+contactPoints:
+    - orgId: 1
+      name: sqlmonitor-email
+      receivers:
+        - uid: xYXjjvEVz
+          type: email
+          settings:
+            addresses: sqlagentservice@gmail.com
+            singleEmail: false
+          disableResolveMessage: false
+    - orgId: 1
+      name: sqlmonitor-slack
+      receivers:
+        - uid: udz8I1PVk
+          type: slack
+          settings:
+            recipient: '#sqlmonitor-alerts'
+            url: https://hooks.slack.com/services/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
+          disableResolveMessage: false

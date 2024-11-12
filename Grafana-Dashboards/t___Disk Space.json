@@ -1,0 +1,1561 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_SQLSERVER",
+      "label": "SqlServer",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "mssql",
+      "pluginName": "Microsoft SQL Server"
+    },
+    {
+      "name": "VAR_DISKSPACE_TABLE_NAME",
+      "type": "constant",
+      "label": "DiskSpace table name",
+      "value": "dbo.vw_disk_space",
+      "description": ""
+    },
+    {
+      "name": "VAR_FILEIOSTATS_TABLE_NAME",
+      "type": "constant",
+      "label": "File_io_stats Table Name",
+      "value": "dbo.file_io_stats",
+      "description": ""
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.1.0"
+    },
+    {
+      "type": "datasource",
+      "id": "mssql",
+      "name": "Microsoft SQL Server",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Data of sys.dm_os_wait_stats",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "mssql",
+        "uid": "5Qr_lHw7z"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 12,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_SQLSERVER}"
+          },
+          "description": "dbo.vw_diisk_space",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "disk_volume"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "left"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Drive"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "label"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Label"
+                  },
+                  {
+                    "id": "custom.hidden",
+                    "value": false
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "capacity_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Capacity"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "used_percentage"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "% Used"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "free_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Free Space"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "growth_24h_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Growth in 24 Hrs"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "growth_5d_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Growth in 5 Days"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "growth_10d_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Growth in 10 Days"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "growth_30d_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Growth in 30 Days"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "hours_to_fill"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "h"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Hours to Fill"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "days_to_fill"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "d"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Days to Fill"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "dbs"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Databases"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "file_types"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "File Types"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "db_files_usage_percentage"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "% Used (DbFiles)"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 16,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 23,
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "num_of_bytes_read"
+              }
+            ]
+          },
+          "pluginVersion": "9.3.2",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLSERVER}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255) = '$perfmon_host_name';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @disk_drive varchar(255), @perfmon_host_name varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Disk Space Dashboard */\nset nocount on;\ndeclare @_latest_snap datetime2;\ndeclare @_24hour_snapshot datetime2;\ndeclare @_5day_snapshot datetime2;\ndeclare @_10day_snapshot datetime2;\ndeclare @_30day_snapshot datetime2;\n\nselect @_latest_snap = max(collection_time_utc)\nfrom $diskspace_table_name ds\nwhere ds.host_name = @perfmon_host_name;\n\nselect @_24hour_snapshot = max(collection_time_utc)\nfrom $diskspace_table_name ds\nwhere ds.host_name = @perfmon_host_name\nand ds.collection_time_utc <= dateadd(hour,-24,@_latest_snap);\n\nselect @_5day_snapshot = max(collection_time_utc)\nfrom $diskspace_table_name ds\nwhere ds.host_name = @perfmon_host_name\nand ds.collection_time_utc <= dateadd(day,-5,@_latest_snap);\n\nselect @_10day_snapshot = max(collection_time_utc)\nfrom $diskspace_table_name ds\nwhere ds.host_name = @perfmon_host_name\nand ds.collection_time_utc <= dateadd(day,-10,@_latest_snap);\n\nselect @_30day_snapshot = max(collection_time_utc)\nfrom $diskspace_table_name ds\nwhere ds.host_name = @perfmon_host_name\nand ds.collection_time_utc <= dateadd(day,-30,@_latest_snap);\n\n--if object_id('tempdb..#db_disk_drives') is not null\n--\tdrop table #db_disk_drives\ncreate table #db_disk_drives \n(\tdisk_volume varchar (255), \n\t[database] varchar (255), \n\t[file_name] varchar(255), \n\ttype_desc varchar(120),\n\tfile_size_mb bigint,\n\tindex cx_db_disk_drives clustered (disk_volume)\n);\n\ninsert #db_disk_drives\n\t( disk_volume, [database], [file_name], type_desc, file_size_mb )\nselect ds.disk_volume, [database] = d.name, [file_name] = mf.name, \n\t\tmf.type_desc, [file_size_mb] = fis.size_on_disk_bytes/1024/1024 \nfrom sys.master_files mf join sys.databases d on d.database_id = mf.database_id\nouter apply (\n\t\tselect top 1 ds.disk_volume\tfrom $diskspace_table_name ds\n\t\twhere ds.collection_time_utc = @_latest_snap and ds.host_name = @perfmon_host_name\n\t\t\tand mf.physical_name like (ds.disk_volume+'%')\n\t\torder by len(ds.disk_volume) desc\n\t) ds\nleft join $fileiostats_table_name fis\n\ton fis.collection_time_utc = (select max(i.collection_time_utc) from $fileiostats_table_name i \n\t\t\t\t\t\t\t\t\twhere i.collection_time_utc <= @_latest_snap)\n\t\tand fis.database_id = mf.database_id and fis.file_id = mf.file_id;\n\n;with t_raw as (\n\tselect\tds.collection_time_utc, ds.host_name, ds.disk_volume, ds.label, ds.capacity_mb, ds.free_mb\n\t\t\t--ds.block_size, ds.filesystem\n\t\t\t--,[prv_used_mb_delta] = (ds.capacity_mb-ds.free_mb) - (prv.capacity_mb-prv.free_mb)\n\t\t\t,[growth_24h_mb] = (ds.capacity_mb-ds.free_mb) - (prv_24h.capacity_mb-prv_24h.free_mb)\n\t\t\t,[growth_5d_mb] = (ds.capacity_mb-ds.free_mb) - (prv_5d.capacity_mb-prv_5d.free_mb)\n\t\t\t,[growth_10d_mb] = (ds.capacity_mb-ds.free_mb) - (prv_10d.capacity_mb-prv_10d.free_mb)\n\t\t\t,[growth_30d_mb] = (ds.capacity_mb-ds.free_mb) - (prv_30d.capacity_mb-prv_30d.free_mb)\n\t\t\t,[hours_to_fill] = case when ((ds.capacity_mb-ds.free_mb) - (prv_24h.capacity_mb-prv_24h.free_mb)) <> 0\n\t\t\t\t\t\t\t\t\tthen (ds.free_mb * 1.0) / (((ds.capacity_mb-ds.free_mb) - (prv_24h.capacity_mb-prv_24h.free_mb))/24)\n\t\t\t\t\t\t\t\t\twhen ((ds.capacity_mb-ds.free_mb) - (prv_5d.capacity_mb-prv_5d.free_mb)) <> 0\n\t\t\t\t\t\t\t\t\tthen (ds.free_mb * 1.0) / (((ds.capacity_mb-ds.free_mb) - (prv_5d.capacity_mb-prv_5d.free_mb))/(24*5))\n\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\tend\n\t\t\t,[days_to_fill] = case\twhen ((ds.capacity_mb-ds.free_mb) - (prv_30d.capacity_mb-prv_30d.free_mb)) <> 0\n\t\t\t\t\t\t\t\t\tthen (ds.free_mb * 1.0) / (((ds.capacity_mb-ds.free_mb) - (prv_30d.capacity_mb-prv_30d.free_mb))/30)\n\t\t\t\t\t\t\t\t\twhen ((ds.capacity_mb-ds.free_mb) - (prv_10d.capacity_mb-prv_10d.free_mb)) <> 0\n\t\t\t\t\t\t\t\t\tthen (ds.free_mb * 1.0) / (((ds.capacity_mb-ds.free_mb) - (prv_10d.capacity_mb-prv_10d.free_mb))/10)\n\t\t\t\t\t\t\t\t\twhen ((ds.capacity_mb-ds.free_mb) - (prv_5d.capacity_mb-prv_5d.free_mb)) <> 0\n\t\t\t\t\t\t\t\t\tthen (ds.free_mb * 1.0) / (((ds.capacity_mb-ds.free_mb) - (prv_5d.capacity_mb-prv_5d.free_mb))/5)\n\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\tend\n\tfrom $diskspace_table_name ds\n\tleft join $diskspace_table_name prv_24h\n\t\ton prv_24h.host_name = @perfmon_host_name and prv_24h.collection_time_utc = @_24hour_snapshot and prv_24h.disk_volume = ds.disk_volume\n\tleft join $diskspace_table_name prv_5d\n\t\ton prv_5d.host_name = @perfmon_host_name and prv_5d.collection_time_utc = @_5day_snapshot and prv_5d.disk_volume = ds.disk_volume\n\tleft join $diskspace_table_name prv_10d\n\t\ton prv_10d.host_name = @perfmon_host_name and prv_10d.collection_time_utc = @_10day_snapshot and prv_10d.disk_volume = ds.disk_volume\n\tleft join $diskspace_table_name prv_30d\n\t\ton prv_30d.host_name = @perfmon_host_name and prv_30d.collection_time_utc = @_30day_snapshot and prv_30d.disk_volume = ds.disk_volume\n\twhere ds.host_name = @perfmon_host_name\n\tand ds.collection_time_utc = @_latest_snap\n)\n,t_space_summary as (\n\tselect\tds.disk_volume, ds.label, ds.capacity_mb, ds.free_mb, \n\t\t\tds.growth_24h_mb, growth_5d_mb, growth_10d_mb, growth_30d_mb, \n\t\t\t[hours_to_fill] = case when sign(hours_to_fill) = -1 then 0.0 else convert(numeric(20,2),hours_to_fill) end, \n\t\t\t[days_to_fill] = case when sign(days_to_fill) = -1 then 0.0 else convert(numeric(20,2),days_to_fill) end\n\tfrom t_raw ds\n)\nselect \t[disk_volume] = s.disk_volume, s.label, s.capacity_mb, s.free_mb, \n\t\t\t\t[used_percentage] = 100.0-(s.free_mb*100.0/s.capacity_mb),\n\t\t\t\t[db_files_usage_percentage] = ([file_size_mb]*100.0)/s.capacity_mb,\n\t\t\t\tdd.dbs, \n\t\t\t\t[file_types] = STUFF((SELECT ', ' + type_desc [text()]\n\t\t\t\t\t\t\t\t\t\tFROM (\tselect distinct type_desc from #db_disk_drives dd \n\t\t\t\t\t\t\t\t\t\t\t\twhere dd.disk_volume = s.disk_volume \n\t\t\t\t\t\t\t\t\t\t\t) ft\n\t\t\t\t\t\t\t\t\t\tFOR XML PATH(''), TYPE)\n\t\t\t\t\t\t\t\t\t\t.value('.','varchar(255)'),1,2,' '),\n\t\t\t\ts.growth_24h_mb, s.growth_5d_mb, s.growth_10d_mb, s.growth_30d_mb,\n\t\t\t\t[hours_to_fill] = case when [hours_to_fill] <= ([days_to_fill]*24) then [hours_to_fill] else ([days_to_fill]*24) end\nfrom t_space_summary s\n\"+(case when @database is null then 'outer' else 'cross' end)+\" apply (\n\t\tselect\t[dbs] = count( distinct [database] ),\n\t\t\t\t[file_size_mb] = sum(file_size_mb)\n\t\tfrom #db_disk_drives dd \n\t\twhere dd.disk_volume = s.disk_volume\n\t\t\"+(case when @database is null then '-- ' else '' end)+\"and dd.[database] = @database\n\t\tgroup by dd.disk_volume\n\t) dd\nwhere 1 = 1\n\"+(case when @disk_drive is null then '-- ' else '' end)+\"and s.disk_volume = @disk_drive\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @perfmon_host_name, @database;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @perfmon_host_name, @database;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Disk Space - [$server] - [$perfmon_host_name] @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}___",
+          "transformations": [],
+          "type": "table"
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "5Qr_lHw7z"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Disk Space - Latest Snapshot @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 25,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_SQLSERVER}"
+          },
+          "description": "dbo.vw_diisk_space",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "log": 10,
+                  "type": "log"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "mbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 24,
+            "x": 0,
+            "y": 2
+          },
+          "id": 26,
+          "options": {
+            "legend": {
+              "calcs": [
+                "firstNotNull",
+                "lastNotNull",
+                "diff"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Max",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "9.2.2",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLSERVER}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255) = '$perfmon_host_name';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @disk_drive varchar(255), @perfmon_host_name varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Disk Space Dashboard */\nset nocount on;\n\nselect [database_name] = d.name, ds.disk_volume --, mf.physical_name\ninto #disk_db_files\nfrom sys.master_files mf \njoin sys.databases d \n\ton d.database_id = mf.database_id\ncross apply (select top 1 * from $diskspace_table_name ds\n\t\t\t where ds.collection_time_utc = (select max(i.collection_time_utc) from $diskspace_table_name i where i.host_name = @perfmon_host_name)\n\t\t\t\tand ds.host_name = @perfmon_host_name\n\t\t\t and mf.physical_name like (ds.disk_volume + '%')\n\t\t\t order by len(ds.disk_volume) desc\n\t\t\t) ds\nwhere \"+(case when @database is null then '1=2' else '1=1' end)+\" \n\"+(case when @database is null then '-- ' else '' end)+\"and d.name = @database\n\nselect [time] = ds.collection_time_utc, [metric] = ds.disk_volume, [value] = ds.capacity_mb-ds.free_mb\nfrom $diskspace_table_name ds\nwhere ds.host_name = @perfmon_host_name\nand ds.collection_time_utc between @start_time_utc and @end_time_utc\n\"+(case when @disk_drive is null then '-- ' else '' end)+\"and ds.disk_volume = @disk_drive\n\"+(case when @database is null then '-- ' else '' end)+\"and ds.disk_volume in (select ddf.disk_volume from #disk_db_files ddf)\norder by time, [value] desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @perfmon_host_name, @database;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @perfmon_host_name, @database;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Used Disk Space - [$server] - [$perfmon_host_name] @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}___",
+          "transformations": [],
+          "type": "timeseries"
+        }
+      ],
+      "title": "Used Disk Space - Trend - [$fqdn] - [$ip] - [$perfmon_host_name]",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 28,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_SQLSERVER}"
+          },
+          "description": "dbo.vw_diisk_space",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 24,
+            "x": 0,
+            "y": 3
+          },
+          "id": 22,
+          "options": {
+            "legend": {
+              "calcs": [
+                "firstNotNull",
+                "lastNotNull",
+                "diff"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Max",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "9.2.2",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLSERVER}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255) = '$perfmon_host_name';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @disk_drive varchar(255), @perfmon_host_name varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Disk Space Dashboard */\nset nocount on;\n\nselect [database_name] = d.name, ds.disk_volume --, mf.physical_name\ninto #disk_db_files\nfrom sys.master_files mf\njoin sys.databases d\n\ton d.database_id = mf.database_id\ncross apply (select top 1 * from $diskspace_table_name ds\n\t\t\t where ds.collection_time_utc = (select max(i.collection_time_utc) from $diskspace_table_name i where i.host_name = @perfmon_host_name)\n\t\t\t\tand ds.host_name = @perfmon_host_name\n\t\t\t and mf.physical_name like (ds.disk_volume + '%')\n\t\t\t order by len(ds.disk_volume) desc\n\t\t\t) ds\nwhere \"+(case when @database is null then '1=2' else '1=1' end)+\"\n\"+(case when @database is null then '-- ' else '' end)+\"and d.name = @database\n\nselect [time] = ds.collection_time_utc, [metric] = ds.disk_volume, [value] = 100-((ds.free_mb*100.0)/ds.capacity_mb)\nfrom $diskspace_table_name ds\nwhere ds.host_name = @perfmon_host_name\nand ds.collection_time_utc between @start_time_utc and @end_time_utc\n\"+(case when @disk_drive is null then '-- ' else '' end)+\"and ds.disk_volume = @disk_drive\n\"+(case when @database is null then '-- ' else '' end)+\"and ds.disk_volume in (select ddf.disk_volume from #disk_db_files ddf)\norder by time, [value] desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @perfmon_host_name, @database;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @perfmon_host_name, @database;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "% Used Disk Space - [$server] - [$perfmon_host_name] @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}___",
+          "transformations": [],
+          "type": "timeseries"
+        }
+      ],
+      "title": "% Disk Space Utilization - Trend - [$fqdn] - [$ip] - [$perfmon_host_name]",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 32,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_SQLSERVER}"
+          },
+          "description": "dbo.file_io_stats",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "disk_volume"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "left"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Drive"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "database_name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "auto"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Database"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "file_logical_name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "auto"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "File Logical Name"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "file_location"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "file_size_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "File Size"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "growth_5d_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Growth in 5 Days"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "growth_10d_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Growth in 10 Days"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "growth_30d_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Growth in 30 Days"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "growth_24h_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Growth in 1 Day"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "file_type"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "File Type"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "disk_capacity_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Capacity"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "disk_free_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Free"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 16,
+            "w": 24,
+            "x": 0,
+            "y": 4
+          },
+          "id": 30,
+          "options": {
+            "footer": {
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "num_of_bytes_read"
+              }
+            ]
+          },
+          "pluginVersion": "9.3.2",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLSERVER}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255) = '$host_name';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @disk_drive varchar(255), @perfmon_host_name varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Disk Space Dashboard */\nset nocount on;\ndeclare @_latest_snap datetime2;\ndeclare @_24hour_snapshot datetime2;\ndeclare @_5day_snapshot datetime2;\ndeclare @_10day_snapshot datetime2;\ndeclare @_30day_snapshot datetime2;\ndeclare @_latest_diskspace_snap datetime2;\n\nselect @_latest_snap = max(collection_time_utc)\nfrom $fileiostats_table_name fis;\n\nselect @_24hour_snapshot = max(collection_time_utc)\nfrom $fileiostats_table_name fis\nwhere fis.collection_time_utc <= dateadd(hour,-24,@_latest_snap);\n\nselect @_5day_snapshot = max(collection_time_utc)\nfrom $fileiostats_table_name fis\nwhere fis.collection_time_utc <= dateadd(day,-5,@_latest_snap);\n\nselect @_10day_snapshot = max(collection_time_utc)\nfrom $fileiostats_table_name fis\nwhere fis.collection_time_utc <= dateadd(day,-10,@_latest_snap);\n\nselect @_30day_snapshot = max(collection_time_utc)\nfrom $fileiostats_table_name fis\nwhere fis.collection_time_utc <= dateadd(day,-30,@_latest_snap);\n\nselect top 1 @_latest_diskspace_snap = ds.collection_time_utc\nfrom $diskspace_table_name ds\nwhere ds.host_name = @perfmon_host_name\norder by collection_time_utc desc;\n\n;with t_raw as (\n\tselect\tfis.collection_time_utc, fis.[database_name], fis.file_logical_name, fis.file_location, fis.database_id, fis.file_id,\n\t\t\t[file_size_mb] = fis.size_on_disk_bytes*1.0/1024/1024\n\t\t\t,[growth_24h_mb] = (fis.size_on_disk_bytes - prv_24h.size_on_disk_bytes)*1.0/1024/1024\n\t\t\t,[growth_5d_mb] = (fis.size_on_disk_bytes - prv_5d.size_on_disk_bytes)*1.0/1024/1024\n\t\t\t,[growth_10d_mb] = (fis.size_on_disk_bytes - prv_10d.size_on_disk_bytes)*1.0/1024/1024\n\t\t\t,[growth_30d_mb] = (fis.size_on_disk_bytes - prv_30d.size_on_disk_bytes)*1.0/1024/1024\n\tfrom $fileiostats_table_name fis\n\tleft join $fileiostats_table_name prv_24h\n\t\ton prv_24h.collection_time_utc = @_24hour_snapshot and prv_24h.database_name = fis.database_name and prv_24h.file_logical_name = fis.file_logical_name\n\tleft join $fileiostats_table_name prv_5d\n\t\ton prv_5d.collection_time_utc = @_5day_snapshot and prv_5d.database_name = fis.database_name and prv_5d.file_logical_name = fis.file_logical_name\n\tleft join $fileiostats_table_name prv_10d\n\t\ton prv_10d.collection_time_utc = @_10day_snapshot and prv_10d.database_name = fis.database_name and prv_10d.file_logical_name = fis.file_logical_name\n\tleft join $fileiostats_table_name prv_30d\n\t\ton prv_30d.collection_time_utc = @_30day_snapshot and prv_30d.database_name = fis.database_name and prv_30d.file_logical_name = fis.file_logical_name\n\twhere fis.collection_time_utc = @_latest_snap\n\t\"+(case when @database is null then '-- ' else '' end)+\"and fis.[database_name] = @database\n)\n,t_space_summary as (\n\tselect\tfis.collection_time_utc, ds.disk_volume, fis.database_name, fis.file_logical_name, fis.file_location, fis.database_id, fis.file_id,\n\t\t\tds.capacity_mb, ds.free_mb, fis.file_size_mb, fis.growth_24h_mb, fis.growth_5d_mb, fis.growth_10d_mb, fis.growth_30d_mb\n\tfrom t_raw fis\n\t\"+(case when @disk_drive is null then 'outer' else 'cross' end)+\" apply (\n\t\t\t\tselect top 1 ds.disk_volume, ds.capacity_mb, ds.free_mb from $diskspace_table_name ds\n\t\t\t\t where ds.collection_time_utc = @_latest_diskspace_snap and ds.host_name = @perfmon_host_name\t\t \n\t\t\t\t and fis.file_location like (ds.disk_volume+'%')\n\t\t\t\t \"+(case when @disk_drive is null then '-- ' else '' end)+\"and ds.disk_volume = @disk_drive\n\t\t\t\t order by len(ds.disk_volume) desc\n\t\t) ds\n)\nselect fis.collection_time_utc, fis.database_name, fis.file_logical_name, fis.disk_volume, [file_type] = mf.type_desc, fis.file_location, \n\t\t\t\t[disk_capacity_mb] = fis.capacity_mb, [disk_free_mb] = fis.free_mb, fis.file_size_mb, fis.growth_24h_mb, fis.growth_5d_mb, fis.growth_10d_mb, fis.growth_30d_mb\nfrom t_space_summary fis\njoin sys.master_files mf on mf.database_id = fis.database_id and mf.file_id = fis.file_id\norder by fis.database_name, fis.disk_volume, fis.file_logical_name\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @perfmon_host_name, @database;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @perfmon_host_name, @database;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Db File Space Usage - [$server] - [$host_name] @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}___",
+          "transformations": [],
+          "type": "table"
+        }
+      ],
+      "title": "Db File Size - Usage - Latest Snapshot @ ${fileiostats_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 36,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${DS_SQLSERVER}"
+          },
+          "description": "dbo.file_io_stats",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "log": 10,
+                  "type": "log"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "mbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 16,
+            "w": 24,
+            "x": 0,
+            "y": 5
+          },
+          "id": 34,
+          "options": {
+            "legend": {
+              "calcs": [
+                "firstNotNull",
+                "lastNotNull",
+                "diff"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "9.2.2",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLSERVER}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255) = '$host_name';\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @disk_drive varchar(255), @perfmon_host_name varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Disk Space Dashboard */\nset nocount on;\n\ndeclare @_latest_diskspace_snap datetime2;\n\nselect top 1 @_latest_diskspace_snap = ds.collection_time_utc\nfrom $diskspace_table_name ds\nwhere ds.host_name = @perfmon_host_name\norder by collection_time_utc desc;\n\n;with t_raw as (\n\tselect\tfis.collection_time_utc, fis.[database_name], fis.file_logical_name, fis.file_location, fis.database_id, fis.file_id,\n\t\t\t[file_size_mb] = fis.size_on_disk_bytes*1.0/1024/1024\n\tfrom $fileiostats_table_name fis\n\twhere fis.collection_time_utc between @start_time_utc and @end_time_utc\n\t\"+(case when @database is null then '-- ' else '' end)+\"and fis.[database_name] = @database\n)\n,t_space_summary as (\n\tselect\tfis.collection_time_utc, ds.disk_volume, fis.database_name, fis.file_logical_name, fis.file_size_mb\n\tfrom t_raw fis\n\t\"+(case when @disk_drive is null then 'outer' else 'cross' end)+\" apply (\n\t\t\t\tselect top 1 ds.disk_volume from $diskspace_table_name ds\n\t\t\t\t where ds.collection_time_utc = @_latest_diskspace_snap and ds.host_name = @perfmon_host_name\t\t \n\t\t\t\t and fis.file_location like (ds.disk_volume+'%')\n\t\t\t\t \"+(case when @disk_drive is null then '-- ' else '' end)+\"and ds.disk_volume = @disk_drive\n\t\t\t\t order by len(ds.disk_volume) desc\n\t\t) ds\n)\nselect \t[time] = fis.collection_time_utc, \n\t\t\t\t[metric] = case when @disk_drive is not null and @database is not null \n\t\t\t\t\t\t\t\t\t\t\t\tthen fis.file_logical_name\n\t\t\t\t\t\t\t\t\t\t\t\twhen @disk_drive is not null \n\t\t\t\t\t\t\t\t\t\t\t\tthen fis.database_name + ' .. ' + fis.file_logical_name\n\t\t\t\t\t\t\t\t\t\t\t\twhen @database is not null\n\t\t\t\t\t\t\t\t\t\t\t\tthen fis.file_logical_name + ' .. ' + fis.disk_volume\n\t\t\t\t\t\t\t\t\t\t\t\telse fis.database_name + ' .. ' + fis.file_logical_name + ' .. ' + fis.disk_volume\n\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t[value] = fis.file_size_mb\nfrom t_space_summary fis\norder by fis.collection_time_utc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @perfmon_host_name, @database;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @perfmon_host_name, @database;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Db File Size - Trend - [$server] - [$host_name] @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}___",
+          "transformations": [],
+          "type": "timeseries"
+        }
+      ],
+      "title": "Db File Size - Trend - - [$fqdn] - [$ip]",
+      "type": "row"
+    }
+  ],
+  "refresh": "",
+  "revision": 1,
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "Disk Space"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "SqlServer",
+          "value": "ygPVA4snk"
+        },
+        "description": "Inventory Server Name",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "sqlmonitor_datasource",
+        "options": [],
+        "query": "mssql",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Sql Instance",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "SELECT DB_NAME()",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Inventory Database",
+        "multi": false,
+        "name": "inventory_db",
+        "options": [],
+        "query": "SELECT DB_NAME()",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Is Local SQL Instance",
+        "multi": false,
+        "name": "is_local",
+        "options": [],
+        "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "DBA Database",
+        "multi": false,
+        "name": "dba_db",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select host_name from dbo.instance_details\nwhere sql_instance = @sql_instance order by created_date_utc\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Host Name",
+        "multi": false,
+        "name": "perfmon_host_name",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select host_name from dbo.instance_details\nwhere sql_instance = @sql_instance order by created_date_utc\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Current Host Name",
+        "multi": false,
+        "name": "host_name",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "IP Address",
+        "multi": false,
+        "name": "ip",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "hide": 2,
+        "includeAll": false,
+        "label": "FQDN",
+        "multi": false,
+        "name": "fqdn",
+        "options": [],
+        "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "hide": 2,
+        "label": "DiskSpace table name",
+        "name": "diskspace_table_name",
+        "query": "${VAR_DISKSPACE_TABLE_NAME}",
+        "skipUrlSync": false,
+        "type": "constant",
+        "current": {
+          "value": "${VAR_DISKSPACE_TABLE_NAME}",
+          "text": "${VAR_DISKSPACE_TABLE_NAME}",
+          "selected": false
+        },
+        "options": [
+          {
+            "value": "${VAR_DISKSPACE_TABLE_NAME}",
+            "text": "${VAR_DISKSPACE_TABLE_NAME}",
+            "selected": false
+          }
+        ]
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 collection_time_utc\nfrom $diskspace_table_name with (nolock)\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Disk Space Collection Time UTC",
+        "multi": false,
+        "name": "diskspace_collection_time_utc",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 collection_time_utc\nfrom $diskspace_table_name with (nolock)\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_os_schedulers dos where status = 'VISIBLE ONLINE' and is_online = 1;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "SQL Schedulers",
+        "multi": false,
+        "name": "sql_schedulers",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_os_schedulers dos where status = 'VISIBLE ONLINE' and is_online = 1;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "SqlInstance Start Time UTC",
+        "multi": false,
+        "name": "sqlserver_start_time_utc",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\n        select ds.disk_volume as disk_drive\n\tfrom $diskspace_table_name ds\n\twhere ds.host_name = @perfmon_host_name\n           and ds.collection_time_utc = (select max(i.collection_time_utc) from $diskspace_table_name as i\n                                                                   where i.host_name = @perfmon_host_name\n                                                                )\n\tunion all\n\tselect '__All__' as disk_drive\n\torder by disk_drive\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Disk Drive",
+        "multi": false,
+        "name": "disk_drive",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\n        select ds.disk_volume as disk_drive\n\tfrom $diskspace_table_name ds\n\twhere ds.host_name = @perfmon_host_name\n           and ds.collection_time_utc = (select max(i.collection_time_utc) from $diskspace_table_name as i\n                                                                   where i.host_name = @perfmon_host_name\n                                                                )\n\tunion all\n\tselect '__All__' as disk_drive\n\torder by disk_drive\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Database",
+        "multi": false,
+        "name": "database",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "hide": 2,
+        "label": "File_io_stats Table Name",
+        "name": "fileiostats_table_name",
+        "query": "${VAR_FILEIOSTATS_TABLE_NAME}",
+        "skipUrlSync": false,
+        "type": "constant",
+        "current": {
+          "value": "${VAR_FILEIOSTATS_TABLE_NAME}",
+          "text": "${VAR_FILEIOSTATS_TABLE_NAME}",
+          "selected": false
+        },
+        "options": [
+          {
+            "value": "${VAR_FILEIOSTATS_TABLE_NAME}",
+            "text": "${VAR_FILEIOSTATS_TABLE_NAME}",
+            "selected": false
+          }
+        ]
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLSERVER}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 collection_time_utc\nfrom $fileiostats_table_name with (nolock)\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "File IO Stats Collection Time",
+        "multi": false,
+        "name": "fileiostats_collection_time_utc",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 collection_time_utc\nfrom $fileiostats_table_name with (nolock)\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-15d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "2m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "t___Disk Space",
+  "uid": "disk_space",
+  "version": 5,
+  "weekStart": ""
+}

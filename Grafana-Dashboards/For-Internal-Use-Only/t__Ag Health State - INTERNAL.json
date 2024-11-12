@@ -1,0 +1,2245 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Metrics to Monitor AlwaysOn Availability Groups Health",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 32,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 149,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "replica_server_name"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Replica"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "super-light-purple"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "is_primary_replica"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Is Primary"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "bool"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "match": "true",
+                          "result": {
+                            "color": "super-light-green",
+                            "index": 0
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "false",
+                          "result": {
+                            "color": "super-light-blue",
+                            "index": 1
+                          }
+                        },
+                        "type": "special"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "database_name"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Database"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "super-light-purple"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "ag_name"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "AG"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "blue"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "ag_listener"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Listener"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "super-light-blue"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "is_local"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Is Local"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "bool"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "match": "true",
+                          "result": {
+                            "color": "super-light-green",
+                            "index": 0
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "false",
+                          "result": {
+                            "color": "super-light-blue",
+                            "index": 1
+                          }
+                        },
+                        "type": "special"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "synchronization_state_desc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Sync State"
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "INITIALIZING": {
+                            "color": "light-yellow",
+                            "index": 4
+                          },
+                          "NOT SYNCHRONIZING": {
+                            "color": "red",
+                            "index": 1
+                          },
+                          "REVERTING": {
+                            "color": "super-light-yellow",
+                            "index": 3
+                          },
+                          "SYNCHRONIZED": {
+                            "color": "green",
+                            "index": 0
+                          },
+                          "SYNCHRONIZING": {
+                            "color": "super-light-green",
+                            "index": 2
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "synchronization_health_desc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Sync Health"
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "HEALTHY": {
+                            "color": "green",
+                            "index": 0
+                          },
+                          "NOT_HEALTHY": {
+                            "color": "red",
+                            "index": 1
+                          },
+                          "PARTIALLY_HEALTHY": {
+                            "color": "yellow",
+                            "index": 2
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "latency_seconds"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Latency"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green"
+                        },
+                        {
+                          "color": "super-light-yellow",
+                          "value": 120
+                        },
+                        {
+                          "color": "super-light-orange",
+                          "value": 240
+                        },
+                        {
+                          "color": "orange",
+                          "value": 300
+                        },
+                        {
+                          "color": "super-light-red",
+                          "value": 600
+                        },
+                        {
+                          "color": "red",
+                          "value": 1800
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "redo_queue_size"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Redo Queue"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green"
+                        },
+                        {
+                          "color": "super-light-yellow",
+                          "value": 1000000
+                        },
+                        {
+                          "color": "light-orange",
+                          "value": 10000000
+                        },
+                        {
+                          "color": "red",
+                          "value": 100000000
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "log_send_queue_size"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Log Send Queue"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "last_redone_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Last Redone"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "log_send_rate"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "redo_rate"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "estimated_redo_completion_time_min"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Approx Redo Time"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "m"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "last_commit_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Last Commit"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "is_suspended"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Is Suspended"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "bool"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "match": "true",
+                          "result": {
+                            "color": "light-red",
+                            "index": 0
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "false",
+                          "result": {
+                            "color": "super-light-green",
+                            "index": 1
+                          }
+                        },
+                        "type": "special"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "suspend_reason_desc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Suspend Reason"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "bool"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 14,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 147,
+          "options": {
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Latency"
+              }
+            ]
+          },
+          "pluginVersion": "9.2.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @latency_minutes int;\ndeclare @database varchar(255);\ndeclare @replica_server_name varchar(255);\ndeclare @ag_name varchar(255);\ndeclare @ag_listener varchar(255);\ndeclare @replica_type varchar(50);\ndeclare @sync_state varchar(100);\ndeclare @sync_health varchar(100);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @latency_minutes = case when ltrim(rtrim('$latency_minutes')) <> '' then ltrim(rtrim('$latency_minutes')) else null end; \nset @database = ltrim(rtrim('$database'));\nset @replica_server_name = ltrim(rtrim('$replica_server_name'));\nset @ag_name = ltrim(rtrim('$ag_name'));\nset @ag_listener = ltrim(rtrim('$ag_listener'));\nset @replica_type = ltrim(rtrim('$replica_type'));\nset @sync_state = ltrim(rtrim('$sync_state_desc'));\nset @sync_health = ltrim(rtrim('$sync_health_desc'));\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @latency_minutes int, \n                @database varchar(255) = NULL, @replica_server_name varchar(255) = NULL, @ag_name varchar(255) = NULL, \n                @ag_listener varchar(255) = NULL, @replica_type varchar(50) = NULL, @sync_state varchar(100) = NULL, \n                @sync_health varchar(100) = NULL';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\n\tif object_id('tempdb..#availability_databases') is not null\n\t\tdrop table #availability_databases;\n\n\tselect\tar.replica_server_name,\n\t\t\tdrs.is_primary_replica,\n\t\t\tadc.database_name,\n\t\t\tag.name AS ag_name,\n\t\t\tdrs.is_local,\n\t\t\tdrs.synchronization_state_desc,\n\t\t\tdrs.synchronization_health_desc,\n\t\t\tdrs.is_suspended,\n\t\t\tlast_redone_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), drs.last_redone_time),\n\t\t\tdrs.log_send_queue_size,\n\t\t\tdrs.log_send_rate,\n\t\t\tdrs.redo_queue_size,\n\t\t\tdrs.redo_rate,\n\t\t\t[estimated_redo_completion_time_min] = case when drs.redo_rate <> 0 then (drs.redo_queue_size / drs.redo_rate) / 60.0 else (drs.redo_queue_size / 1) / 60.0 end,\n\t\t\tlast_commit_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), drs.last_commit_time),\t\t\t\n\t\t\tdrs.suspend_reason_desc,\n\t\t\tag.group_id\n\tinto #availability_databases\n\tfrom sys.dm_hadr_database_replica_states as drs\n\tinner join sys.availability_databases_cluster as adc on drs.group_id = adc.group_id\n\t\tand drs.group_database_id = adc.group_database_id\n\tinner join sys.availability_groups as ag on ag.group_id = drs.group_id\n\tinner join sys.availability_replicas as ar on drs.group_id = ar.group_id\n\t\tand drs.replica_id = ar.replica_id\n\t--order by ag.name, ar.replica_server_name, adc.database_name\n\n\tselect\treplica_server_name,\n\t\t\tis_primary_replica,\n\t\t\tdatabase_name,\n\t\t\tag_name,\n\t\t\t[ag_listener] = agl.dns_name+' ('+ia.ip_address+')',\n\t\t\tis_local,\n\t\t\tsynchronization_state_desc,\n\t\t\tsynchronization_health_desc,\n\t\t\tis_suspended,\n\t\t\tlatency_seconds = case when is_primary_replica = 1 then 0\n\t\t\t\t\t\t\t\t\telse (\tselect DATEDIFF(second,ag.last_commit_time_utc,p.last_commit_time_utc) \n\t\t\t\t\t\t\t\t\t\t\tfrom #availability_databases p \n\t\t\t\t\t\t\t\t\t\t\twhere p.is_primary_replica = 1 and p.database_name = ag.database_name\n\t\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t\tend,\n\t\t\tredo_queue_size,\n\t\t\tlog_send_queue_size,\n\t\t\tlast_redone_time_utc,\n\t\t\tlog_send_rate,\t\t\n\t\t\tredo_rate,\n\t\t\testimated_redo_completion_time_min,\n\t\t\tlast_commit_time_utc,\n\t\t\tsuspend_reason_desc\n\tfrom #availability_databases as ag\n\tleft join sys.availability_group_listeners agl on agl.group_id = ag.group_id\n\tleft join sys.availability_group_listener_ip_addresses ia on ia.listener_id = agl.listener_id and ia.state_desc = 'ONLINE'\n\twhere 1=1\n  \"+(case when @latency_minutes = -1 then '-- ' else '' end)+\"and (case when is_primary_replica = 1 then 0 else (\tselect DATEDIFF(second,ag.last_commit_time_utc,p.last_commit_time_utc) from #availability_databases p where p.is_primary_replica = 1 and p.database_name = ag.database_name\t)\tend) >= (@latency_minutes*60) \n  \"+(case when @database = '__ALL__' then '-- ' else '' end)+\"and database_name = @database\n  \"+(case when @replica_server_name = '__ALL__' then '-- ' else '' end)+\"and replica_server_name = @replica_server_name\n  \"+(case when @ag_name = '__ALL__' then '-- ' else '' end)+\"and ag_name = @ag_name\n  \"+(case when @ag_listener = '__ALL__' then '-- ' else '' end)+\"and ag_listener = @ag_listener\n  \"+(case when @sync_state = '__ALL__' then '-- ' else '' end)+\"and synchronization_state_desc = @sync_state\n  \"+(case when @sync_health = '__ALL__' then '-- ' else '' end)+\"and synchronization_health_desc = @sync_health\n  \"+(case when @replica_type = 'Primary' then '' else '-- ' end)+\"and is_primary_replica = 1\n  \"+(case when @replica_type = 'Secondary' then '' else '-- ' end)+\"and is_primary_replica = 0 \n  \"+(case when @replica_type = 'Local' then '' else '-- ' end)+\"and is_local = 1 \n\t--order by ag.ag_name, ag.replica_server_name, ag.database_name\n\torder by log_send_queue_size desc, redo_queue_size desc, ag.database_name\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @start_time_utc, @end_time_utc, @latency_minutes, @database, @replica_server_name, @ag_name, @ag_listener, @replica_type, @sync_state, @sync_health;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @start_time_utc, @end_time_utc, @latency_minutes, @database, @replica_server_name, @ag_name, @ag_listener, @replica_type, @sync_state, @sync_health;\n  ",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "AlwaysOn Availability Group Health Metrics",
+          "type": "table"
+        }
+      ],
+      "title": "LIVE - AlwaysOn Availability Groups - Status - [$server]",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 153,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "replica_server_name"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Replica"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "super-light-purple"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "is_primary_replica"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Is Primary"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "bool"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "match": "true",
+                          "result": {
+                            "color": "super-light-green",
+                            "index": 0
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "false",
+                          "result": {
+                            "color": "super-light-blue",
+                            "index": 1
+                          }
+                        },
+                        "type": "special"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "database_name"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Database"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "super-light-purple"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "ag_name"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "AG"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "blue"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "ag_listener"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Listener"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "super-light-blue"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.minWidth",
+                    "value": 180
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "is_local"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Is Local"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "bool"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "match": "true",
+                          "result": {
+                            "color": "super-light-green",
+                            "index": 0
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "false",
+                          "result": {
+                            "color": "super-light-blue",
+                            "index": 1
+                          }
+                        },
+                        "type": "special"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "synchronization_state_desc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Sync State"
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "INITIALIZING": {
+                            "color": "light-yellow",
+                            "index": 4
+                          },
+                          "NOT SYNCHRONIZING": {
+                            "color": "red",
+                            "index": 1
+                          },
+                          "REVERTING": {
+                            "color": "super-light-yellow",
+                            "index": 3
+                          },
+                          "SYNCHRONIZED": {
+                            "color": "green",
+                            "index": 0
+                          },
+                          "SYNCHRONIZING": {
+                            "color": "super-light-green",
+                            "index": 2
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "synchronization_health_desc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Sync Health"
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "HEALTHY": {
+                            "color": "green",
+                            "index": 0
+                          },
+                          "NOT_HEALTHY": {
+                            "color": "red",
+                            "index": 1
+                          },
+                          "PARTIALLY_HEALTHY": {
+                            "color": "yellow",
+                            "index": 2
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "latency_seconds"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Latency"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green"
+                        },
+                        {
+                          "color": "super-light-yellow",
+                          "value": 120
+                        },
+                        {
+                          "color": "super-light-orange",
+                          "value": 240
+                        },
+                        {
+                          "color": "orange",
+                          "value": 300
+                        },
+                        {
+                          "color": "super-light-red",
+                          "value": 600
+                        },
+                        {
+                          "color": "red",
+                          "value": 1800
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "redo_queue_size"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Redo Queue"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green"
+                        },
+                        {
+                          "color": "super-light-yellow",
+                          "value": 1000000
+                        },
+                        {
+                          "color": "light-orange",
+                          "value": 10000000
+                        },
+                        {
+                          "color": "red",
+                          "value": 100000000
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "log_send_queue_size"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Log Send Queue"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green"
+                        },
+                        {
+                          "color": "super-light-yellow",
+                          "value": 1000000
+                        },
+                        {
+                          "color": "light-orange",
+                          "value": 10000000
+                        },
+                        {
+                          "color": "red",
+                          "value": 100000000
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "last_redone_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Last Redone"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "log_send_rate"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "redo_rate"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "estimated_redo_completion_time_min"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Approx Redo Time"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "m"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "last_commit_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Last Commit"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "is_suspended"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Is Suspended"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "bool"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "match": "true",
+                          "result": {
+                            "color": "light-red",
+                            "index": 0
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "false",
+                          "result": {
+                            "color": "super-light-green",
+                            "index": 1
+                          }
+                        },
+                        "type": "special"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "suspend_reason_desc"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Suspend Reason"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "bool"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "is_distributed"
+                },
+                "properties": [
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "options": {
+                          "match": "true",
+                          "result": {
+                            "color": "super-light-green",
+                            "index": 0
+                          }
+                        },
+                        "type": "special"
+                      },
+                      {
+                        "options": {
+                          "match": "false",
+                          "result": {
+                            "color": "super-light-blue",
+                            "index": 1
+                          }
+                        },
+                        "type": "special"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 14,
+            "w": 24,
+            "x": 0,
+            "y": 2
+          },
+          "id": 158,
+          "options": {
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "9.2.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @latency_minutes int;\ndeclare @database varchar(255);\ndeclare @replica_server_name varchar(255);\ndeclare @ag_name varchar(255);\ndeclare @ag_listener varchar(255);\ndeclare @replica_type varchar(50);\ndeclare @sync_state varchar(100);\ndeclare @sync_health varchar(100);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @latency_minutes = case when ltrim(rtrim('$latency_minutes')) <> '' then ltrim(rtrim('$latency_minutes')) else null end; \nset @database = ltrim(rtrim('$database'));\nset @replica_server_name = ltrim(rtrim('$replica_server_name'));\nset @ag_name = ltrim(rtrim('$ag_name'));\nset @ag_listener = ltrim(rtrim('$ag_listener'));\nset @replica_type = ltrim(rtrim('$replica_type'));\nset @sync_state = ltrim(rtrim('$sync_state_desc'));\nset @sync_health = ltrim(rtrim('$sync_health_desc'));\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @latency_minutes int, \n                @database varchar(255) = NULL, @replica_server_name varchar(255) = NULL, @ag_name varchar(255) = NULL, \n                @ag_listener varchar(255) = NULL, @replica_type varchar(50) = NULL, @sync_state varchar(100) = NULL, \n                @sync_health varchar(100) = NULL';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nif exists ( select * from dbo.ag_health_state ahs with (nolock)\n            where ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i) \n            and ahs.latency_seconds >= (@latency_minutes*60) )\nbegin\n  select collection_time_utc, replica_server_name, is_primary_replica, database_name, ag_name, ag_listener, is_local, is_distributed, synchronization_state_desc, synchronization_health_desc, latency_seconds, redo_queue_size, log_send_queue_size, last_redone_time, log_send_rate, redo_rate, estimated_redo_completion_time_min, last_commit_time, is_suspended, suspend_reason_desc\n  from dbo.ag_health_state ahs\n  where 1=1\n  and ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n  \"+(case when @latency_minutes = -1 then '-- ' else '' end)+\"and ahs.latency_seconds >= (@latency_minutes*60) \n  \"+(case when @database = '__ALL__' then '-- ' else '' end)+\"and ahs.database_name = @database\n  \"+(case when @replica_server_name = '__ALL__' then '-- ' else '' end)+\"and ahs.replica_server_name = @replica_server_name\n  \"+(case when @ag_name = '__ALL__' then '-- ' else '' end)+\"and ahs.ag_name = @ag_name\n  \"+(case when @ag_listener = '__ALL__' then '-- ' else '' end)+\"and ahs.ag_listener = @ag_listener\n  \"+(case when @sync_state = '__ALL__' then '-- ' else '' end)+\"and ahs.synchronization_state_desc = @sync_state\n  \"+(case when @sync_health = '__ALL__' then '-- ' else '' end)+\"and ahs.synchronization_health_desc = @sync_health\n  \"+(case when @replica_type = 'Primary' then '' else '-- ' end)+\"and ahs.is_primary_replica = 1\n  \"+(case when @replica_type = 'Secondary' then '' else '-- ' end)+\"and ahs.is_primary_replica = 0 \n  \"+(case when @replica_type = 'Local' then '' else '-- ' end)+\"and ahs.is_local = 1 \n  order by log_send_queue_size desc, redo_queue_size desc, database_name\nend\nELSE\n  select 'No latency based on Filter parameters' as [No Result]\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @start_time_utc, @end_time_utc, @latency_minutes, @database, @replica_server_name, @ag_name, @ag_listener, @replica_type, @sync_state, @sync_health;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @start_time_utc, @end_time_utc, @latency_minutes, @database, @replica_server_name, @ag_name, @ag_listener, @replica_type, @sync_state, @sync_health;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Latest - AlwaysOn Availability Groups - Status - FILTERED @ ${ag_health_state_collection_time_utc:date:YYYY-MM-DD HH.mm}",
+          "type": "table"
+        }
+      ],
+      "title": "Latest - AlwaysOn Availability Groups - Status - FILTERED @ ${ag_health_state_collection_time_utc:date:YYYY-MM-DD HH.mm}",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 157,
+      "panels": [],
+      "title": "Trend - AlwaysOn Latency - FILTERED @ ${ag_health_state_collection_time_utc:date:YYYY-MM-DD HH.mm}",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "series",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 155,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Last",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "9.2.2",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @latency_minutes int;\ndeclare @database varchar(255);\ndeclare @replica_server_name varchar(255);\ndeclare @ag_name varchar(255);\ndeclare @ag_listener varchar(255);\ndeclare @replica_type varchar(50);\ndeclare @sync_state varchar(100);\ndeclare @sync_health varchar(100);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @latency_minutes = case when ltrim(rtrim('$latency_minutes')) <> '' then ltrim(rtrim('$latency_minutes')) else null end; \nset @database = ltrim(rtrim('$database'));\nset @replica_server_name = ltrim(rtrim('$replica_server_name'));\nset @ag_name = ltrim(rtrim('$ag_name'));\nset @ag_listener = ltrim(rtrim('$ag_listener'));\nset @replica_type = ltrim(rtrim('$replica_type'));\nset @sync_state = ltrim(rtrim('$sync_state_desc'));\nset @sync_health = ltrim(rtrim('$sync_health_desc'));\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @latency_minutes int, \n                @database varchar(255) = NULL, @replica_server_name varchar(255) = NULL, @ag_name varchar(255) = NULL, \n                @ag_listener varchar(255) = NULL, @replica_type varchar(50) = NULL, @sync_state varchar(100) = NULL, \n                @sync_health varchar(100) = NULL';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\n  select time = collection_time_utc\n        ,metric = (case when @replica_server_name = '__ALL__' then replica_server_name + ' || ' else '' end) +\n                  database_name \n        ,latency_seconds\n        --,is_primary_replica\n        --,database_name\n        --,ag_name\n        --,ag_listener\n        --,is_local\n        --,is_distributed\n        --,synchronization_state_desc\n        --,synchronization_health_desc        \n        --,redo_queue_size\n        --,log_send_queue_size\n        --,last_redone_time\n        --,log_send_rate\n        --,redo_rate\n        --,estimated_redo_completion_time_min\n        --,last_commit_time\n        --,is_suspended\n        --,suspend_reason_desc\n  from dbo.ag_health_state ahs\n  where 1=1\n  --and ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n  and ahs.collection_time_utc between @start_time_utc and @end_time_utc\n  \"+(case when @latency_minutes = -1 then '-- ' else '' end)+\"and ahs.latency_seconds >= (@latency_minutes*60) \n  \"+(case when @database = '__ALL__' then '-- ' else '' end)+\"and ahs.database_name = @database\n  \"+(case when @replica_server_name = '__ALL__' then '-- ' else '' end)+\"and ahs.replica_server_name = @replica_server_name\n  \"+(case when @ag_name = '__ALL__' then '-- ' else '' end)+\"and ahs.ag_name = @ag_name\n  \"+(case when @ag_listener = '__ALL__' then '-- ' else '' end)+\"and ahs.ag_listener = @ag_listener\n  \"+(case when @sync_state = '__ALL__' then '-- ' else '' end)+\"and ahs.synchronization_state_desc = @sync_state\n  \"+(case when @sync_health = '__ALL__' then '-- ' else '' end)+\"and ahs.synchronization_health_desc = @sync_health\n  \"+(case when @replica_type = 'Primary' then '' else '-- ' end)+\"and ahs.is_primary_replica = 1\n  \"+(case when @replica_type = 'Secondary' then '' else '-- ' end)+\"and ahs.is_primary_replica = 0 \n  \"+(case when @replica_type = 'Local' then '' else '-- ' end)+\"and ahs.is_local = 1 \n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @start_time_utc, @end_time_utc, @latency_minutes, @database, @replica_server_name, @ag_name, @ag_listener, @replica_type, @sync_state, @sync_health;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @start_time_utc, @end_time_utc, @latency_minutes, @database, @replica_server_name, @ag_name, @ag_listener, @replica_type, @sync_state, @sync_health;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Latest - AlwaysOn Availability Groups - Status - FILTERED @ ${ag_health_state_collection_time_utc:date:YYYY-MM-DD HH.mm}",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "mssql",
+        "uid": "5Qr_lHw7z"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 121,
+      "panels": [
+        {
+          "description": "",
+          "gridPos": {
+            "h": 14,
+            "w": 24,
+            "x": 0,
+            "y": 2
+          },
+          "id": 119,
+          "links": [],
+          "options": {
+            "folderId": 1,
+            "maxItems": 50,
+            "query": "",
+            "showHeadings": false,
+            "showRecentlyViewed": false,
+            "showSearch": true,
+            "showStarred": false,
+            "tags": []
+          },
+          "pluginVersion": "9.2.2",
+          "title": "Other Dashboards",
+          "type": "dashlist"
+        }
+      ],
+      "repeat": "datasource",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "5Qr_lHw7z"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Other Dashboards",
+      "type": "row"
+    }
+  ],
+  "refresh": "1m",
+  "revision": 1,
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "AG"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "SqlServer",
+          "value": "ygPVA4snk"
+        },
+        "description": "Inventory Server Name",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "sqlmonitor_datasource",
+        "options": [],
+        "query": "mssql",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "21L-LTPABL-1187",
+          "value": "21L-LTPABL-1187"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Sql Instance",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__All__",
+          "value": "__All__"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Database",
+        "multi": false,
+        "name": "database",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SELECT DB_NAME() as [db_name]",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Inventory Database",
+        "multi": false,
+        "name": "inventory_db",
+        "options": [],
+        "query": "SELECT DB_NAME() as [db_name]",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Is Local SQL Instance",
+        "multi": false,
+        "name": "is_local",
+        "options": [],
+        "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "-1",
+          "value": "-1"
+        },
+        "description": "Threshold duration in minutes for Long Running Queries",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Latency (Min)",
+        "multi": false,
+        "name": "latency_minutes",
+        "options": [
+          {
+            "selected": true,
+            "text": "-1",
+            "value": "-1"
+          },
+          {
+            "selected": false,
+            "text": "0",
+            "value": "0"
+          },
+          {
+            "selected": false,
+            "text": "1",
+            "value": "1"
+          },
+          {
+            "selected": false,
+            "text": "2",
+            "value": "2"
+          },
+          {
+            "selected": false,
+            "text": "5",
+            "value": "5"
+          },
+          {
+            "selected": false,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": false,
+            "text": "15",
+            "value": "15"
+          },
+          {
+            "selected": false,
+            "text": "20",
+            "value": "20"
+          },
+          {
+            "selected": false,
+            "text": "30",
+            "value": "30"
+          },
+          {
+            "selected": false,
+            "text": "45",
+            "value": "45"
+          },
+          {
+            "selected": false,
+            "text": "60",
+            "value": "60"
+          },
+          {
+            "selected": false,
+            "text": "90",
+            "value": "90"
+          },
+          {
+            "selected": false,
+            "text": "120",
+            "value": "120"
+          },
+          {
+            "selected": false,
+            "text": "180",
+            "value": "180"
+          },
+          {
+            "selected": false,
+            "text": "260",
+            "value": "260"
+          },
+          {
+            "selected": false,
+            "text": "300",
+            "value": "300"
+          },
+          {
+            "selected": false,
+            "text": "480",
+            "value": "480"
+          }
+        ],
+        "query": "-1,0,1,2,5,10,15,20,30,45,60,90,120,180,260,300,480",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "100.64.0.1",
+          "value": "100.64.0.1"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "description": "IP Address of Sql Instance",
+        "hide": 2,
+        "includeAll": false,
+        "label": "IP Address",
+        "multi": false,
+        "name": "ip",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "21L-LTPABL-1187",
+          "value": "21L-LTPABL-1187"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Host Name",
+        "multi": false,
+        "name": "host_name",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "WORKGROUP",
+          "value": "WORKGROUP"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Fully Qualified Domain Name",
+        "multi": false,
+        "name": "fqdn",
+        "options": [],
+        "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "DBA Database",
+        "multi": false,
+        "name": "dba_db",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "description": "Page No Used for Paginated Result",
+        "hide": 2,
+        "label": "Page No",
+        "name": "page_no",
+        "options": [
+          {
+            "selected": true,
+            "text": "1",
+            "value": "1"
+          }
+        ],
+        "query": "1",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "200",
+          "value": "200"
+        },
+        "description": "Page Size for Paginated Result",
+        "hide": 2,
+        "label": "Page Size",
+        "name": "page_size",
+        "options": [
+          {
+            "selected": true,
+            "text": "200",
+            "value": "200"
+          }
+        ],
+        "query": "200",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 collection_time_utc\nfrom [$dba_db].dbo.ag_health_state\norder by collection_time_utc desc\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Ag Health State Collection Time UTC",
+        "multi": false,
+        "name": "ag_health_state_collection_time_utc",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 collection_time_utc\nfrom [$dba_db].dbo.ag_health_state\norder by collection_time_utc desc\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__ALL__",
+          "value": "__ALL__"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct replica_server_name\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "description": "Replica Server Name",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Replica",
+        "multi": false,
+        "name": "replica_server_name",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct replica_server_name\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__ALL__",
+          "value": "__ALL__"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct ag_name\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "description": "Ag Name",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Ag",
+        "multi": false,
+        "name": "ag_name",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct ag_name\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__ALL__",
+          "value": "__ALL__"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct ag_listener\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "description": "Ag Listener Name",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Ag Listener",
+        "multi": false,
+        "name": "ag_listener",
+        "options": [],
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct ag_listener\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__ALL__",
+          "value": "__ALL__"
+        },
+        "description": "Replica Type",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Type",
+        "multi": false,
+        "name": "replica_type",
+        "options": [
+          {
+            "selected": true,
+            "text": "__ALL__",
+            "value": "__ALL__"
+          },
+          {
+            "selected": false,
+            "text": "Primary",
+            "value": "Primary"
+          },
+          {
+            "selected": false,
+            "text": "Secondary",
+            "value": "Secondary"
+          },
+          {
+            "selected": false,
+            "text": "Local",
+            "value": "Local"
+          }
+        ],
+        "query": "__ALL__, Primary, Secondary, Local",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__ALL__",
+          "value": "__ALL__"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Sync State",
+        "multi": false,
+        "name": "sync_state_desc",
+        "options": [
+          {
+            "selected": true,
+            "text": "__ALL__",
+            "value": "__ALL__"
+          },
+          {
+            "selected": false,
+            "text": "NOT SYNCHRONIZING",
+            "value": "NOT SYNCHRONIZING"
+          },
+          {
+            "selected": false,
+            "text": "SYNCHRONIZING",
+            "value": "SYNCHRONIZING"
+          },
+          {
+            "selected": false,
+            "text": "SYNCHRONIZED",
+            "value": "SYNCHRONIZED"
+          },
+          {
+            "selected": false,
+            "text": "REVERTING",
+            "value": "REVERTING"
+          },
+          {
+            "selected": false,
+            "text": "INITIALIZING",
+            "value": "INITIALIZING"
+          }
+        ],
+        "query": "__ALL__, NOT SYNCHRONIZING, SYNCHRONIZING, SYNCHRONIZED, REVERTING, INITIALIZING",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "__ALL__",
+          "value": "__ALL__"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Sync Health",
+        "multi": false,
+        "name": "sync_health_desc",
+        "options": [
+          {
+            "selected": true,
+            "text": "__ALL__",
+            "value": "__ALL__"
+          },
+          {
+            "selected": false,
+            "text": "NOT_HEALTHY",
+            "value": "NOT_HEALTHY"
+          },
+          {
+            "selected": false,
+            "text": "PARTIALLY_HEALTHY",
+            "value": "PARTIALLY_HEALTHY"
+          },
+          {
+            "selected": false,
+            "text": "HEALTHY",
+            "value": "HEALTHY"
+          }
+        ],
+        "query": "__ALL__, NOT_HEALTHY, PARTIALLY_HEALTHY, HEALTHY",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-2h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "2m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "t__Ag Health State",
+  "uid": "ag_health_state",
+  "version": 4,
+  "weekStart": ""
+}

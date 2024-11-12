@@ -1,0 +1,16 @@
+F:\My Development\ClassLibrarySQL\ClassLibrarySQL\bin\Debug\ClassLibrarySQL.dll
+F:\My Development\ClassLibrarySQL\ClassLibrarySQL\bin\Debug\ClassLibrarySQL.pdb
+F:\My Development\ClassLibrarySQL\ClassLibrarySQL\obj\Debug\ClassLibrarySQL.csprojAssemblyReference.cache
+F:\My Development\ClassLibrarySQL\ClassLibrarySQL\obj\Debug\ClassLibrarySQL.csproj.CoreCompileInputs.cache
+F:\My Development\ClassLibrarySQL\ClassLibrarySQL\obj\Debug\ClassLibrarySQL.dll
+F:\My Development\ClassLibrarySQL\ClassLibrarySQL\obj\Debug\ClassLibrarySQL.pdb
+C:\Users\Pramod.Jadhav\Downloads\How to call C# function from SQL Server (2)\ClassLibrarySQL\ClassLibrarySQL\bin\Debug\ClassLibrarySQL.dll
+C:\Users\Pramod.Jadhav\Downloads\How to call C# function from SQL Server (2)\ClassLibrarySQL\ClassLibrarySQL\bin\Debug\ClassLibrarySQL.pdb
+C:\Users\Pramod.Jadhav\Downloads\How to call C# function from SQL Server (2)\ClassLibrarySQL\ClassLibrarySQL\obj\Debug\ClassLibrarySQL.csproj.CoreCompileInputs.cache
+C:\Users\Pramod.Jadhav\Downloads\How to call C# function from SQL Server (2)\ClassLibrarySQL\ClassLibrarySQL\obj\Debug\ClassLibrarySQL.dll
+C:\Users\Pramod.Jadhav\Downloads\How to call C# function from SQL Server (2)\ClassLibrarySQL\ClassLibrarySQL\obj\Debug\ClassLibrarySQL.pdb
+C:\Users\Pramod.Jadhav\Downloads\How to call C# function from SQL Server (2)\ClassLibrarySQL\ClassLibrarySQL\obj\Debug\ClassLibrarySQL.csproj.CopyComplete
+C:\Users\Pramod.Jadhav\Downloads\How to call C# function from SQL Server (2)\ClassLibrarySQL\ClassLibrarySQL\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Pramod.Jadhav\Downloads\How to call C# function from SQL Server (2)\ClassLibrarySQL\ClassLibrarySQL\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Pramod.Jadhav\Downloads\How to call C# function from SQL Server (2)\ClassLibrarySQL\ClassLibrarySQL\bin\Debug\Microsoft.SqlServer.TransactSql.ScriptDom.dll
+C:\Users\Pramod.Jadhav\Downloads\How to call C# function from SQL Server (2)\ClassLibrarySQL\ClassLibrarySQL\obj\Debug\ClassLibrarySQL.csprojAssemblyReference.cache

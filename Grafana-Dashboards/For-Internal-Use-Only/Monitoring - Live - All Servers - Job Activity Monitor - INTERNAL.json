@@ -1,0 +1,1485 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 6,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "title": "Overall Status @ ${collection_time_utc:date:YYYY-MM-DD HH.mm}",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_instance"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "SQL Instance"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Failed Jobs on ${__data.fields.sql_instance}",
+                    "url": "d/job_activity_monitor/monitoring-live-all-servers-job-activity-monitor?orgId=1&viewPanel=2&var-server=${__data.fields.sql_instance}&var-last_outcome=Failed"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "counts_success"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Successful"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "counts_failed"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Failed"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\nselect\tsql_instance, \r\n\t\tcounts_success = sum(case when saj.Last_Run_Outcome = 'Succeeded' then 1 else 0 end),\r\n\t\tcounts_failed = sum(case when saj.Last_Run_Outcome = 'Failed' then 1 else 0 end)\r\nfrom dbo.sql_agent_jobs_all_servers saj\r\nwhere 1=1\r\ngroup by sql_instance\r\norder by counts_failed desc, counts_success desc\r\n\"\r\nset quoted_identifier on;\r\n\r\nexec sp_executesql @sql",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Overall Status - Failed/Successful",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_instance"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "SQL Instance"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Running Jobs on ${__data.fields.sql_instance}",
+                    "url": "d/job_activity_monitor/monitoring-live-all-servers-job-activity-monitor?orgId=1&viewPanel=2&var-server=${__data.fields.sql_instance}&var-status=Running"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "counts"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Running"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "lcd",
+                  "type": "gauge"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 6,
+        "y": 1
+      },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\nselect\tsql_instance, \r\n\t\tcounts = count(*)\r\nfrom dbo.sql_agent_jobs_all_servers saj\r\nwhere 1=1\r\nand Is_Running = 1\r\ngroup by sql_instance\r\norder by counts desc\r\n\"\r\nset quoted_identifier on;\r\n\r\nexec sp_executesql @sql",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Overall Status - Running",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_instance"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "SQL Instance"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Canceled Jobs on ${__data.fields.sql_instance}",
+                    "url": "d/job_activity_monitor/monitoring-live-all-servers-job-activity-monitor?orgId=1&viewPanel=2&var-server=${__data.fields.sql_instance}&var-last_outcome=Canceled"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "counts"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Canceled"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "lcd",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "yellow",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 11,
+        "y": 1
+      },
+      "id": 10,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\nselect\tsql_instance, \r\n\t\tcounts = count(*)\r\nfrom dbo.sql_agent_jobs_all_servers saj\r\nwhere 1=1\r\nand Last_Run_Outcome = 'Canceled'\r\ngroup by sql_instance\r\norder by counts desc\r\n\"\r\nset quoted_identifier on;\r\n\r\nexec sp_executesql @sql",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Overall Status - Canceled",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sql_instance"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "SQL Instance"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Jobs with 50+% Failure Rate on ${__data.fields.sql_instance}",
+                    "url": "d/job_activity_monitor/monitoring-live-all-servers-job-activity-monitor?orgId=1&viewPanel=2&var-server=${__data.fields.sql_instance}&var-failure_pct=50"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "counts"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Failure Rate > 50%"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "lcd",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "yellow",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 1
+      },
+      "id": 11,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\nselect\tsql_instance, \r\n\t\tcounts = count(*)\r\nfrom dbo.sql_agent_jobs_all_servers saj\r\nwhere 1=1\r\nand Success_Pcnt < 50\r\nand Total_Executions > 10\r\ngroup by sql_instance\r\norder by counts desc\r\n\"\r\nset quoted_identifier on;\r\n\r\nexec sp_executesql @sql",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Overall Status - Jobs with 50% Failure Rate",
+      "type": "table"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 17,
+            "w": 24,
+            "x": 0,
+            "y": 9
+          },
+          "id": 2,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @_sql nvarchar(max);\r\ndeclare @_params nvarchar(max);\r\ndeclare @_sql_instance varchar(125);\r\ndeclare @_job_category varchar(255);\r\ndeclare @_job_name varchar(255);\r\ndeclare @_only_enabled_jobs bit;\r\ndeclare @_execution_duration_minutes int;\r\ndeclare @_is_blocked bit;\r\ndeclare @_success_ratio_threshold decimal(12,2);\r\ndeclare @_failure_ratio_threshold decimal(12,2);\r\ndeclare @_job_status varchar(20);\r\ndeclare @_last_outcome varchar(30);\r\ndeclare @_prev_interval varchar(10);\r\ndeclare @_next_interval varchar(10);\r\ndeclare @_prev_clock_time datetime;\r\ndeclare @_next_clock_time datetime;\r\ndeclare @page_no int;\r\ndeclare @page_size int;\r\n\r\nset @_sql_instance = '${server}';\r\nset @_job_category = '$job_category';\r\nset @_job_name = '$job_name';\r\nset @_only_enabled_jobs = case '$enabled' when 'Yes' then 1 when 'No' then 0 else null end;\r\nset @_is_blocked = case '$blocked' when 'Yes' then 1 when 'No' then 0 else null end;\r\nset @_success_ratio_threshold = $success_pct;\r\nset @_failure_ratio_threshold = $failure_pct;\r\nset @_job_status = '$status';\r\nset @_last_outcome = '$last_outcome';\r\nset @_prev_interval = '$prev_interval';\r\nset @_next_interval = '$next_interval';\r\n\r\nif @_prev_interval <> '0m'\r\n    set @_prev_clock_time = case right(@_prev_interval,1) when 'm' then dateadd(minute,-convert(int,left(@_prev_interval,len(@_prev_interval)-1)),getutcdate())\r\n                                     when 'h' then dateadd(hour,-convert(int,left(@_prev_interval,len(@_prev_interval)-1)),getutcdate())\r\n                                    when 'd' then dateadd(day,-convert(int,left(@_prev_interval,len(@_prev_interval)-1)),getutcdate())\r\n                                    else null\r\n                                    end;\r\n\r\nif @_next_interval <> '0m'\r\n    set @_next_clock_time = case right(@_next_interval,1) when 'm' then dateadd(minute,convert(int,left(@_next_interval,len(@_next_interval)-1)),getutcdate())\r\n                                     when 'h' then dateadd(hour,convert(int,left(@_next_interval,len(@_next_interval)-1)),getutcdate())\r\n                                    when 'd' then dateadd(day,convert(int,left(@_next_interval,len(@_next_interval)-1)),getutcdate())\r\n                                    else null\r\n                                    end;\r\n\r\nif len(ltrim(rtrim('$page_no'))) > 0 and (case when '$page_no' like '%[^0-9.]%' then 'invalid' when '$page_no' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\r\n  set @page_no = convert(int,ltrim(rtrim('$page_no')));\r\nif len(ltrim(rtrim('$page_size'))) > 0 and (case when '$page_size' like '%[^0-9.]%' then 'invalid' when '$page_size' like '%.%.%' then 'invalid' else 'valid' end) = 'valid'\r\n  set @page_size = convert(int,ltrim(rtrim('$page_size')));\r\n\r\n\r\nset @_params = N'@_sql_instance varchar(125), @_job_category varchar(255), @_job_name varchar(255), @_only_enabled_jobs bit = 1, @_next_clock_time datetime, @_prev_clock_time datetime, @_execution_duration_minutes int, @_is_blocked bit, @_success_ratio_threshold decimal(12,2), @_failure_ratio_threshold decimal(12,2), @_job_status varchar(20), @_last_outcome varchar(30), @page_no int, @page_size int';\r\n\r\nset quoted_identifier off;\r\nset @_sql = \"\r\nselect saj.[sql_instance], [JobName], [JobCategory], [IsDisabled], [Last_RunTime], [Last_Run_Duration_Seconds], [Last_Run_Outcome], [Expected_Max_Duration_Minutes], [Successfull_Execution_ClockTime_Threshold_Minutes], [Last_Successful_ExecutionTime], [Last_Successful_Execution_Hours], [Running_Since], [Running_StepName], [Running_Since_Min], [Session_Id], [Blocking_Session_Id], [Next_RunTime], [Total_Executions], [Total_Success_Count], [Total_Stopped_Count], [Total_Failed_Count], [Success_Pcnt], [Continous_Failures], [<10-Min], [10-Min], [30-Min], [1-Hrs], [2-Hrs], [3-Hrs], [6-Hrs], [9-Hrs], [12-Hrs], [18-Hrs], [24-Hrs], [36-Hrs], [48-Hrs], [Is_Running], [CollectionTimeUTC] = [UpdatedDateUTC]\r\nfrom dbo.sql_agent_jobs_all_servers saj\r\nwhere 1=1\r\n\"+(case when @_sql_instance = '__ALL__' then '--' else '' end)+\"and saj.sql_instance in (select case when id.source_sql_instance is not null then id.source_sql_instance else id.sql_instance end from dbo.instance_details id where id.sql_instance = @_sql_instance or id.source_sql_instance = @_sql_instance)\r\n\"+(case when @_job_category = '__ALL__' then '--' else '' end)+\"and [JobCategory] = @_job_category\r\n\"+(case when @_job_name = '__ALL__' then '--' else '' end)+\"and [JobName] = @_job_name\r\n\"+(case when @_only_enabled_jobs is null then '--' else '' end)+\"and [IsDisabled] = ~@_only_enabled_jobs\r\n\"+(case when @_is_blocked = 1 then '' else '--' end)+\"and [Blocking_Session_Id] is not null\r\n\"+(case when @_is_blocked = 0 then '' else '--' end)+\"and [Blocking_Session_Id] is null\r\n\"+(case when @_success_ratio_threshold = -1 then '--' else '' end)+\"and (case when [Total_Executions] = 0 then 0 else [Total_Success_Count]*100.0/[Total_Executions] end) >= @_success_ratio_threshold\r\n\"+(case when @_failure_ratio_threshold = -1 then '--' else '' end)+\"and (case when [Total_Executions] = 0 then 0 else [Total_Failed_Count]*100.0/[Total_Executions] end) >= @_failure_ratio_threshold\r\n\"+(case when @_job_status = 'Running' then '' else '--' end)+\"and Running_Since is not null\r\n\"+(case when @_job_status = 'Idle' then '' else '--' end)+\"and Running_Since is null\r\n\"+(case when @_last_outcome = '__ALL__' then '--' else '' end)+\"and Last_Run_Outcome = @_last_outcome\r\n\"+(case when @_next_clock_time is null then '--' else '' end)+\"and Next_RunTime <= @_next_clock_time\r\n\"+(case when @_prev_clock_time is null then '--' else '' end)+\"and Last_RunTime >= @_prev_clock_time\r\n\"\r\n\r\nset @_sql += \"\r\norder by sql_instance, JobName\r\noffset ((@page_no-1)*@page_size) rows fetch next @page_size rows only\r\n\"\r\nset quoted_identifier off;\r\n\r\nexec sp_executesql @_sql, @_params, @_sql_instance, @_job_category, @_job_name, @_only_enabled_jobs, @_next_clock_time, @_prev_clock_time, @_execution_duration_minutes, @_is_blocked, @_success_ratio_threshold, @_failure_ratio_threshold, @_job_status, @_last_outcome, @page_no, @page_size;\r\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "All Servers - Job Activity Monitor - FILTERED @ ${server_collection_time_utc:date:YYYY-MM-DD HH.mm} - Paginated - Page No {$page_no} - Page Size {$page_size}",
+          "type": "table"
+        }
+      ],
+      "title": "All Servers - Job Activity Monitor - FILTERED @ ${server_collection_time_utc:date:YYYY-MM-DD HH.mm} - Paginated - Page No {$page_no} - Page Size {$page_size}",
+      "type": "row"
+    }
+  ],
+  "refresh": "5s",
+  "revision": 1,
+  "schemaVersion": 39,
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "Job Activity Monitor"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "SQLMonitor",
+          "value": "a28aeb06-bb6e-4c74-81af-65de433776c8"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "SQLMonitor Data Source",
+        "multi": false,
+        "name": "sqlmonitor_datasource",
+        "options": [],
+        "query": "mssql",
+        "refresh": 1,
+        "regex": "SQLMonitor",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__All__",
+          "value": "__All__"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\nselect distinct srvname = sql_instance from dbo.instance_details\nwhere is_available = 1 and is_enabled =1\nunion all\nselect '__All__' as srvname \n\torder by srvname\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Server",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\nselect distinct srvname = sql_instance from dbo.instance_details\nwhere is_available = 1 and is_enabled =1\nunion all\nselect '__All__' as srvname \n\torder by srvname\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 3,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "SELECT DB_NAME() as [db_name]",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Inventory Database",
+        "multi": false,
+        "name": "inventory_db",
+        "options": [],
+        "query": "SELECT DB_NAME() as [db_name]",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1724084401640",
+          "value": "1724084401640"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select top 1 collection_time_utc = CollectionTimeUTC\nfrom dbo.sql_agent_jobs_all_servers",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Collection Time UTC",
+        "multi": false,
+        "name": "collection_time_utc",
+        "options": [],
+        "query": "select top 1 collection_time_utc = CollectionTimeUTC\nfrom dbo.sql_agent_jobs_all_servers",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1724084401940",
+          "value": "1724084401940"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\n\nset @_sql_instance = '${server}';\nset @_params = N'@_sql_instance varchar(125)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect max(UpdatedDateUTC)\nfrom dbo.sql_agent_jobs_all_servers saj\nwhere 1=1\n\"+(case when @_sql_instance = '__ALL__' then '--' else '' end)+\"and saj.sql_instance in (select case when id.source_sql_instance is not null then id.source_sql_instance else id.sql_instance end from dbo.instance_details id where id.sql_instance = @_sql_instance or id.source_sql_instance = @_sql_instance)\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance;\n",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Server Collection Time UTC",
+        "multi": false,
+        "name": "server_collection_time_utc",
+        "options": [],
+        "query": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\n\nset @_sql_instance = '${server}';\nset @_params = N'@_sql_instance varchar(125)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect max(UpdatedDateUTC)\nfrom dbo.sql_agent_jobs_all_servers saj\nwhere 1=1\n\"+(case when @_sql_instance = '__ALL__' then '--' else '' end)+\"and saj.sql_instance in (select case when id.source_sql_instance is not null then id.source_sql_instance else id.sql_instance end from dbo.instance_details id where id.sql_instance = @_sql_instance or id.source_sql_instance = @_sql_instance)\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance;\n",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__ALL__",
+          "value": "__ALL__"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\ndeclare @_job_category varchar(255);\ndeclare @_job_name varchar(255);\ndeclare @_only_enabled_jobs bit = 1;\ndeclare @_next_clock_hours int;\ndeclare @_prev_clock_hours int;\ndeclare @_execution_duration_minutes int;\ndeclare @_is_blocked bit;\ndeclare @_success_ratio_threshold decimal(12,2);\ndeclare @_job_status varchar(20);\n\nset @_params = N'@_sql_instance varchar(125), @_job_category varchar(255), @_job_name varchar(255), @_only_enabled_jobs bit = 1, @_next_clock_hours int, @_prev_clock_hours int, @_execution_duration_minutes int, @_is_blocked bit, @_success_ratio_threshold decimal(12,2), @_job_status varchar(20)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect '__ALL__'\nunion all\nselect [JobCategory]\nfrom dbo.sql_agent_jobs_all_servers saj\ngroup by [JobCategory]\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance, @_job_category, @_job_name, @_only_enabled_jobs, @_next_clock_hours, @_prev_clock_hours, @_execution_duration_minutes, @_is_blocked, @_success_ratio_threshold, @_job_status;\n\n\n",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Job Category",
+        "multi": false,
+        "name": "job_category",
+        "options": [],
+        "query": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\ndeclare @_job_category varchar(255);\ndeclare @_job_name varchar(255);\ndeclare @_only_enabled_jobs bit = 1;\ndeclare @_next_clock_hours int;\ndeclare @_prev_clock_hours int;\ndeclare @_execution_duration_minutes int;\ndeclare @_is_blocked bit;\ndeclare @_success_ratio_threshold decimal(12,2);\ndeclare @_job_status varchar(20);\n\nset @_params = N'@_sql_instance varchar(125), @_job_category varchar(255), @_job_name varchar(255), @_only_enabled_jobs bit = 1, @_next_clock_hours int, @_prev_clock_hours int, @_execution_duration_minutes int, @_is_blocked bit, @_success_ratio_threshold decimal(12,2), @_job_status varchar(20)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect '__ALL__'\nunion all\nselect [JobCategory]\nfrom dbo.sql_agent_jobs_all_servers saj\ngroup by [JobCategory]\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance, @_job_category, @_job_name, @_only_enabled_jobs, @_next_clock_hours, @_prev_clock_hours, @_execution_duration_minutes, @_is_blocked, @_success_ratio_threshold, @_job_status;\n\n\n",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__ALL__",
+          "value": "__ALL__"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\ndeclare @_job_category varchar(255);\ndeclare @_job_name varchar(255);\ndeclare @_only_enabled_jobs bit = 1;\ndeclare @_next_clock_hours int;\ndeclare @_prev_clock_hours int;\ndeclare @_execution_duration_minutes int;\ndeclare @_is_blocked bit;\ndeclare @_success_ratio_threshold decimal(12,2);\ndeclare @_job_status varchar(20);\n\nset @_params = N'@_sql_instance varchar(125), @_job_category varchar(255), @_job_name varchar(255), @_only_enabled_jobs bit = 1, @_next_clock_hours int, @_prev_clock_hours int, @_execution_duration_minutes int, @_is_blocked bit, @_success_ratio_threshold decimal(12,2), @_job_status varchar(20)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect '__ALL__' as [JobName]\nunion all\nselect [JobName]\nfrom dbo.sql_agent_jobs_all_servers saj\ngroup by [JobName]\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance, @_job_category, @_job_name, @_only_enabled_jobs, @_next_clock_hours, @_prev_clock_hours, @_execution_duration_minutes, @_is_blocked, @_success_ratio_threshold, @_job_status;\n\n\n",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Job Name",
+        "multi": false,
+        "name": "job_name",
+        "options": [],
+        "query": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\ndeclare @_job_category varchar(255);\ndeclare @_job_name varchar(255);\ndeclare @_only_enabled_jobs bit = 1;\ndeclare @_next_clock_hours int;\ndeclare @_prev_clock_hours int;\ndeclare @_execution_duration_minutes int;\ndeclare @_is_blocked bit;\ndeclare @_success_ratio_threshold decimal(12,2);\ndeclare @_job_status varchar(20);\n\nset @_params = N'@_sql_instance varchar(125), @_job_category varchar(255), @_job_name varchar(255), @_only_enabled_jobs bit = 1, @_next_clock_hours int, @_prev_clock_hours int, @_execution_duration_minutes int, @_is_blocked bit, @_success_ratio_threshold decimal(12,2), @_job_status varchar(20)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect '__ALL__' as [JobName]\nunion all\nselect [JobName]\nfrom dbo.sql_agent_jobs_all_servers saj\ngroup by [JobName]\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance, @_job_category, @_job_name, @_only_enabled_jobs, @_next_clock_hours, @_prev_clock_hours, @_execution_duration_minutes, @_is_blocked, @_success_ratio_threshold, @_job_status;\n\n\n",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Yes",
+          "value": "Yes"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Enabled",
+        "multi": false,
+        "name": "enabled",
+        "options": [
+          {
+            "selected": true,
+            "text": "Yes",
+            "value": "Yes"
+          },
+          {
+            "selected": false,
+            "text": "No",
+            "value": "No"
+          },
+          {
+            "selected": false,
+            "text": "__ALL__",
+            "value": "__ALL__"
+          }
+        ],
+        "query": "Yes,No,__ALL__",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__ALL__",
+          "value": "__ALL__"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Blocked",
+        "multi": false,
+        "name": "blocked",
+        "options": [
+          {
+            "selected": true,
+            "text": "__ALL__",
+            "value": "__ALL__"
+          },
+          {
+            "selected": false,
+            "text": "Yes",
+            "value": "Yes"
+          },
+          {
+            "selected": false,
+            "text": "No",
+            "value": "No"
+          }
+        ],
+        "query": "__ALL__,Yes,No",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "-1",
+          "value": "-1"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "% Success (>)",
+        "multi": false,
+        "name": "success_pct",
+        "options": [
+          {
+            "selected": true,
+            "text": "-1",
+            "value": "-1"
+          },
+          {
+            "selected": false,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": false,
+            "text": "20",
+            "value": "20"
+          },
+          {
+            "selected": false,
+            "text": "30",
+            "value": "30"
+          },
+          {
+            "selected": false,
+            "text": "40",
+            "value": "40"
+          },
+          {
+            "selected": false,
+            "text": "50",
+            "value": "50"
+          },
+          {
+            "selected": false,
+            "text": "60",
+            "value": "60"
+          },
+          {
+            "selected": false,
+            "text": "70",
+            "value": "70"
+          },
+          {
+            "selected": false,
+            "text": "80",
+            "value": "80"
+          },
+          {
+            "selected": false,
+            "text": "90",
+            "value": "90"
+          },
+          {
+            "selected": false,
+            "text": "100",
+            "value": "100"
+          }
+        ],
+        "query": "-1,10,20,30,40,50,60,70,80,90,100",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "-1",
+          "value": "-1"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "% Failure (>)",
+        "multi": false,
+        "name": "failure_pct",
+        "options": [
+          {
+            "selected": true,
+            "text": "-1",
+            "value": "-1"
+          },
+          {
+            "selected": false,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": false,
+            "text": "20",
+            "value": "20"
+          },
+          {
+            "selected": false,
+            "text": "30",
+            "value": "30"
+          },
+          {
+            "selected": false,
+            "text": "40",
+            "value": "40"
+          },
+          {
+            "selected": false,
+            "text": "50",
+            "value": "50"
+          },
+          {
+            "selected": false,
+            "text": "60",
+            "value": "60"
+          },
+          {
+            "selected": false,
+            "text": "70",
+            "value": "70"
+          },
+          {
+            "selected": false,
+            "text": "80",
+            "value": "80"
+          },
+          {
+            "selected": false,
+            "text": "90",
+            "value": "90"
+          },
+          {
+            "selected": false,
+            "text": "100",
+            "value": "100"
+          }
+        ],
+        "query": "-1,10,20,30,40,50,60,70,80,90,100",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Running",
+          "value": "Running"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Status",
+        "multi": false,
+        "name": "status",
+        "options": [
+          {
+            "selected": false,
+            "text": "__All__",
+            "value": "__All__"
+          },
+          {
+            "selected": true,
+            "text": "Running",
+            "value": "Running"
+          },
+          {
+            "selected": false,
+            "text": "Idle",
+            "value": "Idle"
+          }
+        ],
+        "query": "__All__,Running,Idle",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "__ALL__",
+          "value": "__ALL__"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Last Outcome",
+        "multi": false,
+        "name": "last_outcome",
+        "options": [
+          {
+            "selected": true,
+            "text": "__ALL__",
+            "value": "__ALL__"
+          },
+          {
+            "selected": false,
+            "text": "Failed",
+            "value": "Failed"
+          },
+          {
+            "selected": false,
+            "text": "Succeeded",
+            "value": "Succeeded"
+          },
+          {
+            "selected": false,
+            "text": "Canceled",
+            "value": "Canceled"
+          }
+        ],
+        "query": "__ALL__,Failed,Succeeded,Canceled",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "auto": false,
+        "auto_count": 30,
+        "auto_min": "10s",
+        "current": {
+          "selected": false,
+          "text": "0m",
+          "value": "0m"
+        },
+        "hide": 0,
+        "label": "In Next (Time)",
+        "name": "next_interval",
+        "options": [
+          {
+            "selected": true,
+            "text": "0m",
+            "value": "0m"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "2h",
+            "value": "2h"
+          },
+          {
+            "selected": false,
+            "text": "3h",
+            "value": "3h"
+          },
+          {
+            "selected": false,
+            "text": "4h",
+            "value": "4h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "12h",
+            "value": "12h"
+          },
+          {
+            "selected": false,
+            "text": "1d",
+            "value": "1d"
+          },
+          {
+            "selected": false,
+            "text": "2d",
+            "value": "2d"
+          },
+          {
+            "selected": false,
+            "text": "7d",
+            "value": "7d"
+          },
+          {
+            "selected": false,
+            "text": "14d",
+            "value": "14d"
+          },
+          {
+            "selected": false,
+            "text": "30d",
+            "value": "30d"
+          }
+        ],
+        "query": "0m,1m,10m,30m,1h,2h,3h,4h,6h,12h,1d,2d,7d,14d,30d",
+        "queryValue": "",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
+      },
+      {
+        "auto": false,
+        "auto_count": 30,
+        "auto_min": "10s",
+        "current": {
+          "selected": false,
+          "text": "0m",
+          "value": "0m"
+        },
+        "hide": 0,
+        "label": "In Prev (Time)",
+        "name": "prev_interval",
+        "options": [
+          {
+            "selected": true,
+            "text": "0m",
+            "value": "0m"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "2h",
+            "value": "2h"
+          },
+          {
+            "selected": false,
+            "text": "3h",
+            "value": "3h"
+          },
+          {
+            "selected": false,
+            "text": "4h",
+            "value": "4h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "12h",
+            "value": "12h"
+          },
+          {
+            "selected": false,
+            "text": "1d",
+            "value": "1d"
+          },
+          {
+            "selected": false,
+            "text": "2d",
+            "value": "2d"
+          },
+          {
+            "selected": false,
+            "text": "7d",
+            "value": "7d"
+          },
+          {
+            "selected": false,
+            "text": "14d",
+            "value": "14d"
+          },
+          {
+            "selected": false,
+            "text": "30d",
+            "value": "30d"
+          }
+        ],
+        "query": "0m,1m,10m,30m,1h,2h,3h,4h,6h,12h,1d,2d,7d,14d,30d",
+        "queryValue": "",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "hide": 0,
+        "label": "Page No",
+        "name": "page_no",
+        "options": [
+          {
+            "selected": true,
+            "text": "1",
+            "value": "1"
+          }
+        ],
+        "query": "1",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "100",
+          "value": "100"
+        },
+        "hide": 0,
+        "label": "Page Size",
+        "name": "page_size",
+        "options": [
+          {
+            "selected": true,
+            "text": "100",
+            "value": "100"
+          }
+        ],
+        "query": "100",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Monitoring - Live - All Servers - Job Activity Monitor",
+  "uid": "job_activity_monitor",
+  "version": 8,
+  "weekStart": ""
+}
