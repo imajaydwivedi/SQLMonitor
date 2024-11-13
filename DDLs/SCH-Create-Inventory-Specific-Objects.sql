@@ -1,6 +1,7 @@
 /*
-	Version:		2024-11-12
-	Date:			2024-11-12 - Enhancement#3 - Add table dbo.all_server_stable_info_history
+	Version:		2024-11-13
+	Date:			2024-11-13 - Enhancement#4 - Get Max Server Memory in dbo.all_server_stable_info
+					2024-11-12 - Enhancement#3 - Add table dbo.all_server_stable_info_history
 					2024-10-22 - Enhancement#51 - Add few objects required for DBA Inventory & Alerting
 					2024-08-07 - Enhancement#45 - Add Preventive Triggers on dbo.instance_details to avoid mistakes
 					2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
@@ -247,6 +248,7 @@ CREATE TABLE [dbo].[all_server_stable_info]
 	[scheduler_count] [smallint] NULL,
 	[major_version_number] [smallint] NULL,
 	[minor_version_number] [smallint] NULL,
+	[max_server_memory_mb] [int] null,
 	[collection_time] [datetime2] NULL default sysdatetime(),
 
 	'+(case when @MemoryOptimizedObjectUsage = 1 then '' else '--' end)+'CONSTRAINT pk_all_server_stable_info primary key nonclustered ([srv_name])
@@ -281,7 +283,8 @@ CREATE TABLE [dbo].[all_server_stable_info_history]
 	[cpu_count] [smallint] NULL,
 	[scheduler_count] [smallint] NULL,
 	[major_version_number] [smallint] NULL,
-	[minor_version_number] [smallint] NULL,	
+	[minor_version_number] [smallint] NULL,
+	[max_server_memory_mb] [int] null,
 
 	INDEX ci_all_server_stable_info_history clustered ([collection_time],[srv_name])
 );
@@ -801,8 +804,8 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	INSERT dbo.all_server_stable_info_history
-	(	collection_time, srv_name, at_server_name, machine_name, server_name, [ip], domain, [host_name], fqdn, host_distribution, processor_name, product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb, os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number )
-	select collection_time, srv_name, at_server_name, machine_name, server_name, [ip], domain, [host_name], fqdn, host_distribution, processor_name, product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb, os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number
+	(	collection_time, srv_name, at_server_name, machine_name, server_name, [ip], domain, [host_name], fqdn, host_distribution, processor_name, product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb, os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number, max_server_memory_mb )
+	select collection_time, srv_name, at_server_name, machine_name, server_name, [ip], domain, [host_name], fqdn, host_distribution, processor_name, product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb, os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number, max_server_memory_mb
 	from dbo.all_server_stable_info vi
 END
 go
@@ -838,11 +841,14 @@ BEGIN
 	(	[collection_time], [srv_name], [os_cpu], [sql_cpu], [pcnt_kernel_mode], [page_faults_kb], [blocked_counts], 
 		[blocked_duration_max_seconds], [available_physical_memory_kb], [system_high_memory_signal_state], 
 		[physical_memory_in_use_kb], [memory_grants_pending], [connection_count], [active_requests_count], 
-		[waits_per_core_per_minute], [avg_disk_wait_ms], [avg_disk_latency_ms], [page_life_expectancy], [target_server_memory_kb], [total_server_memory_kb], [memory_consumers] )
+		[waits_per_core_per_minute], [avg_disk_wait_ms], [avg_disk_latency_ms], [page_life_expectancy], 
+		[target_server_memory_kb], [total_server_memory_kb], [memory_consumers] 
+	)
 	select [collection_time], [srv_name], [os_cpu], [sql_cpu], [pcnt_kernel_mode], [page_faults_kb], [blocked_counts], 
 		[blocked_duration_max_seconds], [available_physical_memory_kb], [system_high_memory_signal_state], 
 		[physical_memory_in_use_kb], [memory_grants_pending], [connection_count], [active_requests_count], 
-		[waits_per_core_per_minute], [avg_disk_wait_ms], [avg_disk_latency_ms], page_life_expectancy, target_server_memory_kb, total_server_memory_kb, memory_consumers
+		[waits_per_core_per_minute], [avg_disk_wait_ms], [avg_disk_latency_ms], page_life_expectancy, 
+		target_server_memory_kb, total_server_memory_kb, memory_consumers
 	from dbo.all_server_volatile_info vi
 END
 go
@@ -863,11 +869,13 @@ as
 			at_server_name, machine_name, server_name, ip, domain, host_name, host_distribution, processor_name,
 			product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb,
 			os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number,
+			max_server_memory_mb,
 			/* volatile info */
 			os_cpu, sql_cpu, pcnt_kernel_mode, page_faults_kb, blocked_counts, blocked_duration_max_seconds, 
 			available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb,
 			memory_grants_pending, connection_count, active_requests_count, waits_per_core_per_minute,
-			avg_disk_wait_ms, avg_disk_latency_ms, page_life_expectancy, target_server_memory_kb, total_server_memory_kb, memory_consumers
+			avg_disk_wait_ms, avg_disk_latency_ms, page_life_expectancy, target_server_memory_kb, total_server_memory_kb, 
+			memory_consumers
 	from dbo.all_server_stable_info as si
 	left join dbo.all_server_volatile_info as vi
 	on si.srv_name = vi.srv_name;
@@ -883,7 +891,7 @@ BEGIN
 		or ( (select max(collection_time) from  dbo.all_server_stable_info) < dateadd(MINUTE, -30, SYSDATETIME()) )
 	begin
 		exec dbo.usp_GetAllServerInfo @result_to_table = 'dbo.all_server_stable_info',
-					@output = 'srv_name, at_server_name, machine_name, server_name, ip, domain, host_name, product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb, os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number';
+					@output = 'srv_name, at_server_name, machine_name, server_name, ip, domain, host_name, product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb, os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number, max_server_memory_mb';
 	end
 	--select * from dbo.all_server_stable_info;
 
