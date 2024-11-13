@@ -35,8 +35,9 @@ AS
 BEGIN
 
 	/*
-		Version:		2024-06-05
-		Date:			2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
+		Version:		2024-11-13
+		Date:			2024-11-13 - Enhancement#4 - Get Max Server Memory in dbo.all_server_stable_info
+						2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
 						2023-08-17 - Enhancement#274 - Populate [is_linked_server_working]
 						2023-07-14 - Enhancement#268 - Add tables sql_agent_job_stats & memory_clerks in Collection Latency Dashboard
 						2023-06-19 - Enhancement#262 - Add is_enabled field
@@ -86,7 +87,8 @@ BEGIN
 			physical_memory_in_use_kb decimal(20,2), memory_grants_pending int, connection_count int, 
 			active_requests_count int, waits_per_core_per_minute decimal(20,2), avg_disk_wait_ms decimal(20,2), [avg_disk_latency_ms] int,
 			os_start_time_utc datetime2, cpu_count smallint, scheduler_count smallint, major_version_number smallint, 
-			minor_version_number smallint, page_life_expectancy int, memory_consumers int, target_server_memory_kb bigint, total_server_memory_kb bigint,
+			minor_version_number smallint, max_server_memory_mb int, page_life_expectancy int, memory_consumers int, 
+			target_server_memory_kb bigint, total_server_memory_kb bigint,
 
 			performance_counters__latency_minutes int, xevent_metrics__latency_minutes int, WhoIsActive__latency_minutes int,
 			os_task_list__latency_minutes int, disk_space__latency_minutes int, file_io_stats__latency_minutes int,
@@ -129,6 +131,7 @@ BEGIN
 	declare @_scheduler_count int;
 	declare @_major_version_number smallint;
 	declare @_minor_version_number smallint;
+	declare @_max_server_memory_mb int;
 	declare @_page_life_expectancy int;
 	declare @_memory_consumers int;
 	declare @_target_server_memory_kb bigint;
@@ -304,6 +307,7 @@ BEGIN
 		set @_scheduler_count = NULL;
 		set @_major_version_number = NULL;
 		set @_minor_version_number = NULL;
+		set @_max_server_memory_mb = NULL;
 		set @_page_life_expectancy = NULL;
 		set @_memory_consumers = NULL;
 		set @_target_server_memory_kb = NULL;
@@ -1905,6 +1909,50 @@ SELECT	[@server_minor_version_number] = @server_minor_version_number
 		end
 
 
+		-- [max_server_memory_mb] => Create SQL Statement to Execute
+		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'max_server_memory_mb') )
+		begin
+			delete from @_result;
+			set @_sql = "
+select [max_server_memory_mb] = convert(int, c.value_in_use)
+from sys.configurations c
+where c.name = 'max server memory (MB)'		
+";
+			
+			-- Decorate for remote query if LinkedServer
+			if @_isLocalHost = 0
+				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
+		
+			begin try
+				insert @_result (col_int)
+				exec (@_sql);
+
+				-- set @_max_server_memory_mb
+				select @_max_server_memory_mb = col_int from @_result;
+			end try
+			begin catch
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerInfo', 
+						[function_call_arguments] = 'max_server_memory_mb', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
+			end catch
+		end
+
+
 		-- [page_life_expectancy] => Create SQL Statement to Execute
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'page_life_expectancy') )
 		begin
@@ -2743,7 +2791,7 @@ on 1=1";
 				[pcnt_kernel_mode], [page_faults_kb], [blocked_counts], [blocked_duration_max_seconds], [total_physical_memory_kb], 
 				[available_physical_memory_kb], [system_high_memory_signal_state], [physical_memory_in_use_kb], [memory_grants_pending], 
 				[connection_count], [active_requests_count], [waits_per_core_per_minute], [avg_disk_wait_ms], [avg_disk_latency_ms], [os_start_time_utc],
-				[cpu_count], [scheduler_count], [major_version_number], [minor_version_number], [page_life_expectancy], [memory_consumers], 
+				[cpu_count], [scheduler_count], [major_version_number], [minor_version_number], [max_server_memory_mb], [page_life_expectancy], [memory_consumers], 
 				[target_server_memory_kb], [total_server_memory_kb], [performance_counters__latency_minutes],
 				[xevent_metrics__latency_minutes], [WhoIsActive__latency_minutes], [os_task_list__latency_minutes], 
 				[disk_space__latency_minutes], [file_io_stats__latency_minutes], [sql_agent_job_stats__latency_minutes], 
@@ -2784,6 +2832,7 @@ on 1=1";
 					,[scheduler_count] = @_scheduler_count
 					,[major_version_number] = @_major_version_number
 					,[minor_version_number] = @_minor_version_number
+					,[max_server_memory_mb] = @_max_server_memory_mb
 					,[page_life_expectancy] = @_page_life_expectancy
 					,[memory_consumers] = @_memory_consumers
 					,[target_server_memory_kb] = @_target_server_memory_kb

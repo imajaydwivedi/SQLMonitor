@@ -27,8 +27,9 @@ AS
 BEGIN
 
 	/*
-		Version:		2024-10-22
-		Date:			2024-10-22 - Enhancement#10 - For alerting, need more data points of Volatile info. So adding parallelize option
+		Version:		2024-11-13
+		Date:			2024-11-13 - Enhancement#4 - Get Max Server Memory in dbo.all_server_stable_info
+						2024-10-22 - Enhancement#10 - For alerting, need more data points of Volatile info. So adding parallelize option
 						2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
 						2023-07-14 - Enhancement#268 - Add tables sql_agent_job_stats & memory_clerks in Collection Latency Dashboard
 						2023-06-19 - Enhancement#262 - Add is_enabled field
@@ -117,7 +118,7 @@ if	( @schedule_minutes = 0 or (select max(collection_time) from  dbo.all_server_
 begin
 	--host_distribution, processor_name,
 	exec dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_stable_info'', @verbose = @verbose, 
-				@output = ''srv_name, at_server_name, machine_name, server_name, ip, domain, host_name, fqdn, host_distribution, processor_name, product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb, os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number'';
+				@output = ''srv_name, at_server_name, machine_name, server_name, ip, domain, host_name, fqdn, host_distribution, processor_name, product_version, edition, sqlserver_start_time_utc, total_physical_memory_kb, os_start_time_utc, cpu_count, scheduler_count, major_version_number, minor_version_number, max_server_memory_mb'';
 end
 else
 	print ''Did not meet schedule requirement.''+char(13);';
