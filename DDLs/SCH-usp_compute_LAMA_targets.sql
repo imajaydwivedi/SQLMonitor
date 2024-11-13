@@ -19,11 +19,11 @@ BEGIN
 /*	Purpose: Analyze the past core metrics history and determine the server that need Memory/CPU re-evaulation
 	Modifications: 2024-Nov-12 - Ajay - Initial Draft
 
-	exec dbo.usp_compute_LAMA_targets 
-					@verbose = 2, 
-					@days_for_analysis = 15,
-					--@filter_server = 'SqlPractice',
-					@drop_create_staging_tables = 0
+	exec dbo.usp_compute_LAMA_targets
+			@verbose = 2, 
+			@days_for_analysis = 15,
+			--@filter_server = 'SqlPractice',
+			@drop_create_staging_tables = 0;
 
 */
 	set nocount on;
@@ -51,6 +51,7 @@ BEGIN
 	declare @l_os_cpu	decimal(18,2);
 	declare @l_sql_cpu	decimal(18,2);
 	declare @l_cpu_count int;
+	declare @l_max_server_memory_mb int;
 	declare @l_box_ram_gb decimal(18,2);
 	declare @l_available_ram_gb numeric(18,2);
 	declare @l_sql_ram_gb numeric(18,2);
@@ -100,6 +101,7 @@ BEGIN
 		[os_cpu]	decimal(18,2),
 		[sql_cpu]	decimal(18,2),
 		[cpu_count] int,
+		[max_server_memory_mb] int,
 		[box_ram_gb] decimal(18,2),
 		[available_ram_gb] numeric(18,2),
 		[sql_ram_gb] numeric(18,2),
@@ -142,6 +144,7 @@ BEGIN
 			[sql_memory_pcnt_threshold] [decimal](20, 2) NULL,
 			[sql_ram_pntile] [decimal](18, 2) NULL,
 			[sql_ram_usage_pcnt] [numeric](18, 2) NULL,
+			[max_server_memory_mb] int null,
 			[memory_consumers] [int] NULL,
 			[memory_grants_pending] [int] NULL,
 			[total_server_memory_gb] [numeric](18, 2) NULL,
@@ -178,10 +181,10 @@ BEGIN
 
 	-- populate table with all servers
 	insert #compute_LAMA_targets_RAW
-	(collection_time, srv_name, os_cpu, sql_cpu, cpu_count, [available_ram_gb], [box_ram_gb], [sql_ram_gb], [sql_ram_usage_pcnt], 
+	(collection_time, srv_name, os_cpu, sql_cpu, cpu_count, max_server_memory_mb, [available_ram_gb], [box_ram_gb], [sql_ram_gb], [sql_ram_usage_pcnt], 
 		[available_ram_pcnt], memory_consumers, memory_grants_pending, total_server_memory_gb, target_server_memory_gb, 
 		page_life_expectancy, avg_disk_latency_ms)
-	select vih.collection_time, vih.srv_name, vih.os_cpu, vih.sql_cpu, asi.cpu_count, 
+	select vih.collection_time, vih.srv_name, vih.os_cpu, vih.sql_cpu, asi.cpu_count, asi.max_server_memory_mb, 
 			[available_ram_gb] = convert(numeric(20,2),vih.available_physical_memory_kb/(1024.0*1024.0)), 
 			[box_ram_gb] = ceiling(asi.total_physical_memory_kb/(1024.0*1024.0)),
 			[sql_ram_gb] = ceiling(vih.physical_memory_in_use_kb/(1024.0*1024.0)),
@@ -226,6 +229,7 @@ BEGIN
 		set @l_os_cpu = NULL;
 		set @l_sql_cpu = NULL;
 		set @l_cpu_count = NULL;
+		set @l_max_server_memory_mb = NULL;
 		set @l_box_ram_gb = NULL;
 		set @l_available_ram_gb = NULL;
 		set @l_sql_ram_gb = NULL;
@@ -271,6 +275,7 @@ BEGIN
 				@l_available_ram_pntile = min([available_ram_pntile]),
 				@l_sql_ram_pntile = max([sql_ram_pntile]),
 				@l_cpu_count = max(cpu_count),
+				@l_max_server_memory_mb = max(max_server_memory_mb),
 				@l_box_ram_gb = max(box_ram_gb),
 				@l_available_ram_gb = min(available_ram_gb),
 				@l_available_ram_pcnt = min(available_ram_pcnt),
@@ -393,7 +398,7 @@ BEGIN
 		if @filter_server is null
 		begin
 			insert dbo.lama_computed_metrics
-			(data_points, collection_time, days_total, srv_name, memory_action_needed, memory_action, cpu_action_needed, cpu_action, additional_ram_gb, new_total_ram_gb, additional_sql_ram_gb, box_ram_gb, available_ram_gb, sql_ram_gb, available_memory_pcnt_threshold, available_ram_pntile_pcnt, available_ram_pcnt, sql_memory_pcnt_threshold, sql_ram_pntile, sql_ram_usage_pcnt, memory_consumers, memory_grants_pending, total_server_memory_gb, target_server_memory_gb, page_life_expectancy, avg_disk_latency_ms, avg_disk_latency_ms_pntile, additional_cpu_cores, new_total_cpu_cores, cpu_count, os_cpu_pntile, os_cpu, sql_cpu_pntile, sql_cpu, days_for_analysis, os_cpu_pntile_threshold, sql_cpu_pntile_threshold, available_memory_pntile_threshold, disk_latency_pntile_threshold, os_cpu_pcnt_threshold, sql_cpu_pcnt_threshold)
+			(data_points, collection_time, days_total, srv_name, memory_action_needed, memory_action, cpu_action_needed, cpu_action, additional_ram_gb, new_total_ram_gb, additional_sql_ram_gb, box_ram_gb, available_ram_gb, sql_ram_gb, available_memory_pcnt_threshold, available_ram_pntile_pcnt, available_ram_pcnt, sql_memory_pcnt_threshold, sql_ram_pntile, sql_ram_usage_pcnt, max_server_memory_mb, memory_consumers, memory_grants_pending, total_server_memory_gb, target_server_memory_gb, page_life_expectancy, avg_disk_latency_ms, avg_disk_latency_ms_pntile, additional_cpu_cores, new_total_cpu_cores, cpu_count, os_cpu_pntile, os_cpu, sql_cpu_pntile, sql_cpu, days_for_analysis, os_cpu_pntile_threshold, sql_cpu_pntile_threshold, available_memory_pntile_threshold, disk_latency_pntile_threshold, os_cpu_pcnt_threshold, sql_cpu_pcnt_threshold)
 			select	[@l_data_points] = @l_data_points,
 					[@l_collection_time] = @l_collection_time,
 					[@l_days_total] = @l_days_total,
@@ -423,6 +428,7 @@ BEGIN
 						[@l_sql_ram_pntile] = @l_sql_ram_pntile,
 						[@l_sql_ram_usage_pcnt] = @l_sql_ram_usage_pcnt,
 
+						[@l_max_server_memory_mb] = @l_max_server_memory_mb,
 						[@l_memory_consumers] = @l_memory_consumers,
 						[@l_memory_grants_pending] = @l_memory_grants_pending,
 						[@l_total_server_memory_gb] = @l_total_server_memory_gb,
@@ -486,6 +492,7 @@ BEGIN
 						[@l_sql_ram_pntile] = @l_sql_ram_pntile,
 						[@l_sql_ram_usage_pcnt] = @l_sql_ram_usage_pcnt,
 
+						[@l_max_server_memory_mb] = @l_max_server_memory_mb,
 						[@l_memory_consumers] = @l_memory_consumers,
 						[@l_memory_grants_pending] = @l_memory_grants_pending,
 						[@l_total_server_memory_gb] = @l_total_server_memory_gb,
@@ -526,6 +533,39 @@ BEGIN
 
 	if @verbose > 0 and @filter_server is null
 		select * from dbo.lama_computed_metrics lcm;
+
+	-- Return config changes history if not grafana login connection
+	if SUSER_NAME() <> 'grafana'
+	begin
+		;with t_history as (
+			select	collection_time, srv_name, 
+					total_physical_memory_kb, prev__total_physical_memory_kb = lag(total_physical_memory_kb) over (partition by srv_name order by collection_time),
+					cpu_count, prev__cpu_count = lag(cpu_count) over (partition by srv_name order by collection_time),
+					scheduler_count, prev__scheduler_count = lag(scheduler_count) over (partition by srv_name order by collection_time),
+					max_server_memory_mb, prev__max_server_memory_mb = lag(max_server_memory_mb) over (partition by srv_name order by collection_time)
+			from dbo.all_server_stable_info_history ssi
+			where 1=1
+			and ssi.collection_time >= dateadd(day,-@days_for_analysis,getdate())
+			and (@filter_server is null or ssi.srv_name = @filter_server)
+		)
+		,t_history_filtered_for_change as (
+			select RunningQuery = 'Cpu/Ram/Config-Change-History', *
+			from t_history h
+			where 1=1
+			and (	h.cpu_count <> h.prev__cpu_count
+				or	h.total_physical_memory_kb <> h.prev__total_physical_memory_kb
+				or	h.scheduler_count <> h.prev__scheduler_count
+				or	h.max_server_memory_mb <> h.prev__max_server_memory_mb
+				)
+		)
+		select	rq.RunningQuery, collection_time, srv_name, total_physical_memory_kb, prev__total_physical_memory_kb,
+				cpu_count, prev__cpu_count, scheduler_count, prev__scheduler_count, 
+				max_server_memory_mb, prev__max_server_memory_mb
+		from t_history_filtered_for_change c
+		full outer join (select RunningQuery = 'Cpu/Ram/Config-Change-History') rq
+			on 1=1
+	end
+
 END
 GO
 

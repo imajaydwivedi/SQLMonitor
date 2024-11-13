@@ -488,9 +488,9 @@
           <FullPath>SCH-usp_GetAllServerDashboardMail.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_GetAllServerInfo.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>SCH-usp_GetAllServerInfo.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_LogSaver.sql">
@@ -560,9 +560,9 @@
           <FullPath>SCH-usp_wrapper_GetAllServerCollectedData.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_wrapper_GetAllServerInfo.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>SCH-usp_wrapper_GetAllServerInfo.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_wrapper_populate_sma_sql_instance.sql">
