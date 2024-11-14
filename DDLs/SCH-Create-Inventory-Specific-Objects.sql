@@ -1,6 +1,7 @@
 /*
-	Version:		2024-11-13
-	Date:			2024-11-13 - Enhancement#4 - Get Max Server Memory in dbo.all_server_stable_info
+	Version:		2024-11-14
+	Date:			2024-11-14 - Issue#6 - Preserve data of History Tables in Inventory Upgrade
+					2024-11-13 - Enhancement#4 - Get Max Server Memory in dbo.all_server_stable_info
 					2024-11-12 - Enhancement#3 - Add table dbo.all_server_stable_info_history
 					2024-10-22 - Enhancement#51 - Add few objects required for DBA Inventory & Alerting
 					2024-08-07 - Enhancement#45 - Add Preventive Triggers on dbo.instance_details to avoid mistakes
@@ -145,11 +146,45 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[all_s
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[all_server_stable_info_history]') AND type in (N'U'))
-	DROP TABLE [dbo].[all_server_stable_info_history]
+BEGIN
+	-- Backup the table data before dropping
+	declare @date_str varchar(50);
+	declare @backup_table_name varchar(255);
+	declare @sql nvarchar(max);
+	declare @params nvarchar(max);
+	
+	select @date_str = convert(varchar,getdate(),112);
+	set @backup_table_name = 'dbo.all_server_stable_info_history__'+@date_str;
+
+	set @sql = N'if object_id('''+@backup_table_name+''') is null
+	select * into '+@backup_table_name+' from [dbo].[all_server_stable_info_history];';
+	
+	print @sql
+	exec sp_executesql @sql, @params;
+
+	--DROP TABLE [dbo].[all_server_stable_info_history]
+END
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[all_server_volatile_info_history]') AND type in (N'U'))
+BEGIN
+	-- Backup the table data before dropping
+	declare @date_str varchar(50);
+	declare @backup_table_name varchar(255);
+	declare @sql nvarchar(max);
+	declare @params nvarchar(max);
+	
+	select @date_str = convert(varchar,getdate(),112);
+	set @backup_table_name = 'dbo.all_server_volatile_info_history__'+@date_str;
+
+	set @sql = N'if object_id('''+@backup_table_name+''') is null
+	select * into '+@backup_table_name+' from [dbo].[all_server_volatile_info_history];';
+	
+	print @sql
+	exec sp_executesql @sql, @params;
+
 	DROP TABLE [dbo].[all_server_volatile_info_history]
+END
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[all_server_collection_latency_info]') AND type in (N'U'))
