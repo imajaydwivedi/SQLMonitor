@@ -121,22 +121,36 @@ def slack_events_handler():
     data = request.get_json()
     #challenge = data['challenge']
     #challenge = data.get("challenge")
-    print(data)
+    #print(data)
 
     if 'challenge' in data:
         return jsonify({'challenge': data['challenge']})
-
-    print("no challenge found. So doing some tasks.")
-
-    return "OK", 200
-
-@app.before_request
-def redirect_http_to_https():
-    if not request.is_secure:
-        if verbose:
-            logger.info(f"direct unsecure access to https")
-        #return redirect(request.url.replace("http://", "https://"), code=301)
+    else:
+        #print("no challenge found. So doing some tasks.")
+        return Response(f"No challenge found. Reached to /slack/events."), 200
+    #return "OK", 200
 '''
+
+
+@app.route('/slack/events', methods=['POST'])
+def slack_event_handler():
+    # Parse the incoming JSON payload
+    data = request.get_json()
+
+    # Handle Slack's challenge verification
+    if data.get('type') == 'url_verification':
+        # Respond with the challenge token
+        return jsonify({'challenge': data.get('challenge')})
+
+    # Handle other Slack events (e.g., message events)
+    event = data.get('event')
+    if event:
+        # Process event data (e.g., log or respond to the event)
+        print(f"Received event: {event}")
+
+    # Return 200 OK to acknowledge the event
+    #return '', 200
+    return Response(f"Reached to /slack/events."), 200
 
 
 # Send Test Slack Message

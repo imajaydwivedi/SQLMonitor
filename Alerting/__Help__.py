@@ -50,6 +50,7 @@ ngrok http --url=skilled-externally-redfish.ngrok-free.app 5000
 # Slack evnets via Personal Account
 https://api.slack.com/apps/A04LG3JUY4W/event-subscriptions?
   https://gratefully-easy-ewe.ngrok-free.app/slack/events
+  https://sqlmonitor.ajaydwivedi.com:5000/slack/events
 
 https://api.slack.com/apps/A04LG3JUY4W/interactive-messages?
   https://gratefully-easy-ewe.ngrok-free.app/slack/interactive-endpoint
