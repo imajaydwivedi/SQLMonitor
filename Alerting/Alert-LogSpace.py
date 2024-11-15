@@ -22,6 +22,7 @@ parser.add_argument("--alert_name", type=str, required=False, action="store", de
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-LogSpace", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
+parser.add_argument("--log_file", type=str, required=False, action="store", default="", help="Log file path if logging should be done in files.")
 
 args=parser.parse_args()
 
@@ -38,9 +39,17 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     alert_job_name = args.alert_job_name
     alert_owner_team = args.alert_owner_team
     verbose = args.verbose
+    log_file = args.log_file
 
 # create logger
-logger = get_script_logger(alert_job_name)
+if log_file != "":
+    logger = get_script_logger(alert_job_name, log_file=log_file)
+    if verbose:
+        print(f"[{script_name}] => Logging to file '{log_file}'..")
+else:
+    logger = get_script_logger(alert_job_name)
+    if verbose:
+        print(f"[{script_name}] => Logging to console..")
 
 # Log begging
 logger.info('***** BEGIN:  %s' % script_name)

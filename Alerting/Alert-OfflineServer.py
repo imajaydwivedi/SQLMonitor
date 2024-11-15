@@ -2,7 +2,6 @@ import pyodbc
 import argparse
 from datetime import datetime
 import os
-import psutil
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe

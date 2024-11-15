@@ -79,10 +79,12 @@ parent_process_name = parent_process.name()
 print(f"\nScript '{script_name}' called by '{parent_process_name}' (PID: {parent_process.pid})")
 
 # if web server run manually for testing, then log to console
+log_to_file:bool = False
 if parent_process_name in ['powershell_ise.exe', 'powershell.exe', 'pwsh.exe']:
     logger = get_script_logger(alert_job_name)
     print(f"Webserver is being run manually by developer.\n")
 else:
+    log_to_file:bool = True
     log_file = f"{script_directory}{path_separator}Logs{path_separator}{alert_job_name}.log"
     logger = get_script_logger(alert_job_name, log_file)
     print(f"Webserver is running in production mode.\n")
@@ -114,6 +116,8 @@ if login_name != '' and login_password != '':
     script_arguments = script_arguments + ['--login_name',login_name, '--login_password',login_password]
 if verbose:
     script_arguments = script_arguments + ['--verbose',f"{verbose}"]
+if log_to_file:
+    script_arguments = script_arguments + ['--log_file',log_file]
 
 logger.info(f"Script arguments => \n{script_arguments}")
 

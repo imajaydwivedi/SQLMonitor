@@ -37,10 +37,10 @@ def get_script_logger(script_name:str,log_file:str=None):
         fh.setLevel(logging.DEBUG)
         fh.setFormatter(formatter)
         logger.addHandler(fh)
-        print(f"\nLogging to file '{log_file}'.\n")
+        #print(f"\n[get_script_logger()] => Logging to file '{log_file}'.\n")
     else:
         # add ch to logger
-        print(f"Using console logger..")
+        #print(f"[get_script_logger()] => Using console logger..")
         logger.addHandler(ch)
 
     return logger
