@@ -1,3 +1,6 @@
+# Deploy First Flask App on IIS
+  # https://www.youtube.com/watch?v=Q4AaFNX6LBY
+  # Virtual Env in windows
 # Create Virtual Env
 cd "E:\Github\SQLMonitor\Alerting"
 
@@ -5,9 +8,9 @@ E:\Github\SQLMonitor\Alerting>
 python -m venv AlertEngineVenv
 
 E:\Github\SQLMonitor\Alerting>
-SQLMonitorVenv\Scripts\activate.bat
+AlertEngineVenv\Scripts\activate.bat
 
-(SQLMonitorVenv) E:\Github\SQLMonitor\Alerting>
+(AlertEngineVenv) E:\Github\SQLMonitor\Alerting>
 python E:\GitHub\SQLMonitor\Alerting\Run-SQLMonitorAlertEngineWebServer.py
 
 # pyodbc module for SQL Connection
@@ -28,15 +31,23 @@ pip install flask
 # module to work with slack events
 pip install slackeventsapi
 
-# Scheduler
-https://stackoverflow.com/a/38501429/4449743
+# Scheduler - https://stackoverflow.com/a/38501429/4449743
 pip install apscheduler
+
+# Webserver deployment
+pip install wfastcgi
 
 # ngrok for testing web server
 https://ngrok.com/download
 
+# personal
 ngrok http --url=gratefully-easy-ewe.ngrok-free.app 5000
+Website -> https://gratefully-easy-ewe.ngrok-free.app/
 
+# sql agent
+ngrok http --url=skilled-externally-redfish.ngrok-free.app 5000
+
+# Slack evnets via Personal Account
 https://api.slack.com/apps/A04LG3JUY4W/event-subscriptions?
   https://gratefully-easy-ewe.ngrok-free.app/slack/events
 
@@ -68,36 +79,40 @@ https://jsonformatter.curiousconcept.com/#
 https://www.youtube.com/watch?v=YFBRVJPhDGY
 
 
-# Deploy First Flask App on IIS
-  # https://www.youtube.com/watch?v=Q4AaFNX6LBY
-  # Virtual Env in windows
-cd "E:\Github\Flask\FirstFlaskWebApp"
-
-E:\Github\Flask\FirstFlaskWebApp>
-python -m venv FlaskWebVenv
-
-FlaskWebVenv\Scripts\activate.bat
-
-(FlaskWebVenv) E:\Github\Flask\FirstFlaskWebApp>
-python flaskIIS.py
-
-pip install flask
-
-pip install wfastcgi
-
 # By default, [FastCGIModule] is not enabled in IIS. To enable, following instructions from chat GPT
   # Search for text "how to enable FastCgiModule in IIS"
   Server Manager > Add Roles and Features > Server Roles > Web Server (IIS) > Web Server > Application Development > CGI
 
 # Go get FastCGI executable path, go to app directory. Activate VEnv. Enable wfastcgi. As output, we get path
-cd "E:\Github\Flask\FirstFlaskWebApp"
+(AlertEngineVenv) E:\Github\SQLMonitor\Alerting>
 wfastcgi-enable
 
-  (FlaskWebVenv) E:\Github\Flask\FirstFlaskWebApp>wfastcgi-enable
-  Applied configuration changes to section "system.webServer/fastCgi" for "MACHINE/WEBROOT/APPHOST" at configuration commit path "MACHINE/WEBROOT/APPHOST"
-  "E:\Github\Flask\FirstFlaskWebApp\FlaskWebVenv\Scripts\python.exe|E:\Github\Flask\FirstFlaskWebApp\FlaskWebVenv\Lib\site-packages\wfastcgi.py" can now be used as a FastCGI script processor
+Applied configuration changes to section "system.webServer/fastCgi" for "MACHINE/WEBROOT/APPHOST" at configuration commit path "MACHINE/WEBROOT/APPHOST"
+"E:\Github\SQLMonitor\Alerting\AlertEngineVenv\Scripts\python.exe|E:\Github\SQLMonitor\Alerting\AlertEngineVenv\Lib\site-packages\wfastcgi.py" can now be used as a FastCGI script processor
 
-  (FlaskWebVenv) E:\Github\Flask\FirstFlaskWebApp>
+# Run IIS Server with custom Service Account
+  # Search in chatgpt.com for text "run IIS website with different service account"
+
+# For SSL Certificate, merge OpenSSL Certificate & Key (Optional)
+openssl pkcs12 -export -out certificate.pfx -inkey privkey.pem -in fullchain.pem
+
+
+# Run ngrok as Part of the IIS Website Startup
+#To run ngrok throught windows Task Scheduler
+Account -> Lab\SQLService
+
+Open cmd.exe as different user. Use above user.
+
+#Then add auto token. Statement should be similar to below
+ngrok config add-authtoken somegarbagevalueforreplacementofauthtoken
+
+#In task manager, create a task -
+Program -> "C:\Program Files\Ngrok\ngrok.exe"
+Argument -> http --url=gratefully-easy-ewe.ngrok-free.app 5000
+
+Triggers -> At startup, Daily every 1 hour
+
+
 
 
 
