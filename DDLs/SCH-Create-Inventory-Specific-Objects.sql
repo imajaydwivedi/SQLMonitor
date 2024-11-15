@@ -1523,7 +1523,7 @@ begin
 				'URL for All Servers Offline Aliasas or Alias Linked Server Panel'),
 			('url_for_login_password_reset','#','Portal for Resetting Login Password'),
 			('url_for_alerts_grafana_dashboard',
-				'http://localhost:3000/d/',
+				'alerts/sqlmonitor-alerts?orgId=1&var-oncall_team=_All_',
 					'Grafana Dashboard for Alerts'),
 			('smtp_server','smtp.gmail.com','SMTP Server for Database Mail'),
 			('smtp_server_port','587','SMTP Server Port'),
