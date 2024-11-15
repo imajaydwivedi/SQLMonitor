@@ -13,6 +13,8 @@ from slack_sdk.errors import SlackApiError
 from slackeventsapi import SlackEventAdapter
 #from waitress import serve
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
+#import logging
+import psutil
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 from SmaAlertPackage.CommonFunctions.get_sm_credential import get_sm_credential
@@ -38,6 +40,7 @@ parser.add_argument("--frequency_multiplier", type=int, required=False, action="
 parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=False, help="Checks for SSL certificate if enabled")
 #parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra verbose messages when enabled")
+#parser.add_argument('--verbose', type=bool, nargs='?', const=True, default=False, help="Extra verbose messages when enabled")
 parser.add_argument("--debug", type=bool, required=False, action="store", default=False, help="Run web server in debug mode")
 parser.add_argument("--log_server_startup", type=bool, required=False, action="store", default=False, help="Log server startup message in Slack Channel")
 parser.add_argument("--echo_test", type=bool, required=False, action="store", default=False, help="Enable echo test")
@@ -60,21 +63,32 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     has_ssl_certificate = args.has_ssl_certificate
     debug = args.debug
     #frequency_minutes = args.frequency_minutes
-    verbose = args.verbose
+    verbose:bool = args.verbose
     log_server_startup = args.log_server_startup
     run_scheduled_jobs = args.run_scheduled_jobs
-
-# create logger
-logger = get_script_logger(alert_job_name)
-
-# Log begging
-logger.info('***** BEGIN:  %s' % script_name)
 
 # determine os
 if os.name == 'nt':
     path_separator = '\\'
 else:
     path_separator = '/'
+
+# create logger
+parent_process = psutil.Process().parent()
+parent_process_name = parent_process.name()
+print(f"\nScript '{script_name}' called by '{parent_process_name}' (PID: {parent_process.pid})")
+
+# if web server run manually for testing, then log to console
+if parent_process_name in ['powershell_ise.exe', 'powershell.exe', 'pwsh.exe']:
+    logger = get_script_logger(alert_job_name)
+    print(f"Webserver is being run manually by developer.\n")
+else:
+    log_file = f"{script_directory}{path_separator}Logs{path_separator}{alert_job_name}.log"
+    logger = get_script_logger(alert_job_name, log_file)
+    print(f"Webserver is running in production mode.\n")
+
+# Log begging
+logger.info('***** BEGIN:  %s' % script_name)
 
 # ssl_certificate
 logger.info(f"script_parent_directory = '{script_parent_directory}'")
@@ -84,16 +98,24 @@ if has_ssl_certificate:
     ssl_certificate_key = f"{script_parent_directory}{path_separator}Private{path_separator}ssl_certificates{path_separator}privkey.pem"
 
 # Make inventory server connection
-logger.info(f"Create db connection using connect_dba_instance..")
+if verbose:
+    logger.info(f"Create db connection using connect_dba_instance..")
 cnxn = connect_dba_instance(inventory_server,inventory_database,login_name,login_password,logger=logger,verbose=verbose)
 #cursor = cnxn.cursor()
 
 # Create arugments for subprocess - https://www.datacamp.com/tutorial/python-subprocess
-script_arguments = ['--verbose',f"{verbose}", '--inventory_server',inventory_server, '--inventory_database',inventory_database, '--credential_manager_database', credential_manager_database]
+if verbose:
+    logger.info(f"Verbose is True")
+else:
+    logger.info(f"Verbose is False")
+
+script_arguments = ['--inventory_server',inventory_server, '--inventory_database',inventory_database, '--credential_manager_database', credential_manager_database]
 if login_name != '' and login_password != '':
     script_arguments = script_arguments + ['--login_name',login_name, '--login_password',login_password]
 if verbose:
-    logger.info(f"Script arguments => \n{script_arguments}")
+    script_arguments = script_arguments + ['--verbose',f"{verbose}"]
+
+logger.info(f"Script arguments => \n{script_arguments}")
 
 
 # Get Bot OAuth Token
@@ -286,7 +308,7 @@ def interactive_action():
 # dummy
 @app.route("/", methods=['GET','POST'])
 def greetings():
-    print("inside greetings()")
+    logger.info("inside greetings()")
     return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
 
 
@@ -342,7 +364,7 @@ select [is_found] = isnull(@_rows_affected,0);
         logger.info(f"No cleared alert found.")
 
 def call_5_minute_job_script():
-    logger.info(f"Inside call_15_minute_job_script()")
+    logger.info(f"Inside call_5_minute_job_script()")
 
     alert_script_path = os.path.join(script_directory, "Alert-DiskSpace.py")
     subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
@@ -357,7 +379,7 @@ def call_5_minute_job_script():
     subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
 
 def call_2_minute_job_script():
-    logger.info(f"Inside call_10_minute_job_script()")
+    logger.info(f"Inside call_2_minute_job_script()")
 
     alert_script_path = os.path.join(script_directory, "Alert-Cpu.py")
     subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
@@ -375,7 +397,7 @@ def call_2_minute_job_script():
     subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
 
 def call_1_minute_job_script():
-    logger.info(f"Inside call_5_minute_job_script()")
+    logger.info(f"Inside call_1_minute_job_script()")
     auto_resolve_cleared_alerts()
 
     alert_script_path = os.path.join(script_directory, "Alert-MemoryGrantsPending.py")

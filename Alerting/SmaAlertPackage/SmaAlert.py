@@ -216,7 +216,7 @@ select [rows_affected] = isnull(@_rows_affected,0);
                 self.action_to_take = 'Update'
 
             if self.exists and self.suppress_start_date_utc is not None and self.suppress_end_date_utc is not None:
-                now_utc = datetime.now(timezone.utc)
+                now_utc = datetime.utcnow()
                 if self.suppress_start_date_utc < now_utc < self.suppress_end_date_utc:
                     self.action_to_take = 'SkipNotification'
 
