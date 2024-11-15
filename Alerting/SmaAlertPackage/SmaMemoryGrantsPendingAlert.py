@@ -150,7 +150,7 @@ class SmaMemoryGrantsPendingAlert(SmaAlert):
         url_grafana_dash = get_sma_params(self.sql_connection, param_key='GrafanaDashboardPortal')[0].param_value
         url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_core_health_metrics_dashboard_panel')[0].param_value
 
-        self.__sqlmonitor_dashboard_url = f"{url_grafana_dash}{url_panel}"
+        self.__sqlmonitor_dashboard_url = f"{url_grafana_dash}d/{url_panel}"
         if self.verbose:
             self.logger.info(f"self.__sqlmonitor_dashboard_url = '{self.__sqlmonitor_dashboard_url}'")
 
