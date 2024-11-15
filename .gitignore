@@ -25,6 +25,9 @@
 *__pycache__*
 __pycache__/
 
+# Ignore Virtual Env
+/Scripts/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
