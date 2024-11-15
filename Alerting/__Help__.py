@@ -1,3 +1,15 @@
+# Create Virtual Env
+cd "E:\Github\SQLMonitor\Alerting"
+
+E:\Github\SQLMonitor\Alerting>
+python -m venv AlertEngineVenv
+
+E:\Github\SQLMonitor\Alerting>
+SQLMonitorVenv\Scripts\activate.bat
+
+(SQLMonitorVenv) E:\Github\SQLMonitor\Alerting>
+python E:\GitHub\SQLMonitor\Alerting\Run-SQLMonitorAlertEngineWebServer.py
+
 # pyodbc module for SQL Connection
 pip install pyodbc
 

@@ -27,6 +27,10 @@ __pycache__/
 
 # Ignore Virtual Env Folder
 /SQLMonitorVenv/*
+/Alerting/AlertEngineVenv/*
+/Alerting/Venv/*
+/Venv/*
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
