@@ -201,24 +201,6 @@
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "server"
-                },
-                "properties": [
-                  {
-                    "id": "links",
-                    "value": [
-                      {
-                        "targetBlank": true,
-                        "title": "Individual Server Dashboard",
-                        "url": "d/distributed_live_dashboard?var-server=${__data.fields.server}"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
                   "options": "alert_id"
                 },
                 "properties": [
@@ -372,6 +354,16 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "All Server Dashboard - Alert Metrics",
+                        "url": "d/${__data.fields.url}"
+                      }
+                    ]
                   }
                 ]
               },
@@ -398,6 +390,18 @@
                         }
                       ]
                     }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "url"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
                   }
                 ]
               }
@@ -434,7 +438,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server varchar(125);\r\ndeclare @oncall_team varchar(125);\r\ndeclare @alert_id bigint;\r\ndeclare @alert_key varchar(225);\r\n\r\nset @oncall_team = '${oncall_team}';\r\n\r\nset @server = case when ltrim(rtrim('$server_input')) <> '' then ltrim(rtrim('$server_input')) else null end;\r\nset @alert_id = case when ltrim(rtrim('$alert_id')) <> '' then ltrim(rtrim('$alert_id')) else null end;\r\nset @alert_key = case when ltrim(rtrim('$alert_key')) <> '' then ltrim(rtrim('$alert_key')) else null end;\r\n\r\nset @params = N'@server varchar(255), @oncall_team varchar(125), @alert_id bigint, @alert_key varchar(225)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect\talert_key, created_date_utc, alert_owner_team, [state], severity, [log_header] = header,\r\n\t\t\t\t[last_log] = log_time_utc, logged_by, [log_details] = [description],\r\n\t\t\t\tsuppress_start_date_utc, suppress_end_date_utc, frequency_minutes, [alert_id] = a.id\r\nfrom dbo.sma_alert a\r\ncross apply (\r\n\tselect\t\"+(case when @alert_id is not null or @alert_key is not null then '--' else '' end)+\"top 1\r\n\t\t\t*\r\n\tfrom dbo.sma_alert_history ah\r\n\twhere 1=1\r\n\tand ah.alert_id = a.id\r\n\tand ah.alert_id_part_no = a.id_part_no\r\n) ah\r\nwhere 1=1\r\nand a.state <> 'Resolved'\r\n\"+(case when @oncall_team = '_All_' then '--' else '' end)+\"and alert_owner_team = @oncall_team\r\n\"+(case when @alert_id is null then '--' else '' end)+\"and a.id = @alert_id and a.id_part_no = @alert_id % 10\r\n\"+(case when @alert_key is null then '--' else '' end)+\"and a.alert_key = @alert_key\r\norder by id, id_part_no\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @server, @oncall_team, @alert_id, @alert_key;\r\n",
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server varchar(125);\r\ndeclare @oncall_team varchar(125);\r\ndeclare @alert_id bigint;\r\ndeclare @alert_key varchar(225);\r\n\r\nset @oncall_team = '${oncall_team}';\r\n\r\nset @server = case when ltrim(rtrim('$server_input')) <> '' then ltrim(rtrim('$server_input')) else null end;\r\nset @alert_id = case when ltrim(rtrim('$alert_id')) <> '' then ltrim(rtrim('$alert_id')) else null end;\r\nset @alert_key = case when ltrim(rtrim('$alert_key')) <> '' then ltrim(rtrim('$alert_key')) else null end;\r\n\r\nset @params = N'@server varchar(255), @oncall_team varchar(125), @alert_id bigint, @alert_key varchar(225)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\ndeclare @all_server_dashboard varchar(500);\r\ndeclare @core_health_panel varchar(500);\r\nselect @all_server_dashboard = p.param_value from dbo.sma_params p where p.param_key = 'GrafanaDashboardPortal';\r\nselect @core_health_panel = p.param_value from dbo.sma_params p where p.param_key = 'url_all_servers_core_health_metrics_dashboard_panel';\r\n\r\nselect\t/* $__dashboard */\r\n\t\t\t\ta.alert_key, created_date_utc, alert_owner_team, [state], severity, [log_header] = header,\r\n\t\t\t\t[last_log] = log_time_utc, logged_by, [log_details] = [description],\r\n\t\t\t\tsuppress_start_date_utc, suppress_end_date_utc, frequency_minutes, [alert_id] = a.id\r\n\r\n\t\t\t\t,[url] = case when a.alert_key in ('Alert-Cpu','Alert-AvailableMemory','Alert-DiskLatency')\r\n\t\t\t\t\t\tthen @core_health_panel\r\n\t\t\t\t\t\telse p.alert_data_url\r\n\t\t\t\t\t\tend\r\nfrom dbo.sma_alert a\r\ncross apply (\r\n\tselect\t\"+(case when @alert_id is not null or @alert_key is not null then '--' else '' end)+\"top 1\r\n\t\t\t*\r\n\tfrom dbo.sma_alert_history ah\r\n\twhere 1=1\r\n\tand ah.alert_id = a.id\r\n\tand ah.alert_id_part_no = a.id_part_no\r\n) ah\r\nleft join\r\n\t(\r\n\t\tselect\tp.param_key, p.param_value, \r\n\t\t\t\talert_data_url = p.param_value, \r\n\t\t\t\talert_key = case when param_key = 'url_all_servers_alert_history_dashboard_panel' then 'Alert-SqlErrorLog'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_alwayson_latency_dashboard_panel' then 'Alert-AgLatency'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_backups_ag_dbs_dashboard_panel' then 'Alert-AgDbBackupIssue'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_backups_nonag_dbs_dashboard_panel' then 'Alert-NonAgDbBackupIssue'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_core_health_metrics_dashboard_panel' then 'CoreHealthPanel'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_disk_utilization_dashboard_panel' then 'Alert-DiskSpace'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_login_expiry_dashboard_panel' then 'Alert-LoginExpiry'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_logspace_utilization_dashboard_panel' then 'Alert-LogSpace'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_offline_aliases_dashboard_panel' then 'Alert-OfflineServerAlias'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_offline_servers_dashboard_panel' then 'Alert-OfflineServer'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_sqlagent_service_dashboard_panel' then 'Alert-OfflineAgent'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_sqlmonitor_jobs_dashboard_panel' then 'Alert-SqlMonitorJobs'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_tempdb_utilization_dashboard_panel' then 'Alert-Tempdb'\r\n\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\tend\r\n\t\tfrom dbo.sma_params p where p.param_key like 'url_all_servers_%'\r\n\t) p on p.alert_key = a.alert_key\r\nwhere 1=1\r\nand a.state <> 'Resolved'\r\n\"+(case when @oncall_team = '_All_' then '--' else '' end)+\"and alert_owner_team = @oncall_team\r\n\"+(case when @alert_id is null then '--' else '' end)+\"and a.id = @alert_id and a.id_part_no = @alert_id % 10\r\n\"+(case when @alert_key is null then '--' else '' end)+\"and a.alert_key = @alert_key\r\norder by id, id_part_no\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @server, @oncall_team, @alert_id, @alert_key;\r\n",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -681,6 +685,16 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "All Server Dashboard - Alert Metrics",
+                        "url": "d/${__data.fields.url}"
+                      }
+                    ]
                   }
                 ]
               },
@@ -707,6 +721,18 @@
                         }
                       ]
                     }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "url"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
                   }
                 ]
               }
@@ -743,7 +769,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server varchar(125);\r\ndeclare @oncall_team varchar(125);\r\ndeclare @alert_id bigint;\r\ndeclare @alert_key varchar(225);\r\n\r\nset @oncall_team = '${oncall_team}';\r\n\r\nset @server = case when ltrim(rtrim('$server_input')) <> '' then ltrim(rtrim('$server_input')) else null end;\r\nset @alert_id = case when ltrim(rtrim('$alert_id')) <> '' then ltrim(rtrim('$alert_id')) else null end;\r\nset @alert_key = case when ltrim(rtrim('$alert_key')) <> '' then ltrim(rtrim('$alert_key')) else null end;\r\n\r\nset @params = N'@server varchar(255), @oncall_team varchar(125), @alert_id bigint, @alert_key varchar(225)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect\talert_key, created_date_utc, alert_owner_team, [state], severity, [log_header] = header,\r\n\t\t\t\t[last_log] = log_time_utc, logged_by, [log_details] = [description],\r\n\t\t\t\tsuppress_start_date_utc, suppress_end_date_utc, frequency_minutes, [alert_id] = a.id\r\nfrom dbo.sma_alert a\r\ncross apply (\r\n\tselect\t\"+(case when @alert_id is not null or @alert_key is not null then '--' else '' end)+\"top 1\r\n\t\t\t*\r\n\tfrom dbo.sma_alert_history ah\r\n\twhere 1=1\r\n\tand ah.alert_id = a.id\r\n\tand ah.alert_id_part_no = a.id_part_no\r\n) ah\r\nwhere 1=1\r\nand a.state = 'Active'\r\n\"+(case when @oncall_team = '_All_' then '--' else '' end)+\"and alert_owner_team = @oncall_team\r\n\"+(case when @alert_id is null then '--' else '' end)+\"and a.id = @alert_id and a.id_part_no = @alert_id % 10\r\n\"+(case when @alert_key is null then '--' else '' end)+\"and a.alert_key = @alert_key\r\norder by id, id_part_no\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @server, @oncall_team, @alert_id, @alert_key;\r\n",
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server varchar(125);\r\ndeclare @oncall_team varchar(125);\r\ndeclare @alert_id bigint;\r\ndeclare @alert_key varchar(225);\r\n\r\nset @oncall_team = '${oncall_team}';\r\n\r\nset @server = case when ltrim(rtrim('$server_input')) <> '' then ltrim(rtrim('$server_input')) else null end;\r\nset @alert_id = case when ltrim(rtrim('$alert_id')) <> '' then ltrim(rtrim('$alert_id')) else null end;\r\nset @alert_key = case when ltrim(rtrim('$alert_key')) <> '' then ltrim(rtrim('$alert_key')) else null end;\r\n\r\nset @params = N'@server varchar(255), @oncall_team varchar(125), @alert_id bigint, @alert_key varchar(225)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\ndeclare @all_server_dashboard varchar(500);\r\ndeclare @core_health_panel varchar(500);\r\nselect @all_server_dashboard = p.param_value from dbo.sma_params p where p.param_key = 'GrafanaDashboardPortal';\r\nselect @core_health_panel = p.param_value from dbo.sma_params p where p.param_key = 'url_all_servers_core_health_metrics_dashboard_panel';\r\n\r\nselect\t/* $__dashboard */\r\n\t\t\t\ta.alert_key, created_date_utc, alert_owner_team, [state], severity, [log_header] = header,\r\n\t\t\t\t[last_log] = log_time_utc, logged_by, [log_details] = [description],\r\n\t\t\t\tsuppress_start_date_utc, suppress_end_date_utc, frequency_minutes, [alert_id] = a.id\r\n\t\t\t\t,[url] = case when a.alert_key in ('Alert-Cpu','Alert-AvailableMemory','Alert-DiskLatency')\r\n\t\t\t\t\t\tthen @core_health_panel\r\n\t\t\t\t\t\telse p.alert_data_url\r\n\t\t\t\t\t\tend\r\nfrom dbo.sma_alert a\r\ncross apply (\r\n\tselect\t\"+(case when @alert_id is not null or @alert_key is not null then '--' else '' end)+\"top 1\r\n\t\t\t*\r\n\tfrom dbo.sma_alert_history ah\r\n\twhere 1=1\r\n\tand ah.alert_id = a.id\r\n\tand ah.alert_id_part_no = a.id_part_no\r\n) ah\r\nleft join\r\n\t(\r\n\t\tselect\tp.param_key, p.param_value, \r\n\t\t\t\talert_data_url = p.param_value, \r\n\t\t\t\tparam_alert_key = case when param_key = 'url_all_servers_alert_history_dashboard_panel' then 'Alert-SqlErrorLog'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_alwayson_latency_dashboard_panel' then 'Alert-AgLatency'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_backups_ag_dbs_dashboard_panel' then 'Alert-AgDbBackupIssue'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_backups_nonag_dbs_dashboard_panel' then 'Alert-NonAgDbBackupIssue'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_core_health_metrics_dashboard_panel' then 'CoreHealthPanel'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_disk_utilization_dashboard_panel' then 'Alert-DiskSpace'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_login_expiry_dashboard_panel' then 'Alert-LoginExpiry'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_logspace_utilization_dashboard_panel' then 'Alert-LogSpace'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_offline_aliases_dashboard_panel' then 'Alert-OfflineServerAlias'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_offline_servers_dashboard_panel' then 'Alert-OfflineServer'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_sqlagent_service_dashboard_panel' then 'Alert-OfflineAgent'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_sqlmonitor_jobs_dashboard_panel' then 'Alert-SqlMonitorJobs'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_tempdb_utilization_dashboard_panel' then 'Alert-Tempdb'\r\n\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\tend\r\n\t\tfrom dbo.sma_params p where p.param_key like 'url_all_servers_%'\r\n\t) p on p.param_alert_key = a.alert_key\r\nwhere 1=1\r\nand a.state = 'Active'\r\n\"+(case when @oncall_team = '_All_' then '--' else '' end)+\"and alert_owner_team = @oncall_team\r\n\"+(case when @alert_id is null then '--' else '' end)+\"and a.id = @alert_id and a.id_part_no = @alert_id % 10\r\n\"+(case when @alert_key is null then '--' else '' end)+\"and a.alert_key = @alert_key\r\norder by id, id_part_no\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @server, @oncall_team, @alert_id, @alert_key;\r\n",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -816,24 +842,6 @@
               }
             },
             "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "server"
-                },
-                "properties": [
-                  {
-                    "id": "links",
-                    "value": [
-                      {
-                        "targetBlank": true,
-                        "title": "Individual Server Dashboard",
-                        "url": "d/distributed_live_dashboard?var-server=${__data.fields.server}"
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "matcher": {
                   "id": "byName",
@@ -990,6 +998,16 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "All Server Dashboard - Alert Metrics",
+                        "url": "d/${__data.fields.url}"
+                      }
+                    ]
                   }
                 ]
               },
@@ -1016,6 +1034,18 @@
                         }
                       ]
                     }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "url"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
                   }
                 ]
               }
@@ -1052,7 +1082,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server varchar(125);\r\ndeclare @oncall_team varchar(125);\r\ndeclare @alert_id bigint;\r\ndeclare @alert_key varchar(225);\r\n\r\nset @oncall_team = '${oncall_team}';\r\n\r\nset @server = case when ltrim(rtrim('$server_input')) <> '' then ltrim(rtrim('$server_input')) else null end;\r\nset @alert_id = case when ltrim(rtrim('$alert_id')) <> '' then ltrim(rtrim('$alert_id')) else null end;\r\nset @alert_key = case when ltrim(rtrim('$alert_key')) <> '' then ltrim(rtrim('$alert_key')) else null end;\r\n\r\nset @params = N'@server varchar(255), @oncall_team varchar(125), @alert_id bigint, @alert_key varchar(225)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect\talert_key, created_date_utc, alert_owner_team, [state], severity, [log_header] = header,\r\n\t\t\t\t[last_log] = log_time_utc, logged_by, [log_details] = [description],\r\n\t\t\t\tsuppress_start_date_utc, suppress_end_date_utc, frequency_minutes, [alert_id] = a.id\r\nfrom dbo.sma_alert a\r\ncross apply (\r\n\tselect\t\"+(case when @alert_id is not null or @alert_key is not null then '--' else '' end)+\"top 1\r\n\t\t\t*\r\n\tfrom dbo.sma_alert_history ah\r\n\twhere 1=1\r\n\tand ah.alert_id = a.id\r\n\tand ah.alert_id_part_no = a.id_part_no\r\n) ah\r\nwhere 1=1\r\nand a.state = 'Suppressed'\r\n\"+(case when @oncall_team = '_All_' then '--' else '' end)+\"and alert_owner_team = @oncall_team\r\n\"+(case when @alert_id is null then '--' else '' end)+\"and a.id = @alert_id and a.id_part_no = @alert_id % 10\r\n\"+(case when @alert_key is null then '--' else '' end)+\"and a.alert_key = @alert_key\r\norder by id, id_part_no\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @server, @oncall_team, @alert_id, @alert_key;\r\n",
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server varchar(125);\r\ndeclare @oncall_team varchar(125);\r\ndeclare @alert_id bigint;\r\ndeclare @alert_key varchar(225);\r\n\r\nset @oncall_team = '${oncall_team}';\r\n\r\nset @server = case when ltrim(rtrim('$server_input')) <> '' then ltrim(rtrim('$server_input')) else null end;\r\nset @alert_id = case when ltrim(rtrim('$alert_id')) <> '' then ltrim(rtrim('$alert_id')) else null end;\r\nset @alert_key = case when ltrim(rtrim('$alert_key')) <> '' then ltrim(rtrim('$alert_key')) else null end;\r\n\r\nset @params = N'@server varchar(255), @oncall_team varchar(125), @alert_id bigint, @alert_key varchar(225)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\ndeclare @all_server_dashboard varchar(500);\r\ndeclare @core_health_panel varchar(500);\r\nselect @all_server_dashboard = p.param_value from dbo.sma_params p where p.param_key = 'GrafanaDashboardPortal';\r\nselect @core_health_panel = p.param_value from dbo.sma_params p where p.param_key = 'url_all_servers_core_health_metrics_dashboard_panel';\r\n\r\nselect\t/* $__dashboard */\r\n\t\t\t\ta.alert_key, created_date_utc, alert_owner_team, [state], severity, [log_header] = header,\r\n\t\t\t\t[last_log] = log_time_utc, logged_by, [log_details] = [description],\r\n\t\t\t\tsuppress_start_date_utc, suppress_end_date_utc, frequency_minutes, [alert_id] = a.id\r\n\t\t\t\t,[url] = case when a.alert_key in ('Alert-Cpu','Alert-AvailableMemory','Alert-DiskLatency')\r\n\t\t\t\t\t\tthen @core_health_panel\r\n\t\t\t\t\t\telse p.alert_data_url\r\n\t\t\t\t\t\tend\r\nfrom dbo.sma_alert a\r\ncross apply (\r\n\tselect\t\"+(case when @alert_id is not null or @alert_key is not null then '--' else '' end)+\"top 1\r\n\t\t\t*\r\n\tfrom dbo.sma_alert_history ah\r\n\twhere 1=1\r\n\tand ah.alert_id = a.id\r\n\tand ah.alert_id_part_no = a.id_part_no\r\n) ah\r\nleft join\r\n\t(\r\n\t\tselect\tp.param_key, p.param_value, \r\n\t\t\t\talert_data_url = p.param_value, \r\n\t\t\t\tparam_alert_key = case when param_key = 'url_all_servers_alert_history_dashboard_panel' then 'Alert-SqlErrorLog'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_alwayson_latency_dashboard_panel' then 'Alert-AgLatency'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_backups_ag_dbs_dashboard_panel' then 'Alert-AgDbBackupIssue'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_backups_nonag_dbs_dashboard_panel' then 'Alert-NonAgDbBackupIssue'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_core_health_metrics_dashboard_panel' then 'CoreHealthPanel'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_disk_utilization_dashboard_panel' then 'Alert-DiskSpace'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_login_expiry_dashboard_panel' then 'Alert-LoginExpiry'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_logspace_utilization_dashboard_panel' then 'Alert-LogSpace'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_offline_aliases_dashboard_panel' then 'Alert-OfflineServerAlias'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_offline_servers_dashboard_panel' then 'Alert-OfflineServer'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_sqlagent_service_dashboard_panel' then 'Alert-OfflineAgent'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_sqlmonitor_jobs_dashboard_panel' then 'Alert-SqlMonitorJobs'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_tempdb_utilization_dashboard_panel' then 'Alert-Tempdb'\r\n\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\tend\r\n\t\tfrom dbo.sma_params p where p.param_key like 'url_all_servers_%'\r\n\t) p on p.param_alert_key = a.alert_key\r\nwhere 1=1\r\nand a.state = 'Suppressed'\r\n\"+(case when @oncall_team = '_All_' then '--' else '' end)+\"and alert_owner_team = @oncall_team\r\n\"+(case when @alert_id is null then '--' else '' end)+\"and a.id = @alert_id and a.id_part_no = @alert_id % 10\r\n\"+(case when @alert_key is null then '--' else '' end)+\"and a.alert_key = @alert_key\r\norder by id, id_part_no\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @server, @oncall_team, @alert_id, @alert_key;\r\n",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1299,6 +1329,16 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "All Server Dashboard - Alert Metrics",
+                        "url": "d/${__data.fields.url}"
+                      }
+                    ]
                   }
                 ]
               },
@@ -1361,7 +1401,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server varchar(125);\r\ndeclare @oncall_team varchar(125);\r\ndeclare @alert_id bigint;\r\ndeclare @alert_key varchar(225);\r\n\r\nset @oncall_team = '${oncall_team}';\r\n\r\nset @server = case when ltrim(rtrim('$server_input')) <> '' then ltrim(rtrim('$server_input')) else null end;\r\nset @alert_id = case when ltrim(rtrim('$alert_id')) <> '' then ltrim(rtrim('$alert_id')) else null end;\r\nset @alert_key = case when ltrim(rtrim('$alert_key')) <> '' then ltrim(rtrim('$alert_key')) else null end;\r\n\r\nset @params = N'@server varchar(255), @oncall_team varchar(125), @alert_id bigint, @alert_key varchar(225)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\n/* $__dashboard */\r\nselect\talert_key, created_date_utc, alert_owner_team, [state], severity, [log_header] = header,\r\n\t\t\t\t[last_log] = log_time_utc, logged_by, [log_details] = [description],\r\n\t\t\t\tsuppress_start_date_utc, suppress_end_date_utc, frequency_minutes, [alert_id] = a.id\r\nfrom dbo.sma_alert a\r\ncross apply (\r\n\tselect\t\"+(case when @alert_id is not null or @alert_key is not null then '--' else '' end)+\"top 1\r\n\t\t\t*\r\n\tfrom dbo.sma_alert_history ah\r\n\twhere 1=1\r\n\tand ah.alert_id = a.id\r\n\tand ah.alert_id_part_no = a.id_part_no\r\n) ah\r\nwhere 1=1\r\nand a.state = 'Cleared'\r\n\"+(case when @oncall_team = '_All_' then '--' else '' end)+\"and alert_owner_team = @oncall_team\r\n\"+(case when @alert_id is null then '--' else '' end)+\"and a.id = @alert_id and a.id_part_no = @alert_id % 10\r\n\"+(case when @alert_key is null then '--' else '' end)+\"and a.alert_key = @alert_key\r\norder by id, id_part_no\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @server, @oncall_team, @alert_id, @alert_key;\r\n",
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @server varchar(125);\r\ndeclare @oncall_team varchar(125);\r\ndeclare @alert_id bigint;\r\ndeclare @alert_key varchar(225);\r\n\r\nset @oncall_team = '${oncall_team}';\r\n\r\nset @server = case when ltrim(rtrim('$server_input')) <> '' then ltrim(rtrim('$server_input')) else null end;\r\nset @alert_id = case when ltrim(rtrim('$alert_id')) <> '' then ltrim(rtrim('$alert_id')) else null end;\r\nset @alert_key = case when ltrim(rtrim('$alert_key')) <> '' then ltrim(rtrim('$alert_key')) else null end;\r\n\r\nset @params = N'@server varchar(255), @oncall_team varchar(125), @alert_id bigint, @alert_key varchar(225)';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\ndeclare @all_server_dashboard varchar(500);\r\ndeclare @core_health_panel varchar(500);\r\nselect @all_server_dashboard = p.param_value from dbo.sma_params p where p.param_key = 'GrafanaDashboardPortal';\r\nselect @core_health_panel = p.param_value from dbo.sma_params p where p.param_key = 'url_all_servers_core_health_metrics_dashboard_panel';\r\n\r\nselect\t/* $__dashboard */\r\n\t\t\t\talert_key, created_date_utc, alert_owner_team, [state], severity, [log_header] = header,\r\n\t\t\t\t[last_log] = log_time_utc, logged_by, [log_details] = [description],\r\n\t\t\t\tsuppress_start_date_utc, suppress_end_date_utc, frequency_minutes, [alert_id] = a.id\r\n\t\t\t\t,[url] = case when a.alert_key in ('Alert-Cpu','Alert-AvailableMemory','Alert-DiskLatency')\r\n\t\t\t\t\t\tthen @core_health_panel\r\n\t\t\t\t\t\telse p.alert_data_url\r\n\t\t\t\t\t\tend\r\nfrom dbo.sma_alert a\r\ncross apply (\r\n\tselect\t\"+(case when @alert_id is not null or @alert_key is not null then '--' else '' end)+\"top 1\r\n\t\t\t*\r\n\tfrom dbo.sma_alert_history ah\r\n\twhere 1=1\r\n\tand ah.alert_id = a.id\r\n\tand ah.alert_id_part_no = a.id_part_no\r\n) ah\r\nleft join\r\n\t(\r\n\t\tselect\tp.param_key, p.param_value, \r\n\t\t\t\talert_data_url = p.param_value, \r\n\t\t\t\tparam_alert_key = case when param_key = 'url_all_servers_alert_history_dashboard_panel' then 'Alert-SqlErrorLog'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_alwayson_latency_dashboard_panel' then 'Alert-AgLatency'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_backups_ag_dbs_dashboard_panel' then 'Alert-AgDbBackupIssue'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_backups_nonag_dbs_dashboard_panel' then 'Alert-NonAgDbBackupIssue'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_core_health_metrics_dashboard_panel' then 'CoreHealthPanel'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_disk_utilization_dashboard_panel' then 'Alert-DiskSpace'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_login_expiry_dashboard_panel' then 'Alert-LoginExpiry'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_logspace_utilization_dashboard_panel' then 'Alert-LogSpace'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_offline_aliases_dashboard_panel' then 'Alert-OfflineServerAlias'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_offline_servers_dashboard_panel' then 'Alert-OfflineServer'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_sqlagent_service_dashboard_panel' then 'Alert-OfflineAgent'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_sqlmonitor_jobs_dashboard_panel' then 'Alert-SqlMonitorJobs'\r\n\t\t\t\t\t\t\t\twhen param_key = 'url_all_servers_tempdb_utilization_dashboard_panel' then 'Alert-Tempdb'\r\n\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\tend\r\n\t\tfrom dbo.sma_params p where p.param_key like 'url_all_servers_%'\r\n\t) p on p.param_alert_key = a.alert_key\r\nwhere 1=1\r\nand a.state = 'Cleared'\r\n\"+(case when @oncall_team = '_All_' then '--' else '' end)+\"and alert_owner_team = @oncall_team\r\n\"+(case when @alert_id is null then '--' else '' end)+\"and a.id = @alert_id and a.id_part_no = @alert_id % 10\r\n\"+(case when @alert_key is null then '--' else '' end)+\"and a.alert_key = @alert_key\r\norder by id, id_part_no\r\n\";\r\nset quoted_identifier off;\r\n\r\nexec dbo.sp_executesql @sql, @params, @server, @oncall_team, @alert_id, @alert_key;\r\n",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1390,6 +1430,7 @@
       "type": "row"
     }
   ],
+  "refresh": "5s",
   "schemaVersion": 39,
   "tags": [
     "mssql",
@@ -1444,7 +1485,7 @@
       {
         "allValue": "",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "_All_",
           "value": "_All_"
         },
@@ -1468,7 +1509,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -1488,7 +1529,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -1516,6 +1557,6 @@
   "timezone": "browser",
   "title": "SQLMonitor-Alerts",
   "uid": "alerts",
-  "version": 22,
+  "version": 25,
   "weekStart": ""
 }
