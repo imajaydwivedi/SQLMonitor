@@ -6,7 +6,7 @@
 USE master
 GO
 
-CREATE CERTIFICATE credential_manager_cert ENCRYPTION BY PASSWORD = 'dbo.credential_manager' -- Save this password
+CREATE CERTIFICATE credential_manager_cert ENCRYPTION BY PASSWORD = 'credential_manager_strong_password' -- Save this password
 	WITH EXPIRY_DATE = '2099-01-01', SUBJECT = 'Credential Manager'
 GO
 
@@ -16,7 +16,7 @@ BACKUP CERTIFICATE credential_manager_cert TO
 	FILE = 'D:\MSSQL15.MSSQLSERVER\MSSQL\Log\credential_manager_cert.cer'
 	WITH PRIVATE KEY (
 			FILE = 'D:\MSSQL15.MSSQLSERVER\MSSQL\Log\credential_manager_cert_WithKey.pvk', 
-			ENCRYPTION BY PASSWORD = 'dbo.credential_manager', DECRYPTION BY PASSWORD = 'dbo.credential_manager'
+			ENCRYPTION BY PASSWORD = 'credential_manager_strong_password', DECRYPTION BY PASSWORD = 'credential_manager_strong_password'
 		);
 GO
 
@@ -41,8 +41,8 @@ go
 CREATE CERTIFICATE credential_manager_cert FROM 
 	FILE = 'D:\MSSQL15.MSSQLSERVER\MSSQL\Log\credential_manager_cert.cer'
 	WITH PRIVATE KEY (FILE = 'D:\MSSQL15.MSSQLSERVER\MSSQL\Log\credential_manager_cert_WithKey.pvk',
-					  ENCRYPTION BY PASSWORD = 'dbo.credential_manager',
-					  DECRYPTION BY PASSWORD = 'dbo.credential_manager'
+					  ENCRYPTION BY PASSWORD = 'credential_manager_strong_password',
+					  DECRYPTION BY PASSWORD = 'credential_manager_strong_password'
 					  );
 GO
 
@@ -55,7 +55,7 @@ GO
 USE master
 go
 
-ADD SIGNATURE TO [dbo].[sp_WhoIsActive] BY CERTIFICATE credential_manager_cert WITH PASSWORD = 'dbo.credential_manager'
+ADD SIGNATURE TO [dbo].[sp_WhoIsActive] BY CERTIFICATE credential_manager_cert WITH PASSWORD = 'credential_manager_strong_password'
 GO
 GRANT EXECUTE ON OBJECT::[dbo].[sp_WhoIsActive] TO [public]
 GO
@@ -68,25 +68,25 @@ GRANT CONNECT TO [guest]
 GO
 
 ADD SIGNATURE TO [dbo].[usp_get_credential] BY CERTIFICATE credential_manager_cert 
-	WITH PASSWORD = 'dbo.credential_manager'
+	WITH PASSWORD = 'credential_manager_strong_password'
 GO
 GRANT EXECUTE ON OBJECT::[dbo].[usp_get_credential] TO [public]
 GO
 
 ADD SIGNATURE TO [dbo].[usp_add_credential] BY CERTIFICATE credential_manager_cert 
-	WITH PASSWORD = 'dbo.credential_manager'
+	WITH PASSWORD = 'credential_manager_strong_password'
 GO
 GRANT EXECUTE ON OBJECT::[dbo].[usp_add_credential] TO [public]
 GO
 
 ADD SIGNATURE TO [dbo].[usp_delete_credential] BY CERTIFICATE credential_manager_cert 
-	WITH PASSWORD = 'dbo.credential_manager'
+	WITH PASSWORD = 'credential_manager_strong_password'
 GO
 GRANT EXECUTE ON OBJECT::[dbo].[usp_delete_credential] TO [public]
 GO
 
 ADD SIGNATURE TO [dbo].[usp_update_credential] BY CERTIFICATE credential_manager_cert 
-	WITH PASSWORD = 'dbo.credential_manager'
+	WITH PASSWORD = 'credential_manager_strong_password'
 GO
 GRANT EXECUTE ON OBJECT::[dbo].[usp_update_credential] TO [public]
 GO
