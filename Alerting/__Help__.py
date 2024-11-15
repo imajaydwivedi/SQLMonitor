@@ -54,3 +54,45 @@ https://jsonformatter.curiousconcept.com/#
 
 # How to Deploy a Flask App to a Linux Server
 https://www.youtube.com/watch?v=YFBRVJPhDGY
+
+
+# Deploy First Flask App on IIS
+  # https://www.youtube.com/watch?v=Q4AaFNX6LBY
+  # Virtual Env in windows
+cd "E:\Github\Flask\FirstFlaskWebApp"
+
+E:\Github\Flask\FirstFlaskWebApp>
+python -m venv FlaskWebVenv
+
+FlaskWebVenv\Scripts\activate.bat
+
+(FlaskWebVenv) E:\Github\Flask\FirstFlaskWebApp>
+python flaskIIS.py
+
+pip install flask
+
+pip install wfastcgi
+
+# By default, [FastCGIModule] is not enabled in IIS. To enable, following instructions from chat GPT
+  # Search for text "how to enable FastCgiModule in IIS"
+  Server Manager > Add Roles and Features > Server Roles > Web Server (IIS) > Web Server > Application Development > CGI
+
+# Go get FastCGI executable path, go to app directory. Activate VEnv. Enable wfastcgi. As output, we get path
+cd "E:\Github\Flask\FirstFlaskWebApp"
+wfastcgi-enable
+
+  (FlaskWebVenv) E:\Github\Flask\FirstFlaskWebApp>wfastcgi-enable
+  Applied configuration changes to section "system.webServer/fastCgi" for "MACHINE/WEBROOT/APPHOST" at configuration commit path "MACHINE/WEBROOT/APPHOST"
+  "E:\Github\Flask\FirstFlaskWebApp\FlaskWebVenv\Scripts\python.exe|E:\Github\Flask\FirstFlaskWebApp\FlaskWebVenv\Lib\site-packages\wfastcgi.py" can now be used as a FastCGI script processor
+
+  (FlaskWebVenv) E:\Github\Flask\FirstFlaskWebApp>
+
+
+
+
+
+
+
+
+
+
