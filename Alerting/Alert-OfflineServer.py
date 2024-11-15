@@ -2,6 +2,7 @@ import pyodbc
 import argparse
 from datetime import datetime
 import os
+import psutil
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
@@ -23,6 +24,7 @@ parser.add_argument("--alert_job_name", type=str, required=False, action="store"
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 #parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
+parser.add_argument("--log_file", type=str, required=False, action="store", default="", help="Log file path if logging should be done in files.")
 
 args=parser.parse_args()
 
@@ -40,9 +42,13 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     alert_owner_team = args.alert_owner_team
     #frequency_minutes = args.frequency_minutes
     verbose = args.verbose
+    log_file = args.log_file
 
 # create logger
-logger = get_script_logger(alert_job_name)
+if log_file != "":
+    logger = get_script_logger(alert_job_name, log_file)
+else:
+    logger = get_script_logger(alert_job_name)
 
 # Log begging
 logger.info('***** BEGIN:  %s' % script_name)

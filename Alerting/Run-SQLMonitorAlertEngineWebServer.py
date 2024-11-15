@@ -88,7 +88,7 @@ else:
     print(f"Webserver is running in production mode.\n")
 
 # Log begging
-logger.info('***** BEGIN:  %s' % script_name)
+logger.info(f"\n\n***** BEGIN:  {script_name}")
 
 # ssl_certificate
 logger.info(f"script_parent_directory = '{script_parent_directory}'")
