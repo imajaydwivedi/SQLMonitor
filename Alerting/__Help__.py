@@ -16,6 +16,10 @@ pip install flask
 # module to work with slack events
 pip install slackeventsapi
 
+# Scheduler
+https://stackoverflow.com/a/38501429/4449743
+pip install apscheduler
+
 # ngrok for testing web server
 https://ngrok.com/download
 
@@ -47,10 +51,6 @@ c:\Python312\Scripts>flask-app-env\Scripts\activate.bat
 
 # JSON Formatter
 https://jsonformatter.curiousconcept.com/#
-
-# Scheduler
-https://stackoverflow.com/a/38501429/4449743
-pip install apscheduler
 
 # How to Deploy a Flask App to a Linux Server
 https://www.youtube.com/watch?v=YFBRVJPhDGY
