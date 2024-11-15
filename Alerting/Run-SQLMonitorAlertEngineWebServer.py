@@ -341,7 +341,7 @@ select [is_found] = isnull(@_rows_affected,0);
     else:
         logger.info(f"No cleared alert found.")
 
-def call_15_minute_job_script():
+def call_5_minute_job_script():
     logger.info(f"Inside call_15_minute_job_script()")
 
     alert_script_path = os.path.join(script_directory, "Alert-DiskSpace.py")
@@ -356,7 +356,7 @@ def call_15_minute_job_script():
     alert_script_path = os.path.join(script_directory, "Alert-AgDbBackupIssue.py")
     subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
 
-def call_10_minute_job_script():
+def call_2_minute_job_script():
     logger.info(f"Inside call_10_minute_job_script()")
 
     alert_script_path = os.path.join(script_directory, "Alert-Cpu.py")
@@ -374,7 +374,7 @@ def call_10_minute_job_script():
     alert_script_path = os.path.join(script_directory, "Alert-AgLatency.py")
     subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
 
-def call_5_minute_job_script():
+def call_1_minute_job_script():
     logger.info(f"Inside call_5_minute_job_script()")
     auto_resolve_cleared_alerts()
 
@@ -398,9 +398,9 @@ if run_scheduled_jobs:
     logger.info(f"Using WebServer for running Alert Jobs as run_scheduled_jobs is True.")
     scheduler = BackgroundScheduler()
 
-    scheduler.add_job(func=call_15_minute_job_script, trigger="interval", minutes=15)
-    scheduler.add_job(func=call_10_minute_job_script, trigger="interval", minutes=10)
     scheduler.add_job(func=call_5_minute_job_script, trigger="interval", minutes=5)
+    scheduler.add_job(func=call_2_minute_job_script, trigger="interval", minutes=2)
+    scheduler.add_job(func=call_1_minute_job_script, trigger="interval", minutes=1)
 
     scheduler.start()
 
