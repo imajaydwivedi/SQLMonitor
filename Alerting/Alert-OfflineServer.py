@@ -46,9 +46,13 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
 
 # create logger
 if log_file != "":
-    logger = get_script_logger(alert_job_name, log_file)
+    logger = get_script_logger(alert_job_name, log_file=log_file)
+    if verbose:
+        print(f"[{script_name}] => Logging to file '{log_file}'..")
 else:
     logger = get_script_logger(alert_job_name)
+    if verbose:
+        print(f"[{script_name}] => Logging to console..")
 
 # Log begging
 logger.info('***** BEGIN:  %s' % script_name)
