@@ -15,7 +15,6 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 from slackeventsapi import SlackEventAdapter
 from waitress import serve
-import ssl
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 #import logging
 import psutil

@@ -43,8 +43,11 @@ pip install wfastcgi
 # psutil for identifying caller
 pip install psutil
 
-# pure python web server & ssl certificate
-pip install waitress pyopenssl
+# pure python web server
+pip install waitress
+
+# for SSL Certificate, use NGinx Proxy
+  # https://github.com/imajaydwivedi/SqlServerLab/blob/dev/Other-Scripts/etc_nginx_nginx.conf
 
 # ngrok for testing web server
 https://ngrok.com/download
