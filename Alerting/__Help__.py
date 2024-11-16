@@ -13,6 +13,9 @@ AlertEngineVenv\Scripts\activate.bat
 (AlertEngineVenv) E:\Github\SQLMonitor\Alerting>
 python E:\GitHub\SQLMonitor\Alerting\Run-SQLMonitorAlertEngineWebServer.py
 
+# To install module for all users
+pip install slackeventsapi --upgrade --target "C:\Program Files\Python312\Lib\site-packages"
+
 # pyodbc module for SQL Connection
 pip install pyodbc
 
@@ -39,6 +42,9 @@ pip install wfastcgi
 
 # psutil for identifying caller
 pip install psutil
+
+# pure python web server
+pip install waitress
 
 # ngrok for testing web server
 https://ngrok.com/download

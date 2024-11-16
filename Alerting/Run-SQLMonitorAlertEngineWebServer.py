@@ -1,17 +1,20 @@
-import pyodbc
+#import pyodbc
 import os
 import subprocess
+#from threading import Thread
 import argparse
 import json
 from datetime import datetime
-import time
+#import time
+import hashlib
+import hmac
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask, Response, request, jsonify, redirect, make_response
+from flask import Flask, Response, request, jsonify, redirect, make_response, abort
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 from slackeventsapi import SlackEventAdapter
-#from waitress import serve
+from waitress import serve
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 #import logging
 import psutil
@@ -134,7 +137,27 @@ if 'Get Bot OAuth Token' == 'Get Bot OAuth Token':
 app = Flask(__name__)
 
 # Slack Event Adapter
-slack_event_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
+SLACK_SIGNING_SECRET = dba_slack_bot_signing_secret
+slack_events_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
+
+def verify_slack_request(req):
+    timestamp = req.headers.get('X-Slack-Request-Timestamp')
+    sig_basestring = f"v0:{timestamp}:{req.get_data(as_text=True)}"
+    my_signature = (
+        "v0=" +
+        hmac.new(SLACK_SIGNING_SECRET.encode(), sig_basestring.encode(), hashlib.sha256).hexdigest()
+    )
+    slack_signature = req.headers.get('X-Slack-Signature')
+    if not hmac.compare_digest(my_signature, slack_signature):
+        abort(403, "Invalid Slack signature")
+
+# Create an event listener for "reaction_added" events and print the emoji name
+'''
+@slack_events_adapter.on("reaction_added")
+def reaction_added(event_data):
+  emoji = event_data["event"]["reaction"]
+  print(emoji)
+'''
 
 '''
 @app.route('/slack/events', methods=['GET','POST'])
@@ -163,16 +186,18 @@ def slack_event_handler():
     # Parse the incoming JSON payload
     data = request.get_json()
 
+    verify_slack_request(request)  # Ensure request is valid
+
     # Handle Slack's challenge verification
     if data.get('type') == 'url_verification':
         # Respond with the challenge token
         return jsonify({'challenge': data.get('challenge')})
 
     # Handle other Slack events (e.g., message events)
-    event = data.get('event')
-    if event:
+    #event = data.get('event')
+    #if event:
         # Process event data (e.g., log or respond to the event)
-        print(f"Received event: {event}")
+        #print(f"Received event: {event}")
 
     # Return 200 OK to acknowledge the event
     #return '', 200
@@ -206,8 +231,8 @@ if log_server_startup:
               #text = f"{datetime.now()} - Starting SQLMonitor Web Server.."
           )
 
-
-@slack_event_adapter.on('message')
+'''
+@slack_events_adapter.on('message')
 def message(payload):
     logger.info(f"Read slack message & echo back..")
     event = payload.get('event', {})
@@ -232,6 +257,7 @@ def message(payload):
               ]
               #text = f"Sure @{user_name}! Will come back with Active Alert!"
           )
+'''
 
 # Listen to slack commands
 slack_command = '/alerts'
@@ -300,9 +326,9 @@ def interactive_action():
     #alert_obj.slack_ts_value = action_ts
     alert_obj.take_required_action()
 
+    logger.info(f"{action_to_take} {alert_key} with id {alert_id}, and respond back on {action_ts}")
     if verbose:
         print(form_json)
-        print(f"{action_to_take} {alert_key} with id {alert_id}, and respond back on {action_ts}")
 
     # Check to see what the user's selection was and update the message
     #select = form_json["action"][0]
@@ -370,54 +396,110 @@ select [is_found] = isnull(@_rows_affected,0);
 def call_5_minute_job_script():
     logger.info(f"Inside call_5_minute_job_script()")
 
-    alert_script_path = os.path.join(script_directory, "Alert-DiskSpace.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-DiskSpace.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-SqlMonitorJobs.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-SqlMonitorJobs.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-NonAgDbBackupIssue.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-NonAgDbBackupIssue.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-AgDbBackupIssue.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-AgDbBackupIssue.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
 def call_2_minute_job_script():
     logger.info(f"Inside call_2_minute_job_script()")
 
-    alert_script_path = os.path.join(script_directory, "Alert-Cpu.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-Cpu.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-SqlBlocking.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-SqlBlocking.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-AvailableMemory.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-AvailableMemory.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-DiskLatency.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-DiskLatency.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-AgLatency.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-AgLatency.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
 def call_1_minute_job_script():
     logger.info(f"Inside call_1_minute_job_script()")
     auto_resolve_cleared_alerts()
 
-    alert_script_path = os.path.join(script_directory, "Alert-MemoryGrantsPending.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-MemoryGrantsPending.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-OfflineAgent.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-OfflineAgent.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-OfflineServer.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-OfflineServer.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-LogSpace.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-LogSpace.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-Tempdb.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-Tempdb.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
 # execute scheduler
 if run_scheduled_jobs:
@@ -438,8 +520,8 @@ if __name__ == "__main__":
     #app.run()
     if has_ssl_certificate:
         context = (ssl_certificate, ssl_certificate_key)
-        app.run(host='0.0.0.0', debug=debug, ssl_context=context, port=5000)
-        #serve(app, host='0.0.0.0', port=5000, threads=10, ssl_context=context)
+        #app.run(host='0.0.0.0', debug=debug, ssl_context=context, port=5000)
+        serve(app, host='0.0.0.0', port=5000, threads=20, ssl_context=context)
     else:
-        app.run(host='0.0.0.0', debug=debug, port=5000)
-        #serve(app, host='0.0.0.0', port=5000, threads=10)
+        #app.run(host='0.0.0.0', debug=debug, port=5000)
+        serve(app, host='0.0.0.0', port=5000, threads=20)
