@@ -181,9 +181,10 @@ def slack_events_handler():
     #return "OK", 200
 '''
 
-
+'''
 @app.route('/slack/events', methods=['POST'])
 def slack_event_handler():
+    logger.info(f"Reached to /slack/events.")
     # Parse the incoming JSON payload
     data = request.get_json()
 
@@ -203,6 +204,7 @@ def slack_event_handler():
     # Return 200 OK to acknowledge the event
     #return '', 200
     return Response(f"Reached to /slack/events."), 200
+'''
 
 
 # Send Test Slack Message
