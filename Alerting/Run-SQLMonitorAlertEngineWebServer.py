@@ -5,9 +5,10 @@ import subprocess
 import argparse
 import json
 from datetime import datetime
-#import time
+import time
 import hashlib
 import hmac
+import hashlib
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, Response, request, jsonify, redirect, make_response, abort
@@ -142,15 +143,33 @@ SLACK_SIGNING_SECRET = dba_slack_bot_signing_secret
 slack_events_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
 
 def verify_slack_request(req):
-    timestamp = req.headers.get('X-Slack-Request-Timestamp')
-    sig_basestring = f"v0:{timestamp}:{req.get_data(as_text=True)}"
-    my_signature = (
-        "v0=" +
-        hmac.new(SLACK_SIGNING_SECRET.encode(), sig_basestring.encode(), hashlib.sha256).hexdigest()
-    )
-    slack_signature = req.headers.get('X-Slack-Signature')
-    if not hmac.compare_digest(my_signature, slack_signature):
-        abort(403, "Invalid Slack signature")
+    # Get headers and request body
+    timestamp = req.headers.get("X-Slack-Request-Timestamp")
+    slack_signature = req.headers.get("X-Slack-Signature")
+    body = req.get_data(as_text=True)
+
+    # Prevent replay attacks by checking timestamp
+    if abs(time.time() - int(timestamp)) > 300:
+        return False
+
+    # Create the basestring
+    basestring = f"v0:{timestamp}:{body}"
+
+    # Generate the signature using the signing secret
+    my_signature = "v0=" + hmac.new(
+        key=SLACK_SIGNING_SECRET.encode(),
+        msg=basestring.encode(),
+        digestmod=hashlib.sha256
+    ).hexdigest()
+
+    # Compare the signatures
+    return hmac.compare_digest(my_signature, slack_signature)
+
+
+@app.route("/verify", methods=["GET","POST"])
+def verify_webserver():
+    return "Inside /verify", 200
+
 
 # Create an event listener for "reaction_added" events and print the emoji name
 '''
@@ -181,10 +200,10 @@ def slack_events_handler():
     #return "OK", 200
 '''
 
-'''
 @app.route('/slack/events', methods=['POST'])
 def slack_event_handler():
     logger.info(f"Reached to /slack/events.")
+
     # Parse the incoming JSON payload
     data = request.get_json()
 
@@ -195,16 +214,7 @@ def slack_event_handler():
         # Respond with the challenge token
         return jsonify({'challenge': data.get('challenge')})
 
-    # Handle other Slack events (e.g., message events)
-    #event = data.get('event')
-    #if event:
-        # Process event data (e.g., log or respond to the event)
-        #print(f"Received event: {event}")
-
-    # Return 200 OK to acknowledge the event
-    #return '', 200
     return Response(f"Reached to /slack/events."), 200
-'''
 
 
 # Send Test Slack Message
