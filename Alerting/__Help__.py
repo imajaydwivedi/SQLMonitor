@@ -43,8 +43,8 @@ pip install wfastcgi
 # psutil for identifying caller
 pip install psutil
 
-# pure python web server
-pip install waitress
+# pure python web server & ssl certificate
+pip install waitress pyopenssl
 
 # ngrok for testing web server
 https://ngrok.com/download
