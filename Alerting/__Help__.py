@@ -53,16 +53,16 @@ pip install waitress
 https://ngrok.com/download
 
 # personal
-ngrok http --url=gratefully-easy-ewe.ngrok-free.app 5000
+ngrok http --url=gratefully-easy-ewe.ngrok-free.app 80
 Website -> https://gratefully-easy-ewe.ngrok-free.app/
 
 # sql agent
-ngrok http --url=skilled-externally-redfish.ngrok-free.app 5000
+ngrok http --url=skilled-externally-redfish.ngrok-free.app 80
 
 # Slack evnets via Personal Account
 https://api.slack.com/apps/A04LG3JUY4W/event-subscriptions?
   https://gratefully-easy-ewe.ngrok-free.app/slack/events
-  https://sqlmonitor.ajaydwivedi.com:5000/slack/events
+  https://sqlmonitor.ajaydwivedi.com/slack/events
 
 https://api.slack.com/apps/A04LG3JUY4W/interactive-messages?
   https://gratefully-easy-ewe.ngrok-free.app/slack/interactive-endpoint
@@ -121,7 +121,7 @@ ngrok config add-authtoken somegarbagevalueforreplacementofauthtoken
 
 #In task manager, create a task -
 Program -> "C:\Program Files\Ngrok\ngrok.exe"
-Argument -> http --url=gratefully-easy-ewe.ngrok-free.app 5000
+Argument -> http --url=gratefully-easy-ewe.ngrok-free.app 80
 
 Triggers -> At startup, Daily every 1 hour
 

@@ -40,7 +40,7 @@ parser.add_argument("--alert_name", type=str, required=False, action="store", de
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Run-SQLMonitorAlertEngineWebServer", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 parser.add_argument("--frequency_multiplier", type=int, required=False, action="store", default=4, help="Alert resolve threshold minutes = frequency_multiplier x alert frequency_minutes")
-parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=True, help="Checks for SSL certificate if enabled")
+parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=False, help="Checks for SSL certificate if enabled")
 parser.add_argument("--use_waitress_server", type=bool, required=False, action="store", default=True, help="Checks for SSL certificate if enabled")
 #parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra verbose messages when enabled")
@@ -520,13 +520,13 @@ if __name__ == "__main__":
 
     if args.use_waitress_server:
         logger.info(f"Running waitress web server.")
-        serve(app, host='0.0.0.0', port=5000, threads=20)
+        serve(app, host='0.0.0.0', port=80, threads=20)
     else:
         if has_ssl_certificate:
             logger.info(f"Running flask web server with SSL Certificate.")
             context = (ssl_certificate, ssl_certificate_key)
-            app.run(host='0.0.0.0', debug=debug, ssl_context=context, port=5000)
+            app.run(host='0.0.0.0', debug=debug, ssl_context=context, port=443)
         else:
             logger.info(f"Running flask web server without Certificate.")
-            app.run(host='0.0.0.0', debug=debug, port=5000)
+            app.run(host='0.0.0.0', debug=debug, port=80)
 
