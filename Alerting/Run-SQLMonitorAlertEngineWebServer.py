@@ -49,7 +49,7 @@ parser.add_argument("--verbose", type=bool, required=False, action="store", defa
 parser.add_argument("--debug", type=bool, required=False, action="store", default=False, help="Run web server in debug mode")
 parser.add_argument("--log_server_startup", type=bool, required=False, action="store", default=False, help="Log server startup message in Slack Channel")
 parser.add_argument("--echo_test", type=bool, required=False, action="store", default=False, help="Enable echo test")
-parser.add_argument("--run_scheduled_jobs", type=bool, required=False, action="store", default=True, help="Enable echo test")
+parser.add_argument("--run_scheduled_jobs", type=bool, required=False, action="store", default=False, help="Enable echo test")
 
 
 
@@ -143,19 +143,22 @@ SLACK_SIGNING_SECRET = dba_slack_bot_signing_secret
 slack_events_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
 
 def verify_slack_request(req):
-    # Get headers and request body
-    timestamp = req.headers.get("X-Slack-Request-Timestamp")
-    slack_signature = req.headers.get("X-Slack-Signature")
+    print(req)
+    #timestamp = req.headers.get("X-Slack-Request-Timestamp")
+    timestamp = req.headers['X-Slack-Request-Timestamp']
+    if timestamp is None:
+        timestamp = time.time() - 2
+    #slack_signature = req.headers.get("X-Slack-Signature")
+    slack_signature = req.headers['X-Slack-Signature']
     body = req.get_data(as_text=True)
 
-    # Prevent replay attacks by checking timestamp
+    # Check if the request timestamp is within 5 minutes of the current time
     if abs(time.time() - int(timestamp)) > 300:
-        return False
+    #if absolute_value(time.time() - timestamp) > 60 * 5:
+        return False, "Invalid request timestamp"
 
-    # Create the basestring
+    # Create the basestring to verify the signature
     basestring = f"v0:{timestamp}:{body}"
-
-    # Generate the signature using the signing secret
     my_signature = "v0=" + hmac.new(
         key=SLACK_SIGNING_SECRET.encode(),
         msg=basestring.encode(),
@@ -163,7 +166,22 @@ def verify_slack_request(req):
     ).hexdigest()
 
     # Compare the signatures
-    return hmac.compare_digest(my_signature, slack_signature)
+    if not hmac.compare_digest(my_signature, slack_signature):
+        return False, "Invalid signature"
+
+    return True, None
+
+@app.route("/slack/events", methods=["POST"])
+def slack_events():
+    is_valid, error = verify_slack_request(request)
+    if not is_valid:
+        return jsonify({"error": error}), 400
+
+    data = request.json
+    if "challenge" in data:
+        return jsonify({"challenge": data["challenge"]})
+
+    return "", 200
 
 
 @app.route("/verify", methods=["GET","POST"])
@@ -200,6 +218,7 @@ def slack_events_handler():
     #return "OK", 200
 '''
 
+'''
 @app.route('/slack/events', methods=['POST'])
 def slack_event_handler():
     logger.info(f"Reached to /slack/events.")
@@ -215,7 +234,7 @@ def slack_event_handler():
         return jsonify({'challenge': data.get('challenge')})
 
     return Response(f"Reached to /slack/events."), 200
-
+'''
 
 # Send Test Slack Message
 logger.info(f"Create slack WebClient..")

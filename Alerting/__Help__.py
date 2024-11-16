@@ -126,6 +126,13 @@ Argument -> http --url=gratefully-easy-ewe.ngrok-free.app 80
 Triggers -> At startup, Daily every 1 hour
 
 
+# For slack verification
+curl -X POST https://sqlmonitor.ajaydwivedi.com/slack/events -d '{"type": "url_verification", "challenge": "test"}' -H "Content-Type: application/json"
+
+curl -X POST https://sqlmonitor.ajaydwivedi.com/slack/events \
+    -H "Content-Type: application/json" \
+    -d '{"token": "Jhj5dZrVaK7ZwHHjRyZWjbDl", "type": "url_verification", "challenge": "3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P"}'
+
 
 
 
