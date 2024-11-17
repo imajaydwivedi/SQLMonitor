@@ -41,6 +41,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-DDLs", "Work-DDLs\Work
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Volatile", "Volatile\Volatile.ssmssqlproj", "{F3E4D04A-F293-49FF-8A4B-2A8931F9CA7F}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Private", "Private\Private.ssmssqlproj", "{E7A8BAFA-E3DE-4E05-88B0-0C993FDDE9DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -65,6 +67,7 @@ Global
 		{B144CA7D-0D76-483A-8B34-7DE7617B21B5}.Default|Default.ActiveCfg = Default
 		{2BFAB0E9-5F6A-4E18-A5A9-75ECC0BDAAA0}.Default|Default.ActiveCfg = Default
 		{F3E4D04A-F293-49FF-8A4B-2A8931F9CA7F}.Default|Default.ActiveCfg = Default
+		{E7A8BAFA-E3DE-4E05-88B0-0C993FDDE9DE}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
