@@ -78,11 +78,16 @@ if os.name == 'nt':
 else:
     path_separator = '/'
 
-# create logger
+# Identify caller
 parent_process = psutil.Process().parent()
-parent_process_name = parent_process.name()
-print(f"\nScript '{script_name}' called by '{parent_process_name}' (PID: {parent_process.pid})")
+if parent_process is not None:
+    parent_process_name = parent_process.name()
+    print(f"\nScript '{script_name}' called by '{parent_process_name}' (PID: {parent_process.pid})")
+else:
+    parent_process_name = 'wsgi'
+    print(f"\nScript '{script_name}' is being called by wsgi.")
 
+# create logger
 # if web server run manually for testing, then log to console
 log_to_file:bool = False
 if parent_process_name in ['powershell_ise.exe', 'powershell.exe', 'pwsh.exe']:
