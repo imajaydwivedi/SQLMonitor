@@ -140,14 +140,8 @@ https://medium.com/developer-student-clubs-tiet/how-to-build-your-first-slack-bo
 SQLMonitor Bot -> https://api.slack.com/apps/A04LG3JUY4W/event-subscriptions?
 
 set SLACK_BOT_TOKEN=YOUR-BOT-TOKEN-HERE
-set SLACK_BOT_TOKEN=xoxb-487535517683-4702777428578-Uq65JsWjPqoto7PfgQTyTJz3
-
 export SLACK_SIGNING_SECRET=your-slack-signing-secret-here
-export SLACK_SIGNING_SECRET=9208d8cbed18aca43032c0f8e478066b
-
 SLACK_VERFIFICATION_TOKEN=your-slack-verification-token
-SLACK_VERFIFICATION_TOKEN=Wp82qCtqSocMKoEU816U92fq
-
 
 
 
