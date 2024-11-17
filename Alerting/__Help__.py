@@ -46,6 +46,15 @@ pip install psutil
 # pure python web server
 pip install waitress
 
+# Handling Packages => requirements.txt
+  # Generate
+pip freeze > requirements.txt
+
+  # Use
+pip install -r requirements.txt
+
+
+
 # for SSL Certificate, use NGinx Proxy
   # https://github.com/imajaydwivedi/SqlServerLab/blob/dev/Other-Scripts/etc_nginx_nginx.conf
 
@@ -155,7 +164,9 @@ Resolution =>
 Add the slack bot @SQLMonitor into slack channel #sqlmonitor-alert.
 Just tag @SQLMonitor in #sqlmontor-alert channel. It would pop up asking whether you want to add SQLMonitor to this channel. Say Yes.
 
+/home/ajaydwivedi/mysite/flask_app.py
 
+ajaydwivedi.pythonanywhere.com
 
 
 
