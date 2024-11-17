@@ -140,11 +140,20 @@ https://medium.com/developer-student-clubs-tiet/how-to-build-your-first-slack-bo
 SQLMonitor Bot -> https://api.slack.com/apps/A04LG3JUY4W/event-subscriptions?
 
 set SLACK_BOT_TOKEN=YOUR-BOT-TOKEN-HERE
-export SLACK_SIGNING_SECRET=your-slack-signing-secret-here
-SLACK_VERFIFICATION_TOKEN=your-slack-verification-token
+set SLACK_SIGNING_SECRET=your-slack-signing-secret-here
+set SLACK_VERFIFICATION_TOKEN=your-slack-verification-token
 
 
-
+# Common Error in CommonFunctions\send_slack_alert_notification()
+Error Message =>
+-------------
+slack_sdk.errors.SlackApiError: The request to the Slack API failed. (url: https://www.slack.com/api/files.completeUploadExternal)
+The server responded with: {'ok': False, 'error': 'not_in_channel'}
+  
+Resolution =>  
+----------------
+Add the slack bot @SQLMonitor into slack channel #sqlmonitor-alert.
+Just tag @SQLMonitor in #sqlmontor-alert channel. It would pop up asking whether you want to add SQLMonitor to this channel. Say Yes.
 
 
 
