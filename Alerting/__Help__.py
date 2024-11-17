@@ -11,7 +11,7 @@ E:\Github\SQLMonitor\Alerting>
 AlertEngineVenv\Scripts\activate.bat
 
 (AlertEngineVenv) E:\Github\SQLMonitor\Alerting>
-python E:\GitHub\SQLMonitor\Alerting\Run-SQLMonitorAlertEngineWebServer.py
+python E:\GitHub\SQLMonitor\Alerting\SQLMonitorAlertEngineApp.py
 
 # To install module for all users
 pip install slackeventsapi --upgrade --target "C:\Program Files\Python312\Lib\site-packages"
