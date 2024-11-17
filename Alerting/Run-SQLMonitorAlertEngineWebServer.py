@@ -124,7 +124,7 @@ if verbose:
 if log_to_file:
     script_arguments = script_arguments + ['--log_file',log_file]
 
-logger.info(f"Script arguments => \n{script_arguments}")
+logger.info(f"Script arguments => \n{['YourLoginPasswordDesensitizedHere' if item == login_password else item for item in script_arguments]}")
 
 
 # Get Bot OAuth Token
