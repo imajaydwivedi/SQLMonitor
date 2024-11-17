@@ -1,18 +1,24 @@
-import pyodbc
+#import pyodbc
 import os
 import subprocess
+#from threading import Thread
 import argparse
 import json
 from datetime import datetime
 import time
+import hashlib
+import hmac
+import hashlib
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask, Response, request, jsonify, redirect, make_response
+from flask import Flask, Response, request, jsonify, redirect, make_response, abort
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 from slackeventsapi import SlackEventAdapter
-#from waitress import serve
+from waitress import serve
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
+#import logging
+import psutil
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 from SmaAlertPackage.CommonFunctions.get_sm_credential import get_sm_credential
@@ -35,9 +41,11 @@ parser.add_argument("--alert_name", type=str, required=False, action="store", de
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Run-SQLMonitorAlertEngineWebServer", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 parser.add_argument("--frequency_multiplier", type=int, required=False, action="store", default=4, help="Alert resolve threshold minutes = frequency_multiplier x alert frequency_minutes")
-parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=False, help="Checks for SSL certificate if enabled")
+parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=True, help="Checks for SSL certificate if enabled")
+parser.add_argument("--use_waitress_server", type=bool, required=False, action="store", default=True, help="Checks for SSL certificate if enabled")
 #parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra verbose messages when enabled")
+#parser.add_argument('--verbose', type=bool, nargs='?', const=True, default=False, help="Extra verbose messages when enabled")
 parser.add_argument("--debug", type=bool, required=False, action="store", default=False, help="Run web server in debug mode")
 parser.add_argument("--log_server_startup", type=bool, required=False, action="store", default=False, help="Log server startup message in Slack Channel")
 parser.add_argument("--echo_test", type=bool, required=False, action="store", default=False, help="Enable echo test")
@@ -60,21 +68,34 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     has_ssl_certificate = args.has_ssl_certificate
     debug = args.debug
     #frequency_minutes = args.frequency_minutes
-    verbose = args.verbose
+    verbose:bool = args.verbose
     log_server_startup = args.log_server_startup
     run_scheduled_jobs = args.run_scheduled_jobs
-
-# create logger
-logger = get_script_logger(alert_job_name)
-
-# Log begging
-logger.info('***** BEGIN:  %s' % script_name)
 
 # determine os
 if os.name == 'nt':
     path_separator = '\\'
 else:
     path_separator = '/'
+
+# create logger
+parent_process = psutil.Process().parent()
+parent_process_name = parent_process.name()
+print(f"\nScript '{script_name}' called by '{parent_process_name}' (PID: {parent_process.pid})")
+
+# if web server run manually for testing, then log to console
+log_to_file:bool = False
+if parent_process_name in ['powershell_ise.exe', 'powershell.exe', 'pwsh.exe']:
+    logger = get_script_logger(alert_job_name)
+    print(f"Webserver is being run manually by developer.\n")
+else:
+    log_to_file:bool = True
+    log_file = f"{script_directory}{path_separator}Logs{path_separator}{alert_job_name}.log"
+    logger = get_script_logger(alert_job_name, log_file)
+    print(f"Webserver is running in production mode.\n")
+
+# Log begging
+logger.info(f"\n\n***** BEGIN:  {script_name}")
 
 # ssl_certificate
 logger.info(f"script_parent_directory = '{script_parent_directory}'")
@@ -84,16 +105,26 @@ if has_ssl_certificate:
     ssl_certificate_key = f"{script_parent_directory}{path_separator}Private{path_separator}ssl_certificates{path_separator}privkey.pem"
 
 # Make inventory server connection
-logger.info(f"Create db connection using connect_dba_instance..")
+if verbose:
+    logger.info(f"Create db connection using connect_dba_instance..")
 cnxn = connect_dba_instance(inventory_server,inventory_database,login_name,login_password,logger=logger,verbose=verbose)
 #cursor = cnxn.cursor()
 
 # Create arugments for subprocess - https://www.datacamp.com/tutorial/python-subprocess
-script_arguments = ['--verbose',f"{verbose}", '--inventory_server',inventory_server, '--inventory_database',inventory_database, '--credential_manager_database', credential_manager_database]
+if verbose:
+    logger.info(f"Verbose is True")
+else:
+    logger.info(f"Verbose is False")
+
+script_arguments = ['--inventory_server',inventory_server, '--inventory_database',inventory_database, '--credential_manager_database', credential_manager_database]
 if login_name != '' and login_password != '':
     script_arguments = script_arguments + ['--login_name',login_name, '--login_password',login_password]
 if verbose:
-    logger.info(f"Script arguments => \n{script_arguments}")
+    script_arguments = script_arguments + ['--verbose',f"{verbose}"]
+if log_to_file:
+    script_arguments = script_arguments + ['--log_file',log_file]
+
+logger.info(f"Script arguments => \n{['YourLoginPasswordDesensitizedHere' if item == login_password else item for item in script_arguments]}")
 
 
 # Get Bot OAuth Token
@@ -101,6 +132,7 @@ if 'Get Bot OAuth Token' == 'Get Bot OAuth Token':
     logger.info(f"Get bot oauth token from credential manager..")
     dba_slack_bot_token = get_sm_credential(cnxn, credential_manager_database, 'dba_slack_bot_token')
     dba_slack_bot_signing_secret = get_sm_credential(cnxn, credential_manager_database, 'dba_slack_bot_signing_secret')
+    dba_slack_verification_token = get_sm_credential(cnxn, credential_manager_database, 'dba_slack_verification_token')
     dba_slack_channel_id = get_sma_params(cnxn, param_key='dba_slack_channel_id')[0].param_value
     dba_slack_bot = get_sma_params(cnxn, param_key='dba_slack_bot')[0].param_value
 
@@ -108,7 +140,119 @@ if 'Get Bot OAuth Token' == 'Get Bot OAuth Token':
 app = Flask(__name__)
 
 # Slack Event Adapter
-slack_event_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
+SLACK_SIGNING_SECRET = dba_slack_bot_signing_secret # used for slack event subscription
+slack_token = dba_slack_bot_token # used for slack WebClient
+VERIFICATION_TOKEN = dba_slack_verification_token # used for slack challenge verification
+
+slack_events_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
+
+# Instantiating slack client. Send Test Slack Message
+logger.info(f"Create slack WebClient..")
+client = WebClient(token=dba_slack_bot_token)
+bot_user_details = client.auth_test()
+bot_user_id = bot_user_details['user_id']
+if verbose:
+    logger.info(f"dba_slack_bot_token = '{dba_slack_bot_token}'")
+
+
+# Main Page Route
+@app.route("/", methods=['GET','POST'])
+def greetings():
+    logger.info("inside greetings()")
+
+    return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
+
+
+def verify_slack_request(req):
+    print(req)
+    #timestamp = req.headers.get("X-Slack-Request-Timestamp")
+    timestamp = req.headers['X-Slack-Request-Timestamp']
+    if timestamp is None:
+        timestamp = time.time() - 2
+    #slack_signature = req.headers.get("X-Slack-Signature")
+    slack_signature = req.headers['X-Slack-Signature']
+    body = req.get_data(as_text=True)
+
+    # Check if the request timestamp is within 5 minutes of the current time
+    if abs(time.time() - int(timestamp)) > 300:
+    #if absolute_value(time.time() - timestamp) > 60 * 5:
+        return False, "Invalid request timestamp"
+
+    # Create the basestring to verify the signature
+    basestring = f"v0:{timestamp}:{body}"
+    my_signature = "v0=" + hmac.new(
+        key=dba_slack_bot_signing_secret.encode(),
+        msg=basestring.encode(),
+        digestmod=hashlib.sha256
+    ).hexdigest()
+
+    # Compare the signatures
+    if not hmac.compare_digest(my_signature, slack_signature):
+        return False, "Invalid signature"
+
+    return True, None
+
+
+@slack_events_adapter.on("app_mention")
+def handle_message(event_data):
+    def send_reply(value):
+        event_data = value
+        message = event_data["event"]
+        if message.get("subtype") is None:
+            command = message.get("text")
+            channel_id = message["channel"]
+            if any(item in command.lower() for item in greetings):
+                message = (
+                    "Hello <@%s>! :tada:"
+                    % message["user"]  # noqa
+                )
+                slack_client.chat_postMessage(channel=channel_id, text=message)
+    thread = Thread(target=send_reply, kwargs={"value": event_data})
+    thread.start()
+    return Response(status=200)
+
+
+@app.route("/verify", methods=["GET","POST"])
+def verify_webserver():
+    return "Inside /verify", 200
+
+
+# Create an event listener for "reaction_added" events and print the emoji name
+'''
+@slack_events_adapter.on("reaction_added")
+def reaction_added(event_data):
+  emoji = event_data["event"]["reaction"]
+  print(emoji)
+'''
+
+'''
+@app.route("/slack/events", methods=["POST"])
+def slack_events_handler(request):
+    json_dict = json.loads(request.body.decode("utf-8"))
+    if json_dict["token"] != dba_slack_verification_token:
+        return {"status": 403}
+
+    if "type" in json_dict:
+        if json_dict["type"] == "url_verification":
+            response_dict = {"challenge": json_dict["challenge"]}
+            return response_dict
+    return {"status": 500}
+'''
+
+'''
+@app.route("/slack/events", methods=["POST"])
+def slack_events():
+    is_valid, error = verify_slack_request(request)
+    if not is_valid:
+        return jsonify({"error": error}), 400
+
+    data = request.json
+    if "challenge" in data:
+        return jsonify({"challenge": data["challenge"]})
+
+    return "", 200
+'''
+
 
 '''
 @app.route('/slack/events', methods=['GET','POST'])
@@ -121,33 +265,33 @@ def slack_events_handler():
     data = request.get_json()
     #challenge = data['challenge']
     #challenge = data.get("challenge")
-    print(data)
+    #print(data)
 
     if 'challenge' in data:
         return jsonify({'challenge': data['challenge']})
-
-    print("no challenge found. So doing some tasks.")
-
-    return "OK", 200
-
-@app.before_request
-def redirect_http_to_https():
-    if not request.is_secure:
-        if verbose:
-            logger.info(f"direct unsecure access to https")
-        #return redirect(request.url.replace("http://", "https://"), code=301)
+    else:
+        #print("no challenge found. So doing some tasks.")
+        return Response(f"No challenge found. Reached to /slack/events."), 200
+    #return "OK", 200
 '''
 
+'''
+@app.route('/slack/events', methods=['POST'])
+def slack_event_handler():
+    logger.info(f"Reached to /slack/events.")
 
-# Send Test Slack Message
-logger.info(f"Create slack WebClient..")
-client = WebClient(token=dba_slack_bot_token)
-bot_user_details = client.auth_test()
-bot_user_id = bot_user_details['user_id']
-if verbose:
-    logger.info(f"dba_slack_bot_token = '{dba_slack_bot_token}'")
-    print(bot_user_details)
+    # Parse the incoming JSON payload
+    data = request.get_json()
 
+    verify_slack_request(request)  # Ensure request is valid
+
+    # Handle Slack's challenge verification
+    if data.get('type') == 'url_verification':
+        # Respond with the challenge token
+        return jsonify({'challenge': data.get('challenge')})
+
+    return Response(f"Reached to /slack/events."), 200
+'''
 
 if log_server_startup:
     logger.info(f"Log Web Server startup on slack channel {dba_slack_channel_id}..")
@@ -166,8 +310,8 @@ if log_server_startup:
               #text = f"{datetime.now()} - Starting SQLMonitor Web Server.."
           )
 
-
-@slack_event_adapter.on('message')
+'''
+@slack_events_adapter.on('message')
 def message(payload):
     logger.info(f"Read slack message & echo back..")
     event = payload.get('event', {})
@@ -192,6 +336,7 @@ def message(payload):
               ]
               #text = f"Sure @{user_name}! Will come back with Active Alert!"
           )
+'''
 
 # Listen to slack commands
 slack_command = '/alerts'
@@ -260,20 +405,14 @@ def interactive_action():
     #alert_obj.slack_ts_value = action_ts
     alert_obj.take_required_action()
 
+    logger.info(f"{action_to_take} {alert_key} with id {alert_id}, and respond back on {action_ts}")
     if verbose:
         print(form_json)
-        print(f"{action_to_take} {alert_key} with id {alert_id}, and respond back on {action_ts}")
 
     # Check to see what the user's selection was and update the message
     #select = form_json["action"][0]
 
     return make_response("", 200)
-
-# dummy
-@app.route("/", methods=['GET','POST'])
-def greetings():
-    print("inside greetings()")
-    return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
 
 
 def auto_resolve_cleared_alerts():
@@ -327,66 +466,122 @@ select [is_found] = isnull(@_rows_affected,0);
     else:
         logger.info(f"No cleared alert found.")
 
-def call_15_minute_job_script():
-    logger.info(f"Inside call_15_minute_job_script()")
-
-    alert_script_path = os.path.join(script_directory, "Alert-DiskSpace.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
-
-    alert_script_path = os.path.join(script_directory, "Alert-SqlMonitorJobs.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
-
-    alert_script_path = os.path.join(script_directory, "Alert-NonAgDbBackupIssue.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
-
-    alert_script_path = os.path.join(script_directory, "Alert-AgDbBackupIssue.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
-
-def call_10_minute_job_script():
-    logger.info(f"Inside call_10_minute_job_script()")
-
-    alert_script_path = os.path.join(script_directory, "Alert-Cpu.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
-
-    alert_script_path = os.path.join(script_directory, "Alert-SqlBlocking.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
-
-    alert_script_path = os.path.join(script_directory, "Alert-AvailableMemory.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
-
-    alert_script_path = os.path.join(script_directory, "Alert-DiskLatency.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
-
-    alert_script_path = os.path.join(script_directory, "Alert-AgLatency.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
-
 def call_5_minute_job_script():
     logger.info(f"Inside call_5_minute_job_script()")
+
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-DiskSpace.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
+
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-SqlMonitorJobs.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
+
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-NonAgDbBackupIssue.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
+
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-AgDbBackupIssue.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
+
+def call_2_minute_job_script():
+    logger.info(f"Inside call_2_minute_job_script()")
+
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-Cpu.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
+
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-SqlBlocking.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
+
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-AvailableMemory.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
+
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-DiskLatency.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
+
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-AgLatency.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
+
+def call_1_minute_job_script():
+    logger.info(f"Inside call_1_minute_job_script()")
     auto_resolve_cleared_alerts()
 
-    alert_script_path = os.path.join(script_directory, "Alert-MemoryGrantsPending.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-MemoryGrantsPending.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-OfflineAgent.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-OfflineAgent.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-OfflineServer.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-OfflineServer.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-LogSpace.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-LogSpace.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
-    alert_script_path = os.path.join(script_directory, "Alert-Tempdb.py")
-    subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    try:
+        alert_script_path = os.path.join(script_directory, "Alert-Tempdb.py")
+        subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
+    except Exception as e:
+        exception_name = type(e).__name__
+        logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
 # execute scheduler
 if run_scheduled_jobs:
     logger.info(f"Using WebServer for running Alert Jobs as run_scheduled_jobs is True.")
     scheduler = BackgroundScheduler()
 
-    scheduler.add_job(func=call_15_minute_job_script, trigger="interval", minutes=15)
-    scheduler.add_job(func=call_10_minute_job_script, trigger="interval", minutes=10)
     scheduler.add_job(func=call_5_minute_job_script, trigger="interval", minutes=5)
+    scheduler.add_job(func=call_2_minute_job_script, trigger="interval", minutes=2)
+    scheduler.add_job(func=call_1_minute_job_script, trigger="interval", minutes=1)
 
     scheduler.start()
 
@@ -395,11 +590,15 @@ if run_scheduled_jobs:
 
 if __name__ == "__main__":
 
-    #app.run()
-    if has_ssl_certificate:
-        context = (ssl_certificate, ssl_certificate_key)
-        app.run(host='0.0.0.0', debug=debug, ssl_context=context, port=5000)
-        #serve(app, host='0.0.0.0', port=5000, threads=10, ssl_context=context)
+    if args.use_waitress_server:
+        logger.info(f"Running waitress web server.")
+        serve(app, host='0.0.0.0', port=5000, threads=20)
     else:
-        app.run(host='0.0.0.0', debug=debug, port=5000)
-        #serve(app, host='0.0.0.0', port=5000, threads=10)
+        if has_ssl_certificate:
+            logger.info(f"Running flask web server with SSL Certificate.")
+            context = (ssl_certificate, ssl_certificate_key)
+            app.run(host='0.0.0.0', debug=debug, ssl_context=context, port=5000)
+        else:
+            logger.info(f"Running flask web server without Certificate.")
+            app.run(host='0.0.0.0', debug=debug, port=5000)
+

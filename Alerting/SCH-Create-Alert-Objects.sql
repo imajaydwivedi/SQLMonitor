@@ -25,6 +25,7 @@ go
 	8) Create type affected_servers_type
 	9) Create table dbo.sma_process_logs
 	10) Add credentials in Credential Manager
+	11) add DBA team entry
 
 */
 
@@ -244,11 +245,34 @@ go
 /* ***** 10) Add credentials in Credential Manager ***************************** */
 exec dbo.usp_add_credential @server_ip = '*', @user_name = 'sa', @password_string = 'SomeStringPassword', @remarks = 'sa Credential';
 go
-exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_slack_bot_token', @password_string = 'sbot-123456789-0123456789-Id0ntkn0wAny$!@ckT0ken', @remarks = 'DBA Slack Bot User OAuth Token';
-go
 exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_pagerduty_service_key', @password_string = 'some-kind-of-pagerduty-service-key', @remarks = 'DBA Group Pager Duty Service Key';
 go
 exec dbo.usp_add_credential @server_ip = '*', @user_name = 'smtp_account_password', @password_string = 'SomeStringPassword', @remarks = 'SMTP Account Password';
 go
-exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_slack_bot_signing_secret', @password_string = 'SomeStringPassword', @remarks = 'DBA Slack Bot Signing Secret';
+
+exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_slack_bot_token', @remarks = 'DBA Slack Bot User OAuth Token',
+			@password_string = 'sbot-123456789-0123456789-Id0ntkn0wAny$!@ckT0ken';
+go
+exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_slack_bot_signing_secret', @remarks = 'DBA Slack Bot Signing Secret',
+			@password_string = 'SomeStringPassword';
+go
+exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_slack_verification_token', @remarks = 'DBA Slack Verification Token',
+			@password_string = 'SomeStringPassword';
+go
+
+
+
+/* **** 11) add DBA team entry ********************************************* */
+-- add DBA team entry
+insert dbo.sma_oncall_teams
+(team_name, description, team_lead_email, team_lead_slack_account, team_email, team_slack_channel)
+select	team_name = 'DBA', description = 'DBA Team', team_lead_email = m.param_value, 
+		team_lead_slack_account = '@Ajay Dwivedi', 
+		team_email = t.param_value, 
+		team_slack_channel = s.param_value
+from dbo.sma_params s
+outer apply (select m.param_value from dbo.sma_params m where m.param_key = 'dba_manager_email_id') m
+outer apply (select t.param_value from dbo.sma_params t where t.param_key = 'dba_team_email_id') t
+where 1=1
+and s.param_key = 'dba_slack_channel_id'
 go

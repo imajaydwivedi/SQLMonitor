@@ -7,6 +7,7 @@ go
 
 -- alter table dbo.credential_manager set (system_versioning = off);
 -- drop table dbo.credential_manager
+-- drop table credential_manager_history
 create table dbo.credential_manager
 (	server_ip char(15) not null,
 	server_name varchar(125) null,

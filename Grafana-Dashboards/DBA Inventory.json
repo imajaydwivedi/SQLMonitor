@@ -2019,6 +2019,10 @@
                         "url": "d/distributed_live_dashboard?var-server=${__data.fields.server}"
                       }
                     ]
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 267
                   }
                 ]
               },
@@ -2145,12 +2149,96 @@
                     "value": "Prev Sql Max M/R"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "RAM"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 89
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Prev RAM"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 110
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "CPU"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 74
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Prev CPU"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 99
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Sql Max M/R"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 132
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Prev Sql Max M/R"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 165
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "SQL CPU"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 100
+                  }
+                ]
               }
             ]
           },
           "gridPos": {
-            "h": 9,
-            "w": 24,
+            "h": 7,
+            "w": 18,
             "x": 0,
             "y": 9
           },
@@ -2200,7 +2288,7 @@
               }
             }
           ],
-          "title": "LAMA - Available Memory Analysis - ${lama_days_for_analysis} Days @ ${lama_computed_metrics__collection_time_utc:date:YYYY-MM-DD HH.mm}",
+          "title": "Config Changes - ${lama_days_for_analysis} Days @ ${lama_computed_metrics__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "type": "table"
         }
       ],
@@ -2677,6 +2765,6 @@
   "timezone": "browser",
   "title": "DBA Inventory",
   "uid": "t__DBA_Inventory",
-  "version": 6,
+  "version": 7,
   "weekStart": ""
 }

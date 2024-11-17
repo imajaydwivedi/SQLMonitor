@@ -17,7 +17,7 @@ CREATE OR ALTER procedure dbo.usp_compute_LAMA_targets
 AS
 BEGIN
 /*	Purpose: Analyze the past core metrics history and determine the server that need Memory/CPU re-evaulation
-	Modifications: 2024-Nov-12 - Ajay - Initial Draft
+	Modifications: 2024-Nov-13 - Ajay - Initial Draft
 
 	exec dbo.usp_compute_LAMA_targets
 			@verbose = 2, 
@@ -336,22 +336,22 @@ BEGIN
 													when @l_avg_disk_latency_ms >= 15 then @l_box_ram_gb * 0.5
 													else 0
 													end
-					set @d_additional_sql_ram_gb = @l_box_ram_gb * 0.65
-					set @d_new_total_ram_gb = @l_box_ram_gb + @d_additional_ram_gb
+					set @d_additional_sql_ram_gb = (@d_additional_ram_gb * 0.50) - 2;
+					set @d_new_total_ram_gb = @l_box_ram_gb + @d_additional_ram_gb;
 				end
 
 				if @d_memory_action in ('add memory - memory grants pending')
 				begin
-					set @d_additional_ram_gb = @l_box_ram_gb * 0.5
-					set @d_additional_sql_ram_gb = @l_box_ram_gb * 0.3
-					set @d_new_total_ram_gb = @l_box_ram_gb + @d_additional_ram_gb
+					set @d_additional_ram_gb = @l_box_ram_gb * 0.5;
+					set @d_additional_sql_ram_gb = (@d_additional_ram_gb * 0.5) - 2;
+					set @d_new_total_ram_gb = @l_box_ram_gb + @d_additional_ram_gb;
 				end
 
 				if @d_memory_action in ('reduce - sql ram')
 				begin
-					set @d_additional_ram_gb = 0
-					set @d_additional_sql_ram_gb = (@l_sql_ram_gb - (@sql_memory_pcnt_threshold*@l_box_ram_gb*1.0)/100.0) -- extra ram over threshold %
-					set @d_new_total_ram_gb = 0
+					set @d_additional_ram_gb = 0;
+					set @d_additional_sql_ram_gb = -((@l_sql_ram_gb - ((@sql_memory_pcnt_threshold*@l_box_ram_gb*1.0)/100.0)) + 2); -- extra ram over threshold %
+					set @d_new_total_ram_gb = 0;
 				end
 
 			end

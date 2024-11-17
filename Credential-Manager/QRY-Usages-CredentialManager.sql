@@ -47,9 +47,8 @@ go
 exec dbo.usp_update_credential
 	@server_ip = '*',
 	@user_name = 'Test',
-	--@password = 'SomeStringPassword',
-	@confirm_forgot_password = 1,
-	@remarks = 'Testing update'
+	@new_password_string = 'SomeStringPassword',
+	@confirm_forgot_password = 1
 go
 
 
