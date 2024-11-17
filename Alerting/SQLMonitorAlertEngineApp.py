@@ -1,7 +1,7 @@
 #import pyodbc
 import os
 import subprocess
-#from threading import Thread
+from threading import Thread
 import argparse
 import json
 from datetime import datetime
@@ -210,7 +210,7 @@ def handle_message(event_data):
                     "Hello <@%s>! :tada:"
                     % message["user"]  # noqa
                 )
-                slack_client.chat_postMessage(channel=channel_id, text=message)
+                client.chat_postMessage(channel=channel_id, text=message)
     thread = Thread(target=send_reply, kwargs={"value": event_data})
     thread.start()
     return Response(status=200)
