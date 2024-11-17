@@ -161,4 +161,3 @@ Just tag @SQLMonitor in #sqlmontor-alert channel. It would pop up asking whether
 
 
 
-
