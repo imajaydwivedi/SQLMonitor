@@ -41,7 +41,7 @@ parser.add_argument("--alert_name", type=str, required=False, action="store", de
 parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Run-SQLMonitorAlertEngineWebServer", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 parser.add_argument("--frequency_multiplier", type=int, required=False, action="store", default=4, help="Alert resolve threshold minutes = frequency_multiplier x alert frequency_minutes")
-parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=False, help="Checks for SSL certificate if enabled")
+parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=True, help="Checks for SSL certificate if enabled")
 parser.add_argument("--use_waitress_server", type=bool, required=False, action="store", default=True, help="Checks for SSL certificate if enabled")
 #parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra verbose messages when enabled")
@@ -49,7 +49,7 @@ parser.add_argument("--verbose", type=bool, required=False, action="store", defa
 parser.add_argument("--debug", type=bool, required=False, action="store", default=False, help="Run web server in debug mode")
 parser.add_argument("--log_server_startup", type=bool, required=False, action="store", default=False, help="Log server startup message in Slack Channel")
 parser.add_argument("--echo_test", type=bool, required=False, action="store", default=False, help="Enable echo test")
-parser.add_argument("--run_scheduled_jobs", type=bool, required=False, action="store", default=False, help="Enable echo test")
+parser.add_argument("--run_scheduled_jobs", type=bool, required=False, action="store", default=True, help="Enable echo test")
 
 
 
@@ -132,6 +132,7 @@ if 'Get Bot OAuth Token' == 'Get Bot OAuth Token':
     logger.info(f"Get bot oauth token from credential manager..")
     dba_slack_bot_token = get_sm_credential(cnxn, credential_manager_database, 'dba_slack_bot_token')
     dba_slack_bot_signing_secret = get_sm_credential(cnxn, credential_manager_database, 'dba_slack_bot_signing_secret')
+    dba_slack_verification_token = get_sm_credential(cnxn, credential_manager_database, 'dba_slack_verification_token')
     dba_slack_channel_id = get_sma_params(cnxn, param_key='dba_slack_channel_id')[0].param_value
     dba_slack_bot = get_sma_params(cnxn, param_key='dba_slack_bot')[0].param_value
 
@@ -139,8 +140,28 @@ if 'Get Bot OAuth Token' == 'Get Bot OAuth Token':
 app = Flask(__name__)
 
 # Slack Event Adapter
-SLACK_SIGNING_SECRET = dba_slack_bot_signing_secret
+SLACK_SIGNING_SECRET = dba_slack_bot_signing_secret # used for slack event subscription
+slack_token = dba_slack_bot_token # used for slack WebClient
+VERIFICATION_TOKEN = dba_slack_verification_token # used for slack challenge verification
+
 slack_events_adapter = SlackEventAdapter(dba_slack_bot_signing_secret, '/slack/events', app)
+
+# Instantiating slack client. Send Test Slack Message
+logger.info(f"Create slack WebClient..")
+client = WebClient(token=dba_slack_bot_token)
+bot_user_details = client.auth_test()
+bot_user_id = bot_user_details['user_id']
+if verbose:
+    logger.info(f"dba_slack_bot_token = '{dba_slack_bot_token}'")
+
+
+# Main Page Route
+@app.route("/", methods=['GET','POST'])
+def greetings():
+    logger.info("inside greetings()")
+
+    return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
+
 
 def verify_slack_request(req):
     print(req)
@@ -160,7 +181,7 @@ def verify_slack_request(req):
     # Create the basestring to verify the signature
     basestring = f"v0:{timestamp}:{body}"
     my_signature = "v0=" + hmac.new(
-        key=SLACK_SIGNING_SECRET.encode(),
+        key=dba_slack_bot_signing_secret.encode(),
         msg=basestring.encode(),
         digestmod=hashlib.sha256
     ).hexdigest()
@@ -171,17 +192,24 @@ def verify_slack_request(req):
 
     return True, None
 
-@app.route("/slack/events", methods=["POST"])
-def slack_events():
-    is_valid, error = verify_slack_request(request)
-    if not is_valid:
-        return jsonify({"error": error}), 400
 
-    data = request.json
-    if "challenge" in data:
-        return jsonify({"challenge": data["challenge"]})
-
-    return "", 200
+@slack_events_adapter.on("app_mention")
+def handle_message(event_data):
+    def send_reply(value):
+        event_data = value
+        message = event_data["event"]
+        if message.get("subtype") is None:
+            command = message.get("text")
+            channel_id = message["channel"]
+            if any(item in command.lower() for item in greetings):
+                message = (
+                    "Hello <@%s>! :tada:"
+                    % message["user"]  # noqa
+                )
+                slack_client.chat_postMessage(channel=channel_id, text=message)
+    thread = Thread(target=send_reply, kwargs={"value": event_data})
+    thread.start()
+    return Response(status=200)
 
 
 @app.route("/verify", methods=["GET","POST"])
@@ -196,6 +224,35 @@ def reaction_added(event_data):
   emoji = event_data["event"]["reaction"]
   print(emoji)
 '''
+
+'''
+@app.route("/slack/events", methods=["POST"])
+def slack_events_handler(request):
+    json_dict = json.loads(request.body.decode("utf-8"))
+    if json_dict["token"] != dba_slack_verification_token:
+        return {"status": 403}
+
+    if "type" in json_dict:
+        if json_dict["type"] == "url_verification":
+            response_dict = {"challenge": json_dict["challenge"]}
+            return response_dict
+    return {"status": 500}
+'''
+
+'''
+@app.route("/slack/events", methods=["POST"])
+def slack_events():
+    is_valid, error = verify_slack_request(request)
+    if not is_valid:
+        return jsonify({"error": error}), 400
+
+    data = request.json
+    if "challenge" in data:
+        return jsonify({"challenge": data["challenge"]})
+
+    return "", 200
+'''
+
 
 '''
 @app.route('/slack/events', methods=['GET','POST'])
@@ -235,16 +292,6 @@ def slack_event_handler():
 
     return Response(f"Reached to /slack/events."), 200
 '''
-
-# Send Test Slack Message
-logger.info(f"Create slack WebClient..")
-client = WebClient(token=dba_slack_bot_token)
-bot_user_details = client.auth_test()
-bot_user_id = bot_user_details['user_id']
-if verbose:
-    logger.info(f"dba_slack_bot_token = '{dba_slack_bot_token}'")
-    print(bot_user_details)
-
 
 if log_server_startup:
     logger.info(f"Log Web Server startup on slack channel {dba_slack_channel_id}..")
@@ -366,12 +413,6 @@ def interactive_action():
     #select = form_json["action"][0]
 
     return make_response("", 200)
-
-# dummy
-@app.route("/", methods=['GET','POST'])
-def greetings():
-    logger.info("inside greetings()")
-    return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
 
 
 def auto_resolve_cleared_alerts():
@@ -551,13 +592,13 @@ if __name__ == "__main__":
 
     if args.use_waitress_server:
         logger.info(f"Running waitress web server.")
-        serve(app, host='0.0.0.0', port=80, threads=20)
+        serve(app, host='0.0.0.0', port=5000, threads=20)
     else:
         if has_ssl_certificate:
             logger.info(f"Running flask web server with SSL Certificate.")
             context = (ssl_certificate, ssl_certificate_key)
-            app.run(host='0.0.0.0', debug=debug, ssl_context=context, port=443)
+            app.run(host='0.0.0.0', debug=debug, ssl_context=context, port=5000)
         else:
             logger.info(f"Running flask web server without Certificate.")
-            app.run(host='0.0.0.0', debug=debug, port=80)
+            app.run(host='0.0.0.0', debug=debug, port=5000)
 

@@ -53,16 +53,16 @@ pip install waitress
 https://ngrok.com/download
 
 # personal
-ngrok http --url=gratefully-easy-ewe.ngrok-free.app 80
+ngrok http --url=gratefully-easy-ewe.ngrok-free.app 5000
 Website -> https://gratefully-easy-ewe.ngrok-free.app/
 
 # sql agent
-ngrok http --url=skilled-externally-redfish.ngrok-free.app 80
+ngrok http --url=skilled-externally-redfish.ngrok-free.app 5000
 
 # Slack evnets via Personal Account
 https://api.slack.com/apps/A04LG3JUY4W/event-subscriptions?
   https://gratefully-easy-ewe.ngrok-free.app/slack/events
-  https://sqlmonitor.ajaydwivedi.com/slack/events
+  https://sqlmonitor.ajaydwivedi.com:5000/slack/events
 
 https://api.slack.com/apps/A04LG3JUY4W/interactive-messages?
   https://gratefully-easy-ewe.ngrok-free.app/slack/interactive-endpoint
@@ -121,17 +121,33 @@ ngrok config add-authtoken somegarbagevalueforreplacementofauthtoken
 
 #In task manager, create a task -
 Program -> "C:\Program Files\Ngrok\ngrok.exe"
-Argument -> http --url=gratefully-easy-ewe.ngrok-free.app 80
+Argument -> http --url=gratefully-easy-ewe.ngrok-free.app 5000
 
 Triggers -> At startup, Daily every 1 hour
 
 
 # For slack verification
-curl -X POST https://sqlmonitor.ajaydwivedi.com/slack/events -d '{"type": "url_verification", "challenge": "test"}' -H "Content-Type: application/json"
+curl -X POST https://sqlmonitor.ajaydwivedi.com:5000/slack/events -d '{"type": "url_verification", "challenge": "test"}' -H "Content-Type: application/json"
 
-curl -X POST https://sqlmonitor.ajaydwivedi.com/slack/events \
+curl -X POST https://sqlmonitor.ajaydwivedi.com:5000/slack/events \
     -H "Content-Type: application/json" \
     -d '{"token": "Jhj5dZrVaK7ZwHHjRyZWjbDl", "type": "url_verification", "challenge": "3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P"}'
+
+
+# For Slack Bot (slackbot)
+https://medium.com/developer-student-clubs-tiet/how-to-build-your-first-slack-bot-in-2020-with-python-flask-using-the-slack-events-api-4b20ae7b4f86
+
+SQLMonitor Bot -> https://api.slack.com/apps/A04LG3JUY4W/event-subscriptions?
+
+set SLACK_BOT_TOKEN=YOUR-BOT-TOKEN-HERE
+set SLACK_BOT_TOKEN=xoxb-487535517683-4702777428578-Uq65JsWjPqoto7PfgQTyTJz3
+
+export SLACK_SIGNING_SECRET=your-slack-signing-secret-here
+export SLACK_SIGNING_SECRET=9208d8cbed18aca43032c0f8e478066b
+
+SLACK_VERFIFICATION_TOKEN=your-slack-verification-token
+SLACK_VERFIFICATION_TOKEN=Wp82qCtqSocMKoEU816U92fq
+
 
 
 

@@ -245,14 +245,21 @@ go
 /* ***** 10) Add credentials in Credential Manager ***************************** */
 exec dbo.usp_add_credential @server_ip = '*', @user_name = 'sa', @password_string = 'SomeStringPassword', @remarks = 'sa Credential';
 go
-exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_slack_bot_token', @password_string = 'sbot-123456789-0123456789-Id0ntkn0wAny$!@ckT0ken', @remarks = 'DBA Slack Bot User OAuth Token';
-go
 exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_pagerduty_service_key', @password_string = 'some-kind-of-pagerduty-service-key', @remarks = 'DBA Group Pager Duty Service Key';
 go
 exec dbo.usp_add_credential @server_ip = '*', @user_name = 'smtp_account_password', @password_string = 'SomeStringPassword', @remarks = 'SMTP Account Password';
 go
-exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_slack_bot_signing_secret', @password_string = 'SomeStringPassword', @remarks = 'DBA Slack Bot Signing Secret';
+
+exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_slack_bot_token', @remarks = 'DBA Slack Bot User OAuth Token',
+			@password_string = 'sbot-123456789-0123456789-Id0ntkn0wAny$!@ckT0ken';
 go
+exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_slack_bot_signing_secret', @remarks = 'DBA Slack Bot Signing Secret',
+			@password_string = 'SomeStringPassword';
+go
+exec dbo.usp_add_credential @server_ip = '*', @user_name = 'dba_slack_verification_token', @remarks = 'DBA Slack Verification Token',
+			@password_string = 'SomeStringPassword';
+go
+
 
 
 /* **** 11) add DBA team entry ********************************************* */
