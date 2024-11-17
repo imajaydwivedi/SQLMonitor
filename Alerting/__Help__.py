@@ -1,5 +1,8 @@
 # Deploy First Flask App on IIS
   # https://www.youtube.com/watch?v=Q4AaFNX6LBY
+# Slack Bot Tutorial
+  # https://www.youtube.com/watch?v=uP2T22AXAuA
+
   # Virtual Env in windows
 # Create Virtual Env
 cd "E:\Github\SQLMonitor\Alerting"
@@ -158,8 +161,8 @@ Error Message =>
 -------------
 slack_sdk.errors.SlackApiError: The request to the Slack API failed. (url: https://www.slack.com/api/files.completeUploadExternal)
 The server responded with: {'ok': False, 'error': 'not_in_channel'}
-  
-Resolution =>  
+
+Resolution =>
 ----------------
 Add the slack bot @SQLMonitor into slack channel #sqlmonitor-alert.
 Just tag @SQLMonitor in #sqlmontor-alert channel. It would pop up asking whether you want to add SQLMonitor to this channel. Say Yes.

@@ -8,7 +8,6 @@ from datetime import datetime
 import time
 import hashlib
 import hmac
-import hashlib
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, Response, request, jsonify, redirect, make_response, abort
@@ -219,7 +218,8 @@ def handle_message(event_data):
 
 @app.route("/verify", methods=["GET","POST"])
 def verify_webserver():
-    return "Inside /verify", 200
+    #return "Inside /verify", 200
+    return (jsonify({"health": "server is up and running"}))
 
 
 # Create an event listener for "reaction_added" events and print the emoji name
