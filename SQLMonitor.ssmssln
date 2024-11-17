@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# SQL Server Management Studio Solution File, Format Version 18.00
+# SQL Server Management Studio Solution File, Format Version 20.00
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Alerting", "Alerting\Alerting.ssmssqlproj", "{F85AF121-8497-4D2D-9E7C-F9B04A636F99}"
@@ -19,17 +19,11 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Temp-Scripts", "Temp-Script
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "TSQLTextNormalizer", "TSQLTextNormalizer\TSQLTextNormalizer.ssmssqlproj", "{5E60F32C-BCBD-47E8-BB3A-7F16722A421D}"
 EndProject
-Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Volatile", "Volatile\Volatile.ssmssqlproj", "{AC9DE31A-9BFE-4040-9913-8B2546A2730D}"
-EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work", "Work\Work.ssmssqlproj", "{719D9F57-63FF-4A99-870B-BAC8B25845E2}"
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Sql-Queries-Work", "Sql-Queries-Work\Sql-Queries-Work.ssmssqlproj", "{71007107-7371-4FA7-9510-357C3738812B}"
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-SOC-Project", "Work-SOC-Project\Work-SOC-Project.ssmssqlproj", "{BB731120-D924-4882-BF4A-54C0DA7FF385}"
-EndProject
-Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-197-33.232-Query-Performance-Issue", "Work-197-33.232-Query-Performance-Issue\Work-197-33.232-Query-Performance-Issue.ssmssqlproj", "{A16605EA-D232-40F8-B38D-CE93A4881DC1}"
-EndProject
-Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-ANAND1-Performance-Optimization", "Work-ANAND1-Performance-Optimization\Work-ANAND1-Performance-Optimization.ssmssqlproj", "{A9B34DA5-0EF8-4564-BF37-8F9B8C28763A}"
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-VAPT-Login-Expiry", "Work-VAPT-Login-Expiry\Work-VAPT-Login-Expiry.ssmssqlproj", "{7A265B02-D3F6-42C3-86D4-C1BD8BA2111B}"
 EndProject
@@ -45,6 +39,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-LAMA", "Work-LAMA\Work
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Work-DDLs", "Work-DDLs\Work-DDLs.ssmssqlproj", "{2BFAB0E9-5F6A-4E18-A5A9-75ECC0BDAAA0}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Volatile", "Volatile\Volatile.ssmssqlproj", "{F3E4D04A-F293-49FF-8A4B-2A8931F9CA7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -58,20 +54,17 @@ Global
 		{D2B4B1E9-4683-4D0A-A0D8-CF1DB6887879}.Default|Default.ActiveCfg = Default
 		{97B43977-BFB0-4921-AA96-BAF970743910}.Default|Default.ActiveCfg = Default
 		{5E60F32C-BCBD-47E8-BB3A-7F16722A421D}.Default|Default.ActiveCfg = Default
-		{AC9DE31A-9BFE-4040-9913-8B2546A2730D}.Default|Default.ActiveCfg = Default
 		{719D9F57-63FF-4A99-870B-BAC8B25845E2}.Default|Default.ActiveCfg = Default
 		{71007107-7371-4FA7-9510-357C3738812B}.Default|Default.ActiveCfg = Default
 		{BB731120-D924-4882-BF4A-54C0DA7FF385}.Default|Default.ActiveCfg = Default
-		{A16605EA-D232-40F8-B38D-CE93A4881DC1}.Default|Default.ActiveCfg = Default
-		{A9B34DA5-0EF8-4564-BF37-8F9B8C28763A}.Default|Default.ActiveCfg = Default
 		{7A265B02-D3F6-42C3-86D4-C1BD8BA2111B}.Default|Default.ActiveCfg = Default
 		{8CA435C9-FBE2-4D4D-AE50-C005D9875119}.Default|Default.ActiveCfg = Default
 		{C2EDA1A4-8CA2-494C-8C6B-8E4BE49E6E64}.Default|Default.ActiveCfg = Default
 		{241D7782-2556-4BD9-8063-A72B7BAF7950}.Default|Default.ActiveCfg = Default
 		{604139B8-C349-4340-BE05-54655C544C89}.Default|Default.ActiveCfg = Default
 		{B144CA7D-0D76-483A-8B34-7DE7617B21B5}.Default|Default.ActiveCfg = Default
-		{6AB70205-8292-4B84-9A04-8C65795476FE}.Default|Default.ActiveCfg = Default
 		{2BFAB0E9-5F6A-4E18-A5A9-75ECC0BDAAA0}.Default|Default.ActiveCfg = Default
+		{F3E4D04A-F293-49FF-8A4B-2A8931F9CA7F}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
