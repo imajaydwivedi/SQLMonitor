@@ -139,6 +139,7 @@ if 'Get Bot OAuth Token' == 'Get Bot OAuth Token':
     dba_slack_verification_token = get_sm_credential(cnxn, credential_manager_database, 'dba_slack_verification_token')
     dba_slack_channel_id = get_sma_params(cnxn, param_key='dba_slack_channel_id')[0].param_value
     dba_slack_bot = get_sma_params(cnxn, param_key='dba_slack_bot')[0].param_value
+    url_for_alerts_grafana_dashboard = get_sma_params(cnxn, param_key='url_for_alerts_grafana_dashboard')[0].param_value
 
 # Slack Event Adapter
 app = Flask(__name__)
@@ -161,10 +162,18 @@ if verbose:
 
 # Main Page Route
 @app.route("/", methods=['GET','POST'])
+def root_redirect():
+    return redirect(url_for_alerts_grafana_dashboard, code=302)
+
+
+# Website Index Page
+'''
+@app.route("/", methods=['GET','POST'])
 def greetings():
     logger.info("inside greetings()")
 
     return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
+'''
 
 
 def verify_slack_request(req):
@@ -529,7 +538,8 @@ if __name__ == "__main__":
 
     if args.use_waitress_server:
         logger.info(f"Running waitress web server.")
-        serve(app, host='0.0.0.0', port=5000, threads=20)
+        thread_count = os.cpu_count() * 10
+        serve(app, host='0.0.0.0', port=5000, threads=thread_count)
     else:
         if has_ssl_certificate:
             logger.info(f"Running flask web server with SSL Certificate.")
