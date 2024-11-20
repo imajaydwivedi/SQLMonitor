@@ -341,11 +341,20 @@ def alert_action():
     '''
 
     # Extract query parameters from the URL
+    if verbose:
+        logger.info(f"request args => \n{request.args}")
     app_name = request.args.get('app_name')
     user_name = request.args.get('user_name')
     alert_id = request.args.get('alert_id')
     alert_key = request.args.get('alert_key')
     action_to_take = request.args.get('action_to_take')
+
+    remarks:str = None
+    if action_to_take == 'Update':
+        if 'remarks' in request.args:
+            remarks = request.args.get('remarks')
+        else:
+            return jsonify({"error": "For 'Update' action, kindly provide remarks."}), 400
 
     #logger.info(request.args)
 
@@ -364,7 +373,7 @@ def alert_action():
         alert_obj = SmaAlert()
         alert_obj.logger = logger
         alert_obj.logged_by = user_name
-        alert_obj.alert_job_name = app_name
+        alert_obj.alert_job_name = f"{user_name} from {app_name} app"
         alert_obj.id = alert_id
         alert_obj.action_to_take = action_to_take
         alert_obj.verbose = verbose
@@ -372,6 +381,10 @@ def alert_action():
         alert_obj.initialize_data_from_db()
         alert_obj.initialize_derived_attributes()
         #alert_obj.slack_ts_value = action_ts
+        if remarks is not None:
+            alert_obj.header = f"comment added by {user_name} from {app_name} app"
+            alert_obj.description = remarks
+
         alert_obj.take_required_action()
     except Exception as e:
         is_success = False
@@ -379,8 +392,8 @@ def alert_action():
         logger.error(error_message)
 
     if is_success:
-        action_verb = lambda action_to_take: f"{action_to_take}d" if action_to_take in ['acknowledge','resolve'] else f"{action_to_take}ed"
-        response_text = f"[{alert_key}] (id ~ {alert_id}) has been {action_verb(action_to_take)} by [{user_name}] from [{app_name}]."
+        action_verb = lambda action_to_take: f"{action_to_take}d" if action_to_take in ['Acknowledge','Resolve','Update'] else f"{action_to_take}ed"
+        response_text = f"[{alert_key}] (id ~ {alert_id}) has been {action_verb(action_to_take).lower()} by [{user_name}] from [{app_name}]."
         response_message = { "Response": "Success", "Result": response_text}
     else:
         response_message = { "Response": "Failure", "Result": error_message}
