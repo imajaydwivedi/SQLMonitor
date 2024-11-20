@@ -1,5 +1,8 @@
 # Deploy First Flask App on IIS
   # https://www.youtube.com/watch?v=Q4AaFNX6LBY
+# Slack Bot Tutorial
+  # https://www.youtube.com/watch?v=uP2T22AXAuA
+
   # Virtual Env in windows
 # Create Virtual Env
 cd "E:\Github\SQLMonitor\Alerting"
@@ -11,7 +14,7 @@ E:\Github\SQLMonitor\Alerting>
 AlertEngineVenv\Scripts\activate.bat
 
 (AlertEngineVenv) E:\Github\SQLMonitor\Alerting>
-python E:\GitHub\SQLMonitor\Alerting\Run-SQLMonitorAlertEngineWebServer.py
+python E:\GitHub\SQLMonitor\Alerting\SQLMonitorAlertEngineApp.py
 
 # To install module for all users
 pip install slackeventsapi --upgrade --target "C:\Program Files\Python312\Lib\site-packages"
@@ -46,6 +49,15 @@ pip install psutil
 # pure python web server
 pip install waitress
 
+# Handling Packages => requirements.txt
+  # Generate
+pip freeze > requirements.txt
+
+  # Use
+pip install -r requirements.txt
+
+
+
 # for SSL Certificate, use NGinx Proxy
   # https://github.com/imajaydwivedi/SqlServerLab/blob/dev/Other-Scripts/etc_nginx_nginx.conf
 
@@ -56,19 +68,23 @@ https://ngrok.com/download
 ngrok http --url=gratefully-easy-ewe.ngrok-free.app 5000
 Website -> https://gratefully-easy-ewe.ngrok-free.app/
 
+personal website -> https://alertengine.ajaydwivedi.com
+
 # sql agent
 ngrok http --url=skilled-externally-redfish.ngrok-free.app 5000
 
 # Slack evnets via Personal Account
 https://api.slack.com/apps/A04LG3JUY4W/event-subscriptions?
   https://gratefully-easy-ewe.ngrok-free.app/slack/events
-  https://sqlmonitor.ajaydwivedi.com:5000/slack/events
+  https://alertengine.ajaydwivedi.com/slack/events
 
 https://api.slack.com/apps/A04LG3JUY4W/interactive-messages?
   https://gratefully-easy-ewe.ngrok-free.app/slack/interactive-endpoint
+  https://alertengine.ajaydwivedi.com/slack/interactive-endpoint
 
 https://api.slack.com/apps/A04LG3JUY4W/slash-commands?
   https://gratefully-easy-ewe.ngrok-free.app/alerts
+  https://alertengine.ajaydwivedi.com/alerts
 
 
 # Waitress Web Server
@@ -127,9 +143,9 @@ Triggers -> At startup, Daily every 1 hour
 
 
 # For slack verification
-curl -X POST https://sqlmonitor.ajaydwivedi.com:5000/slack/events -d '{"type": "url_verification", "challenge": "test"}' -H "Content-Type: application/json"
+curl -X POST https://alertengine.ajaydwivedi.com:5000/slack/events -d '{"type": "url_verification", "challenge": "test"}' -H "Content-Type: application/json"
 
-curl -X POST https://sqlmonitor.ajaydwivedi.com:5000/slack/events \
+curl -X POST https://alertengine.ajaydwivedi.com:5000/slack/events \
     -H "Content-Type: application/json" \
     -d '{"token": "Jhj5dZrVaK7ZwHHjRyZWjbDl", "type": "url_verification", "challenge": "3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P"}'
 
@@ -149,13 +165,15 @@ Error Message =>
 -------------
 slack_sdk.errors.SlackApiError: The request to the Slack API failed. (url: https://www.slack.com/api/files.completeUploadExternal)
 The server responded with: {'ok': False, 'error': 'not_in_channel'}
-  
-Resolution =>  
+
+Resolution =>
 ----------------
 Add the slack bot @SQLMonitor into slack channel #sqlmonitor-alert.
 Just tag @SQLMonitor in #sqlmontor-alert channel. It would pop up asking whether you want to add SQLMonitor to this channel. Say Yes.
 
+/home/ajaydwivedi/mysite/flask_app.py
 
+ajaydwivedi.pythonanywhere.com
 
 
 

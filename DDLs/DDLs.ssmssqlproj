@@ -11,6 +11,23 @@
           <Authentication>SQL</Authentication>
           <InitialDB />
           <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>False</TrustServerCertificate>
+          <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="localhost:LAB\adwivedi">
+          <Created>2024-11-17T20:31:38.0762642+05:30</Created>
+          <Type>SQL</Type>
+          <Server>localhost</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>msdb</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <HostNameInServerCertificate />
+          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -337,12 +354,6 @@
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Test-WindowsAdminAccess].sql</FullPath>
         </FileNode>
-        <FileNode Name="SCH-Job-[(dba) Update-SQLMonitorIP].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>SCH-Job-[(dba) Update-SQLMonitorIP].sql</FullPath>
-        </FileNode>
         <FileNode Name="SCH-Job-[(dba) Update-SqlServerVersions].sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -350,8 +361,8 @@
           <FullPath>SCH-Job-[(dba) Update-SqlServerVersions].sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Job-[Update-SQLMonitorIPAddress].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[Update-SQLMonitorIPAddress].sql</FullPath>
         </FileNode>

@@ -42,20 +42,20 @@ SQLMonitor is designed as open-source tool to replace expensive enterprise monit
 
 
 ## Live Dashboard - Basic Metrics
-You can visit [https://sqlmonitor.ajaydwivedi.com:3000](https://sqlmonitor.ajaydwivedi.com:3000/d/distributed_live_dashboard/monitoring-live-distributed?orgId=1&refresh=5s) for live dashboard for basic real time monitoring.<br><br>
+You can visit [https://sqlmonitor.ajaydwivedi.com](https://sqlmonitor.ajaydwivedi.com/d/distributed_live_dashboard/monitoring-live-distributed?orgId=1&refresh=5s) for live dashboard for basic real time monitoring.<br><br>
 
 ![](https://github.com/imajaydwivedi/Images/blob/master/SQLMonitor/Live-Dashboards-All.gif) <br>
 
 
 ## Live Dashboard - Perfmon Counters - Quest Softwares
-Visit [https://sqlmonitor.ajaydwivedi.com:3000](https://sqlmonitor.ajaydwivedi.com:3000/d/distributed_perfmon/monitoring-perfmon-counters-quest-softwares-distributed?orgId=1&refresh=5m) for live dashboard of all Perfmon counters suggested in [SQL Server Perfmon Counters of Interest - Quest Software](https://drive.google.com/file/d/1LB7Joo6055T1FfPcholXByazOX55e5b8/view?usp=sharing).<br><br>
+Visit [https://sqlmonitor.ajaydwivedi.com](https://sqlmonitor.ajaydwivedi.com/d/distributed_perfmon/monitoring-perfmon-counters-quest-softwares-distributed?orgId=1&refresh=5m) for live dashboard of all Perfmon counters suggested in [SQL Server Perfmon Counters of Interest - Quest Software](https://drive.google.com/file/d/1LB7Joo6055T1FfPcholXByazOX55e5b8/view?usp=sharing).<br><br>
 
 ![](https://github.com/imajaydwivedi/Images/blob/master/SQLMonitor/Quest-Dashboards-All.gif) <br>
 
 ### Portal Credentials
 Database/Grafana Portal | User Name | Password
 ------------ | --------- | ---------
-[https://sqlmonitor.ajaydwivedi.com:3000/](https://sqlmonitor.ajaydwivedi.com:3000/dashboards?tag=sqlmonitor) | guest | ajaydwivedi-guest
+[https://sqlmonitor.ajaydwivedi.com/](https://sqlmonitor.ajaydwivedi.com/dashboards?tag=sqlmonitor) | guest | ajaydwivedi-guest
 Sql Instance -> sqlmonitor.ajaydwivedi.com:1433 | grafana | grafana
 
 ## How to Setup

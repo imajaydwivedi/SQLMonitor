@@ -1,14 +1,13 @@
 #import pyodbc
 import os
 import subprocess
-#from threading import Thread
+from threading import Thread
 import argparse
 import json
 from datetime import datetime
 import time
 import hashlib
 import hmac
-import hashlib
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, Response, request, jsonify, redirect, make_response, abort
@@ -37,8 +36,8 @@ parser.add_argument("--inventory_database", type=str, required=False, action="st
 parser.add_argument("--credential_manager_database", type=str, required=False, action="store", default="DBA", help="Credential Manager Database")
 parser.add_argument("--login_name", type=str, required=False, action="store", default="sa", help="Login name for sql authentication")
 parser.add_argument("--login_password", type=str, required=False, action="store", default="", help="Login password for sql authentication")
-parser.add_argument("--alert_name", type=str, required=False, action="store", default="Run-SQLMonitorAlertEngineWebServer", help="Alert Name")
-parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Run-SQLMonitorAlertEngineWebServer", help="Script/Job calling this script")
+parser.add_argument("--alert_name", type=str, required=False, action="store", default="SQLMonitorAlertEngineApp", help="Alert Name")
+parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) SQLMonitorAlertEngineApp", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 parser.add_argument("--frequency_multiplier", type=int, required=False, action="store", default=4, help="Alert resolve threshold minutes = frequency_multiplier x alert frequency_minutes")
 parser.add_argument("--has_ssl_certificate", type=bool, required=False, action="store", default=True, help="Checks for SSL certificate if enabled")
@@ -78,11 +77,16 @@ if os.name == 'nt':
 else:
     path_separator = '/'
 
-# create logger
+# Identify caller
 parent_process = psutil.Process().parent()
-parent_process_name = parent_process.name()
-print(f"\nScript '{script_name}' called by '{parent_process_name}' (PID: {parent_process.pid})")
+if parent_process is not None:
+    parent_process_name = parent_process.name()
+    print(f"\nScript '{script_name}' called by '{parent_process_name}' (PID: {parent_process.pid})")
+else:
+    parent_process_name = 'wsgi'
+    print(f"\nScript '{script_name}' is being called by wsgi.")
 
+# create logger
 # if web server run manually for testing, then log to console
 log_to_file:bool = False
 if parent_process_name in ['powershell_ise.exe', 'powershell.exe', 'pwsh.exe']:
@@ -206,7 +210,7 @@ def handle_message(event_data):
                     "Hello <@%s>! :tada:"
                     % message["user"]  # noqa
                 )
-                slack_client.chat_postMessage(channel=channel_id, text=message)
+                client.chat_postMessage(channel=channel_id, text=message)
     thread = Thread(target=send_reply, kwargs={"value": event_data})
     thread.start()
     return Response(status=200)
@@ -214,7 +218,8 @@ def handle_message(event_data):
 
 @app.route("/verify", methods=["GET","POST"])
 def verify_webserver():
-    return "Inside /verify", 200
+    #return "Inside /verify", 200
+    return (jsonify({"health": "server is up and running"}))
 
 
 # Create an event listener for "reaction_added" events and print the emoji name
@@ -223,74 +228,6 @@ def verify_webserver():
 def reaction_added(event_data):
   emoji = event_data["event"]["reaction"]
   print(emoji)
-'''
-
-'''
-@app.route("/slack/events", methods=["POST"])
-def slack_events_handler(request):
-    json_dict = json.loads(request.body.decode("utf-8"))
-    if json_dict["token"] != dba_slack_verification_token:
-        return {"status": 403}
-
-    if "type" in json_dict:
-        if json_dict["type"] == "url_verification":
-            response_dict = {"challenge": json_dict["challenge"]}
-            return response_dict
-    return {"status": 500}
-'''
-
-'''
-@app.route("/slack/events", methods=["POST"])
-def slack_events():
-    is_valid, error = verify_slack_request(request)
-    if not is_valid:
-        return jsonify({"error": error}), 400
-
-    data = request.json
-    if "challenge" in data:
-        return jsonify({"challenge": data["challenge"]})
-
-    return "", 200
-'''
-
-
-'''
-@app.route('/slack/events', methods=['GET','POST'])
-def slack_events_handler():
-    """
-    Inbound POST from slack to test token
-    """
-    print("Inside verification()")
-    #data = request.json
-    data = request.get_json()
-    #challenge = data['challenge']
-    #challenge = data.get("challenge")
-    #print(data)
-
-    if 'challenge' in data:
-        return jsonify({'challenge': data['challenge']})
-    else:
-        #print("no challenge found. So doing some tasks.")
-        return Response(f"No challenge found. Reached to /slack/events."), 200
-    #return "OK", 200
-'''
-
-'''
-@app.route('/slack/events', methods=['POST'])
-def slack_event_handler():
-    logger.info(f"Reached to /slack/events.")
-
-    # Parse the incoming JSON payload
-    data = request.get_json()
-
-    verify_slack_request(request)  # Ensure request is valid
-
-    # Handle Slack's challenge verification
-    if data.get('type') == 'url_verification':
-        # Respond with the challenge token
-        return jsonify({'challenge': data.get('challenge')})
-
-    return Response(f"Reached to /slack/events."), 200
 '''
 
 if log_server_startup:

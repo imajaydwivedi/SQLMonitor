@@ -24,7 +24,9 @@ EXEC @ReturnCode =  msdb.dbo.sp_add_job @job_name=N'Update-SQLMonitorIPAddress',
 		@notify_level_netsend=0, 
 		@notify_level_page=0, 
 		@delete_level=0, 
-		@description=N'This job execute python script that keeps ip address updated for sqlmonitor.ajaydwivedi.com', 
+		@description=N'This job execute python script that keeps ip address updated for sqlmonitor.ajaydwivedi.com.
+https://github.com/imajaydwivedi/SqlServerLab/blob/dev/Other-Scripts/cloudflare-ddns-update-Python.py
+', 
 		@category_name=N'Database Maintenance', 
 		@owner_login_name=N'sa', @job_id = @jobId OUTPUT
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
@@ -39,7 +41,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'Update-S
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'C:\Python312\python.exe C:\sqlmonitor\cloudflare-ddns-update-Python.py', 
+		@command=N'python C:\sqlmonitor\cloudflare-ddns-update-Python.py', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1
