@@ -1,13 +1,9 @@
-#import pyodbc
 import os
 import subprocess
 from threading import Thread
 import argparse
 import json
 from datetime import datetime
-import time
-import hashlib
-import hmac
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, Response, request, jsonify, redirect, make_response, abort
@@ -16,12 +12,10 @@ from slack_sdk.errors import SlackApiError
 from slackeventsapi import SlackEventAdapter
 from waitress import serve
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
-#import logging
 import psutil
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 from SmaAlertPackage.CommonFunctions.get_sm_credential import get_sm_credential
-#from SmaAlertPackage.SmaAlert import SmaAlert as sma
 from SmaAlertPackage.SmaAlert import SmaAlert
 
 # get Script Name
@@ -351,65 +345,50 @@ def alert_action():
     user_name = request.args.get('user_name')
     alert_id = request.args.get('alert_id')
     alert_key = request.args.get('alert_key')
-    action = request.args.get('action')
+    action_to_take = request.args.get('action_to_take')
 
-    logger.info(request.args)
+    #logger.info(request.args)
 
     # Validate required parameters
-    if not all([app_name, user_name, alert_id, alert_key, action]):
+    if not all([app_name, user_name, alert_id, alert_key, action_to_take]):
         return jsonify({"error": "Missing one or more required query parameters"}), 400
+    if user_name == 'guest':
+        return jsonify({"error": "Only logged in users are allowed to take action."}), 400
 
-    # Process the action (replace with actual logic as needed)
-    # Example: Acknowledge the alert
-    if action == "acknowledge":
-        response_message = f"Alert {alert_key} with ID {alert_id} has been acknowledged for {app_name} by {user_name}."
-    else:
-        response_message = f"Action '{action}' for alert {alert_key} is not supported."
-
-    # Return the response as JSON
-    return jsonify({
-        "message": response_message,
-        "app_name": app_name,
-        "user_name": user_name,
-        "alert_id": alert_id,
-        "alert_key": alert_key,
-        "action": action
-    })
-
-    '''
-    user_name = form_json['user']['username']
-    user_id = form_json['user']['id']
-    token = form_json["token"]
-    channel_id = form_json["channel"]["id"]
-    action_to_take = form_json["actions"][0]["text"]["text"]
-    alert_key = form_json["actions"][0]["value"]
-    action_id = form_json["actions"][0]["action_id"]
-    alert_id = int(action_id.replace(f"{action_to_take}-",""))
-    action_ts = form_json["actions"][0]["action_ts"]
+    logger.info(f"{action_to_take} [{alert_key}] with id {alert_id} requested by [{user_name}] from [{app_name}] application.")
 
     # alert object
-    alert_obj = SmaAlert()
-    alert_obj.logger = logger
-    alert_obj.logged_by = user_name
-    alert_obj.alert_job_name = alert_job_name
-    alert_obj.id = alert_id
-    alert_obj.action_to_take = action_to_take
-    alert_obj.verbose = verbose
-    alert_obj.sql_connection = cnxn
-    alert_obj.initialize_data_from_db()
-    alert_obj.initialize_derived_attributes()
-    #alert_obj.slack_ts_value = action_ts
-    alert_obj.take_required_action()
+    is_success:bool = True
+    error_message:str = None
+    try:
+        alert_obj = SmaAlert()
+        alert_obj.logger = logger
+        alert_obj.logged_by = user_name
+        alert_obj.alert_job_name = app_name
+        alert_obj.id = alert_id
+        alert_obj.action_to_take = action_to_take
+        alert_obj.verbose = verbose
+        alert_obj.sql_connection = cnxn
+        alert_obj.initialize_data_from_db()
+        alert_obj.initialize_derived_attributes()
+        #alert_obj.slack_ts_value = action_ts
+        alert_obj.take_required_action()
+    except Exception as e:
+        is_success = False
+        error_message = str(e)
+        logger.error(error_message)
 
-    logger.info(f"{action_to_take} {alert_key} with id {alert_id}, and respond back on {action_ts}")
-    if verbose:
-        print(form_json)
+    if is_success:
+        action_verb = lambda action_to_take: f"{action_to_take}d" if action_to_take in ['acknowledge','resolve'] else f"{action_to_take}ed"
+        response_text = f"[{alert_key}] (id ~ {alert_id}) has been {action_verb(action_to_take)} by [{user_name}] from [{app_name}]."
+        response_message = { "Response": "Success", "Result": response_text}
+    else:
+        response_message = { "Response": "Failure", "Result": error_message}
 
-    # Check to see what the user's selection was and update the message
-    #select = form_json["action"][0]
-    '''
+    # Return the response as JSON
+    return jsonify(response_message)
 
-    return make_response("", 200)
+    #return make_response("", 200)
 
 
 
