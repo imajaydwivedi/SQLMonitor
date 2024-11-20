@@ -68,6 +68,8 @@ https://ngrok.com/download
 ngrok http --url=gratefully-easy-ewe.ngrok-free.app 5000
 Website -> https://gratefully-easy-ewe.ngrok-free.app/
 
+personal website -> https://alertengine.ajaydwivedi.com
+
 # sql agent
 ngrok http --url=skilled-externally-redfish.ngrok-free.app 5000
 
