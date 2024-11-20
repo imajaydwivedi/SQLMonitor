@@ -76,13 +76,15 @@ ngrok http --url=skilled-externally-redfish.ngrok-free.app 5000
 # Slack evnets via Personal Account
 https://api.slack.com/apps/A04LG3JUY4W/event-subscriptions?
   https://gratefully-easy-ewe.ngrok-free.app/slack/events
-  https://sqlmonitor.ajaydwivedi.com:5000/slack/events
+  https://alertengine.ajaydwivedi.com/slack/events
 
 https://api.slack.com/apps/A04LG3JUY4W/interactive-messages?
   https://gratefully-easy-ewe.ngrok-free.app/slack/interactive-endpoint
+  https://alertengine.ajaydwivedi.com/slack/interactive-endpoint
 
 https://api.slack.com/apps/A04LG3JUY4W/slash-commands?
   https://gratefully-easy-ewe.ngrok-free.app/alerts
+  https://alertengine.ajaydwivedi.com/alerts
 
 
 # Waitress Web Server
@@ -141,9 +143,9 @@ Triggers -> At startup, Daily every 1 hour
 
 
 # For slack verification
-curl -X POST https://sqlmonitor.ajaydwivedi.com:5000/slack/events -d '{"type": "url_verification", "challenge": "test"}' -H "Content-Type: application/json"
+curl -X POST https://alertengine.ajaydwivedi.com:5000/slack/events -d '{"type": "url_verification", "challenge": "test"}' -H "Content-Type: application/json"
 
-curl -X POST https://sqlmonitor.ajaydwivedi.com:5000/slack/events \
+curl -X POST https://alertengine.ajaydwivedi.com:5000/slack/events \
     -H "Content-Type: application/json" \
     -d '{"token": "Jhj5dZrVaK7ZwHHjRyZWjbDl", "type": "url_verification", "challenge": "3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P"}'
 
