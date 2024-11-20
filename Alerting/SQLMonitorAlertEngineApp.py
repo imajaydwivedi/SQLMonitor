@@ -160,13 +160,13 @@ if verbose:
     logger.info(f"dba_slack_bot_token = '{dba_slack_bot_token}'")
 
 
-# Main Page Route
+# Main Page Route: Open [SQLMonitor-Alerts] grafana dashboard
 @app.route("/", methods=['GET','POST'])
 def root_redirect():
     return redirect(url_for_alerts_grafana_dashboard, code=302)
 
 
-# Website Index Page
+# Website Index Page: Just send greetings to user
 '''
 @app.route("/", methods=['GET','POST'])
 def greetings():
@@ -174,37 +174,6 @@ def greetings():
 
     return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
 '''
-
-
-def verify_slack_request(req):
-    print(req)
-    #timestamp = req.headers.get("X-Slack-Request-Timestamp")
-    timestamp = req.headers['X-Slack-Request-Timestamp']
-    if timestamp is None:
-        timestamp = time.time() - 2
-    #slack_signature = req.headers.get("X-Slack-Signature")
-    slack_signature = req.headers['X-Slack-Signature']
-    body = req.get_data(as_text=True)
-
-    # Check if the request timestamp is within 5 minutes of the current time
-    if abs(time.time() - int(timestamp)) > 300:
-    #if absolute_value(time.time() - timestamp) > 60 * 5:
-        return False, "Invalid request timestamp"
-
-    # Create the basestring to verify the signature
-    basestring = f"v0:{timestamp}:{body}"
-    my_signature = "v0=" + hmac.new(
-        key=dba_slack_bot_signing_secret.encode(),
-        msg=basestring.encode(),
-        digestmod=hashlib.sha256
-    ).hexdigest()
-
-    # Compare the signatures
-    if not hmac.compare_digest(my_signature, slack_signature):
-        return False, "Invalid signature"
-
-    return True, None
-
 
 @slack_events_adapter.on("app_mention")
 def handle_message(event_data):
@@ -318,11 +287,15 @@ def get_alert():
     return Response(), 200
 
 
-# Handle Interactivity
-slack_command = '/slack/interactive-endpoint'
-@app.route(slack_command, methods=['GET','POST'])
-def interactive_action():
-    logger.info(f"Got request on endpoint: {slack_command}..")
+# Handle Slack Interactivity
+slack_interactive_action_api = '/slack/interactive-endpoint'
+@app.route(slack_interactive_action_api, methods=['GET','POST'])
+def slack_interactive_action():
+    logger.info(f"Got request on endpoint: {slack_interactive_action_api}..")
+    '''
+    This method handles interactions from slack.
+    For example, when alert is acknowledged/cleared/suppressed/resolved by click on Slack buttons
+    '''
 
     # Parse the request payload
     data = request.form["payload"]
@@ -359,6 +332,59 @@ def interactive_action():
     #select = form_json["action"][0]
 
     return make_response("", 200)
+
+
+# Handle non-clack Alert Actions
+alert_action_api = '/alert/take_action'
+@app.route(alert_action_api, methods=['GET','POST'])
+def alert_action():
+    logger.info(f"Got request on endpoint: {alert_action_api}..")
+    '''
+    This method handles interactions from slack.
+    For example, when alert is acknowledged/cleared/suppressed/resolved by click on Slack buttons
+    '''
+
+    # Parse the request payload
+    data = request.form["payload"]
+    logger.info(data)
+    form_json = json.loads(data)
+    logger.info(form_json)
+
+    '''
+    user_name = form_json['user']['username']
+    user_id = form_json['user']['id']
+    token = form_json["token"]
+    channel_id = form_json["channel"]["id"]
+    action_to_take = form_json["actions"][0]["text"]["text"]
+    alert_key = form_json["actions"][0]["value"]
+    action_id = form_json["actions"][0]["action_id"]
+    alert_id = int(action_id.replace(f"{action_to_take}-",""))
+    action_ts = form_json["actions"][0]["action_ts"]
+
+    # alert object
+    alert_obj = SmaAlert()
+    alert_obj.logger = logger
+    alert_obj.logged_by = user_name
+    alert_obj.alert_job_name = alert_job_name
+    alert_obj.id = alert_id
+    alert_obj.action_to_take = action_to_take
+    alert_obj.verbose = verbose
+    alert_obj.sql_connection = cnxn
+    alert_obj.initialize_data_from_db()
+    alert_obj.initialize_derived_attributes()
+    #alert_obj.slack_ts_value = action_ts
+    alert_obj.take_required_action()
+
+    logger.info(f"{action_to_take} {alert_key} with id {alert_id}, and respond back on {action_ts}")
+    if verbose:
+        print(form_json)
+
+    # Check to see what the user's selection was and update the message
+    #select = form_json["action"][0]
+    '''
+
+    return make_response("", 200)
+
 
 
 def auto_resolve_cleared_alerts():
