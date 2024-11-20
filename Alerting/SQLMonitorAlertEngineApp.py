@@ -333,22 +333,48 @@ def slack_interactive_action():
 
     return make_response("", 200)
 
+# https://alertengine.ajaydwivedi.com/alert/take_action?app_name=grafana&user_name=ajay.dwivedi2007@gmail.com&alert_id=608&alert_key=Alert-AvailableMemory&action=acknowledge
 
 # Handle non-clack Alert Actions
 alert_action_api = '/alert/take_action'
-@app.route(alert_action_api, methods=['GET','POST'])
+@app.route(alert_action_api, methods=['GET'])
 def alert_action():
     logger.info(f"Got request on endpoint: {alert_action_api}..")
+
     '''
     This method handles interactions from slack.
     For example, when alert is acknowledged/cleared/suppressed/resolved by click on Slack buttons
     '''
 
-    # Parse the request payload
-    data = request.form["payload"]
-    logger.info(data)
-    form_json = json.loads(data)
-    logger.info(form_json)
+    # Extract query parameters from the URL
+    app_name = request.args.get('app_name')
+    user_name = request.args.get('user_name')
+    alert_id = request.args.get('alert_id')
+    alert_key = request.args.get('alert_key')
+    action = request.args.get('action')
+
+    logger.info(request.args)
+
+    # Validate required parameters
+    if not all([app_name, user_name, alert_id, alert_key, action]):
+        return jsonify({"error": "Missing one or more required query parameters"}), 400
+
+    # Process the action (replace with actual logic as needed)
+    # Example: Acknowledge the alert
+    if action == "acknowledge":
+        response_message = f"Alert {alert_key} with ID {alert_id} has been acknowledged for {app_name} by {user_name}."
+    else:
+        response_message = f"Action '{action}' for alert {alert_key} is not supported."
+
+    # Return the response as JSON
+    return jsonify({
+        "message": response_message,
+        "app_name": app_name,
+        "user_name": user_name,
+        "alert_id": alert_id,
+        "alert_key": alert_key,
+        "action": action
+    })
 
     '''
     user_name = form_json['user']['username']
