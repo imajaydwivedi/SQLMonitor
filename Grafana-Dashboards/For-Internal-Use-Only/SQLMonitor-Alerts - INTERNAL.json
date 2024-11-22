@@ -56,8 +56,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -85,8 +84,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -342,22 +340,27 @@
                   {
                     "targetBlank": true,
                     "title": "Action -> Acknowledge",
-                    "url": "${__data.fields.action_url}&action_to_take=acknowledge"
+                    "url": "${__data.fields.action_url}&action_to_take=Acknowledge"
                   },
                   {
                     "targetBlank": true,
                     "title": "Action -> Clear",
-                    "url": "${__data.fields.action_url}&action_to_take=clear"
+                    "url": "${__data.fields.action_url}&action_to_take=Clear"
                   },
                   {
                     "targetBlank": true,
                     "title": "Action -> Suppress",
-                    "url": "${__data.fields.action_url}&action_to_take=suppress"
+                    "url": "${__data.fields.action_url}&action_to_take=Suppress"
                   },
                   {
                     "targetBlank": true,
                     "title": "Action -> Resolve",
-                    "url": "${__data.fields.action_url}&action_to_take=resolve"
+                    "url": "${__data.fields.action_url}&action_to_take=Resolve"
+                  },
+                  {
+                    "targetBlank": true,
+                    "title": "Action -> Add remarks in Alert",
+                    "url": "${__data.fields.action_url}&action_to_take=Update&remarks=${remarks_to_add}"
                   }
                 ]
               }
@@ -568,8 +571,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -619,8 +621,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -777,8 +778,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -813,8 +813,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -964,8 +963,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1015,8 +1013,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1173,8 +1170,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1209,8 +1205,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1360,8 +1355,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1411,8 +1405,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1569,8 +1562,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1605,8 +1597,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1871,6 +1862,26 @@
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Remarks To Add",
+        "name": "remarks_to_add",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
       }
     ]
   },
@@ -1882,6 +1893,6 @@
   "timezone": "browser",
   "title": "SQLMonitor-Alerts",
   "uid": "alerts",
-  "version": 41,
+  "version": 47,
   "weekStart": ""
 }
