@@ -208,8 +208,8 @@ Get-Service SQLMonitorAlertEngine | Restart-Service
 sc stop SQLMonitorAlertEngine
 sc delete SQLMonitorAlertEngine
 
-
-
+How to Run Python Script as a Service Windows & Linux
+https://www.youtube.com/watch?v=pLqtenLVKsg
 
 
 

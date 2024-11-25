@@ -60,12 +60,14 @@ BEGIN
 	declare @url_login_expiry_dashboard_panel varchar(1000) = 'distributed_live_dashboard_all_servers/monitoring-live-all-servers?orgId=1&refresh=1m&viewPanel=885'
 	declare @url_for_login_password_reset varchar(1000) = '#'
 	declare @url_for_dba_slack_channel varchar(1000) = 'workspace.slack.com/archives/unique_id';
+	declare @dba_login_prefix varchar(20);
 
 	select @dba_team_email_id = p.param_value from dbo.sma_params p where p.param_key = 'dba_team_email_id';
 	select @dba_manager_email_id = p.param_value from dbo.sma_params p where p.param_key = 'dba_manager_email_id';
 	select @sre_vp_email_id = p.param_value from dbo.sma_params p where p.param_key = 'sre_vp_email_id';
 	select @cto_email_id = p.param_value from dbo.sma_params p where p.param_key = 'cto_email_id';
 	select @noc_email_id = p.param_value from dbo.sma_params p where p.param_key = 'noc_email_id';
+	select @dba_login_prefix = p.param_value from dbo.sma_params p where p.param_key = 'dba_login_prefix';
 
 	select @url_for_dba_slack_channel = p.param_value from dbo.sma_params p where p.param_key = 'url_for_dba_slack_channel';
 	select @url_for_GrafanaDashboardPortal = p.param_value from dbo.sma_params p where p.param_key = 'GrafanaDashboardPortal';
@@ -570,8 +572,9 @@ BEGIN
 				--inner join #login_email_xref lex
 				--	on lei.sql_instance = lex.sql_instance and lei.login_name = lex.login_name
 				where 1=1
-				and (		left(lower(lei.login_name),6) <> 'dba.' 
-						--and coalesce(lei.login_owner_group_email,'') <> @dba_team_email_id
+				and (	not (lei.login_name like (@dba_login_prefix+'!_%') escape '!'
+							or	lei.login_name like (@dba_login_prefix+'.%') escape '!'
+							)
 					)
 				and lei.days_until_expiration <= @noc_threshold_days
 			)
@@ -692,8 +695,9 @@ BEGIN
 				--inner join #login_email_xref lex
 				--	on lei.sql_instance = lex.sql_instance and lei.login_name = lex.login_name
 				where 1=1
-				and (		left(lower(lei.login_name),6) <> 'dba.' 
-						--and coalesce(lei.login_owner_group_email,'') <> @dba_team_email_id
+				and (	not (lei.login_name like (@dba_login_prefix+'!_%') escape '!'
+							or	lei.login_name like (@dba_login_prefix+'.%') escape '!'
+							)
 					)
 				and lei.days_until_expiration <= @sre_vp_threshold_days
 				and (lei.is_app_login = 1 or lei.is_app_login is null)
@@ -813,7 +817,9 @@ BEGIN
 				--inner join #login_email_xref lex
 				--	on lei.sql_instance = lex.sql_instance and lei.login_name = lex.login_name
 				where 1=1
-				and left(lower(lei.login_name),6) <> 'dba.' 
+				and not (lei.login_name like (@dba_login_prefix+'!_%') escape '!'
+						or	lei.login_name like (@dba_login_prefix+'.%') escape '!'
+						)
 				and coalesce(lei.login_owner_group_email,'') <> @dba_team_email_id
 				and lei.days_until_expiration <= @cto_threshold_days
 				and (lei.is_app_login is null or lei.is_app_login = 1)

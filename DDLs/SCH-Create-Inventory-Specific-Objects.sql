@@ -1475,6 +1475,7 @@ begin
 			('dba_slack_channel_name','#sqlmonitor-alerts','DBA Slack Channel ID'),
 			('dba_slack_channel_id','C01234567890','DBA Slack Channel ID'),
 			('dba_slack_bot', 'SQLMonitor', 'DBA Slack Bot Name'),
+			('dba_login_prefix', 'dba', 'Prefix in dba logins. for example, dba_ajaydwivedi'),
 			('credential_manager_database', 'DBA', 'Credential Manager Database on Inventory Server'),
 			('GrafanaDashboardPortal',
 				'http://localhost:3000/d/',
