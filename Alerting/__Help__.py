@@ -176,6 +176,41 @@ Just tag @SQLMonitor in #sqlmontor-alert channel. It would pop up asking whether
 ajaydwivedi.pythonanywhere.com
 
 
+# Deploy a Python Flask Application in IIS Server and run on machine IP address
+  # https://medium.com/@dpralay07/deploy-a-python-flask-application-in-iis-server-and-run-on-machine-ip-address-ddb81df8edf3
+
+
+# Deploy in Windows Services
+ChatGpt.com search =>
+create a service on windows server that runs following command "python E:\GitHub\SQLMonitor\Alerting\SQLMonitorAlertEngineApp.py --inventory_server localhost". Since its a service, it should appear in services.msc. And should autostart with server.
+
+# install module
+pip install flask pywin32
+
+# Install the service using Service Script "SQLMonitor\Alerting\SQLMonitorAlertEngineService.py"
+
+cd E:\Github\SQLMonitor\Alerting
+python SQLMonitorAlertEngineService.py install
+
+  Installing service SQLMonitorAlertEngineService
+  moving host exe 'C:\Program Files\Python312\Lib\site-packages\win32\pythonservice.exe' -> 'C:\Program Files\Python312\pythonservice.exe'
+  copying helper dll 'C:\Program Files\Python312\Lib\site-packages\pywin32_system32\pywintypes312.dll' -> 'C:\Program Files\Python312\pywintypes312.dll'
+  Service installed
+
+# Set the Service to Auto-Start
+sc config SQLMonitorAlertEngine start=auto
+
+# Start the service
+Get-Service SQLMonitorAlertEngine
+Get-Service SQLMonitorAlertEngine | Restart-Service
+
+# Cleanup
+sc stop SQLMonitorAlertEngine
+sc delete SQLMonitorAlertEngine
+
+How to Run Python Script as a Service Windows & Linux
+https://www.youtube.com/watch?v=pLqtenLVKsg
+
 
 
 

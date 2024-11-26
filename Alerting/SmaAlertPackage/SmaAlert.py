@@ -370,7 +370,6 @@ select [rows_affected] = isnull(@_rows_affected,0);
                 self.__call_usp_insert_sma_alert()
                 self.__send_alert_notification()
 
-
     def state_colorizer(self, state:str):
         if state=='Critical':
             color = 'OrangeRed'

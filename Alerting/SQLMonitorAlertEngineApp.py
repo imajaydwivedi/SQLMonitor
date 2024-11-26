@@ -1,13 +1,9 @@
-#import pyodbc
 import os
 import subprocess
 from threading import Thread
 import argparse
 import json
 from datetime import datetime
-import time
-import hashlib
-import hmac
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, Response, request, jsonify, redirect, make_response, abort
@@ -16,12 +12,10 @@ from slack_sdk.errors import SlackApiError
 from slackeventsapi import SlackEventAdapter
 from waitress import serve
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
-#import logging
 import psutil
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 from SmaAlertPackage.CommonFunctions.get_sm_credential import get_sm_credential
-#from SmaAlertPackage.SmaAlert import SmaAlert as sma
 from SmaAlertPackage.SmaAlert import SmaAlert
 
 # get Script Name
@@ -139,6 +133,7 @@ if 'Get Bot OAuth Token' == 'Get Bot OAuth Token':
     dba_slack_verification_token = get_sm_credential(cnxn, credential_manager_database, 'dba_slack_verification_token')
     dba_slack_channel_id = get_sma_params(cnxn, param_key='dba_slack_channel_id')[0].param_value
     dba_slack_bot = get_sma_params(cnxn, param_key='dba_slack_bot')[0].param_value
+    url_for_alerts_grafana_dashboard = get_sma_params(cnxn, param_key='url_for_alerts_grafana_dashboard')[0].param_value
 
 # Slack Event Adapter
 app = Flask(__name__)
@@ -159,43 +154,20 @@ if verbose:
     logger.info(f"dba_slack_bot_token = '{dba_slack_bot_token}'")
 
 
-# Main Page Route
+# Main Page Route: Open [SQLMonitor-Alerts] grafana dashboard
+@app.route("/", methods=['GET','POST'])
+def root_redirect():
+    return redirect(url_for_alerts_grafana_dashboard, code=302)
+
+
+# Website Index Page: Just send greetings to user
+'''
 @app.route("/", methods=['GET','POST'])
 def greetings():
     logger.info("inside greetings()")
 
     return Response(f"Greetings from SQLMonitor Alert Engine!"), 200
-
-
-def verify_slack_request(req):
-    print(req)
-    #timestamp = req.headers.get("X-Slack-Request-Timestamp")
-    timestamp = req.headers['X-Slack-Request-Timestamp']
-    if timestamp is None:
-        timestamp = time.time() - 2
-    #slack_signature = req.headers.get("X-Slack-Signature")
-    slack_signature = req.headers['X-Slack-Signature']
-    body = req.get_data(as_text=True)
-
-    # Check if the request timestamp is within 5 minutes of the current time
-    if abs(time.time() - int(timestamp)) > 300:
-    #if absolute_value(time.time() - timestamp) > 60 * 5:
-        return False, "Invalid request timestamp"
-
-    # Create the basestring to verify the signature
-    basestring = f"v0:{timestamp}:{body}"
-    my_signature = "v0=" + hmac.new(
-        key=dba_slack_bot_signing_secret.encode(),
-        msg=basestring.encode(),
-        digestmod=hashlib.sha256
-    ).hexdigest()
-
-    # Compare the signatures
-    if not hmac.compare_digest(my_signature, slack_signature):
-        return False, "Invalid signature"
-
-    return True, None
-
+'''
 
 @slack_events_adapter.on("app_mention")
 def handle_message(event_data):
@@ -309,11 +281,15 @@ def get_alert():
     return Response(), 200
 
 
-# Handle Interactivity
-slack_command = '/slack/interactive-endpoint'
-@app.route(slack_command, methods=['GET','POST'])
-def interactive_action():
-    logger.info(f"Got request on endpoint: {slack_command}..")
+# Handle Slack Interactivity
+slack_interactive_action_api = '/slack/interactive-endpoint'
+@app.route(slack_interactive_action_api, methods=['GET','POST'])
+def slack_interactive_action():
+    logger.info(f"Got request on endpoint: {slack_interactive_action_api}..")
+    '''
+    This method handles interactions from slack.
+    For example, when alert is acknowledged/cleared/suppressed/resolved by click on Slack buttons
+    '''
 
     # Parse the request payload
     data = request.form["payload"]
@@ -350,6 +326,83 @@ def interactive_action():
     #select = form_json["action"][0]
 
     return make_response("", 200)
+
+# https://alertengine.ajaydwivedi.com/alert/take_action?app_name=grafana&user_name=ajay.dwivedi2007@gmail.com&alert_id=608&alert_key=Alert-AvailableMemory&action=acknowledge
+
+# Handle non-clack Alert Actions
+alert_action_api = '/alert/take_action'
+@app.route(alert_action_api, methods=['GET'])
+def alert_action():
+    logger.info(f"Got request on endpoint: {alert_action_api}..")
+
+    '''
+    This method handles interactions from slack.
+    For example, when alert is acknowledged/cleared/suppressed/resolved by click on Slack buttons
+    '''
+
+    # Extract query parameters from the URL
+    if verbose:
+        logger.info(f"request args => \n{request.args}")
+    app_name = request.args.get('app_name')
+    user_name = request.args.get('user_name')
+    alert_id = request.args.get('alert_id')
+    alert_key = request.args.get('alert_key')
+    action_to_take = request.args.get('action_to_take')
+
+    remarks:str = None
+    if action_to_take == 'Update':
+        if 'remarks' in request.args:
+            remarks = request.args.get('remarks')
+        else:
+            return jsonify({"error": "For 'Update' action, kindly provide remarks."}), 400
+
+    #logger.info(request.args)
+
+    # Validate required parameters
+    if not all([app_name, user_name, alert_id, alert_key, action_to_take]):
+        return jsonify({"error": "Missing one or more required query parameters"}), 400
+    if user_name == 'guest':
+        return jsonify({"error": "Only logged in users are allowed to take action."}), 400
+
+    logger.info(f"{action_to_take} [{alert_key}] with id {alert_id} requested by [{user_name}] from [{app_name}] application.")
+
+    # alert object
+    is_success:bool = True
+    error_message:str = None
+    try:
+        alert_obj = SmaAlert()
+        alert_obj.logger = logger
+        alert_obj.logged_by = user_name
+        alert_obj.alert_job_name = f"{user_name} from {app_name} app"
+        alert_obj.id = alert_id
+        alert_obj.action_to_take = action_to_take
+        alert_obj.verbose = verbose
+        alert_obj.sql_connection = cnxn
+        alert_obj.initialize_data_from_db()
+        alert_obj.initialize_derived_attributes()
+        #alert_obj.slack_ts_value = action_ts
+        if remarks is not None:
+            alert_obj.header = f"comment added by {user_name} from {app_name} app"
+            alert_obj.description = remarks
+
+        alert_obj.take_required_action()
+    except Exception as e:
+        is_success = False
+        error_message = str(e)
+        logger.error(error_message)
+
+    if is_success:
+        action_verb = lambda action_to_take: f"{action_to_take}d" if action_to_take in ['Acknowledge','Resolve','Update'] else f"{action_to_take}ed"
+        response_text = f"[{alert_key}] (id ~ {alert_id}) has been {action_verb(action_to_take).lower()} by [{user_name}] from [{app_name}]."
+        response_message = { "Response": "Success", "Result": response_text}
+    else:
+        response_message = { "Response": "Failure", "Result": error_message}
+
+    # Return the response as JSON
+    return jsonify(response_message)
+
+    #return make_response("", 200)
+
 
 
 def auto_resolve_cleared_alerts():
@@ -529,7 +582,8 @@ if __name__ == "__main__":
 
     if args.use_waitress_server:
         logger.info(f"Running waitress web server.")
-        serve(app, host='0.0.0.0', port=5000, threads=20)
+        thread_count = os.cpu_count() * 10
+        serve(app, host='0.0.0.0', port=5000, threads=thread_count)
     else:
         if has_ssl_certificate:
             logger.info(f"Running flask web server with SSL Certificate.")

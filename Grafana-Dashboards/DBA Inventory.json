@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.2.0"
+      "version": "11.1.4"
     },
     {
       "type": "datasource",
@@ -1320,7 +1320,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1357,7 +1358,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -1396,7 +1398,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -1421,7 +1424,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -1501,7 +1505,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -1526,7 +1531,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -1645,7 +1651,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "red"
+                          "color": "red",
+                          "value": null
                         },
                         {
                           "color": "orange",
@@ -1670,7 +1677,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 15
+            "y": 7
           },
           "id": 11,
           "options": {
@@ -1702,7 +1709,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "declare @warning_threshold_days int;\r\ndeclare @critical_threshold_days int;\r\ndeclare @sql nvarchar(max)\r\ndeclare @params nvarchar(max)\r\ndeclare @sql_instance varchar(125)\r\ndeclare @login_name varchar(125)\r\n\r\nset @warning_threshold_days = $login_expiry_warning_threshold_days;\r\nset @critical_threshold_days = $login_expiry_critical_threshold_days;\r\nset @sql_instance = case when '$server_input' = '' then null else '$server_input' end\r\nset @login_name = case when '$login_input' = '' then null else '$login_input' end\r\n\r\nset @params = N'@warning_threshold_days int, @critical_threshold_days int, @sql_instance varchar(125), @login_name varchar(125)';\r\n\r\nset @sql = 'select\t[collection_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time), \r\n                    [sql_instance], [login_name], [is_sysadmin], \r\n                    [password_last_set_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), password_last_set_time), \r\n                    [password_expiration], [is_expired], [is_locked], [days_until_expiration], [login_owner_group_email], [server_owner_email], [app_team_emails], [application_owner_emails]\r\nfrom dbo.all_server_login_expiry_info_dashboard lei\r\nwhere 1=1\r\nand lei.days_until_expiration <= @warning_threshold_days\r\nand left(lower(login_name),6) <> ''bidba.''\r\n'+(case when @sql_instance is null then '--' else '' end)+'and sql_instance = @sql_instance\r\n'+(case when @login_name is null then '--' else '' end)+'and login_name = @login_name\r\n';\r\n\r\nexec dbo.sp_executesql @sql, @params, @warning_threshold_days, @critical_threshold_days, @sql_instance, @login_name;\r\n",
+              "rawSql": "declare @warning_threshold_days int;\r\ndeclare @critical_threshold_days int;\r\ndeclare @sql nvarchar(max)\r\ndeclare @params nvarchar(max)\r\ndeclare @sql_instance varchar(125)\r\ndeclare @login_name varchar(125)\r\ndeclare @dba_login_prefix varchar(20) = '$dba_login_prefix';\r\n\r\nset @warning_threshold_days = $login_expiry_warning_threshold_days;\r\nset @critical_threshold_days = $login_expiry_critical_threshold_days;\r\nset @sql_instance = case when '$server_input' = '' then null else '$server_input' end\r\nset @login_name = case when '$login_input' = '' then null else '$login_input' end\r\n\r\nset @params = N'@warning_threshold_days int, @critical_threshold_days int, @sql_instance varchar(125), @login_name varchar(125), @dba_login_prefix varchar(20)';\r\n\r\nset @sql = 'select\t[collection_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time), \r\n                    [sql_instance], [login_name], [is_sysadmin], \r\n                    [password_last_set_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), password_last_set_time), \r\n                    [password_expiration], [is_expired], [is_locked], [days_until_expiration], [login_owner_group_email], [server_owner_email], [app_team_emails], [application_owner_emails]\r\nfrom dbo.all_server_login_expiry_info_dashboard lei\r\nwhere 1=1\r\nand lei.days_until_expiration <= @warning_threshold_days\r\nand not (lei.login_name like (@dba_login_prefix+''!_%'') escape ''!''\r\n          or\tlei.login_name like (@dba_login_prefix+''.%'') escape ''!''\r\n          )\r\n'+(case when @sql_instance is null then '--' else '' end)+'and sql_instance = @sql_instance\r\n'+(case when @login_name is null then '--' else '' end)+'and login_name = @login_name\r\n';\r\n\r\nexec dbo.sp_executesql @sql, @params, @warning_threshold_days, @critical_threshold_days, @sql_instance, @login_name, @dba_login_prefix;\r\n",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1993,8 +2000,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2754,6 +2760,26 @@
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select dba_login_prefix = p.param_value from dbo.sma_params p where p.param_key = 'dba_login_prefix';",
+        "hide": 2,
+        "includeAll": false,
+        "label": "DBA Login Name Prefix",
+        "multi": false,
+        "name": "dba_login_prefix",
+        "options": [],
+        "query": "select dba_login_prefix = p.param_value from dbo.sma_params p where p.param_key = 'dba_login_prefix';",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
@@ -2765,6 +2791,6 @@
   "timezone": "browser",
   "title": "DBA Inventory",
   "uid": "t__DBA_Inventory",
-  "version": 7,
+  "version": 12,
   "weekStart": ""
 }
