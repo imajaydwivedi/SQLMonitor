@@ -21,7 +21,7 @@
 /SQLMonitor/*.spec
 /temp-output-*
 /temp-log-*
-/Logs/
+*/Logs/*
 *.pyc
 *__pycache__*
 __pycache__/
