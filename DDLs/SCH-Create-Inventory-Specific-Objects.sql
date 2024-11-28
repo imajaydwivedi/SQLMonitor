@@ -2609,7 +2609,7 @@ if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 	print '69) Create function dbo.fn_split_string';
 go
 IF OBJECT_ID('dbo.fn_split_string') IS NULL
-	EXEC ('CREATE FUNCTION dbo.fn_split_string() RETURNS BIT BEGIN RETURN 1 END');
+	EXEC ('CREATE FUNCTION dbo.fn_split_string() RETURNS TABLE AS RETURN SELECT 1 as DummyCol;');
 GO
 ALTER FUNCTION [dbo].[fn_split_string]
 (
