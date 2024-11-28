@@ -153,7 +153,7 @@
           "pluginVersion": "11.1.4",
           "targets": [
             {
-              "dataset": "DBA_Admin",
+              "dataset": "DBA",
               "datasource": {
                 "type": "mssql",
                 "uid": "${DS_SQLMONITOR}"
@@ -543,7 +543,7 @@
       "pluginVersion": "11.1.4",
       "targets": [
         {
-          "dataset": "DBA_Admin",
+          "dataset": "DBA",
           "datasource": {
             "type": "mssql",
             "uid": "${DS_SQLMONITOR}"
@@ -931,7 +931,7 @@
           "pluginVersion": "11.1.4",
           "targets": [
             {
-              "dataset": "DBA_Admin",
+              "dataset": "DBA",
               "datasource": {
                 "type": "mssql",
                 "uid": "${DS_SQLMONITOR}"
@@ -1323,7 +1323,7 @@
           "pluginVersion": "11.1.4",
           "targets": [
             {
-              "dataset": "DBA_Admin",
+              "dataset": "DBA",
               "datasource": {
                 "type": "mssql",
                 "uid": "${DS_SQLMONITOR}"
@@ -1715,7 +1715,7 @@
           "pluginVersion": "11.1.4",
           "targets": [
             {
-              "dataset": "DBA_Admin",
+              "dataset": "DBA",
               "datasource": {
                 "type": "mssql",
                 "uid": "${DS_SQLMONITOR}"

@@ -1,4 +1,4 @@
-use DBA_Admin
+use DBA
 go
 
 --create table more_info_table_DBE_21 (more_info nvarchar(2000));
