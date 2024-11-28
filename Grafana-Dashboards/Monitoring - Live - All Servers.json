@@ -888,7 +888,7 @@
             "type": "mssql",
             "uid": "${sqlmonitor_datasource}"
           },
-          "description": "USE DBA_Admin\ngo\n\nselect /* Offline or Linked Server not working */ *\nfrom dbo.instance_details id where id.is_enabled = 1 \n\tand (id.is_available = 0 or id.is_linked_server_working = 0);\ngo\n\nexec /* Check why linked server not working */ dbo.usp_GetAllServerInfo \n\t\t@servers = 'ATPR0SVDNTRY160,196.1.115.244', \n\t\t@output = 'srv_name, os_start_time_utc', \n\t\t@verbose = 2\ngo",
+          "description": "USE DBA\ngo\n\nselect /* Offline or Linked Server not working */ *\nfrom dbo.instance_details id where id.is_enabled = 1 \n\tand (id.is_available = 0 or id.is_linked_server_working = 0);\ngo\n\nexec /* Check why linked server not working */ dbo.usp_GetAllServerInfo \n\t\t@servers = 'ATPR0SVDNTRY160,196.1.115.244', \n\t\t@output = 'srv_name, os_start_time_utc', \n\t\t@verbose = 2\ngo",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -1159,7 +1159,7 @@
             "type": "mssql",
             "uid": "${sqlmonitor_datasource}"
           },
-          "description": "USE DBA_Admin\ngo\n\nselect /* Offline or Linked Server not working */ *\nfrom dbo.instance_details id where id.is_enabled = 1 \n\tand (id.is_available = 0 or id.is_linked_server_working = 0);\ngo\n\nexec /* Check why linked server not working */ dbo.usp_GetAllServerInfo \n\t\t@servers = 'ATPR0SVDNTRY160,196.1.115.244', \n\t\t@output = 'srv_name, os_start_time_utc', \n\t\t@verbose = 2\ngo",
+          "description": "USE DBA\ngo\n\nselect /* Offline or Linked Server not working */ *\nfrom dbo.instance_details id where id.is_enabled = 1 \n\tand (id.is_available = 0 or id.is_linked_server_working = 0);\ngo\n\nexec /* Check why linked server not working */ dbo.usp_GetAllServerInfo \n\t\t@servers = 'ATPR0SVDNTRY160,196.1.115.244', \n\t\t@output = 'srv_name, os_start_time_utc', \n\t\t@verbose = 2\ngo",
           "fieldConfig": {
             "defaults": {
               "color": {

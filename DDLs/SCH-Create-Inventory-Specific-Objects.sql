@@ -1,6 +1,7 @@
 /*
-	Version:		2024-11-14
-	Date:			2024-11-14 - Issue#6 - Preserve data of History Tables in Inventory Upgrade
+	Version:		2024-11-28
+	Date:			2024-11-28 - Enhancement#12 - Optimize table dbo.all_server_volatile_info_history
+					2024-11-14 - Issue#6 - Preserve data of History Tables in Inventory Upgrade
 					2024-11-13 - Enhancement#4 - Get Max Server Memory in dbo.all_server_stable_info
 					2024-11-12 - Enhancement#3 - Add table dbo.all_server_stable_info_history
 					2024-10-22 - Enhancement#51 - Add few objects required for DBA Inventory & Alerting
@@ -2500,6 +2501,97 @@ BEGIN
 END
 GO
 
+
+/* ****** 68) Create table dbo.all_server_volatile_info_history_hourly_p99 ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '68) Create table dbo.all_server_volatile_info_history_hourly_p99';
+IF OBJECT_ID('dbo.all_server_volatile_info_history_hourly_p99') IS NULL
+BEGIN
+	-- drop table [dbo].[all_server_volatile_info_history_hourly_p99]
+	CREATE TABLE [dbo].[all_server_volatile_info_history_hourly_p99]
+	(
+		[collection_time] [datetime2] NOT NULL,
+		[srv_name] [varchar](125) NOT NULL,
+		[os_cpu] [decimal](20, 2) NULL,
+		[sql_cpu] [decimal](20, 2) NULL,
+		--[pcnt_kernel_mode] [decimal](20, 2) NULL,
+		--[page_faults_kb] [decimal](20, 2) NULL,
+		--[blocked_counts] [int] NULL DEFAULT 0,
+		--[blocked_duration_max_seconds] [bigint] NULL DEFAULT 0,
+		[available_physical_memory_kb] [bigint] NULL,
+		--[system_high_memory_signal_state] [varchar](20) NULL,
+		[physical_memory_in_use_kb] [decimal](20, 2) NULL,
+		[memory_grants_pending] [int] NULL,
+		[connection_count] [int] NULL DEFAULT 0,
+		[active_requests_count] [int] NULL DEFAULT 0,
+		[waits_per_core_per_minute] [decimal](20, 2) NULL DEFAULT 0,
+		--[avg_disk_wait_ms] [decimal](20, 2) NULL DEFAULT 0,
+		[avg_disk_latency_ms] int NULL DEFAULT 0,
+		[page_life_expectancy] int NULL DEFAULT 0,
+		--[memory_consumers] int NULL DEFAULT 0
+		--,[target_server_memory_kb] bigint NULL DEFAULT 0
+		--,[total_server_memory_kb] bigint NULL DEFAULT 0
+
+		--,INDEX ci_all_server_volatile_info_history_hourly_p99 clustered ([collection_time],[srv_name])
+	)
+	ON ps_dba_datetime2_monthly ([collection_time]) WITH (DATA_COMPRESSION = PAGE);
+
+	create clustered columnstore index CCI__all_server_volatile_info_history_hourly_p99
+		on dbo.all_server_volatile_info_history_hourly_p99
+		on ps_dba_datetime2_monthly ([collection_time]);
+
+	--create clustered index ci_all_server_volatile_info_history_hourly_p99 
+	--	on [dbo].[all_server_volatile_info_history_hourly_p99] ([collection_time],[srv_name])
+	-- with (data_compression = page)
+	-- on ps_dba_datetime2_monthly ([collection_time]) ;
+END
+GO
+
+
+/* ****** 69) Create table dbo.all_server_volatile_info_history_hourly_p993 ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '69) Create table dbo.all_server_volatile_info_history_hourly_p993';
+IF OBJECT_ID('dbo.all_server_volatile_info_history_hourly_p993') IS NULL
+BEGIN
+	-- drop table [dbo].[all_server_volatile_info_history_hourly_p993]
+	CREATE TABLE [dbo].[all_server_volatile_info_history_hourly_p993]
+	(
+		[collection_time] [datetime2] NOT NULL,
+		[srv_name] [varchar](125) NOT NULL,
+		[os_cpu] [decimal](20, 2) NULL,
+		[sql_cpu] [decimal](20, 2) NULL,
+		--[pcnt_kernel_mode] [decimal](20, 2) NULL,
+		--[page_faults_kb] [decimal](20, 2) NULL,
+		--[blocked_counts] [int] NULL DEFAULT 0,
+		--[blocked_duration_max_seconds] [bigint] NULL DEFAULT 0,
+		[available_physical_memory_kb] [bigint] NULL,
+		--[system_high_memory_signal_state] [varchar](20) NULL,
+		[physical_memory_in_use_kb] [decimal](20, 2) NULL,
+		[memory_grants_pending] [int] NULL,
+		[connection_count] [int] NULL DEFAULT 0,
+		[active_requests_count] [int] NULL DEFAULT 0,
+		[waits_per_core_per_minute] [decimal](20, 2) NULL DEFAULT 0,
+		--[avg_disk_wait_ms] [decimal](20, 2) NULL DEFAULT 0,
+		[avg_disk_latency_ms] int NULL DEFAULT 0,
+		[page_life_expectancy] int NULL DEFAULT 0,
+		--[memory_consumers] int NULL DEFAULT 0
+		--,[target_server_memory_kb] bigint NULL DEFAULT 0
+		--,[total_server_memory_kb] bigint NULL DEFAULT 0
+
+		--,INDEX ci_all_server_volatile_info_history_hourly_p99 clustered ([collection_time],[srv_name])
+	)
+	ON ps_dba_datetime2_monthly ([collection_time]) WITH (DATA_COMPRESSION = PAGE);
+
+	create clustered columnstore index CCI__all_server_volatile_info_history_hourly_p993
+		on dbo.all_server_volatile_info_history_hourly_p993
+		on ps_dba_datetime2_monthly ([collection_time]);
+
+	--create clustered index ci_all_server_volatile_info_history_hourly_p993
+	--	on [dbo].[all_server_volatile_info_history_hourly_p993] ([collection_time],[srv_name])
+	-- with (data_compression = page)
+	-- on ps_dba_datetime2_monthly ([collection_time]) ;
+END
+GO
 
 
 /*

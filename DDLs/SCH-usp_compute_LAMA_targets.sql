@@ -579,7 +579,7 @@ go
 
 /*
 select *
-from DBA_Admin.dbo.lama_computed_metrics with (nolock)
+from DBA.dbo.lama_computed_metrics with (nolock)
 where memory_action_needed <> 'no' or cpu_action_needed <> 'no'
 
 */

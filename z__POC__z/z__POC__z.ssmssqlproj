@@ -33,7 +33,7 @@
           <Server>10.253.33.160</Server>
           <UserName>E84947</UserName>
           <Authentication>SQL</Authentication>
-          <InitialDB>DBA_Admin</InitialDB>
+          <InitialDB>DBA</InitialDB>
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>

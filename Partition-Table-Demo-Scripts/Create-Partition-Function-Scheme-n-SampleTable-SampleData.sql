@@ -117,7 +117,7 @@ All the indexes should be partition align
 insert into dbo.performance_counters
 (collection_time_utc, host_name, object, counter, value, instance)
 select collection_time_utc, host_name, object, counter, value, instance
-from DBA_Admin.dbo.performance_counters pc
+from DBA.dbo.performance_counters pc
 where pc.collection_time_utc between dateadd(hour,-3,getutcdate()) and getutcdate()
 --(396752 rows affected)
 go
@@ -126,7 +126,7 @@ go
 insert into dbo.performance_counters
 (collection_time_utc, host_name, object, counter, value, instance)
 select collection_time_utc = dateadd(month,-2,collection_time_utc), host_name, object, counter, value, instance
-from DBA_Admin.dbo.performance_counters pc
+from DBA.dbo.performance_counters pc
 where pc.collection_time_utc between dateadd(hour,-6,getutcdate()) and dateadd(hour,-3,getutcdate())
 --(398944 rows affected)
 go
@@ -135,7 +135,7 @@ go
 insert into dbo.performance_counters
 (collection_time_utc, host_name, object, counter, value, instance)
 select collection_time_utc = dateadd(YEAR,-1,collection_time_utc), host_name, object, counter, value, instance
-from DBA_Admin.dbo.performance_counters pc
+from DBA.dbo.performance_counters pc
 where pc.collection_time_utc between dateadd(hour,-9,getutcdate()) and dateadd(hour,-6,getutcdate())
 --(397848 rows affected)
 go

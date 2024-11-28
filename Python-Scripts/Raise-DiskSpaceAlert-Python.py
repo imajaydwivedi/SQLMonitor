@@ -8,7 +8,7 @@ from datetime import datetime
 parser = argparse.ArgumentParser(description="Script to Raise Disk Space Alert",
                                   formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("-s", "--inventory_server", type=str, required=False, action="store", default="localhost", help="Inventory Server")
-parser.add_argument("-d", "--inventory_database", type=str, required=False, action="store", default="DBA_Admin", help="Inventory Database")
+parser.add_argument("-d", "--inventory_database", type=str, required=False, action="store", default="DBA", help="Inventory Database")
 parser.add_argument("-k", "--service_key", type=str, required=True, action="store", default="afie5a643ff44a04d02b710591a33551", help="Pager Duty API Service Key", )
 parser.add_argument("-n", "--alert_name", type=str, required=False, action="store", default="Disk Space Issue", help="PagerDuty Alert Name")
 parser.add_argument("-j", "--alert_job_name", type=str, required=False, action="store", default="(dba) Raise-DiskSpaceAlert", help="Script/Job calling this script")
