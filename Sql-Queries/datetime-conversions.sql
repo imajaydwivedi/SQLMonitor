@@ -19,6 +19,16 @@ select	[SYSDATETIMEOFFSET] = SYSDATETIMEOFFSET(),
 		[@start_time-to-utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), @start_time);
 go
 
+declare @start_date_of_current_month datetime2;
+declare @start_hour datetime2;
+
+set @start_date_of_current_month = datefromparts(year(getdate()),MONTH(getdate()),'01');
+set @start_hour = DATEADD(HOUR, DATEDIFF(HOUR, 0, getdate()), 0);
+
+select	[@start_date_of_current_month] = @start_date_of_current_month,
+		[@start_hour] = @start_hour;
+go
+
 use DBA
 go
 
