@@ -1206,6 +1206,7 @@ begin
 				  , ('0', 23, 'Fatal Error - Sev23', NULL, '(dba) Fatal Error - Sev23', NULL)
 				  , ('0', 24, 'Fatal Error - Sev24', NULL, '(dba) Fatal Error - Sev24', NULL)
 				  , ('0', 25, 'Fatal Error - Sev25', NULL, '(dba) Fatal Error - Sev25', NULL)
+				  , ('701', 0, 'Insufficient System Memory', NULL, '(dba) Insufficient System memory', NULL)
 		) en ([error_number], [error_severity], [category], [sub_category], [alert_name], [remarks])
 	left join dbo.alert_categories ac
 		on exists (select ac.error_number, ac.[error_severity] intersect select en.error_number, en.[error_severity])
