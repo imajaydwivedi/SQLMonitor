@@ -89,6 +89,8 @@
 	65) Create view dbo.vw_all_server_logins
 	66) Create table dbo.sma_server_aliases
 	67) Create function dbo.fn_IsJobRunning
+	68) Create table dbo.all_server_volatile_info_history_hourly
+	69) Create function dbo.fn_split_string
 
 */
 
@@ -161,9 +163,11 @@ BEGIN
 	select * into '+@backup_table_name+' from [dbo].[all_server_stable_info_history];';
 	
 	print @sql
-	exec sp_executesql @sql, @params;
 
-	--DROP TABLE [dbo].[all_server_stable_info_history]
+	BEGIN TRAN
+		exec sp_executesql @sql, @params;
+		drop table [dbo].[all_server_stable_info_history]
+	COMMIT TRAN
 END
 GO
 
@@ -182,9 +186,11 @@ BEGIN
 	select * into '+@backup_table_name+' from [dbo].[all_server_volatile_info_history];';
 	
 	print @sql
-	exec sp_executesql @sql, @params;
-
-	DROP TABLE [dbo].[all_server_volatile_info_history]
+	
+	BEGIN TRAN
+		exec sp_executesql @sql, @params;
+		drop table [dbo].[all_server_volatile_info_history];
+	COMMIT TRAN
 END
 GO
 
@@ -298,6 +304,8 @@ GO
 /* ****** 6) Create table dbo.all_server_stable_info_history ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 	print '6) Create table dbo.all_server_stable_info_history';
+DECLARE @_sql NVARCHAR(MAX);
+SET @_sql = '
 CREATE TABLE [dbo].[all_server_stable_info_history]
 (
 	[collection_time] [datetime2] NULL default sysdatetime(),
@@ -323,8 +331,10 @@ CREATE TABLE [dbo].[all_server_stable_info_history]
 	[max_server_memory_mb] [int] null,
 
 	INDEX ci_all_server_stable_info_history clustered ([collection_time],[srv_name])
-);
+);';
 
+EXEC (@_sql);
+GO
 
 /* ****** 7) Create table dbo.all_server_volatile_info__staging ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
@@ -2502,96 +2512,136 @@ END
 GO
 
 
-/* ****** 68) Create table dbo.all_server_volatile_info_history_hourly_p99 ******* */
+/* ****** 68) Create table dbo.all_server_volatile_info_history_hourly ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '68) Create table dbo.all_server_volatile_info_history_hourly_p99';
-IF OBJECT_ID('dbo.all_server_volatile_info_history_hourly_p99') IS NULL
+	print '68) Create table dbo.all_server_volatile_info_history_hourly';
+IF OBJECT_ID('dbo.all_server_volatile_info_history_hourly') IS NULL
 BEGIN
-	-- drop table [dbo].[all_server_volatile_info_history_hourly_p99]
-	CREATE TABLE [dbo].[all_server_volatile_info_history_hourly_p99]
+	-- drop table [dbo].[all_server_volatile_info_history_hourly]
+	CREATE TABLE [dbo].[all_server_volatile_info_history_hourly]
 	(
 		[collection_time] [datetime2] NOT NULL,
 		[srv_name] [varchar](125) NOT NULL,
-		[os_cpu] [decimal](20, 2) NULL,
-		[sql_cpu] [decimal](20, 2) NULL,
-		--[pcnt_kernel_mode] [decimal](20, 2) NULL,
-		--[page_faults_kb] [decimal](20, 2) NULL,
-		--[blocked_counts] [int] NULL DEFAULT 0,
-		--[blocked_duration_max_seconds] [bigint] NULL DEFAULT 0,
-		[available_physical_memory_kb] [bigint] NULL,
-		--[system_high_memory_signal_state] [varchar](20) NULL,
-		[physical_memory_in_use_kb] [decimal](20, 2) NULL,
-		[memory_grants_pending] [int] NULL,
-		[connection_count] [int] NULL DEFAULT 0,
-		[active_requests_count] [int] NULL DEFAULT 0,
-		[waits_per_core_per_minute] [decimal](20, 2) NULL DEFAULT 0,
-		--[avg_disk_wait_ms] [decimal](20, 2) NULL DEFAULT 0,
-		[avg_disk_latency_ms] int NULL DEFAULT 0,
-		[page_life_expectancy] int NULL DEFAULT 0,
-		--[memory_consumers] int NULL DEFAULT 0
-		--,[target_server_memory_kb] bigint NULL DEFAULT 0
-		--,[total_server_memory_kb] bigint NULL DEFAULT 0
+		os_cpu__p50 [decimal](20, 2) NULL,
+		os_cpu__p95 [decimal](20, 2) NULL,
+		os_cpu__p98 [decimal](20, 2) NULL,
+		os_cpu__p99 [decimal](20, 2) NULL,
+		os_cpu__p993 [decimal](20, 2) NULL,
+		sql_cpu__p50 [decimal](20, 2) NULL,
+		sql_cpu__p95 [decimal](20, 2) NULL,
+		sql_cpu__p98 [decimal](20, 2) NULL,
+		sql_cpu__p99 [decimal](20, 2) NULL,
+		sql_cpu__p993 [decimal](20, 2) NULL,
+		available_physical_memory_kb__p50 bigint null,
+		available_physical_memory_kb__p95 bigint null,
+		available_physical_memory_kb__p98 bigint null,
+		available_physical_memory_kb__p99 bigint null,
+		available_physical_memory_kb__p993 bigint null,
+		physical_memory_in_use_kb__p50 [decimal](20, 2) NULL,
+		physical_memory_in_use_kb__p95 [decimal](20, 2) NULL,
+		physical_memory_in_use_kb__p98 [decimal](20, 2) NULL,
+		physical_memory_in_use_kb__p99 [decimal](20, 2) NULL,
+		physical_memory_in_use_kb__p993 [decimal](20, 2) NULL,
+		memory_grants_pending__p50 int null,
+		memory_grants_pending__p95 int null,
+		memory_grants_pending__p98 int null,
+		memory_grants_pending__p99 int null,
+		memory_grants_pending__p993 int null,
+		connection_count__p50 int null,
+		connection_count__p95 int null,
+		connection_count__p98 int null,
+		connection_count__p99 int null,
+		connection_count__p993 int null,
+		active_requests_count__p50 int null,
+		active_requests_count__p95 int null,
+		active_requests_count__p98 int null,
+		active_requests_count__p99 int null,
+		active_requests_count__p993 int null,
+		waits_per_core_per_minute__p50 [decimal](20, 2) NULL,
+		waits_per_core_per_minute__p95 [decimal](20, 2) NULL,
+		waits_per_core_per_minute__p98 [decimal](20, 2) NULL,
+		waits_per_core_per_minute__p99 [decimal](20, 2) NULL,
+		waits_per_core_per_minute__p993 [decimal](20, 2) NULL,
+		avg_disk_latency_ms__p50 int null,
+		avg_disk_latency_ms__p95 int null,
+		avg_disk_latency_ms__p98 int null,
+		avg_disk_latency_ms__p99 int null,
+		avg_disk_latency_ms__p993 int null,
+		page_life_expectancy__p50 int null,
+		page_life_expectancy__p95 int null,
+		page_life_expectancy__p99 int null,
+		page_life_expectancy__p98 int null,
+		page_life_expectancy__p993 int null
 
-		--,INDEX ci_all_server_volatile_info_history_hourly_p99 clustered ([collection_time],[srv_name])
+		--,INDEX ci_all_server_volatile_info_history_hourly clustered ([collection_time],[srv_name])
 	)
 	ON ps_dba_datetime2_monthly ([collection_time]) WITH (DATA_COMPRESSION = PAGE);
 
-	create clustered columnstore index CCI__all_server_volatile_info_history_hourly_p99
-		on dbo.all_server_volatile_info_history_hourly_p99
+	create clustered columnstore index CCI__all_server_volatile_info_history_hourly
+		on dbo.all_server_volatile_info_history_hourly
 		on ps_dba_datetime2_monthly ([collection_time]);
 
-	--create clustered index ci_all_server_volatile_info_history_hourly_p99 
-	--	on [dbo].[all_server_volatile_info_history_hourly_p99] ([collection_time],[srv_name])
+	--create clustered index ci_all_server_volatile_info_history_hourly 
+	--	on [dbo].[all_server_volatile_info_history_hourly] ([collection_time],[srv_name])
 	-- with (data_compression = page)
 	-- on ps_dba_datetime2_monthly ([collection_time]) ;
 END
 GO
 
-
-/* ****** 69) Create table dbo.all_server_volatile_info_history_hourly_p993 ******* */
+-- 68.a) Add dbo.purge_table entry for dbo.all_server_volatile_info_history_hourly
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '69) Create table dbo.all_server_volatile_info_history_hourly_p993';
-IF OBJECT_ID('dbo.all_server_volatile_info_history_hourly_p993') IS NULL
-BEGIN
-	-- drop table [dbo].[all_server_volatile_info_history_hourly_p993]
-	CREATE TABLE [dbo].[all_server_volatile_info_history_hourly_p993]
-	(
-		[collection_time] [datetime2] NOT NULL,
-		[srv_name] [varchar](125) NOT NULL,
-		[os_cpu] [decimal](20, 2) NULL,
-		[sql_cpu] [decimal](20, 2) NULL,
-		--[pcnt_kernel_mode] [decimal](20, 2) NULL,
-		--[page_faults_kb] [decimal](20, 2) NULL,
-		--[blocked_counts] [int] NULL DEFAULT 0,
-		--[blocked_duration_max_seconds] [bigint] NULL DEFAULT 0,
-		[available_physical_memory_kb] [bigint] NULL,
-		--[system_high_memory_signal_state] [varchar](20) NULL,
-		[physical_memory_in_use_kb] [decimal](20, 2) NULL,
-		[memory_grants_pending] [int] NULL,
-		[connection_count] [int] NULL DEFAULT 0,
-		[active_requests_count] [int] NULL DEFAULT 0,
-		[waits_per_core_per_minute] [decimal](20, 2) NULL DEFAULT 0,
-		--[avg_disk_wait_ms] [decimal](20, 2) NULL DEFAULT 0,
-		[avg_disk_latency_ms] int NULL DEFAULT 0,
-		[page_life_expectancy] int NULL DEFAULT 0,
-		--[memory_consumers] int NULL DEFAULT 0
-		--,[target_server_memory_kb] bigint NULL DEFAULT 0
-		--,[total_server_memory_kb] bigint NULL DEFAULT 0
+	print '68.a) Add dbo.purge_table entry for dbo.all_server_volatile_info_history_hourly';
+go
+if not exists (select 1 from dbo.purge_table where table_name = 'dbo.all_server_volatile_info_history_hourly')
+begin
+	insert dbo.purge_table
+	(table_name, date_key, retention_days, purge_row_size, reference)
+	select	table_name = 'dbo.all_server_volatile_info_history_hourly', 
+			date_key = 'collection_time', 
+			retention_days = 1825, 
+			purge_row_size = 100000,
+			reference = 'SQLMonitor Data Collection'
+end
+go
 
-		--,INDEX ci_all_server_volatile_info_history_hourly_p99 clustered ([collection_time],[srv_name])
-	)
-	ON ps_dba_datetime2_monthly ([collection_time]) WITH (DATA_COMPRESSION = PAGE);
-
-	create clustered columnstore index CCI__all_server_volatile_info_history_hourly_p993
-		on dbo.all_server_volatile_info_history_hourly_p993
-		on ps_dba_datetime2_monthly ([collection_time]);
-
-	--create clustered index ci_all_server_volatile_info_history_hourly_p993
-	--	on [dbo].[all_server_volatile_info_history_hourly_p993] ([collection_time],[srv_name])
-	-- with (data_compression = page)
-	-- on ps_dba_datetime2_monthly ([collection_time]) ;
-END
+/* ***** 69) Create function dbo.fn_split_string  ***************************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '69) Create function dbo.fn_split_string';
+go
+IF OBJECT_ID('dbo.fn_split_string') IS NULL
+	EXEC ('CREATE FUNCTION dbo.fn_split_string() RETURNS TABLE AS RETURN SELECT 1 as DummyCol;');
 GO
+ALTER FUNCTION [dbo].[fn_split_string]
+(
+    @string_data VARCHAR(8000), @delimiter CHAR(1) = ','
+)
+RETURNS TABLE WITH SCHEMABINDING AS
+RETURN
+-- https://dba.stackexchange.com/a/90838
+WITH E1(N) AS (
+    SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL 
+    SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1
+)
+,E2(N) AS (SELECT 1 FROM E1 a, E1 b)
+,E4(N) AS (SELECT 1 FROM E2 a, E2 b)
+,cteTally(N) AS(
+    SELECT TOP (ISNULL(DATALENGTH(@string_data), 0)) ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) FROM E4
+)
+,cteStart(N1) AS(
+    SELECT 1 UNION ALL 
+    SELECT t.N+1 FROM cteTally t WHERE SUBSTRING(@string_data, t.N, 1) = @delimiter
+),
+cteLen(N1, L1) AS(
+SELECT 
+    s.N1,
+    ISNULL(NULLIF(CHARINDEX(@delimiter, @string_data, s.N1),0) - s.N1, 8000)
+FROM cteStart s
+)
+SELECT 
+    srno = ROW_NUMBER() OVER(ORDER BY l.N1),
+    csv_substring = ltrim(rtrim(SUBSTRING(@string_data, l.N1, l.L1)))
+FROM cteLen l
+go
 
 
 /*

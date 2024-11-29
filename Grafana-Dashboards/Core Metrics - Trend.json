@@ -1,0 +1,1096 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_SQLMONITOR",
+      "label": "SQLMonitor",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "mssql",
+      "pluginName": "Microsoft SQL Server"
+    },
+    {
+      "name": "VAR_MAX_SERVERS_TO_DISPLAY",
+      "type": "constant",
+      "label": "max_servers_to_display",
+      "value": "10",
+      "description": ""
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "dashlist",
+      "name": "Dashboard list",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.1.4"
+    },
+    {
+      "type": "datasource",
+      "id": "mssql",
+      "name": "Microsoft SQL Server",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Display Workload Details Captured using Extended Events",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 145,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 143,
+          "options": {
+            "legend": {
+              "calcs": [
+                "p99"
+              ],
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @servers varchar(8000);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\n\ndeclare @max_servers_to_display int = $max_servers_to_display;\ndeclare @parameter_servers_count int = 1;\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hourly,Daily\ndeclare @percentile varchar(20) = '$percentile';\ndeclare @hour_of_day int = ${hour_of_day};\ndeclare @vih_hourly_collection_time datetime2 = '${vih_hourly_collection_time:date:iso}';\ndeclare @group_by_sql varchar(500) = '';\ndeclare @group_by_metric varchar(500);\n\nset @servers = '${server:raw}';\nset @parameter_servers_count = len(@servers)-len(replace(@servers,',','')) + 1;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @hour_of_day int, @servers varchar(8000), @max_servers_to_display int, @vih_hourly_collection_time datetime2';\n\n\nset quoted_identifier off;\nset @sql = \"/* $__dashboard */\nset nocount on;\t\t\t\n\n;with t_history_hourly as \n(\n  select  distinct\n          [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'hh.collection_time' \n                      end)+\"),\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name, \n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"hh.os_cpu__p993\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"hh.os_cpu__p99\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"hh.os_cpu__p98\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"hh.os_cpu__p95\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"hh.os_cpu__p50\n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"*/\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"os_cpu__p993 = PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY hh.os_cpu__p993) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"os_cpu__p99 = PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY hh.os_cpu__p99) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"os_cpu__p98 = PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY hh.os_cpu__p98) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"os_cpu__p95 = PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY hh.os_cpu__p95) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"os_cpu__p50 = PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY hh.os_cpu__p50) OVER (PARTITION BY cast(collection_time as date), srv_name)\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"*/\n  from dbo.all_server_volatile_info_history_hourly hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n),\nt_history_regular as (\n  select  [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'dateadd(hour,DATEPART(hour,hh.collection_time),cast(convert(date,hh.collection_time) as datetime))'\n                      end)+\"),\n          hh.srv_name, \n          hh.os_cpu\n  from dbo.all_server_volatile_info_history hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  and hh.collection_time > @vih_hourly_collection_time\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n)\n,t_history_regular_to_trendby as (\n  select distinct \n          [time],\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name,\n          \"+(case when @percentile = 'p50' then '' else '--' end)+\"os_cpu__p50 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY os_cpu) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p95' then '' else '--' end)+\"os_cpu__p95 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY os_cpu) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p98' then '' else '--' end)+\"os_cpu__p98 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY os_cpu) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p99' then '' else '--' end)+\"os_cpu__p99 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY os_cpu) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p993' then '' else '--' end)+\"os_cpu__p993 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY os_cpu) OVER (PARTITION BY [time], srv_name))\n\n  from t_history_regular hh\n  where 1=1\n)\n,t_history as (\n  select * from t_history_hourly\n  union all\n  select * from t_history_regular_to_trendby\n)\nselect *\nfrom t_history\norder by [time]\n\"\nset quoted_identifier on;\nprint @sql\n\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @hour_of_day, @servers, @max_servers_to_display, @vih_hourly_collection_time;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Core Metrics - ${trend_by} TREND - OS CPU",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 9
+          },
+          "id": 146,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean"
+              ],
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @servers varchar(8000);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\n\ndeclare @max_servers_to_display int = $max_servers_to_display;\ndeclare @parameter_servers_count int = 1;\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hourly,Daily\ndeclare @percentile varchar(20) = '$percentile';\ndeclare @hour_of_day int = ${hour_of_day};\ndeclare @vih_hourly_collection_time datetime2 = '${vih_hourly_collection_time:date:iso}';\ndeclare @group_by_sql varchar(500) = '';\ndeclare @group_by_metric varchar(500);\n\nset @servers = '${server:raw}';\nset @parameter_servers_count = len(@servers)-len(replace(@servers,',','')) + 1;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @hour_of_day int, @servers varchar(8000), @max_servers_to_display int, @vih_hourly_collection_time datetime2';\n\n\nset quoted_identifier off;\nset @sql = \"/* $__dashboard */\nset nocount on;\t\t\t\n\n;with t_history_hourly as \n(\n  select  distinct\n          [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'hh.collection_time' \n                      end)+\"),\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name, \n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"hh.sql_cpu__p993\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"hh.sql_cpu__p99\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"hh.sql_cpu__p98\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"hh.sql_cpu__p95\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"hh.sql_cpu__p50\n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"*/\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"sql_cpu__p993 = PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY hh.sql_cpu__p993) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"sql_cpu__p99 = PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY hh.sql_cpu__p99) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"sql_cpu__p98 = PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY hh.sql_cpu__p98) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"sql_cpu__p95 = PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY hh.sql_cpu__p95) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"sql_cpu__p50 = PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY hh.sql_cpu__p50) OVER (PARTITION BY cast(collection_time as date), srv_name)\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"*/\n  from dbo.all_server_volatile_info_history_hourly hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n),\nt_history_regular as (\n  select  [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'dateadd(hour,DATEPART(hour,hh.collection_time),cast(convert(date,hh.collection_time) as datetime))'\n                      end)+\"),\n          hh.srv_name, \n          hh.sql_cpu\n  from dbo.all_server_volatile_info_history hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  and hh.collection_time > @vih_hourly_collection_time\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n)\n,t_history_regular_to_trendby as (\n  select distinct \n          [time],\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name,\n          \"+(case when @percentile = 'p50' then '' else '--' end)+\"sql_cpu__p50 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY sql_cpu) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p95' then '' else '--' end)+\"sql_cpu__p95 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY sql_cpu) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p98' then '' else '--' end)+\"sql_cpu__p98 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY sql_cpu) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p99' then '' else '--' end)+\"sql_cpu__p99 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY sql_cpu) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p993' then '' else '--' end)+\"sql_cpu__p993 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY sql_cpu) OVER (PARTITION BY [time], srv_name))\n\n  from t_history_regular hh\n  where 1=1\n)\n,t_history as (\n  select * from t_history_hourly\n  union all\n  select * from t_history_regular_to_trendby\n)\nselect *\nfrom t_history\norder by [time]\n\"\nset quoted_identifier on;\nprint @sql\n\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @hour_of_day, @servers, @max_servers_to_display, @vih_hourly_collection_time;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Core Metrics - ${trend_by} TREND - SQL CPU",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Core Metrics - ${trend_by} TREND - CPU - Max {$max_servers_to_display} Servers",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 148,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 2
+          },
+          "id": 147,
+          "options": {
+            "legend": {
+              "calcs": [
+                "p99"
+              ],
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @servers varchar(8000);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\n\ndeclare @max_servers_to_display int = $max_servers_to_display;\ndeclare @parameter_servers_count int = 1;\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hourly,Daily\ndeclare @percentile varchar(20) = '$percentile';\ndeclare @hour_of_day int = ${hour_of_day};\ndeclare @vih_hourly_collection_time datetime2 = '${vih_hourly_collection_time:date:iso}';\ndeclare @group_by_sql varchar(500) = '';\ndeclare @group_by_metric varchar(500);\n\nset @servers = '${server:raw}';\nset @parameter_servers_count = len(@servers)-len(replace(@servers,',','')) + 1;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @hour_of_day int, @servers varchar(8000), @max_servers_to_display int, @vih_hourly_collection_time datetime2';\n\n\nset quoted_identifier off;\nset @sql = \"/* $__dashboard */\nset nocount on;\t\t\t\n\n;with t_history_hourly as \n(\n  select  distinct\n          [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'hh.collection_time' \n                      end)+\"),\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name, \n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"hh.avg_disk_latency_ms__p993\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"hh.avg_disk_latency_ms__p99\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"hh.avg_disk_latency_ms__p98\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"hh.avg_disk_latency_ms__p95\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"hh.avg_disk_latency_ms__p50\n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"*/\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"avg_disk_latency_ms__p993 = PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY hh.avg_disk_latency_ms__p993) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"avg_disk_latency_ms__p99 = PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY hh.avg_disk_latency_ms__p99) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"avg_disk_latency_ms__p98 = PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY hh.avg_disk_latency_ms__p98) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"avg_disk_latency_ms__p95 = PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY hh.avg_disk_latency_ms__p95) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"avg_disk_latency_ms__p50 = PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY hh.avg_disk_latency_ms__p50) OVER (PARTITION BY cast(collection_time as date), srv_name)\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"*/\n  from dbo.all_server_volatile_info_history_hourly hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n),\nt_history_regular as (\n  select  [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'dateadd(hour,DATEPART(hour,hh.collection_time),cast(convert(date,hh.collection_time) as datetime))'\n                      end)+\"),\n          hh.srv_name, \n          hh.avg_disk_latency_ms\n  from dbo.all_server_volatile_info_history hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  and hh.collection_time > @vih_hourly_collection_time\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n)\n,t_history_regular_to_trendby as (\n  select distinct \n          [time],\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name,\n          \"+(case when @percentile = 'p50' then '' else '--' end)+\"avg_disk_latency_ms__p50 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY avg_disk_latency_ms) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p95' then '' else '--' end)+\"avg_disk_latency_ms__p95 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY avg_disk_latency_ms) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p98' then '' else '--' end)+\"avg_disk_latency_ms__p98 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY avg_disk_latency_ms) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p99' then '' else '--' end)+\"avg_disk_latency_ms__p99 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY avg_disk_latency_ms) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p993' then '' else '--' end)+\"avg_disk_latency_ms__p993 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY avg_disk_latency_ms) OVER (PARTITION BY [time], srv_name))\n\n  from t_history_regular hh\n  where 1=1\n)\n,t_history as (\n  select * from t_history_hourly\n  union all\n  select * from t_history_regular_to_trendby\n)\nselect *\nfrom t_history\norder by [time]\n\"\nset quoted_identifier on;\nprint @sql\n\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @hour_of_day, @servers, @max_servers_to_display, @vih_hourly_collection_time;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Core Metrics - ${trend_by} TREND - Disk Latency",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Core Metrics - ${trend_by} TREND - Disk Latency - Max {$max_servers_to_display} Servers",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 152,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 3
+          },
+          "id": 151,
+          "options": {
+            "legend": {
+              "calcs": [
+                "p99"
+              ],
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @servers varchar(8000);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\n\ndeclare @max_servers_to_display int = $max_servers_to_display;\ndeclare @parameter_servers_count int = 1;\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hourly,Daily\ndeclare @percentile varchar(20) = '$percentile';\ndeclare @hour_of_day int = ${hour_of_day};\ndeclare @vih_hourly_collection_time datetime2 = '${vih_hourly_collection_time:date:iso}';\ndeclare @group_by_sql varchar(500) = '';\ndeclare @group_by_metric varchar(500);\n\nset @servers = '${server:raw}';\nset @parameter_servers_count = len(@servers)-len(replace(@servers,',','')) + 1;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @hour_of_day int, @servers varchar(8000), @max_servers_to_display int, @vih_hourly_collection_time datetime2';\n\n\nset quoted_identifier off;\nset @sql = \"/* $__dashboard */\nset nocount on;\t\t\t\n\n;with t_history_hourly as \n(\n  select  distinct\n          [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'hh.collection_time' \n                      end)+\"),\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name, \n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"hh.active_requests_count__p993\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"hh.active_requests_count__p99\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"hh.active_requests_count__p98\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"hh.active_requests_count__p95\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"hh.active_requests_count__p50\n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"*/\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"active_requests_count__p993 = PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY hh.active_requests_count__p993) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"active_requests_count__p99 = PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY hh.active_requests_count__p99) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"active_requests_count__p98 = PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY hh.active_requests_count__p98) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"active_requests_count__p95 = PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY hh.active_requests_count__p95) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"active_requests_count__p50 = PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY hh.active_requests_count__p50) OVER (PARTITION BY cast(collection_time as date), srv_name)\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"*/\n  from dbo.all_server_volatile_info_history_hourly hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n),\nt_history_regular as (\n  select  [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'dateadd(hour,DATEPART(hour,hh.collection_time),cast(convert(date,hh.collection_time) as datetime))'\n                      end)+\"),\n          hh.srv_name, \n          hh.active_requests_count\n  from dbo.all_server_volatile_info_history hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  and hh.collection_time > @vih_hourly_collection_time\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n)\n,t_history_regular_to_trendby as (\n  select distinct \n          [time],\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name,\n          \"+(case when @percentile = 'p50' then '' else '--' end)+\"active_requests_count__p50 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY active_requests_count) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p95' then '' else '--' end)+\"active_requests_count__p95 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY active_requests_count) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p98' then '' else '--' end)+\"active_requests_count__p98 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY active_requests_count) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p99' then '' else '--' end)+\"active_requests_count__p99 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY active_requests_count) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p993' then '' else '--' end)+\"active_requests_count__p993 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY active_requests_count) OVER (PARTITION BY [time], srv_name))\n\n  from t_history_regular hh\n  where 1=1\n)\n,t_history as (\n  select * from t_history_hourly\n  union all\n  select * from t_history_regular_to_trendby\n)\nselect *\nfrom t_history\norder by [time]\n\"\nset quoted_identifier on;\nprint @sql\n\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @hour_of_day, @servers, @max_servers_to_display, @vih_hourly_collection_time;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Core Metrics - ${trend_by} TREND - Requests",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Core Metrics - ${trend_by} TREND - Requests - Max {$max_servers_to_display} Servers",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 154,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "kbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 4
+          },
+          "id": 153,
+          "options": {
+            "legend": {
+              "calcs": [
+                "p99"
+              ],
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @servers varchar(8000);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\n\ndeclare @max_servers_to_display int = $max_servers_to_display;\ndeclare @parameter_servers_count int = 1;\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hourly,Daily\ndeclare @percentile varchar(20) = '$percentile';\ndeclare @hour_of_day int = ${hour_of_day};\ndeclare @vih_hourly_collection_time datetime2 = '${vih_hourly_collection_time:date:iso}';\ndeclare @group_by_sql varchar(500) = '';\ndeclare @group_by_metric varchar(500);\n\nset @servers = '${server:raw}';\nset @parameter_servers_count = len(@servers)-len(replace(@servers,',','')) + 1;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @hour_of_day int, @servers varchar(8000), @max_servers_to_display int, @vih_hourly_collection_time datetime2';\n\n\nset quoted_identifier off;\nset @sql = \"/* $__dashboard */\nset nocount on;\t\t\t\n\n;with t_history_hourly as \n(\n  select  distinct\n          [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'hh.collection_time' \n                      end)+\"),\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name, \n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"hh.available_physical_memory_kb__p993\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"hh.available_physical_memory_kb__p99\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"hh.available_physical_memory_kb__p98\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"hh.available_physical_memory_kb__p95\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"hh.available_physical_memory_kb__p50\n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"*/\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"available_physical_memory_kb__p993 = PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY hh.available_physical_memory_kb__p993 desc) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"available_physical_memory_kb__p99 = PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY hh.available_physical_memory_kb__p99 desc) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"available_physical_memory_kb__p98 = PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY hh.available_physical_memory_kb__p98 desc) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"available_physical_memory_kb__p95 = PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY hh.available_physical_memory_kb__p95 desc) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"available_physical_memory_kb__p50 = PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY hh.available_physical_memory_kb__p50 desc) OVER (PARTITION BY cast(collection_time as date), srv_name)\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"*/\n  from dbo.all_server_volatile_info_history_hourly hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n),\nt_history_regular as (\n  select  [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'dateadd(hour,DATEPART(hour,hh.collection_time),cast(convert(date,hh.collection_time) as datetime))'\n                      end)+\"),\n          hh.srv_name, \n          hh.available_physical_memory_kb\n  from dbo.all_server_volatile_info_history hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  and hh.collection_time > @vih_hourly_collection_time\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n)\n,t_history_regular_to_trendby as (\n  select distinct \n          [time],\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name,\n          \"+(case when @percentile = 'p50' then '' else '--' end)+\"available_physical_memory_kb__p50 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY available_physical_memory_kb desc) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p95' then '' else '--' end)+\"available_physical_memory_kb__p95 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY available_physical_memory_kb desc) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p98' then '' else '--' end)+\"available_physical_memory_kb__p98 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY available_physical_memory_kb desc) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p99' then '' else '--' end)+\"available_physical_memory_kb__p99 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY available_physical_memory_kb desc) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p993' then '' else '--' end)+\"available_physical_memory_kb__p993 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY available_physical_memory_kb desc) OVER (PARTITION BY [time], srv_name))\n\n  from t_history_regular hh\n  where 1=1\n)\n,t_history as (\n  select * from t_history_hourly\n  union all\n  select * from t_history_regular_to_trendby\n)\nselect *\nfrom t_history\norder by [time]\n\"\nset quoted_identifier on;\nprint @sql\n\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @hour_of_day, @servers, @max_servers_to_display, @vih_hourly_collection_time;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Core Metrics - ${trend_by} TREND - Available Memory",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Core Metrics - ${trend_by} TREND - Available Memory - Max {$max_servers_to_display} Servers",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 150,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 5
+          },
+          "id": 149,
+          "options": {
+            "legend": {
+              "calcs": [
+                "p99"
+              ],
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.1.4",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @servers varchar(8000);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\n\ndeclare @max_servers_to_display int = $max_servers_to_display;\ndeclare @parameter_servers_count int = 1;\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hourly,Daily\ndeclare @percentile varchar(20) = '$percentile';\ndeclare @hour_of_day int = ${hour_of_day};\ndeclare @vih_hourly_collection_time datetime2 = '${vih_hourly_collection_time:date:iso}';\ndeclare @group_by_sql varchar(500) = '';\ndeclare @group_by_metric varchar(500);\n\nset @servers = '${server:raw}';\nset @parameter_servers_count = len(@servers)-len(replace(@servers,',','')) + 1;\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @hour_of_day int, @servers varchar(8000), @max_servers_to_display int, @vih_hourly_collection_time datetime2';\n\n\nset quoted_identifier off;\nset @sql = \"/* $__dashboard */\nset nocount on;\t\t\t\n\n;with t_history_hourly as \n(\n  select  distinct\n          [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'hh.collection_time' \n                      end)+\"),\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name, \n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"hh.connection_count__p993\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"hh.connection_count__p99\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"hh.connection_count__p98\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"hh.connection_count__p95\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"hh.connection_count__p50\n          \"+(case when @trend_by = 'Hourly' then '--' else '' end)+\"*/\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"/*\n            \"+(case when @percentile = 'p993' then '' else '--' end)+\"connection_count__p993 = PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY hh.connection_count__p993) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p99' then '' else '--' end)+\"connection_count__p99 = PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY hh.connection_count__p99) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p98' then '' else '--' end)+\"connection_count__p98 = PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY hh.connection_count__p98) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p95' then '' else '--' end)+\"connection_count__p95 = PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY hh.connection_count__p95) OVER (PARTITION BY cast(collection_time as date), srv_name)\n            \"+(case when @percentile = 'p50' then '' else '--' end)+\"connection_count__p50 = PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY hh.connection_count__p50) OVER (PARTITION BY cast(collection_time as date), srv_name)\n          \"+(case when @trend_by = 'Daily' then '--' else '' end)+\"*/\n  from dbo.all_server_volatile_info_history_hourly hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n),\nt_history_regular as (\n  select  [time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), \"+(case when @trend_by = 'Daily' \n                          then 'cast(convert(date,hh.collection_time) as datetime)' \n                          else 'dateadd(hour,DATEPART(hour,hh.collection_time),cast(convert(date,hh.collection_time) as datetime))'\n                      end)+\"),\n          hh.srv_name, \n          hh.connection_count\n  from dbo.all_server_volatile_info_history hh\n  where 1=1\n  and exists (select 1/0 from dbo.instance_details id where id.is_enabled = 1 and id.is_alias = 0 and id.sql_instance = hh.srv_name)\n  and hh.srv_name in (select ss.csv_substring from dbo.fn_split_string(@servers,',') ss where ss.srno <= @max_servers_to_display)\n  and hh.collection_time >= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc)\n  and hh.collection_time <= DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)\n  and hh.collection_time > @vih_hourly_collection_time\n  \"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,collection_time) = @hour_of_day\n)\n,t_history_regular_to_trendby as (\n  select distinct \n          [time],\n          \"+(case when @parameter_servers_count = 1 then '--' else '' end)+\"hh.srv_name,\n          \"+(case when @percentile = 'p50' then '' else '--' end)+\"connection_count__p50 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(50*0.01) WITHIN GROUP (ORDER BY connection_count) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p95' then '' else '--' end)+\"connection_count__p95 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(95*0.01) WITHIN GROUP (ORDER BY connection_count) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p98' then '' else '--' end)+\"connection_count__p98 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(98*0.01) WITHIN GROUP (ORDER BY connection_count) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p99' then '' else '--' end)+\"connection_count__p99 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99*0.01) WITHIN GROUP (ORDER BY connection_count) OVER (PARTITION BY [time], srv_name))\n\t\t\t\t\t\"+(case when @percentile = 'p993' then '' else '--' end)+\"connection_count__p993 = CONVERT(NUMERIC(20,2),PERCENTILE_CONT(99.3*0.01) WITHIN GROUP (ORDER BY connection_count) OVER (PARTITION BY [time], srv_name))\n\n  from t_history_regular hh\n  where 1=1\n)\n,t_history as (\n  select * from t_history_hourly\n  union all\n  select * from t_history_regular_to_trendby\n)\nselect *\nfrom t_history\norder by [time]\n\"\nset quoted_identifier on;\nprint @sql\n\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @hour_of_day, @servers, @max_servers_to_display, @vih_hourly_collection_time;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Core Metrics - ${trend_by} TREND - Connections",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Core Metrics - ${trend_by} TREND - Connections - Max {$max_servers_to_display} Servers",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "mssql",
+        "uid": "5Qr_lHw7z"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 121,
+      "panels": [
+        {
+          "description": "",
+          "gridPos": {
+            "h": 20,
+            "w": 24,
+            "x": 0,
+            "y": 36
+          },
+          "id": 119,
+          "links": [],
+          "options": {
+            "folderId": 1,
+            "maxItems": 50,
+            "query": "",
+            "showHeadings": false,
+            "showRecentlyViewed": false,
+            "showSearch": true,
+            "showStarred": false,
+            "tags": []
+          },
+          "pluginVersion": "9.3.2",
+          "title": "Other Dashboards",
+          "type": "dashlist"
+        }
+      ],
+      "repeat": "datasource",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "5Qr_lHw7z"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Other Dashboards",
+      "type": "row"
+    }
+  ],
+  "refresh": "30m",
+  "revision": 1,
+  "schemaVersion": 39,
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "XEvents"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "description": "Inventory Server Name",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "sqlmonitor_datasource",
+        "options": [],
+        "query": "mssql",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Sql Instance",
+        "multi": true,
+        "name": "server",
+        "options": [],
+        "query": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Daily",
+          "value": "Daily"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Trend By",
+        "multi": false,
+        "name": "trend_by",
+        "options": [
+          {
+            "selected": false,
+            "text": "Hourly",
+            "value": "Hourly"
+          },
+          {
+            "selected": true,
+            "text": "Daily",
+            "value": "Daily"
+          }
+        ],
+        "query": "Hourly,Daily",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLMONITOR}"
+        },
+        "definition": ";with t_hours as (\n\tselect [hour] = 0\n\tunion all\n\tselect [hour] = u.hour+1\n\tfrom t_hours u\n\twhere u.hour < 23\n)\nselect [hour] from t_hours",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Hour",
+        "multi": false,
+        "name": "hour_of_day",
+        "options": [],
+        "query": ";with t_hours as (\n\tselect [hour] = 0\n\tunion all\n\tselect [hour] = u.hour+1\n\tfrom t_hours u\n\twhere u.hour < 23\n)\nselect [hour] from t_hours",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "select coalesce(max(collection_time),getdate()-1)\nfrom dbo.all_server_volatile_info_history_hourly hh;",
+        "description": "Latest Entry in dbo.all_server_volatile_info_history_hourly",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Lastest Date",
+        "multi": false,
+        "name": "vih_hourly_collection_time",
+        "options": [],
+        "query": "select coalesce(max(collection_time),getdate()-1)\nfrom dbo.all_server_volatile_info_history_hourly hh;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "p993",
+          "value": "p993"
+        },
+        "description": "",
+        "hide": 1,
+        "includeAll": false,
+        "label": "Percentile",
+        "multi": false,
+        "name": "percentile",
+        "options": [
+          {
+            "selected": true,
+            "text": "p993",
+            "value": "p993"
+          },
+          {
+            "selected": false,
+            "text": "p99",
+            "value": "p99"
+          },
+          {
+            "selected": false,
+            "text": "p98",
+            "value": "p98"
+          },
+          {
+            "selected": false,
+            "text": "p95",
+            "value": "p95"
+          },
+          {
+            "selected": false,
+            "text": "p50",
+            "value": "p50"
+          }
+        ],
+        "query": "p993,p99,p98,p95,p50",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "hide": 2,
+        "name": "max_servers_to_display",
+        "query": "${VAR_MAX_SERVERS_TO_DISPLAY}",
+        "skipUrlSync": false,
+        "type": "constant",
+        "current": {
+          "value": "${VAR_MAX_SERVERS_TO_DISPLAY}",
+          "text": "${VAR_MAX_SERVERS_TO_DISPLAY}",
+          "selected": false
+        },
+        "options": [
+          {
+            "value": "${VAR_MAX_SERVERS_TO_DISPLAY}",
+            "text": "${VAR_MAX_SERVERS_TO_DISPLAY}",
+            "selected": false
+          }
+        ]
+      }
+    ]
+  },
+  "time": {
+    "from": "now-90d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "2m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Core Metrics - Trend",
+  "uid": "core_metrics_trend",
+  "version": 24,
+  "weekStart": ""
+}

@@ -2,16 +2,16 @@
 Param (
     [Parameter(Mandatory=$false)]
     [ValidateSet("AddStep", "RemoveStep")]
-    [String]$Action = "RemoveStep",
+    [String]$Action = "AddStep",
 
     [Parameter(Mandatory=$false)]
-    [String]$StepName = "46__CreateJobGetAllServerInfo",
+    [String]$StepName = "51__CreateJobComputeAllServerVolatileInfoHistoryHourly",
 
     [Parameter(Mandatory=$false)]
     [Bool]$PrintUserFriendlyFormat = $true,
 
     [Parameter(Mandatory=$false)]
-    [String]$ScriptFile = 'D:\GitHub-Personal\SQLMonitor\SQLMonitor\Install-SQLMonitor.ps1',
+    [String]$ScriptFile = 'E:\Github\SQLMonitor\SQLMonitor\Install-SQLMonitor.ps1',
 
     [Parameter(Mandatory=$false)]
     [bool]$SkipFileContentWriting = $false

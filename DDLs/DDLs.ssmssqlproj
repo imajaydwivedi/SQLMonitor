@@ -64,8 +64,8 @@
           <FullPath>FirstResponderKit-Install-All-Scripts.sql</FullPath>
         </FileNode>
         <FileNode Name="grafana-login.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>grafana-login.sql</FullPath>
         </FileNode>
@@ -100,8 +100,8 @@
           <FullPath>SCH-Blitz-Partitioning.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Create-All-Objects.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Create-All-Objects.sql</FullPath>
         </FileNode>
@@ -206,6 +206,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Collect-XEvents].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Compute-AllServerVolatileInfoHistoryHourly].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Compute-AllServerVolatileInfoHistoryHourly].sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Job-[(dba) Enable-PageCompression].sql">
           <AssociatedConnectionMoniker />
@@ -328,8 +334,8 @@
           <FullPath>SCH-Job-[(dba) Run-BlitzIndex - Weekly].sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Job-[(dba) Run-BlitzIndex].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Run-BlitzIndex].sql</FullPath>
         </FileNode>
@@ -412,8 +418,8 @@
           <FullPath>SCH-usp_avg_disk_latency_ms.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_avg_disk_wait_ms.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_avg_disk_wait_ms.sql</FullPath>
         </FileNode>
@@ -483,10 +489,16 @@
           <AssociatedConnUserName />
           <FullPath>SCH-usp_collect_xevent_metrics_hashed.sql</FullPath>
         </FileNode>
-        <FileNode Name="SCH-usp_compute_LAMA_targets.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):False:sa</AssociatedConnectionMoniker>
+        <FileNode Name="SCH-usp_compute_all_server_volatile_info_history_hourly.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_compute_all_server_volatile_info_history_hourly.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_compute_LAMA_targets.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
           <FullPath>SCH-usp_compute_LAMA_targets.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_create_agent_alerts.sql">

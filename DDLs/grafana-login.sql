@@ -111,3 +111,14 @@ use [DBA]
 if OBJECT_ID('dbo.vw_all_server_logins') is not null
 	exec ('grant select on object::dbo.vw_all_server_logins to [grafana]')
 go
+
+use [DBA]
+-- inline TVF need select
+if OBJECT_ID('dbo.fn_split_string') is not null
+	exec ('grant select on dbo.fn_split_string to [grafana]')
+go
+
+use [DBA]
+if OBJECT_ID('dbo.fn_IsJobRunning') is not null
+	exec ('grant execute on object::dbo.fn_IsJobRunning to [grafana]')
+go
