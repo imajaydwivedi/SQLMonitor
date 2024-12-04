@@ -107,9 +107,11 @@
               "calcs": [
                 "max"
               ],
-              "displayMode": "list",
+              "displayMode": "table",
               "placement": "right",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "Max",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
@@ -224,9 +226,11 @@
               "calcs": [
                 "max"
               ],
-              "displayMode": "list",
+              "displayMode": "table",
               "placement": "right",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "Max",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "single",
@@ -347,7 +351,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 229
+            "y": 301
           },
           "id": 143,
           "options": {
@@ -464,7 +468,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 269
+            "y": 341
           },
           "id": 146,
           "options": {
@@ -595,7 +599,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 230
+            "y": 302
           },
           "id": 147,
           "options": {
@@ -724,7 +728,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 279
+            "y": 351
           },
           "id": 151,
           "options": {
@@ -855,7 +859,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 232
+            "y": 304
           },
           "id": 153,
           "options": {
@@ -986,7 +990,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 234
+            "y": 306
           },
           "id": 149,
           "options": {
@@ -1062,7 +1066,7 @@
             "h": 20,
             "w": 24,
             "x": 0,
-            "y": 312
+            "y": 384
           },
           "id": 119,
           "options": {
@@ -1328,6 +1332,6 @@
   "timezone": "browser",
   "title": "Core Metrics - Trend",
   "uid": "core_metrics_trend",
-  "version": 23,
+  "version": 26,
   "weekStart": ""
 }
