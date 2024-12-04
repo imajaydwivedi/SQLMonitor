@@ -132,10 +132,6 @@
                   {
                     "color": "green",
                     "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
                   }
                 ]
               },
@@ -160,8 +156,8 @@
               "showLegend": true
             },
             "tooltip": {
-              "mode": "single",
-              "sort": "none"
+              "mode": "multi",
+              "sort": "desc"
             }
           },
           "pluginVersion": "11.3.1",
@@ -395,7 +391,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 157
+            "y": 193
           },
           "id": 143,
           "options": {
@@ -512,7 +508,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 197
+            "y": 233
           },
           "id": 146,
           "options": {
@@ -643,7 +639,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 158
+            "y": 194
           },
           "id": 147,
           "options": {
@@ -772,7 +768,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 207
+            "y": 243
           },
           "id": 151,
           "options": {
@@ -903,7 +899,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 160
+            "y": 196
           },
           "id": 153,
           "options": {
@@ -1034,7 +1030,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 162
+            "y": 198
           },
           "id": 149,
           "options": {
@@ -1110,7 +1106,7 @@
             "h": 20,
             "w": 24,
             "x": 0,
-            "y": 240
+            "y": 276
           },
           "id": 119,
           "options": {
@@ -1295,12 +1291,12 @@
           "type": "mssql",
           "uid": "${DS_SQLMONITOR}"
         },
-        "definition": "select sql_instance = ;\nselect left('${server:raw}',CHARINDEX(',','${server:raw}')-1)",
+        "definition": "select left('${server:raw}',CHARINDEX(',','${server:raw}')-1)",
         "hide": 2,
         "label": "Top Server",
         "name": "first_server",
         "options": [],
-        "query": "select sql_instance = ;\nselect left('${server:raw}',CHARINDEX(',','${server:raw}')-1)",
+        "query": "select left('${server:raw}',CHARINDEX(',','${server:raw}')-1)",
         "refresh": 2,
         "regex": "",
         "type": "query"
@@ -1358,6 +1354,6 @@
   "timezone": "browser",
   "title": "Core Metrics - Trend",
   "uid": "core_metrics_trend",
-  "version": 16,
+  "version": 21,
   "weekStart": ""
 }
