@@ -391,7 +391,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 193
+            "y": 229
           },
           "id": 143,
           "options": {
@@ -508,7 +508,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 233
+            "y": 269
           },
           "id": 146,
           "options": {
@@ -639,7 +639,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 194
+            "y": 230
           },
           "id": 147,
           "options": {
@@ -768,7 +768,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 243
+            "y": 279
           },
           "id": 151,
           "options": {
@@ -899,7 +899,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 196
+            "y": 232
           },
           "id": 153,
           "options": {
@@ -1030,7 +1030,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 198
+            "y": 234
           },
           "id": 149,
           "options": {
@@ -1106,7 +1106,7 @@
             "h": 20,
             "w": 24,
             "x": 0,
-            "y": 276
+            "y": 312
           },
           "id": 119,
           "options": {
@@ -1291,12 +1291,12 @@
           "type": "mssql",
           "uid": "${DS_SQLMONITOR}"
         },
-        "definition": "select left('${server:raw}',CHARINDEX(',','${server:raw}')-1)",
+        "definition": "declare @server nvarchar(4000);\nset @server = '${server:csv}';\nselect --[@server] = @server, \n        first_server = case when charindex(',', @server) <= 0 then @server else left(@server,CHARINDEX(',',@server)-1) end;",
         "hide": 2,
         "label": "Top Server",
         "name": "first_server",
         "options": [],
-        "query": "select left('${server:raw}',CHARINDEX(',','${server:raw}')-1)",
+        "query": "declare @server nvarchar(4000);\nset @server = '${server:csv}';\nselect --[@server] = @server, \n        first_server = case when charindex(',', @server) <= 0 then @server else left(@server,CHARINDEX(',',@server)-1) end;",
         "refresh": 2,
         "regex": "",
         "type": "query"
@@ -1336,7 +1336,7 @@
     ]
   },
   "time": {
-    "from": "now-90d",
+    "from": "now-15d",
     "to": "now"
   },
   "timepicker": {
@@ -1354,6 +1354,6 @@
   "timezone": "browser",
   "title": "Core Metrics - Trend",
   "uid": "core_metrics_trend",
-  "version": 21,
+  "version": 23,
   "weekStart": ""
 }
