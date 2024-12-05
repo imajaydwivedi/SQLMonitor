@@ -25,9 +25,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 21,
+  "id": 2,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": true,
@@ -37,7 +36,7 @@
         "x": 0,
         "y": 0
       },
-      "id": 145,
+      "id": 160,
       "panels": [
         {
           "datasource": {
@@ -56,6 +55,265 @@
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 159,
+          "options": {
+            "legend": {
+              "calcs": [
+                "p99"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @servers varchar(8000);\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\ndeclare @disk_drive varchar(20);\ndeclare @database varchar(255);\ndeclare @daterange_weeks int = 0;\n\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hourly,Daily\ndeclare @percentile varchar(20) = '$percentile';\ndeclare @hour_of_day int = ${hour_of_day};\n\nset @servers = '${server:raw}';\n--set @sql_instance = '${first_server}'\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @daterange_weeks = DATEDIFF(week,@start_time_utc,@end_time_utc);\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @trend_by varchar(20), @hour_of_day int, @disk_drive varchar(20), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* $__dashboard */\nset nocount on;\t\t\t\n\n-- Derived variables\ndeclare @start_time_local datetime2 = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc);\ndeclare @end_time_local datetime2 = case when @trend_by = 'Hourly'\n\t\t\t\t\t\t\t\t\t\tthen DATEADD(HOUR,1,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc))\n\t\t\t\t\t\t\t\t\t\telse cast(DATEADD(DAY,1,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)) as date)\n\t\t\t\t\t\t\t\t\t\tend;\n-- Cursor variables\ndeclare @c_datapoint_id int;\ndeclare @c_start_date_local datetime2;\ndeclare @c_end_date_local datetime2;\ndeclare @c_start_date_utc datetime2;\ndeclare @c_end_date_utc datetime2;\ndeclare @c_base_collection_time_utc datetime2;\ndeclare @c_next_collection_time_utc datetime2;\ndeclare @c_fisi__collection_time_utc datetime2;\ndeclare @l_sql nvarchar(max);\ndeclare @l_params nvarchar(max);\n\nif OBJECT_ID('tempdb..#lower_samples') is not null\n\tdrop table #lower_samples;\n;with cte_time as (\n\tselect [start_date_local] = convert(datetime2,cast(@start_time_local as date)), [p_start_time_local] = @start_time_local, [p_end_time_local] = @end_time_local\n\t--\n\tunion all\n\t--\n\tselect\t[start_date_local] = case when @trend_by = 'Hourly' then dateadd(hour,1,cte.[start_date_local]) else dateadd(DAY,1,cte.[start_date_local]) end, \n\t\t\t[p_start_time_local], [p_end_time_local]\n\tfrom cte_time cte\n\twhere cte.[start_date_local] < [p_end_time_local]\n)\n,cte_time_window as (\n\tselect\tcte.[start_date_local], ed.end_date_local,\n\t\t\t[start_date_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), cte.[start_date_local]),\n\t\t\t[end_date_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), ed.end_date_local)\n\tfrom cte_time cte\n\touter apply (select end_date_local = case when @trend_by = 'Hourly' then dateadd(hour,1,cte.[start_date_local]) else dateadd(DAY,1,cte.[start_date_local]) end) ed\n\twhere 1=1\n\t\"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,cte.[start_date_local]) = @hour_of_day\n)\n,cte_fis_distinct_samples as (\n\tselect\tdistinct t.*, collection_time_utc, sample_ms\n\tfrom dbo.file_io_stats fis\n\tjoin cte_time_window t\n\t\ton fis.collection_time_utc >= t.start_date_utc and fis.collection_time_utc < t.end_date_utc\n)\n,cte_fis_samples_prev as (\n\tselect fis.*\n\t\t\t,prev_collection_time_utc = LAG(collection_time_utc) over ( partition by start_date_local order by collection_time_utc)\n\t\t\t,prev_sample_ms = LAG(sample_ms) over ( partition by start_date_local order by collection_time_utc)\n\tfrom cte_fis_distinct_samples fis\n)\n,cte_fis_snapshots as (\n\tselect\tfis.start_date_local, fis.end_date_local, fis.start_date_utc, fis.end_date_utc, \n\t\t\tbase_collection_time_utc = case when prev_collection_time_utc is null then fis.collection_time_utc\n\t\t\t\t\t\t\t\t\t\t\twhen sample_ms >= prev_sample_ms then null\n\t\t\t\t\t\t\t\t\t\t\twhen sample_ms < prev_sample_ms then fis.collection_time_utc\n\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\tend\n\tfrom cte_fis_samples_prev fis\n\twhere 1=1\n)\n,cte_fis_snap_boundaries as (\n\tselect\tdatapoint_id = ROW_NUMBER()over(order by (select 'Ajay is Genious')),\n\t\t\tfis.*\n\t\t\t,next_collection_time_utc = LEAD(base_collection_time_utc) over (partition by start_date_local order by base_collection_time_utc)\n\tfrom cte_fis_snapshots fis\n\twhere 1=1\n\tand fis.base_collection_time_utc is not null\n)\nselect\t/* Time Range = \"+cast(@daterange_weeks as varchar)+\" weeks */\n\t\tfis.*,\n\t\t[fisi__collection_time_utc] = coalesce(fisi.collection_time_utc, latest.collection_time_utc)\ninto #lower_samples\nfrom cte_fis_snap_boundaries fis\nouter apply (\n\t\tselect top 1 fisi.collection_time_utc\n\t\tfrom dbo.file_io_stats fisi\n\t\twhere fisi.collection_time_utc > (case when fis.next_collection_time_utc is null then fis.end_date_utc\n\t\t\t\t\t\t\t\t\t\t\t\telse dateadd(second,-2,next_collection_time_utc) end)\n\t\torder by fisi.collection_time_utc\n\t) fisi\nouter apply (\n\t\tselect top 1 latest.collection_time_utc\n\t\tfrom dbo.file_io_stats latest\n\t\twhere fisi.collection_time_utc is null\n\t\tand latest.collection_time_utc <= fis.end_date_utc\n\t\torder by latest.collection_time_utc desc\n\t) latest\nwhere 1=1\nOPTION (MAXRECURSION 32767);\n\n--select * from #lower_samples;\n\nif OBJECT_ID('tempdb..#file_io_stats') is not null\n\tdrop table #file_io_stats;\ncreate table #file_io_stats (\n\t[collection_time_utc] datetime2 not null,\n\t[database_name] varchar(255) not null,\n\t[latency_ms] bigint null\n);\n\ndeclare cur_datapoints cursor local forward_only for\n\tselect\t/* Time Range = \"+cast(@daterange_weeks as varchar)+\" weeks */\n\t\t\tdatapoint_id, start_date_local, end_date_local, start_date_utc, end_date_utc, \n\t\t\tls.base_collection_time_utc, ls.next_collection_time_utc, ls.fisi__collection_time_utc\n\tfrom #lower_samples ls;\n\nopen cur_datapoints;\nfetch next from cur_datapoints into @c_datapoint_id, @c_start_date_local, @c_end_date_local, @c_start_date_utc, @c_end_date_utc, \n\t\t\t\t\t\t@c_base_collection_time_utc, @c_next_collection_time_utc, @c_fisi__collection_time_utc;\n\nset @l_params = N'@c_base_collection_time_utc datetime2, @c_fisi__collection_time_utc datetime2';\nwhile @@FETCH_STATUS = 0\nbegin\n\t\n\tset @l_sql = N'\n\tselect --ls.start_date_local, \n\t\t\t[time] = s1.collection_time_utc, [metric] = s1.database_name,\n\t\t\t--collection_time_utc__s2 = max(s2.collection_time_utc),\t\t\n\t\t\tlatency_ms = abs(case when max(s2.sample_ms) > max(s1.sample_ms)\n\t\t\t\t\t\tthen case when (sum(s2.num_of_reads+s2.num_of_writes)-sum(s1.num_of_reads+s1.num_of_writes)) = 0\n\t\t\t\t\t\t\t\t\t\t\tthen 0\n\t\t\t\t\t\t\t\t\t\t\telse (sum(s2.io_stall)-sum(s1.io_stall)) / (sum(s2.num_of_reads+s2.num_of_writes)-sum(s1.num_of_reads+s1.num_of_writes))\n\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\telse 0\n\t\t\t\t\t\tend)\n\tfrom dbo.file_io_stats s1\n\tjoin dbo.file_io_stats s2\n\t\ton s2.collection_time_utc = @c_fisi__collection_time_utc\n\t\tand s2.database_name = s1.database_name\n\t\tand s2.file_id = s1.file_id\n\twhere 1=1\n\tand s1.collection_time_utc = @c_base_collection_time_utc\n\tgroup by s1.collection_time_utc, s1.database_name;';\n\n\tif @c_datapoint_id = 1\n\t\tprint @l_sql\n\t\n\tinsert #file_io_stats ([collection_time_utc], [database_name], [latency_ms])\n\texec sp_executesql @l_sql, @l_params, @c_base_collection_time_utc, @c_fisi__collection_time_utc;\n\n\n\tfetch next from cur_datapoints into @c_datapoint_id, @c_start_date_local, @c_end_date_local, @c_start_date_utc, @c_end_date_utc, \n\t\t\t\t\t\t@c_base_collection_time_utc, @c_next_collection_time_utc, @c_fisi__collection_time_utc;\nend\n\nclose cur_datapoints;\ndeallocate cur_datapoints;\n\nselect [time] = fis.collection_time_utc, [metric] = fis.database_name, fis.latency_ms \nfrom #file_io_stats fis\norder by time, metric, latency_ms desc;\n\"\nset quoted_identifier on;\n--print @sql\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @trend_by, @hour_of_day, @disk_drive, @database;\nelse\n  exec [$first_server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @trend_by, @hour_of_day, @disk_drive, @database;\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Core Metrics - ${trend_by} TREND - Database IO Latency - Server ___[${first_server}]___",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Core Metrics - ${trend_by} TREND - Database IO Latency - Server ___[${first_server}]___",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 158,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 51
+          },
+          "id": 155,
+          "options": {
+            "legend": {
+              "calcs": [
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Max",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @servers varchar(8000);\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\ndeclare @disk_drive varchar(20);\ndeclare @database varchar(255);\ndeclare @daterange_weeks int = 0;\n\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hourly,Daily\ndeclare @percentile varchar(20) = '$percentile';\ndeclare @hour_of_day int = ${hour_of_day};\n\nset @servers = '${server:raw}';\n--set @sql_instance = '${first_server}'\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @daterange_weeks = DATEDIFF(week,@start_time_utc,@end_time_utc);\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @trend_by varchar(20), @hour_of_day int, @disk_drive varchar(20), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* $__dashboard */\nset nocount on;\t\t\t\n\n-- Derived variables\ndeclare @start_time_local datetime2 = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc);\ndeclare @end_time_local datetime2 = case when @trend_by = 'Hourly'\n\t\t\t\t\t\t\t\t\t\tthen DATEADD(HOUR,1,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc))\n\t\t\t\t\t\t\t\t\t\telse cast(DATEADD(DAY,1,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)) as date)\n\t\t\t\t\t\t\t\t\t\tend;\n-- Cursor variables\ndeclare @c_datapoint_id int;\ndeclare @c_start_date_local datetime2;\ndeclare @c_end_date_local datetime2;\ndeclare @c_start_date_utc datetime2;\ndeclare @c_end_date_utc datetime2;\ndeclare @c_base_collection_time_utc datetime2;\ndeclare @c_next_collection_time_utc datetime2;\ndeclare @c_fisi__collection_time_utc datetime2;\ndeclare @l_sql nvarchar(max);\ndeclare @l_params nvarchar(max);\n\nif OBJECT_ID('tempdb..#lower_samples') is not null\n\tdrop table #lower_samples;\n;with cte_time as (\n\tselect [start_date_local] = convert(datetime2,cast(@start_time_local as date)), [p_start_time_local] = @start_time_local, [p_end_time_local] = @end_time_local\n\t--\n\tunion all\n\t--\n\tselect\t[start_date_local] = case when @trend_by = 'Hourly' then dateadd(hour,1,cte.[start_date_local]) else dateadd(DAY,1,cte.[start_date_local]) end, \n\t\t\t[p_start_time_local], [p_end_time_local]\n\tfrom cte_time cte\n\twhere cte.[start_date_local] < [p_end_time_local]\n)\n,cte_time_window as (\n\tselect\tcte.[start_date_local], ed.end_date_local,\n\t\t\t[start_date_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), cte.[start_date_local]),\n\t\t\t[end_date_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), ed.end_date_local)\n\tfrom cte_time cte\n\touter apply (select end_date_local = case when @trend_by = 'Hourly' then dateadd(hour,1,cte.[start_date_local]) else dateadd(DAY,1,cte.[start_date_local]) end) ed\n\twhere 1=1\n\t\"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,cte.[start_date_local]) = @hour_of_day\n)\n,cte_fis_distinct_samples as (\n\tselect\tdistinct t.*, collection_time_utc, sample_ms\n\tfrom dbo.file_io_stats fis\n\tjoin cte_time_window t\n\t\ton fis.collection_time_utc >= t.start_date_utc and fis.collection_time_utc < t.end_date_utc\n)\n,cte_fis_samples_prev as (\n\tselect fis.*\n\t\t\t,prev_collection_time_utc = LAG(collection_time_utc) over ( partition by start_date_local order by collection_time_utc)\n\t\t\t,prev_sample_ms = LAG(sample_ms) over ( partition by start_date_local order by collection_time_utc)\n\tfrom cte_fis_distinct_samples fis\n)\n,cte_fis_snapshots as (\n\tselect\tfis.start_date_local, fis.end_date_local, fis.start_date_utc, fis.end_date_utc, \n\t\t\tbase_collection_time_utc = case when prev_collection_time_utc is null then fis.collection_time_utc\n\t\t\t\t\t\t\t\t\t\t\twhen sample_ms >= prev_sample_ms then null\n\t\t\t\t\t\t\t\t\t\t\twhen sample_ms < prev_sample_ms then fis.collection_time_utc\n\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\tend\n\tfrom cte_fis_samples_prev fis\n\twhere 1=1\n)\n,cte_fis_snap_boundaries as (\n\tselect\tdatapoint_id = ROW_NUMBER()over(order by (select 'Ajay is Genious')),\n\t\t\tfis.*\n\t\t\t,next_collection_time_utc = LEAD(base_collection_time_utc) over (partition by start_date_local order by base_collection_time_utc)\n\tfrom cte_fis_snapshots fis\n\twhere 1=1\n\tand fis.base_collection_time_utc is not null\n)\nselect\t/* Time Range = \"+cast(@daterange_weeks as varchar)+\" weeks */\n\t\tfis.*,\n\t\t[fisi__collection_time_utc] = coalesce(fisi.collection_time_utc, latest.collection_time_utc)\ninto #lower_samples\nfrom cte_fis_snap_boundaries fis\nouter apply (\n\t\tselect top 1 fisi.collection_time_utc\n\t\tfrom dbo.file_io_stats fisi\n\t\twhere fisi.collection_time_utc > (case when fis.next_collection_time_utc is null then fis.end_date_utc\n\t\t\t\t\t\t\t\t\t\t\t\telse dateadd(second,-2,next_collection_time_utc) end)\n\t\torder by fisi.collection_time_utc\n\t) fisi\nouter apply (\n\t\tselect top 1 latest.collection_time_utc\n\t\tfrom dbo.file_io_stats latest\n\t\twhere fisi.collection_time_utc is null\n\t\tand latest.collection_time_utc <= fis.end_date_utc\n\t\torder by latest.collection_time_utc desc\n\t) latest\nwhere 1=1\nOPTION (MAXRECURSION 32767);\n\n--select * from #lower_samples;\n\nif OBJECT_ID('tempdb..#file_io_stats') is not null\n\tdrop table #file_io_stats;\ncreate table #file_io_stats (\n\t[collection_time_utc] datetime2 not null,\n\t[database_name] varchar(255) not null,\n\t[io_bytes] bigint null\n);\n\ndeclare cur_datapoints cursor local forward_only for\n\tselect\t/* Time Range = \"+cast(@daterange_weeks as varchar)+\" weeks */\n\t\t\tdatapoint_id, start_date_local, end_date_local, start_date_utc, end_date_utc, \n\t\t\tls.base_collection_time_utc, ls.next_collection_time_utc, ls.fisi__collection_time_utc\n\tfrom #lower_samples ls;\n\nopen cur_datapoints;\nfetch next from cur_datapoints into @c_datapoint_id, @c_start_date_local, @c_end_date_local, @c_start_date_utc, @c_end_date_utc, \n\t\t\t\t\t\t@c_base_collection_time_utc, @c_next_collection_time_utc, @c_fisi__collection_time_utc;\n\nset @l_params = N'@c_base_collection_time_utc datetime2, @c_fisi__collection_time_utc datetime2';\nwhile @@FETCH_STATUS = 0\nbegin\n\t\n\tset @l_sql = N'\n\tselect --ls.start_date_local, \n\t\t\t[time] = s1.collection_time_utc, [metric] = s1.database_name,\n\t\t\t--collection_time_utc__s2 = max(s2.collection_time_utc),\t\t\n\t\t\tio_bytes = case when max(s2.sample_ms) > max(s1.sample_ms)\n\t\t\t\t\t\t\tthen sum(s2.num_of_bytes_read+s2.num_of_bytes_written)-sum(s1.num_of_bytes_read+s1.num_of_bytes_written)\n\t\t\t\t\t\t\telse sum(s1.num_of_bytes_read+s1.num_of_bytes_written)\n\t\t\t\t\t\t\tend\n\tfrom dbo.file_io_stats s1\n\tjoin dbo.file_io_stats s2\n\t\ton s2.collection_time_utc = @c_fisi__collection_time_utc\n\t\tand s2.database_name = s1.database_name\n\t\tand s2.file_id = s1.file_id\n\twhere 1=1\n\tand s1.collection_time_utc = @c_base_collection_time_utc\n\tgroup by s1.collection_time_utc, s1.database_name;';\n\n\tif @c_datapoint_id = 1\n\t\tprint @l_sql\n\t\n\tinsert #file_io_stats ([collection_time_utc], [database_name], [io_bytes])\n\texec sp_executesql @l_sql, @l_params, @c_base_collection_time_utc, @c_fisi__collection_time_utc;\n\n\n\tfetch next from cur_datapoints into @c_datapoint_id, @c_start_date_local, @c_end_date_local, @c_start_date_utc, @c_end_date_utc, \n\t\t\t\t\t\t@c_base_collection_time_utc, @c_next_collection_time_utc, @c_fisi__collection_time_utc;\nend\n\nclose cur_datapoints;\ndeallocate cur_datapoints;\n\nselect [time] = fis.collection_time_utc, [metric] = fis.database_name, fis.io_bytes \nfrom #file_io_stats fis\norder by time, metric, io_bytes desc;\n\"\nset quoted_identifier on;\n--print @sql\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @trend_by, @hour_of_day, @disk_drive, @database;\nelse\n  exec [$first_server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @trend_by, @hour_of_day, @disk_drive, @database;\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Core Metrics - ${trend_by} TREND - Database IO - Server ___[${first_server}]___",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Core Metrics - ${trend_by} TREND - Database IO - Server ___[${first_server}]___",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 156,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -95,6 +353,138 @@
                   }
                 ]
               },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 62
+          },
+          "id": 157,
+          "options": {
+            "legend": {
+              "calcs": [
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Max",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @servers varchar(8000);\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\ndeclare @disk_drive varchar(20);\ndeclare @database varchar(255);\ndeclare @daterange_weeks int = 0;\n\ndeclare @trend_by varchar(20) = '$trend_by'; -- Hourly,Daily\ndeclare @percentile varchar(20) = '$percentile';\ndeclare @hour_of_day int = ${hour_of_day};\n\nset @servers = '${server:raw}';\n--set @sql_instance = '${first_server}'\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @daterange_weeks = DATEDIFF(week,@start_time_utc,@end_time_utc);\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @trend_by varchar(20), @hour_of_day int, @disk_drive varchar(20), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"/* $__dashboard */\nset nocount on;\t\t\t\n\n-- Derived variables\ndeclare @start_time_local datetime2 = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @start_time_utc);\ndeclare @end_time_local datetime2 = case when @trend_by = 'Hourly'\n\t\t\t\t\t\t\t\t\t\tthen DATEADD(HOUR,1,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc))\n\t\t\t\t\t\t\t\t\t\telse cast(DATEADD(DAY,1,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), @end_time_utc)) as date)\n\t\t\t\t\t\t\t\t\t\tend;\n-- Cursor variables\ndeclare @c_datapoint_id int;\ndeclare @c_start_date_local datetime2;\ndeclare @c_end_date_local datetime2;\ndeclare @c_start_date_utc datetime2;\ndeclare @c_end_date_utc datetime2;\ndeclare @c_base_collection_time_utc datetime2;\ndeclare @c_next_collection_time_utc datetime2;\ndeclare @c_fisi__collection_time_utc datetime2;\ndeclare @l_sql nvarchar(max);\ndeclare @l_params nvarchar(max);\n\nif OBJECT_ID('tempdb..#lower_samples') is not null\n\tdrop table #lower_samples;\n;with cte_time as (\n\tselect [start_date_local] = convert(datetime2,cast(@start_time_local as date)), [p_start_time_local] = @start_time_local, [p_end_time_local] = @end_time_local\n\t--\n\tunion all\n\t--\n\tselect\t[start_date_local] = case when @trend_by = 'Hourly' then dateadd(hour,1,cte.[start_date_local]) else dateadd(DAY,1,cte.[start_date_local]) end, \n\t\t\t[p_start_time_local], [p_end_time_local]\n\tfrom cte_time cte\n\twhere cte.[start_date_local] < [p_end_time_local]\n)\n,cte_time_window as (\n\tselect\tcte.[start_date_local], ed.end_date_local,\n\t\t\t[start_date_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), cte.[start_date_local]),\n\t\t\t[end_date_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), ed.end_date_local)\n\tfrom cte_time cte\n\touter apply (select end_date_local = case when @trend_by = 'Hourly' then dateadd(hour,1,cte.[start_date_local]) else dateadd(DAY,1,cte.[start_date_local]) end) ed\n\twhere 1=1\n\t\"+(case when @trend_by = 'Hourly' then '' else '--' end)+\"and datepart(hour,cte.[start_date_local]) = @hour_of_day\n)\n,cte_fis_distinct_samples as (\n\tselect\tdistinct t.*, collection_time_utc, sample_ms\n\tfrom dbo.file_io_stats fis\n\tjoin cte_time_window t\n\t\ton fis.collection_time_utc >= t.start_date_utc and fis.collection_time_utc < t.end_date_utc\n)\n,cte_fis_samples_prev as (\n\tselect fis.*\n\t\t\t,prev_collection_time_utc = LAG(collection_time_utc) over ( partition by start_date_local order by collection_time_utc)\n\t\t\t,prev_sample_ms = LAG(sample_ms) over ( partition by start_date_local order by collection_time_utc)\n\tfrom cte_fis_distinct_samples fis\n)\n,cte_fis_snapshots as (\n\tselect\tfis.start_date_local, fis.end_date_local, fis.start_date_utc, fis.end_date_utc, \n\t\t\tbase_collection_time_utc = case when prev_collection_time_utc is null then fis.collection_time_utc\n\t\t\t\t\t\t\t\t\t\t\twhen sample_ms >= prev_sample_ms then null\n\t\t\t\t\t\t\t\t\t\t\twhen sample_ms < prev_sample_ms then fis.collection_time_utc\n\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\tend\n\tfrom cte_fis_samples_prev fis\n\twhere 1=1\n)\n,cte_fis_snap_boundaries as (\n\tselect\tdatapoint_id = ROW_NUMBER()over(order by (select 'Ajay is Genious')),\n\t\t\tfis.*\n\t\t\t,next_collection_time_utc = LEAD(base_collection_time_utc) over (partition by start_date_local order by base_collection_time_utc)\n\tfrom cte_fis_snapshots fis\n\twhere 1=1\n\tand fis.base_collection_time_utc is not null\n)\nselect\t/* Time Range = \"+cast(@daterange_weeks as varchar)+\" weeks */\n\t\tfis.*,\n\t\t[fisi__collection_time_utc] = coalesce(fisi.collection_time_utc, latest.collection_time_utc)\ninto #lower_samples\nfrom cte_fis_snap_boundaries fis\nouter apply (\n\t\tselect top 1 fisi.collection_time_utc\n\t\tfrom dbo.file_io_stats fisi\n\t\twhere fisi.collection_time_utc > (case when fis.next_collection_time_utc is null then fis.end_date_utc\n\t\t\t\t\t\t\t\t\t\t\t\telse dateadd(second,-2,next_collection_time_utc) end)\n\t\torder by fisi.collection_time_utc\n\t) fisi\nouter apply (\n\t\tselect top 1 latest.collection_time_utc\n\t\tfrom dbo.file_io_stats latest\n\t\twhere fisi.collection_time_utc is null\n\t\tand latest.collection_time_utc <= fis.end_date_utc\n\t\torder by latest.collection_time_utc desc\n\t) latest\nwhere 1=1\nOPTION (MAXRECURSION 32767);\n\n--select * from #lower_samples;\n\nif OBJECT_ID('tempdb..#file_io_stats') is not null\n\tdrop table #file_io_stats;\ncreate table #file_io_stats (\n\t[collection_time_utc] datetime2 not null,\n\t[database_name] varchar(255) not null,\n\t[iops] bigint null\n);\n\ndeclare cur_datapoints cursor local forward_only for\n\tselect\t/* Time Range = \"+cast(@daterange_weeks as varchar)+\" weeks */\n\t\t\tdatapoint_id, start_date_local, end_date_local, start_date_utc, end_date_utc, \n\t\t\tls.base_collection_time_utc, ls.next_collection_time_utc, ls.fisi__collection_time_utc\n\tfrom #lower_samples ls;\n\nopen cur_datapoints;\nfetch next from cur_datapoints into @c_datapoint_id, @c_start_date_local, @c_end_date_local, @c_start_date_utc, @c_end_date_utc, \n\t\t\t\t\t\t@c_base_collection_time_utc, @c_next_collection_time_utc, @c_fisi__collection_time_utc;\n\nset @l_params = N'@c_base_collection_time_utc datetime2, @c_fisi__collection_time_utc datetime2';\nwhile @@FETCH_STATUS = 0\nbegin\n\t\n\tset @l_sql = N'\n\tselect --ls.start_date_local, \n\t\t\t[time] = s1.collection_time_utc, [metric] = s1.database_name,\n\t\t\t--collection_time_utc__s2 = max(s2.collection_time_utc),\t\t\n\t\t\tiops = abs(case when max(s2.sample_ms) > max(s1.sample_ms)\n\t\t\t\t\t\tthen (sum(s2.num_of_reads+s2.num_of_writes)-sum(s1.num_of_reads+s1.num_of_writes)) / ((max(s2.sample_ms)-max(s1.sample_ms))/1000)\n\t\t\t\t\t\telse 0\n\t\t\t\t\t\tend)\n\tfrom dbo.file_io_stats s1\n\tjoin dbo.file_io_stats s2\n\t\ton s2.collection_time_utc = @c_fisi__collection_time_utc\n\t\tand s2.database_name = s1.database_name\n\t\tand s2.file_id = s1.file_id\n\twhere 1=1\n\tand s1.collection_time_utc = @c_base_collection_time_utc\n\tgroup by s1.collection_time_utc, s1.database_name;';\n\n\tif @c_datapoint_id = 1\n\t\tprint @l_sql\n\t\n\tinsert #file_io_stats ([collection_time_utc], [database_name], [iops])\n\texec sp_executesql @l_sql, @l_params, @c_base_collection_time_utc, @c_fisi__collection_time_utc;\n\n\n\tfetch next from cur_datapoints into @c_datapoint_id, @c_start_date_local, @c_end_date_local, @c_start_date_utc, @c_end_date_utc, \n\t\t\t\t\t\t@c_base_collection_time_utc, @c_next_collection_time_utc, @c_fisi__collection_time_utc;\nend\n\nclose cur_datapoints;\ndeallocate cur_datapoints;\n\nselect [time] = fis.collection_time_utc, [metric] = fis.database_name, fis.iops \nfrom #file_io_stats fis\norder by time, metric, iops desc;\n\"\nset quoted_identifier on;\n--print @sql\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @trend_by, @hour_of_day, @disk_drive, @database;\nelse\n  exec [$first_server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @trend_by, @hour_of_day, @disk_drive, @database;\n",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Core Metrics - ${trend_by} TREND - Database IOPS - Server ___[${first_server}]___",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Core Metrics - ${trend_by} TREND - Database IOPS - Server ___[${first_server}]___",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 145,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
               "unit": "percent"
             },
             "overrides": []
@@ -103,7 +493,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 1
+            "y": 567
           },
           "id": 143,
           "options": {
@@ -120,7 +510,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "datasource": {
@@ -172,6 +562,7 @@
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -202,8 +593,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -219,7 +609,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 9
+            "y": 607
           },
           "id": 146,
           "options": {
@@ -236,7 +626,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "datasource": {
@@ -281,7 +671,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 4
       },
       "id": 148,
       "panels": [
@@ -302,6 +692,7 @@
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -332,8 +723,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -349,7 +739,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 2
+            "y": 568
           },
           "id": 147,
           "options": {
@@ -366,7 +756,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "datasource": {
@@ -411,7 +801,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 2
+        "y": 5
       },
       "id": 152,
       "panels": [
@@ -462,8 +852,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -479,7 +868,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 3
+            "y": 617
           },
           "id": 151,
           "options": {
@@ -541,7 +930,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 6
       },
       "id": 154,
       "panels": [
@@ -562,6 +951,7 @@
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -592,8 +982,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -609,7 +998,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 4
+            "y": 570
           },
           "id": 153,
           "options": {
@@ -626,7 +1015,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "datasource": {
@@ -671,7 +1060,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 7
       },
       "id": 150,
       "panels": [
@@ -692,6 +1081,7 @@
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -722,8 +1112,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -739,7 +1128,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 5
+            "y": 572
           },
           "id": 149,
           "options": {
@@ -756,7 +1145,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "datasource": {
@@ -797,28 +1186,27 @@
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 8
       },
       "id": 121,
       "panels": [
         {
           "description": "",
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
           "gridPos": {
             "h": 20,
             "w": 24,
             "x": 0,
-            "y": 36
+            "y": 650
           },
           "id": 119,
-          "links": [],
           "options": {
             "folderId": 1,
             "maxItems": 50,
@@ -835,52 +1223,38 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Other Dashboards",
       "type": "row"
     }
   ],
+  "preload": false,
   "refresh": "30m",
-  "revision": 1,
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": [
     "mssql",
     "sqlmonitor",
-    "XEvents"
+    "core-metrics"
   ],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": false,
           "text": "SQLMonitor",
-          "value": "a28aeb06-bb6e-4c74-81af-65de433776c8"
+          "value": "ce5l4mjr3amm8d"
         },
         "description": "Inventory Server Name",
         "hide": 2,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
-        "queryValue": "",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "selected": false,
           "text": [
             "All"
           ],
@@ -893,7 +1267,6 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
-        "hide": 0,
         "includeAll": true,
         "label": "Sql Instance",
         "multi": true,
@@ -902,20 +1275,16 @@
         "query": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "Daily",
           "value": "Daily"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Trend By",
-        "multi": false,
         "name": "trend_by",
         "options": [
           {
@@ -930,39 +1299,31 @@
           }
         ],
         "query": "Hourly,Daily",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
-          "text": "9",
-          "value": "9"
+          "text": "17",
+          "value": "17"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": ";with t_hours as (\n\tselect [hour] = 0\n\tunion all\n\tselect [hour] = u.hour+1\n\tfrom t_hours u\n\twhere u.hour < 23\n)\nselect [hour] from t_hours",
-        "hide": 0,
         "includeAll": false,
         "label": "Hour",
-        "multi": false,
         "name": "hour_of_day",
         "options": [],
         "query": ";with t_hours as (\n\tselect [hour] = 0\n\tunion all\n\tselect [hour] = u.hour+1\n\tfrom t_hours u\n\twhere u.hour < 23\n)\nselect [hour] from t_hours",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1732779347940",
-          "value": "1732779347940"
+          "text": "1732910400000",
+          "value": "1732910400000"
         },
         "datasource": {
           "type": "mssql",
@@ -973,19 +1334,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Lastest Date",
-        "multi": false,
         "name": "vih_hourly_collection_time",
         "options": [],
         "query": "select coalesce(max(collection_time),getdate()-1)\nfrom dbo.all_server_volatile_info_history_hourly hh;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "p993",
           "value": "p993"
         },
@@ -993,7 +1350,6 @@
         "hide": 1,
         "includeAll": false,
         "label": "Percentile",
-        "multi": false,
         "name": "percentile",
         "options": [
           {
@@ -1023,21 +1379,80 @@
           }
         ],
         "query": "p993,p99,p98,p95,p50",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
+        "current": {
+          "text": "10",
+          "value": "10"
+        },
         "hide": 2,
         "name": "max_servers_to_display",
         "query": "10",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
+      },
+      {
+        "current": {
+          "text": "SQLMonitor",
+          "value": "SQLMonitor"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @server nvarchar(4000);\nset @server = '${server:csv}';\nselect --[@server] = @server, \n        first_server = case when charindex(',', @server) <= 0 then @server else left(@server,CHARINDEX(',',@server)-1) end;",
+        "hide": 2,
+        "label": "Top Server",
+        "name": "first_server",
+        "options": [],
+        "query": "declare @server nvarchar(4000);\nset @server = '${server:csv}';\nselect --[@server] = @server, \n        first_server = case when charindex(',', @server) <= 0 then @server else left(@server,CHARINDEX(',',@server)-1) end;",
+        "refresh": 2,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "1",
+          "value": "1"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql_instance varchar(255); \nset @sql_instance = '$first_server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "description": "",
+        "hide": 2,
+        "label": "Is Local Instance",
+        "name": "is_local",
+        "options": [],
+        "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$first_server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "DBA",
+          "value": "DBA"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$first_server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "hide": 2,
+        "name": "dba_db",
+        "options": [],
+        "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$first_server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-90d",
+    "from": "now-15d",
     "to": "now"
   },
   "timepicker": {
@@ -1055,6 +1470,6 @@
   "timezone": "browser",
   "title": "Core Metrics - Trend",
   "uid": "core_metrics_trend",
-  "version": 24,
+  "version": 34,
   "weekStart": ""
 }

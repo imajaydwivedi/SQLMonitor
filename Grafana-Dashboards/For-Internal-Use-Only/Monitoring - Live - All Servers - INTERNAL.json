@@ -25,16 +25,11 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 21,
+  "id": 4,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -432,15 +427,6 @@
           ],
           "title": "All Servers - Basic Details @ ${all_server_stable_info__collection_time_utc:date:YYYY-MM-DD HH.mm}",
           "type": "table"
-        }
-      ],
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
         }
       ],
       "title": "All Servers - Basic Info - \"${basic_info_servers_count}\" Total - \"${unsupported_servers_count}\" Non Supported @ ${all_server_stable_info__collection_time_utc:date:YYYY-MM-DD HH.mm}",
@@ -1425,7 +1411,6 @@
         }
       ],
       "repeat": "datasource",
-      "repeatDirection": "h",
       "title": "CRITICAL - OFFLINE/Linked Server Issue - \"${offline_servers_count}\" Core Instances - \"${offline_alias_count}\" Alias Instances",
       "type": "row"
     },
@@ -5528,10 +5513,6 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -5540,15 +5521,6 @@
       },
       "id": 245,
       "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "All Servers - Health Metrics - \"${core_metrics_issue_counts}\" Require ATTENTION @ ${all_server_volatile_info__collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
@@ -6227,6 +6199,18 @@
                 "value": "ms"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "issue_rank"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
           }
         ]
       },
@@ -6250,7 +6234,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -6261,7 +6245,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "declare @os_cpu_threshold decimal(20,2) = 70;\ndeclare @sql_cpu_threshold decimal(20,2) = 65;\ndeclare @blocked_counts_threshold int = 1;\ndeclare @blocked_duration_max_seconds_threshold bigint = 60;\ndeclare @available_physical_memory_kb_threshold bigint = (4*1024*1024);\ndeclare @system_high_memory_signal_state_threshold varchar(20) = 'Low';\n--declare @physical_memory_in_use_kb_threshold decimal(20,2);\ndeclare @memory_grants_pending_threshold int = 1;\ndeclare @connection_count_threshold int = 1000;\ndeclare @waits_per_core_per_minute_threshold decimal(20,2) = 180;\ndeclare @avg_disk_latency_ms int = 10;\ndeclare @_has_inventory bit = 0;\n\nset @_has_inventory = convert(bit,'${has_inventory}');\n\ndeclare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n\nset @params = N'@os_cpu_threshold decimal(20,2), @sql_cpu_threshold decimal(20,2), @blocked_counts_threshold int, \n\t\t\t\t@blocked_duration_max_seconds_threshold bigint, @available_physical_memory_kb_threshold bigint, \n\t\t\t\t@system_high_memory_signal_state_threshold varchar(20), @memory_grants_pending_threshold int, \n\t\t\t\t@connection_count_threshold int, @waits_per_core_per_minute_threshold decimal(20,2), @avg_disk_latency_ms int';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_cte as (\n\tselect\tsrv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, avg_disk_latency_ms, available_physical_memory_kb,\n            physical_memory_in_use_kb, memory_grants_pending, connection_count, waits_per_core_per_minute, system_high_memory_signal_state\n\tfrom dbo.vw_all_server_info\n)\nselect  *\nfrom t_cte cte\nwhere 1=1\nand (   os_cpu >= @os_cpu_threshold\n    or  sql_cpu >= @sql_cpu_threshold \n    or  blocked_counts >= @blocked_counts_threshold\n    or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold\n    or  ( available_physical_memory_kb < @available_physical_memory_kb_threshold and system_high_memory_signal_state = @system_high_memory_signal_state_threshold )\n    or  memory_grants_pending > @memory_grants_pending_threshold\n    or  connection_count >= @connection_count_threshold\n    or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold\n    or  avg_disk_latency_ms >= @avg_disk_latency_ms\n)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = cte.srv_name)\n\";\nset quoted_identifier off;\n\n--print @sql\nexec dbo.sp_executesql @sql, @params, @os_cpu_threshold, @sql_cpu_threshold, @blocked_counts_threshold, @blocked_duration_max_seconds_threshold, \n@available_physical_memory_kb_threshold, @system_high_memory_signal_state_threshold, @memory_grants_pending_threshold, \n@connection_count_threshold, @waits_per_core_per_minute_threshold, @avg_disk_latency_ms;",
+          "rawSql": "declare @os_cpu_threshold decimal(20,2) = 70;\ndeclare @sql_cpu_threshold decimal(20,2) = 65;\ndeclare @blocked_counts_threshold int = 1;\ndeclare @blocked_duration_max_seconds_threshold bigint = 60;\ndeclare @available_physical_memory_kb_threshold bigint = (4*1024*1024);\ndeclare @system_high_memory_signal_state_threshold varchar(20) = 'Low';\n--declare @physical_memory_in_use_kb_threshold decimal(20,2);\ndeclare @memory_grants_pending_threshold int = 1;\ndeclare @connection_count_threshold int = 1000;\ndeclare @waits_per_core_per_minute_threshold decimal(20,2) = 180;\ndeclare @avg_disk_latency_ms int = 10;\ndeclare @_has_inventory bit = 0;\n\nset @_has_inventory = convert(bit,'${has_inventory}');\n\ndeclare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n\nset @params = N'@os_cpu_threshold decimal(20,2), @sql_cpu_threshold decimal(20,2), @blocked_counts_threshold int, \n\t\t\t\t@blocked_duration_max_seconds_threshold bigint, @available_physical_memory_kb_threshold bigint, \n\t\t\t\t@system_high_memory_signal_state_threshold varchar(20), @memory_grants_pending_threshold int, \n\t\t\t\t@connection_count_threshold int, @waits_per_core_per_minute_threshold decimal(20,2), @avg_disk_latency_ms int';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_cte as (\n\tselect\tsrv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, avg_disk_latency_ms, available_physical_memory_kb,\n            physical_memory_in_use_kb, memory_grants_pending, connection_count, waits_per_core_per_minute, system_high_memory_signal_state\n            ,issue_rank =   (case when os_cpu >= 90 then 3 when os_cpu >= @os_cpu_threshold then 1 else 0 end) +\n                            (case when os_cpu >= 80 then 3 when sql_cpu >= @sql_cpu_threshold then 1 else 0 end) +\n                            (case when blocked_counts >= 20 then 5\n                                    when blocked_counts >= 10 then 4\n                                    when blocked_counts >= 5 then 2\n                                    when blocked_counts >= @blocked_counts_threshold then 1\n                                    else 0\n                                    end) +\n                            (case when blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold then 1 else 0 end) +\n                            (case when ( available_physical_memory_kb < @available_physical_memory_kb_threshold and system_high_memory_signal_state = @system_high_memory_signal_state_threshold ) then 1 else 0 end) +\n                            (case when memory_grants_pending > 10 then 5\n                                    when memory_grants_pending > 5 then 4\n                                    when memory_grants_pending > @memory_grants_pending_threshold then 2\n                                    else 0\n                                    end) +\n                            (case when connection_count >= @connection_count_threshold then 1 else 0 end) +\n                            (case when avg_disk_latency_ms >= 100 then 5\n                                    when avg_disk_latency_ms >= 80 then 4\n                                    when avg_disk_latency_ms >= 50 then 3\n                                    when avg_disk_latency_ms >= 35 then 2\n                                    when avg_disk_latency_ms >= @avg_disk_latency_ms then 1\n                                    else 0\n                                    end) +\n                            (case when waits_per_core_per_minute > @waits_per_core_per_minute_threshold then 1 else 0 end)\n\tfrom dbo.vw_all_server_info\n)\nselect  *\nfrom t_cte cte\nwhere 1=1\nand (   os_cpu >= @os_cpu_threshold\n    or  sql_cpu >= @sql_cpu_threshold \n    or  blocked_counts >= @blocked_counts_threshold\n    or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold\n    or  ( available_physical_memory_kb < @available_physical_memory_kb_threshold and system_high_memory_signal_state = @system_high_memory_signal_state_threshold )\n    or  memory_grants_pending > @memory_grants_pending_threshold\n    or  connection_count >= @connection_count_threshold\n    or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold\n    or  avg_disk_latency_ms >= @avg_disk_latency_ms\n)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = cte.srv_name)\norder by issue_rank desc, avg_disk_latency_ms desc, srv_name\n\";\nset quoted_identifier off;\n\n--print @sql\nexec dbo.sp_executesql @sql, @params, @os_cpu_threshold, @sql_cpu_threshold, @blocked_counts_threshold, @blocked_duration_max_seconds_threshold, \n@available_physical_memory_kb_threshold, @system_high_memory_signal_state_threshold, @memory_grants_pending_threshold, \n@connection_count_threshold, @waits_per_core_per_minute_threshold, @avg_disk_latency_ms;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6287,10 +6271,6 @@
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -6301,6 +6281,10 @@
       "panels": [
         {
           "description": "",
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
           "gridPos": {
             "h": 7,
             "w": 24,
@@ -6308,7 +6292,6 @@
             "y": 66
           },
           "id": 119,
-          "links": [],
           "options": {
             "folderId": 4,
             "maxItems": 10,
@@ -6324,22 +6307,13 @@
           "type": "dashlist"
         }
       ],
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Other Dashboards",
       "type": "row"
     }
   ],
+  "preload": false,
   "refresh": "5s",
-  "revision": 1,
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -6350,27 +6324,22 @@
     "list": [
       {
         "current": {
-          "selected": false,
           "text": "SQLMonitor",
-          "value": "ygPVA4snk"
+          "value": "ce5l4mjr3amm8d"
         },
         "description": "SQLMonitor Inventory Server Name",
         "hide": 2,
         "includeAll": false,
         "label": "SQLMonitor Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
-        "queryValue": "",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "selected": true,
           "text": [
             "All"
           ],
@@ -6392,13 +6361,11 @@
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\nselect distinct srvname = sql_instance from dbo.instance_details\nwhere is_available = 1 and is_enabled =1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "DBA",
           "value": "DBA"
         },
@@ -6410,21 +6377,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Inventory Database",
-        "multi": false,
         "name": "inventory_db",
         "options": [],
         "query": "SELECT DB_NAME() as [db_name]",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667340822",
-          "value": "1729667340822"
+          "text": "1733113081833",
+          "value": "1733113081833"
         },
         "datasource": {
           "type": "mssql",
@@ -6434,26 +6397,20 @@
         "hide": 2,
         "includeAll": false,
         "label": "Collection Time UTC",
-        "multi": false,
         "name": "collection_time_utc",
         "options": [],
         "query": "select collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time)) from dbo.all_server_volatile_info",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "70",
           "value": "70"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Tempdb Used %",
-        "multi": false,
         "name": "tempdb_used_pct_threshold",
         "options": [
           {
@@ -6488,20 +6445,15 @@
           }
         ],
         "query": "30,50,70,80,90,95",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "20",
           "value": "20"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Tempdb Used Gb",
-        "multi": false,
         "name": "tempdb_used_gb_threshold",
         "options": [
           {
@@ -6556,21 +6508,16 @@
           }
         ],
         "query": "2,20,50,100,200,350,500,800,1000,1500",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "No",
           "value": "No"
         },
         "description": "When yes, log space threshold won't be considered. Rather threshold are used based on server level LogSaver jobs",
-        "hide": 0,
         "includeAll": false,
         "label": "Pre Validated Logs",
-        "multi": false,
         "name": "only_validated_log_thresholds",
         "options": [
           {
@@ -6585,21 +6532,16 @@
           }
         ],
         "query": "Yes,No",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "70",
           "value": "70"
         },
         "description": "Effective only when {Pre Validated Logs} is NO",
-        "hide": 0,
         "includeAll": false,
         "label": "Log Used %",
-        "multi": false,
         "name": "log_used_pct_threshold",
         "options": [
           {
@@ -6634,21 +6576,16 @@
           }
         ],
         "query": "30,50,70,80,90,95",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "20",
           "value": "20"
         },
         "description": "Effective only when {Pre Validated Logs} is NO",
-        "hide": 0,
         "includeAll": false,
         "label": "Log Used Gb",
-        "multi": false,
         "name": "log_used_gb_threshold",
         "options": [
           {
@@ -6703,20 +6640,15 @@
           }
         ],
         "query": "2,20,50,100,200,350,500,800,1000,1500",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "80",
           "value": "80"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Disk Warning %",
-        "multi": false,
         "name": "disk_warning_pct",
         "options": [
           {
@@ -6751,20 +6683,15 @@
           }
         ],
         "query": "30,50,70,80,85,90",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "90",
           "value": "90"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Disk Critical %",
-        "multi": false,
         "name": "disk_critical_pct",
         "options": [
           {
@@ -6789,20 +6716,16 @@
           }
         ],
         "query": "90,92,95,98",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "250",
           "value": "250"
         },
         "description": "Free Space in Gb to segregate Large Disk from Small Disk",
-        "hide": 0,
         "includeAll": false,
         "label": "Free Disk Boundary (Gb)",
-        "multi": false,
         "name": "disk_threshold_gb",
         "options": [
           {
@@ -6867,21 +6790,16 @@
           }
         ],
         "query": "1,5,10,20,50,100,200,250,350,500,800,1024",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "95",
           "value": "95"
         },
         "description": "Disk full threshold to consider when disk has more than {Free Disk Boundary} gb free space",
-        "hide": 0,
         "includeAll": false,
         "label": "Large Disk %",
-        "multi": false,
         "name": "large_disk_threshold_pct",
         "options": [
           {
@@ -6916,20 +6834,15 @@
           }
         ],
         "query": "85,90,92,95,97,98",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "8",
           "value": "8"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Full Threshold (Days)",
-        "multi": false,
         "name": "full_threshold_days",
         "options": [
           {
@@ -6984,20 +6897,15 @@
           }
         ],
         "query": "1,3,7,8,9,10,15,30,90,366",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "26",
           "value": "26"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Diff Threshold (Hrs)",
-        "multi": false,
         "name": "diff_threshold_hours",
         "options": [
           {
@@ -7047,20 +6955,15 @@
           }
         ],
         "query": "4,8,12,24,26,28,32,36,48",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "60",
           "value": "60"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "TLog Threshold (Min)",
-        "multi": false,
         "name": "tlog_threshold_minutes",
         "options": [
           {
@@ -7120,15 +7023,12 @@
           }
         ],
         "query": "5,10,15,20,30,45,60,90,120,240,360",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
-          "text": "4",
-          "value": "4"
+          "text": "10",
+          "value": "10"
         },
         "datasource": {
           "type": "mssql",
@@ -7138,19 +7038,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Offline Servers Count",
-        "multi": false,
         "name": "offline_servers_count",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(sql_instance)\nfrom dbo.instance_details id\nwhere is_enabled = 1 and is_alias = 0\nand (is_available = 0 or is_linked_server_working = 0)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = id.sql_instance)\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -7162,19 +7058,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Offline Alias Count",
-        "multi": false,
         "name": "offline_alias_count",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(distinct sql_instance)\nfrom dbo.instance_details id\nwhere is_enabled = 1 and is_alias = 1\nand (is_available = 0 or is_linked_server_working = 0)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = id.source_sql_instance)\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -7186,19 +7078,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Offline SQLAgent Services Count",
-        "multi": false,
         "name": "offline_agent_count",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*) as counts\nfrom dbo.services_all_servers sas\ncross apply (select top 1 sql_instance_with_port = coalesce(id.sql_instance+','+id.sql_instance_port,id.sql_instance) \n\t\t\t\tfrom dbo.instance_details id where id.is_enabled = 1 \n\t\t\t\tand id.is_available = 1 and id.sql_instance = sas.sql_instance) id\nwhere 1=1\nand sas.service_type = 'Agent'\nand sas.status_desc <> 'Running'\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = sas.sql_instance)\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "1",
           "value": "1"
         },
@@ -7210,19 +7098,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Basic Info Servers Count",
-        "multi": false,
         "name": "basic_info_servers_count",
         "options": [],
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\n;with t_cte as (\n\tselect\tsrv_name, domain, host_name, product_version, major_version_number, minor_version_number, cpu_count, \n\t        scheduler_count, total_physical_memory_kb, os_start_time_utc, sqlserver_start_time_utc\n\t\t\t,Concat\n\t\t\t(\n\t\t\t\tRIGHT('000'+CAST(ISNULL((datediff(second,os_start_time_utc,GETUTCDATE()) / 3600 / 24), 0) AS VARCHAR(3)),3)\n\t\t\t\t,' '\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,os_start_time_utc,GETUTCDATE()) / 3600  % 24, 0) AS VARCHAR(2)),2)\n\t\t\t\t,':'\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,os_start_time_utc,GETUTCDATE()) / 60 % 60, 0) AS VARCHAR(2)),2)\n\t\t\t\t,':'\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,os_start_time_utc,GETUTCDATE()) % 3600 % 60, 0) AS VARCHAR(2)),2)\n\t\t\t) as [os_uptime]\n\t\t\t,Concat\n\t\t\t(\n\t\t\t\tRIGHT('000'+CAST(ISNULL((datediff(second,sqlserver_start_time_utc,GETUTCDATE()) / 3600 / 24), 0) AS VARCHAR(3)),3)\n\t\t\t\t,' '\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,sqlserver_start_time_utc,GETUTCDATE()) / 3600  % 24, 0) AS VARCHAR(2)),2)\n\t\t\t\t,':'\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,sqlserver_start_time_utc,GETUTCDATE()) / 60 % 60, 0) AS VARCHAR(2)),2)\n\t\t\t\t,':'\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,sqlserver_start_time_utc,GETUTCDATE()) % 3600 % 60, 0) AS VARCHAR(2)),2)\n\t\t\t) as [sqlserver_uptime]\n\t\t\t,datediff(day,os_start_time_utc,GETUTCDATE()) as [os_uptime_days]\n\tfrom dbo.vw_all_server_info\n)\nselect count(*)\n/*\nselect  srv_name, domain, host_name, product_version, major_version_number, minor_version_number\n        ,[CPU (OS / SQL)] = convert(varchar,cpu_count)+' / '+convert(varchar,scheduler_count)\n        ,total_physical_memory_kb ,cpu_count, scheduler_count, [os_uptime_days], os_start_time_utc, sqlserver_start_time_utc, [os_uptime], [sqlserver_uptime]\n\t\t    ,[Is MS Supported] = case when c.MainstreamSupportEndDate < getdate() then convert(bit,0) else convert(bit,1) end\n*/\nfrom t_cte cte\nouter apply (\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t\t,[MinorVersionNumber]\n\t\t\t\t,[Branch]\n\t\t\t\t,[Url]\n\t\t\t\t,[ReleaseDate]\n\t\t\t\t,[MainstreamSupportEndDate]\n\t\t\t\t,[ExtendedSupportEndDate]\n\t\t\t\t,[MajorVersionName]\n\t\t\t\t,[MinorVersionName]\t  \n\t\tfrom [master].[dbo].[SqlServerVersions] as c\n\t\twhere [MajorVersionNumber] = cte.major_version_number\n\t\tand [MinorVersionNumber] <= cte.minor_version_number\n\t\torder by [MinorVersionNumber] desc\n) as c\nouter apply (\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = cte.major_version_number\n\torder by [MinorVersionNumber] desc\n) as l;\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -7234,19 +7118,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Out of Supported Servers Count",
-        "multi": false,
         "name": "unsupported_servers_count",
         "options": [],
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\n;with t_cte as (\n\tselect\tsrv_name, domain, host_name, product_version, major_version_number, minor_version_number, cpu_count, \n\t        scheduler_count, total_physical_memory_kb, os_start_time_utc, sqlserver_start_time_utc\n\t\t\t,Concat\n\t\t\t(\n\t\t\t\tRIGHT('000'+CAST(ISNULL((datediff(second,os_start_time_utc,GETUTCDATE()) / 3600 / 24), 0) AS VARCHAR(3)),3)\n\t\t\t\t,' '\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,os_start_time_utc,GETUTCDATE()) / 3600  % 24, 0) AS VARCHAR(2)),2)\n\t\t\t\t,':'\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,os_start_time_utc,GETUTCDATE()) / 60 % 60, 0) AS VARCHAR(2)),2)\n\t\t\t\t,':'\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,os_start_time_utc,GETUTCDATE()) % 3600 % 60, 0) AS VARCHAR(2)),2)\n\t\t\t) as [os_uptime]\n\t\t\t,Concat\n\t\t\t(\n\t\t\t\tRIGHT('000'+CAST(ISNULL((datediff(second,sqlserver_start_time_utc,GETUTCDATE()) / 3600 / 24), 0) AS VARCHAR(3)),3)\n\t\t\t\t,' '\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,sqlserver_start_time_utc,GETUTCDATE()) / 3600  % 24, 0) AS VARCHAR(2)),2)\n\t\t\t\t,':'\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,sqlserver_start_time_utc,GETUTCDATE()) / 60 % 60, 0) AS VARCHAR(2)),2)\n\t\t\t\t,':'\n\t\t\t\t,RIGHT('00'+CAST(ISNULL(datediff(second,sqlserver_start_time_utc,GETUTCDATE()) % 3600 % 60, 0) AS VARCHAR(2)),2)\n\t\t\t) as [sqlserver_uptime]\n\t\t\t,datediff(day,os_start_time_utc,GETUTCDATE()) as [os_uptime_days]\n\tfrom dbo.vw_all_server_info\n)\nselect count(*)\n/*\nselect  srv_name, domain, host_name, product_version, major_version_number, minor_version_number\n        ,[CPU (OS / SQL)] = convert(varchar,cpu_count)+' / '+convert(varchar,scheduler_count)\n        ,total_physical_memory_kb ,cpu_count, scheduler_count, [os_uptime_days], os_start_time_utc, sqlserver_start_time_utc, [os_uptime], [sqlserver_uptime]\n\t\t    ,[Is MS Supported] = case when c.MainstreamSupportEndDate < getdate() then convert(bit,0) else convert(bit,1) end\n*/\nfrom t_cte cte\nouter apply (\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t\t,[MinorVersionNumber]\n\t\t\t\t,[Branch]\n\t\t\t\t,[Url]\n\t\t\t\t,[ReleaseDate]\n\t\t\t\t,[MainstreamSupportEndDate]\n\t\t\t\t,[ExtendedSupportEndDate]\n\t\t\t\t,[MajorVersionName]\n\t\t\t\t,[MinorVersionName]\t  \n\t\tfrom [master].[dbo].[SqlServerVersions] as c\n\t\twhere [MajorVersionNumber] = cte.major_version_number\n\t\tand [MinorVersionNumber] <= cte.minor_version_number\n\t\torder by [MinorVersionNumber] desc\n) as c\nouter apply (\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = cte.major_version_number\n\torder by [MinorVersionNumber] desc\n) as l\nwhere 1=1\nand c.MainstreamSupportEndDate < getdate();\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -7258,21 +7138,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Servers Count With Data Issue",
-        "multi": false,
         "name": "servers_with_data_issue_count",
         "options": [],
         "query": "declare @_latency_minutes_threshold int = 20;\ndeclare @_latency_days_threshold int = 3;\ndeclare @t_servers_exception table (srv_name varchar(125));\n\ninsert @t_servers_exception -- list of servers that have permanent issues\nvalues ('196.1.115.169'),('196.1.115.212');\n\nselect\tcount(*) /*\n              cli.srv_name, id.jobs_server,\n\t\tcli.performance_counters__latency_minutes,\n\t\txevent_metrics__latency_minutes = case when (cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11) then cli.xevent_metrics__latency_minutes \n\t\t\t\t\t\t\t\t\t\t\t\t\twhen cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold then @_latency_minutes_threshold-1\n\t\t\t\t\t\t\t\t\t\t\t\t\telse cli.xevent_metrics__latency_minutes end,\n\t\tWhoIsActive__latency_minutes = case when cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 then cli.WhoIsActive__latency_minutes \n\t\t\t\t\t\t\t\t\t\t\t\t\twhen cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold then @_latency_minutes_threshold-1\n\t\t\t\t\t\t\t\t\t\t\t\t\telse cli.WhoIsActive__latency_minutes end,\n\t\tcli.os_task_list__latency_minutes,\n\t\tcli.disk_space__latency_minutes, \n\t\tcli.file_io_stats__latency_minutes,\n\t\tcli.sql_agent_job_stats__latency_minutes,\n\t\tcli.memory_clerks__latency_minutes,\n\t\tcli.wait_stats__latency_minutes,\n\t\tcli.BlitzIndex__latency_days,\n\t\tcli.BlitzIndex_Mode0__latency_days,\n\t\t--cli.BlitzIndex_Mode1__latency_days,\n\t\t--cli.BlitzIndex_Mode4__latency_days,\n\t\t--collection_time = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), cli.collection_time)\n\t\t[Issues] = (case when cli.performance_counters__latency_minutes > @_latency_minutes_threshold then 'performance_counters,' else '' end)+\n\t\t\t\t\t(case when cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11 then 'xevent_metrics' else '' end)+\n\t\t\t\t\t(case when cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 then 'WhoIsActive,' else '' end)+\n\t\t\t\t\t(case when cli.os_task_list__latency_minutes > @_latency_minutes_threshold then 'os_task_list,' else '' end)+\n\t\t\t\t\t(case when cli.disk_space__latency_minutes > @_latency_minutes_threshold*3 then 'disk_space,' else '' end)+\n\t\t\t\t\t(case when cli.file_io_stats__latency_minutes > @_latency_minutes_threshold*3 then 'file_io_stats,' else '' end)+\n\t\t\t\t\t(case when cli.wait_stats__latency_minutes > @_latency_minutes_threshold*2 then 'wait_stats,' else '' end)+\n\t\t\t\t\t(case when cli.sql_agent_job_stats__latency_minutes > @_latency_minutes_threshold*1.5 then 'sql_agent_job_stats,' else '' end)+\n\t\t\t\t\t(case when cli.memory_clerks__latency_minutes > @_latency_minutes_threshold then 'memory_clerks,' else '' end)+\n\t\t\t\t\t(case when cli.BlitzIndex__latency_days > @_latency_days_threshold then 'BlitzIndex,' else '' end)+\n\t\t\t\t\t(case when cli.BlitzIndex_Mode0__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode0,' else '' end)+\n\t\t\t\t\t(case when cli.BlitzIndex_Mode1__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode1,' else '' end)+\n\t\t\t\t\t(case when cli.BlitzIndex_Mode4__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode4,' else '' end)\n\t\t--,cli.host_name ,si.major_version_number ,si.product_version ,si.edition, vi.os_cpu, vi.sql_cpu\n*/\nfrom dbo.all_server_collection_latency_info cli\njoin dbo.all_server_stable_info si on si.srv_name = cli.srv_name\njoin dbo.all_server_volatile_info vi on vi.srv_name = cli.srv_name\nouter apply (select STUFF((select ', '+id.collector_powershell_jobs_server from (select distinct id.collector_powershell_jobs_server from dbo.instance_details id where id.sql_instance = cli.srv_name and id.host_name = cli.host_name) id for xml path('')), 1, 1, '') as jobs_server ) id\nwhere 1=1\nand (\tcli.performance_counters__latency_minutes > @_latency_minutes_threshold\n\t\tor (cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11)\n\t\tor (cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20)\n\t\tor cli.os_task_list__latency_minutes > @_latency_minutes_threshold\n\t\tor cli.disk_space__latency_minutes > @_latency_minutes_threshold*3\n\t\tor cli.file_io_stats__latency_minutes > @_latency_minutes_threshold*3\n\t\tor cli.wait_stats__latency_minutes > @_latency_minutes_threshold*2\n\t\tor cli.BlitzIndex__latency_days > @_latency_days_threshold\n\t\tor cli.BlitzIndex_Mode0__latency_days > @_latency_days_threshold*4\n\t\t--or cli.BlitzIndex_Mode1__latency_days > @_latency_days_threshold*4\n\t\t--or cli.BlitzIndex_Mode4__latency_days > @_latency_days_threshold*4\n\t\tor cli.sql_agent_job_stats__latency_minutes > @_latency_minutes_threshold*1.5\n\t\tor cli.memory_clerks__latency_minutes > @_latency_minutes_threshold\n\t)\nand cli.srv_name not in (select e.srv_name from @t_servers_exception e)\n\n",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "14",
-          "value": "14"
+          "text": "8",
+          "value": "8"
         },
         "datasource": {
           "type": "mssql",
@@ -7282,19 +7158,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Database Count With Backup Issue",
-        "multi": false,
         "name": "nonag_database_counts_with_backup_issue",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n--declare @sql_instance varchar(255);\n--declare @backup_type varchar(2000);\n--declare @backup_description varchar(2000);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n--declare @disk_drive varchar(255) = '$disk_drive';\n--declare @database varchar(255) = '$database';\n--declare @filter_for_latency varchar(50) = '$filter_for_latency';\ndeclare @full_threshold_days int = $full_threshold_days;\ndeclare @diff_threshold_hours int = $diff_threshold_hours;\ndeclare @tlog_threshold_minutes int = $tlog_threshold_minutes;\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\n--set @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\n\n--set @backup_type = '${backup_type:csv}';\n--set @backup_description = case when ltrim(rtrim('$backup_description')) = '' then null else ltrim(rtrim('$backup_description')) end;\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, \n\t\t\t\t\t\t\t\t@full_threshold_days int, @diff_threshold_hours int, @tlog_threshold_minutes int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Dashboard [$__dashboard] */\nset nocount on;\n\n;with t_backups as (\n\t\tselect [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]\n\t\tfrom dbo.backups_all_servers bas\n)\n,t_pivot as (\n\t\tselect\t[sql_instance], [database_name]\n\t\t\t\t,[recovery_model] = max([recovery_model])\n\t\t\t\t,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[log_backups_count] = max([log_backups_count])\n\t\t\t\t,[database_creation_date_utc] = max([database_creation_date_utc])\n\t\t\t\t,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)\n\t\tfrom t_backups bkp\n\t\twhere 1=1\n\t\tgroup by [sql_instance], [database_name]\n)\n,t_latency as (\n\t\t\tselect \t[sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(day,[full_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\t\t\t\t\t\t\n\t\t\t\t\t\t\t[diff_latency_hours] = case when [diff_backup_time_utc] is null \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen @full_threshold_days * 24\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(hour,[diff_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen recovery_model <> 'SIMPLE'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when [tlog_backup_time_utc] is null then @full_threshold_days * 1440\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t when [tlog_backup_time_utc] is not null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then datediff(minute,[tlog_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],\n\t\t\t\t\t\t\t[tlog_compressed_size_mb], [log_backups_count],\n\t\t\t\t\t\t\t[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]\n\t\t\tfrom t_pivot as bkp\n\t\t\twhere 1=1\n)\nselect count(*)\n/*\nselect [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], \n\t\t\t\t\t\t\t[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], \n\t\t\t\t\t\t\t[full_backup_file], [diff_backup_file], [tlog_backup_file]\n*/\nfrom t_latency as l\nwhere 1=1\nAND (\t\t(full_latency_days is null or full_latency_days >= @full_threshold_days)\n\t\tOR \t(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)\n\t\tOR\t(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)\n\t\t)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = l.sql_instance and (s.hadr_strategy is null or s.hadr_strategy <> 'ag'))\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @full_threshold_days, @diff_threshold_hours, \n\t\t\t\t\t\t\t\t\t\t\t\t@tlog_threshold_minutes;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -7306,21 +7178,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Database Count With Backup Issue",
-        "multi": false,
         "name": "ag_database_counts_with_backup_issue",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n--declare @sql_instance varchar(255);\n--declare @backup_type varchar(2000);\n--declare @backup_description varchar(2000);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n--declare @disk_drive varchar(255) = '$disk_drive';\n--declare @database varchar(255) = '$database';\n--declare @filter_for_latency varchar(50) = '$filter_for_latency';\ndeclare @full_threshold_days int = $full_threshold_days;\ndeclare @diff_threshold_hours int = $diff_threshold_hours;\ndeclare @tlog_threshold_minutes int = $tlog_threshold_minutes;\ndeclare @_has_inventory bit = 0;\n\n\n--set @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n--set @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\n--set @backup_type = '${backup_type:csv}';\n--set @backup_description = case when ltrim(rtrim('$backup_description')) = '' then null else ltrim(rtrim('$backup_description')) end;\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, \n\t\t\t\t\t\t\t\t@full_threshold_days int, @diff_threshold_hours int, @tlog_threshold_minutes int';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - Dashboard [Monitoring - Live - All Servers] */\nset nocount on;\n\n;with t_backups as (\n\tselect [collection_time_utc], [sql_instance], s.ag_replicas, [database_name], [backup_type], [log_backups_count], \n\t\t\t[backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]\n\t\t\t,db_rowid = ROW_NUMBER()over(partition by s.ag_replicas, [database_name], [backup_type] order by [backup_start_date_utc] desc)\n\tfrom dbo.backups_all_servers bas\n\tjoin dbo.sma_sql_servers s on s.server = bas.sql_instance and s.is_decommissioned = 0 and s.is_onboarded = 1 and s.hadr_strategy = 'ag'\n\twhere 1=1\n\tand charindex(',',s.ag_replicas) > 0\n)\n,t_pivot as (\n\t\tselect\tag_replicas, [sql_instance], [database_name]\n\t\t\t\t,[recovery_model] = max([recovery_model])\n\t\t\t\t,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)\n\t\t\t\t,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)\n\t\t\t\t,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)\n\t\t\t\t,[log_backups_count] = max([log_backups_count])\n\t\t\t\t,[database_creation_date_utc] = max([database_creation_date_utc])\n\t\t\t\t,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)\n\t\t\t\t,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)\n\t\tfrom t_backups bkp\n\t\twhere 1=1\n\t\tand db_rowid = 1\n\t\tgroup by ag_replicas, [sql_instance], [database_name]\n)\n,t_latency as (\n\t\t\tselect \tag_replicas, [sql_instance], [database_name], [recovery_model], \t\t\t\t\n\t\t\t\t\t\t\t[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(day,[full_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\t\t\t\t\t\t\n\t\t\t\t\t\t\t[diff_latency_hours] = case when [diff_backup_time_utc] is null \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen @full_threshold_days * 24\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse datediff(hour,[diff_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhen recovery_model <> 'SIMPLE'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen\tcase when [tlog_backup_time_utc] is null then @full_threshold_days * 1440\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t when [tlog_backup_time_utc] is not null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then datediff(minute,[tlog_backup_time_utc],getutcdate())\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend,\n\t\t\t\t\t\t\t[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], \n\t\t\t\t\t\t\t[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],\n\t\t\t\t\t\t\t[tlog_compressed_size_mb], [log_backups_count],\n\t\t\t\t\t\t\t[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]\n\t\t\tfrom t_pivot as bkp\n\t\t\twhere 1=1\n)\nselect count(*)\nfrom t_latency as l\nwhere 1=1\nAND (\t\t(full_latency_days is null or full_latency_days >= @full_threshold_days)\n\t\tOR \t(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)\n\t\tOR\t(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)\n\t\t)\n--order by ag_replicas, database_name\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @full_threshold_days, @diff_threshold_hours, \n\t\t\t\t\t\t\t\t\t\t\t\t@tlog_threshold_minutes;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "33",
+          "value": "33"
         },
         "datasource": {
           "type": "mssql",
@@ -7330,19 +7198,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "DBA Jobs With Issue",
-        "multi": false,
         "name": "dba_jobs_with_issue_counts",
         "options": [],
         "query": "declare @_buffer_time_minutes int = 30;\ndeclare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\n\nset @_params = N'@_buffer_time_minutes int';\nset quoted_identifier off;\nset @_sql = \"\nselect\tcount(*) /* [Tsql-Stop-Job] = 'exec msdb.dbo.sp_stop_job @job_name = '''+sj.JobName+'''' ,\n\t\t[Tsql-Start-Job] = 'exec msdb.dbo.sp_start_job @job_name = '''+sj.JobName+'''' , \n\t\t\n\t\t[CollectionTimeUTC] = [UpdatedDateUTC],\n\t\t[sql_instance] = sql_instance_with_port, [JobName],\n\t\t[Job-Delay-Minutes] = case when sj.Last_Successful_ExecutionTime is null then 10080 else datediff(minute, sj.Last_Successful_ExecutionTime, dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@_buffer_time_minutes),getutcdate())) end,\n\t\t [Last_RunTime], [Last_Run_Duration_Seconds], [Last_Run_Outcome], \n\t\t [Successfull_Execution_ClockTime_Threshold_Minutes], \n\t\t [Expected_Max_Duration_Minutes],\n\t\t [Last_Successful_ExecutionTime], [Last_Successful_Execution_Hours], \n\t\t [Running_Since], [Running_StepName], [Running_Since_Min] \n*/\nfrom dbo.sql_agent_jobs_all_servers sj\ninner join dbo.services_all_servers sas\n\ton sas.sql_instance = sj.sql_instance\n\tand sas.service_type = 'Agent'\n\tand sas.status_desc = 'Running'\ncross apply (select top 1 sql_instance_with_port = coalesce(id.sql_instance+','+sql_instance_port,id.sql_instance) from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1) id\nwhere 1=1\n--and exists (select 1/0 from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1)\nand sj.JobCategory = '(dba) SQLMonitor'\nand sj.JobName like '(dba) %'\nand sj.IsDisabled = 0\nand (\tdateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@_buffer_time_minutes),getutcdate()) > sj.Last_Successful_ExecutionTime\n\t\t\tor sj.Last_Successful_ExecutionTime is null\n\t\t)\n--order by Last_Run_Outcome\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_buffer_time_minutes = @_buffer_time_minutes;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -7354,21 +7218,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Disks in Critical State",
-        "multi": false,
         "name": "critical_disks_counts",
         "options": [],
         "query": "declare @_disk_warning_pct decimal(20,2) = 80;\ndeclare @_disk_critical_pct decimal(20,2) = 90;\ndeclare @_disk_threshold_gb decimal(20,2) = 200;\ndeclare @_large_disk_threshold_pct decimal(20,2) = 95;\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\ndeclare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\n\nset @_params = '@disk_warning_pct decimal(20,2), @disk_critical_pct decimal(20,2), @disk_threshold_gb decimal(20,2), @large_disk_threshold_pct decimal(20,2)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect\tcount(*) \nfrom dbo.disk_space_all_servers ds\nwhere ds.updated_date_utc >= dateadd(minute,-60,getutcdate())\nand (\t(\t(ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_warning_pct)\n\t\t\tand ds.free_mb < (@disk_threshold_gb)*1024\n\t  \t)\n\t\tor ( (ds.free_mb*100.0/ds.capacity_mb) < (100-@large_disk_threshold_pct)) -- free %\n\t)\nand (ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_critical_pct)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = ds.sql_instance)\n\";\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_disk_warning_pct, @_disk_critical_pct, @_disk_threshold_gb , @_large_disk_threshold_pct;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "2",
-          "value": "2"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -7378,19 +7238,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Disks in Warning State",
-        "multi": false,
         "name": "warning_disks_counts",
         "options": [],
         "query": "declare @_disk_warning_pct decimal(20,2) = 80;\ndeclare @_disk_critical_pct decimal(20,2) = 90;\ndeclare @_disk_threshold_gb decimal(20,2) = 200;\ndeclare @_large_disk_threshold_pct decimal(20,2) = 95;\ndeclare @_critical_disks_counts int = 0;\ndeclare @_has_inventory bit = 0;\n\nset @_has_inventory = convert(bit,'${has_inventory}');\nset @_critical_disks_counts = '${critical_disks_counts}';\n\ndeclare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\n\nset @_params = '@disk_warning_pct decimal(20,2), @disk_critical_pct decimal(20,2), @disk_threshold_gb decimal(20,2), @large_disk_threshold_pct decimal(20,2), @critical_disks_counts int';\n\nset quoted_identifier off;\nset @_sql = \"\nselect counts = count(*)-@critical_disks_counts\nfrom dbo.disk_space_all_servers ds\nwhere ds.updated_date_utc >= dateadd(minute,-60,getutcdate())\nand (\t(\t(ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_warning_pct)\n\t\t\tand ds.free_mb < (@disk_threshold_gb)*1024\n\t  \t)\n\t\tor ( (ds.free_mb*100.0/ds.capacity_mb) < (100-@large_disk_threshold_pct)) -- free %\n\t)\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = ds.sql_instance)\n\";\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_disk_warning_pct, @_disk_critical_pct, @_disk_threshold_gb , @_large_disk_threshold_pct, @_critical_disks_counts;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -7402,19 +7258,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Log Space Issue Counts",
-        "multi": false,
         "name": "log_space_issue_counts",
         "options": [],
         "query": "declare @_sqltext nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\nset @_sqltext = '\nselect\tcount(*)\nfrom dbo.log_space_consumers_all_servers ls\nwhere 1=1\nand ls.thresholds_validated = 1\nand (ls.updated_date_utc >= dateadd(minute,-60,getutcdate())\n  and ls.collection_time_utc >= dateadd(minute,-20,getutcdate())\n\t\t)\n'+(case when @_has_inventory = 0 then '--' else '' end)+'and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = ls.sql_instance)\n';\n\nexec sp_executesql @_sqltext, @_params;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -7426,19 +7278,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Tempdb Space Issue Counts",
-        "multi": false,
         "name": "tempdb_space_issue_counts",
         "options": [],
         "query": "declare @_sqltext nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\nset @_sqltext = '\nselect\tcount(*)\nfrom dbo.tempdb_space_usage_all_servers su\nwhere (su.data_used_pct > 80.0\n\tor su.data_used_mb > (200.0*1024) -- 200 gb\n\t)\nand (su.updated_date_utc >= dateadd(minute,-60,getutcdate())\n  and su.collection_time_utc >= dateadd(minute,-20,getutcdate())\n\t)\n'+(case when @_has_inventory = 0 then '--' else '' end)+'and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = su.sql_instance)\n'\nexec sp_executesql @_sqltext, @_params;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "1",
           "value": "1"
         },
@@ -7450,19 +7298,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Core Metrics Issue Count",
-        "multi": false,
         "name": "core_metrics_issue_counts",
         "options": [],
         "query": "declare @os_cpu_threshold decimal(20,2) = 70;\ndeclare @sql_cpu_threshold decimal(20,2) = 65;\ndeclare @blocked_counts_threshold int = 1;\ndeclare @blocked_duration_max_seconds_threshold bigint = 60;\ndeclare @available_physical_memory_kb_threshold bigint = (4*1024*1024);\ndeclare @system_high_memory_signal_state_threshold varchar(20) = 'Low';\n--declare @physical_memory_in_use_kb_threshold decimal(20,2);\ndeclare @memory_grants_pending_threshold int = 1;\ndeclare @connection_count_threshold int = 1500;\ndeclare @waits_per_core_per_minute_threshold decimal(20,2) = 180;\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\ndeclare @sql nvarchar(max);\ndeclare @params nvarchar(max);\n\nset @params = N'@os_cpu_threshold decimal(20,2), @sql_cpu_threshold decimal(20,2), @blocked_counts_threshold int, \n\t\t\t\t@blocked_duration_max_seconds_threshold bigint, @available_physical_memory_kb_threshold bigint, \n\t\t\t\t@system_high_memory_signal_state_threshold varchar(20), @memory_grants_pending_threshold int, \n\t\t\t\t@connection_count_threshold int, @waits_per_core_per_minute_threshold decimal(20,2)';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_cte as (\n\tselect\tsrv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, waits_per_core_per_minute\n\tfrom dbo.vw_all_server_info asi\n        where 1=1\n        \"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = asi.srv_name)\n)\nselect  count(*)\nfrom t_cte cte\nwhere 1=1\nand (   os_cpu >= @os_cpu_threshold\n    or  sql_cpu >= @sql_cpu_threshold \n    or  blocked_counts >= @blocked_counts_threshold\n    or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold\n    or  ( available_physical_memory_kb < @available_physical_memory_kb_threshold and system_high_memory_signal_state = @system_high_memory_signal_state_threshold )\n    or  memory_grants_pending > @memory_grants_pending_threshold\n    or  connection_count >= @connection_count_threshold\n    or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold\n)\n\";\nset quoted_identifier off;\n\n--print @sql\nexec dbo.sp_executesql @sql, @params, @os_cpu_threshold, @sql_cpu_threshold, @blocked_counts_threshold, @blocked_duration_max_seconds_threshold, @available_physical_memory_kb_threshold, @system_high_memory_signal_state_threshold, @memory_grants_pending_threshold, @connection_count_threshold, @waits_per_core_per_minute_threshold;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -7474,19 +7318,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Ag Issue Counts",
-        "multi": false,
         "name": "ag_issue_counts",
         "options": [],
         "query": "set nocount on;\n\ndeclare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\n\ndeclare @_latency_minutes int;\ndeclare @_redo_queue_size_gb int;\ndeclare @_log_send_queue_size_gb int;\ndeclare @_filter_out_offline_sqlagent bit = 1;\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\nset @_latency_minutes = 30;\nset @_redo_queue_size_gb = 10;\nset @_log_send_queue_size_gb = 10;\n\nset @_params = N'@_latency_minutes int, @_redo_queue_size_gb int, @_log_send_queue_size_gb int';\n\nset @_sql = '\nif object_id(''tempdb..#replica_servers'') is not null\n\tdrop table #replica_servers\nselect distinct ahs.replica_server_name\ninto #replica_servers\nfrom dbo.ag_health_state_all_servers ahs\nwhere 1=1;\n\nselect\tcount(*) /* sql_instance, [replica_database] = replica_server_name+'' || ''+database_name,\n\t\t--replica_server_name, database_name, \n\t\tag_name, is_primary_replica, \n\t\tag_listener, is_local, synchronization_state_desc, synchronization_health_desc, \n\t\tlatency_seconds, log_send_queue_size, redo_queue_size, last_redone_time, log_send_rate, \n\t\tredo_rate, estimated_redo_completion_time_min, last_commit_time, is_suspended, \n\t\tsuspend_reason_desc, is_distributed, replica_server = rs.srv_name, updated_date_utc, collection_time_utc */\nfrom dbo.ag_health_state_all_servers ahs\nleft join (\tselect replica_server = rs.replica_server_name, srv_name = max(asi.srv_name)\n\t\tfrom #replica_servers rs\n\t\tjoin dbo.vw_all_server_info asi\n\t\t\ton rs.replica_server_name in (asi.machine_name, asi.server_name)\n\t\tgroup by rs.replica_server_name\n\t) rs\n\ton rs.replica_server = ahs.replica_server_name\nwhere 1=1\nand (\tahs.synchronization_health_desc <> ''HEALTHY''\n\tor\tahs.synchronization_state_desc not in (''SYNCHRONIZED'',''SYNCHRONIZING'')\n\tor\t(ahs.latency_seconds is not null and ahs.latency_seconds >= @_latency_minutes*60)\n\tor\t(ahs.log_send_queue_size is not null and ahs.log_send_queue_size >= @_log_send_queue_size_gb*1024*1024)\n\tor\t(ahs.redo_queue_size is not null and ahs.redo_queue_size >= @_redo_queue_size_gb*1024*1024)\n\t)\n'+(case when @_filter_out_offline_sqlagent = 0 then '--' else '' end)+'and exists (select 1/0 from dbo.services_all_servers sas where sas.sql_instance = ahs.sql_instance and sas.service_type = ''Agent''\tand sas.status_desc = ''Running'')\n\n'+(case when @_has_inventory = 0 then '--' else '' end)+'and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = ahs.sql_instance)\n';\n\nexec sp_executesql @_sql, @_params, @_latency_minutes, @_redo_queue_size_gb, @_log_send_queue_size_gb;\n",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -7499,21 +7339,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Alert History Row Count",
-        "multi": false,
         "name": "alert_history_row_count",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(max);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @_has_inventory bit = 0;\nset @_has_inventory = convert(bit,'${has_inventory}');\n\n--set @sql_instance = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\n\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"/* SQLMonitor - All Server Alert History */\nset nocount on;\nselect count(*)\nfrom dbo.alert_history_all_servers a\nwhere 1 = 1\nand a.collection_time_utc between @start_time_utc and @end_time_utc\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = a.sql_instance)\n\"\nset quoted_identifier on;\n\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667101835",
-          "value": "1729667101835"
+          "text": "1733112900723",
+          "value": "1733112900723"
         },
         "datasource": {
           "type": "mssql",
@@ -7523,21 +7359,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "StableInfo Collection Time",
-        "multi": false,
         "name": "all_server_stable_info__collection_time_utc",
         "options": [],
         "query": "select all_server_stable_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_stable_info",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667340822",
-          "value": "1729667340822"
+          "text": "1733113081833",
+          "value": "1733113081833"
         },
         "datasource": {
           "type": "mssql",
@@ -7547,21 +7379,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Volatile Info Collection Time",
-        "multi": false,
         "name": "all_server_volatile_info__collection_time_utc",
         "options": [],
         "query": "select all_server_volatile_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_volatile_info",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729666800522",
-          "value": "1729666800522"
+          "text": "1733112918731",
+          "value": "1733112918731"
         },
         "datasource": {
           "type": "mssql",
@@ -7571,21 +7399,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Collection Latency Time",
-        "multi": false,
         "name": "collection_latency_info__collection_time_utc",
         "options": [],
         "query": "select all_server_collection_latency_info__collection_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_collection_latency_info cli",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729666800356",
-          "value": "1729666800356"
+          "text": "1733066400840",
+          "value": "1733066400840"
         },
         "datasource": {
           "type": "mssql",
@@ -7595,21 +7419,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Services Collection Time",
-        "multi": false,
         "name": "services_all_servers__collection_time_utc",
         "options": [],
         "query": "select services_all_servers__collection_time_utc = max(collection_time_utc)\nfrom dbo.services_all_servers sas",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729666800990",
-          "value": "1729666800990"
+          "text": "1733112900560",
+          "value": "1733112900560"
         },
         "datasource": {
           "type": "mssql",
@@ -7619,21 +7439,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Backups Collection Time",
-        "multi": false,
         "name": "backups_all_servers__collection_time_utc",
         "options": [],
         "query": "select backups_all_servers__collection_time_utc = max(bas.collection_time_utc)\nfrom dbo.backups_all_servers bas",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667101113",
-          "value": "1729667101113"
+          "text": "1733112900530",
+          "value": "1733112900530"
         },
         "datasource": {
           "type": "mssql",
@@ -7643,21 +7459,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "SQLAgent Jobs collection Time",
-        "multi": false,
         "name": "sql_agent_jobs__collection_time_utc",
         "options": [],
         "query": "select sql_agent_jobs__collection_time_utc = max(sj.CollectionTimeUTC)\nfrom dbo.sql_agent_jobs_all_servers sj",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729655403666",
-          "value": "1729655403666"
+          "text": "1733066700396",
+          "value": "1733066700396"
         },
         "datasource": {
           "type": "mssql",
@@ -7667,22 +7479,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Disk Space Collection Time",
-        "multi": false,
         "name": "disk_space__collection_time_utc",
         "options": [],
         "query": "select disk_space__collection_time_utc = max(ds.collection_time_utc)\nfrom dbo.disk_space_all_servers ds",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
-        },
+        "current": {},
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
@@ -7691,21 +7496,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Ag Health State Collection Time",
-        "multi": false,
         "name": "ag_health_state__collection_time_utc",
         "options": [],
         "query": "select ag_health_state__collection_time_utc = max(ahs.collection_time_utc)\nfrom dbo.ag_health_state_all_servers ahs",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667340293",
-          "value": "1729667340293"
+          "text": "1733113081330",
+          "value": "1733113081330"
         },
         "datasource": {
           "type": "mssql",
@@ -7715,21 +7516,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Log Space Consumers Collection Time",
-        "multi": false,
         "name": "log_space_consumers__collection_time_utc",
         "options": [],
         "query": "select log_space_consumers__collection_time_utc = max(ls.collection_time_utc)\nfrom dbo.log_space_consumers_all_servers ls",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667340306",
-          "value": "1729667340306"
+          "text": "1733113081533",
+          "value": "1733113081533"
         },
         "datasource": {
           "type": "mssql",
@@ -7739,19 +7536,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Tempdb Space Usage Collection Time",
-        "multi": false,
         "name": "tempdb_space_usage__collection_time_utc",
         "options": [],
         "query": "select tempdb_space_usage__collection_time_utc = max(su.collection_time_utc)\nfrom dbo.tempdb_space_usage_all_servers su",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "1",
           "value": "1"
         },
@@ -7763,14 +7556,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "Is Inventory Present",
-        "multi": false,
         "name": "has_inventory",
         "options": [],
         "query": "if object_id('dbo.sma_servers') is not null\n  select [has_inventory] = 1\nelse\n  select [has_inventory] = 0",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -7791,6 +7581,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - All Servers",
   "uid": "distributed_live_dashboard_all_servers",
-  "version": 185,
+  "version": 3,
   "weekStart": ""
 }
