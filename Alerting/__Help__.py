@@ -160,6 +160,20 @@ set SLACK_SIGNING_SECRET=your-slack-signing-secret-here
 set SLACK_VERFIFICATION_TOKEN=your-slack-verification-token
 
 
+Error Message =>
+-------------
+ImportError: libodbc.so.2: cannot open shared object file: No such file or directory
+
+Resolution =>
+# Install packages
+sudo apt update
+sudo apt install unixodbc unixodbc-dev
+
+# verify
+ls -l /usr/lib/x86_64-linux-gnu/libodbc.so*
+
+----------------
+
 # Common Error in CommonFunctions\send_slack_alert_notification()
 Error Message =>
 -------------
