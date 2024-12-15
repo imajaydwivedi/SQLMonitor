@@ -27,23 +27,13 @@ podman ps
 
 podman logs sqlmonitor-alert-engine
 podman logs -f sqlmonitor-alert-engine
-podman logs --tail 20 sqlmonitor-alert-engine
-podman logs --timestamps sqlmonitor-alert-engine
+podman logs --tail 20 sqlmonitor-alert-enginepodman inspect sqlmonitor-alert-engine
 
-podman inspect sqlmonitor-alert-engine
-
-# install packages
-apt update -y
-apt install unixodbc unixodbc-dev -y
-
-# commit changes
-podman commit sqlmonitor-alert-engine sqlmonitor-alert-engine-with-odbc
-
-
-
+# Start/Stop container
 podman start sqlmonitor-alert-engine
 podman stop sqlmonitor-alert-engine
 
+# Remove container
 podman rm -f sqlmonitor-app
 
 # Start pod automatically
