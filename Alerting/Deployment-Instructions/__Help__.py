@@ -225,6 +225,17 @@ sc delete SQLMonitorAlertEngine
 How to Run Python Script as a Service Windows & Linux
 https://www.youtube.com/watch?v=pLqtenLVKsg
 
+# How to run a python script as a service on windows
+  # https://stackoverflow.com/a/41017425
 
+# create service
+sc create SQLMonitorAlertEngineApp binPath= "python --E:\Github\SQLMonitor\Alerting\SQLMonitorAlertEngineApp.py"
+sc start SQLMonitorAlertEngineApp
 
+# Cleanup
+sc stop SQLMonitorAlertEngineApp
+sc delete SQLMonitorAlertEngineApp
+
+# Manual execution of alert engine
+python ~/GitHub/SQLMonitor/Alerting/SQLMonitorAlertEngineApp.py --inventory_server sqlmonitor --verbose True --login_password '<<SomeStringPasswordHereForInventoryServerLogin>>'
 
