@@ -49,21 +49,23 @@ parser.add_argument("--run_scheduled_jobs", type=bool, required=False, action="s
 args=parser.parse_args()
 
 if 'Retrieve Parameters' == 'Retrieve Parameters':
-    inventory_server = args.inventory_server
-    inventory_database = args.inventory_database
-    credential_manager_database = args.credential_manager_database
-    login_name = args.login_name
-    login_password = args.login_password
-    alert_name = args.alert_name
-    alert_job_name = args.alert_job_name
-    alert_owner_team = args.alert_owner_team
-    frequency_multiplier = args.frequency_multiplier
-    has_ssl_certificate = args.has_ssl_certificate
-    debug = args.debug
-    #frequency_minutes = args.frequency_minutes
-    verbose:bool = args.verbose
-    log_server_startup = args.log_server_startup
-    run_scheduled_jobs = args.run_scheduled_jobs
+    inventory_server = os.getenv('inventory_server', args.inventory_server)
+    inventory_database = os.getenv('inventory_database', args.inventory_database)
+    credential_manager_database = os.getenv('credential_manager_database', args.credential_manager_database)
+    login_name = os.getenv('login_name', args.login_name)
+    login_password = os.getenv('login_password', args.login_password)
+    alert_name = os.getenv('alert_name', args.alert_name)
+    alert_job_name = os.getenv('alert_job_name', args.alert_job_name)
+    alert_owner_team = os.getenv('alert_owner_team', args.alert_owner_team)
+    frequency_multiplier = os.getenv('frequency_multiplier', args.frequency_multiplier)
+    has_ssl_certificate = os.getenv('has_ssl_certificate', args.has_ssl_certificate)
+    debug = os.getenv('debug', args.debug)
+    verbose:bool = os.getenv('verbose', args.verbose)
+    log_server_startup = os.getenv('log_server_startup', args.log_server_startup)
+    run_scheduled_jobs = os.getenv('run_scheduled_jobs', args.run_scheduled_jobs)
+
+print(f"inventory_server = {inventory_server}")
+print(f"login_password = {login_password}")
 
 # determine os
 if os.name == 'nt':
