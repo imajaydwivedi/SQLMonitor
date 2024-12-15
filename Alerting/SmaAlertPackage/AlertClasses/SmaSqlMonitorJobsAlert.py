@@ -1,25 +1,23 @@
-from SmaAlertPackage.SmaAlert import SmaAlert
+from SmaAlertPackage.AlertClasses.SmaAlert import SmaAlert
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 
-class SmaDiskSpaceAlert(SmaAlert):
+class SmaSqlMonitorJobsAlert(SmaAlert):
     '''
-    SYNOPSIS: Class to represent disk space alert
+    SYNOPSIS: Class to represent sqlmonitor jobs alert
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=30, disk_warning_pct:float=70, disk_critical_pct:float=85, disk_threshold_gb:int=250, large_disk_threshold_pct:float=92):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15, buffer_time_minutes:int=30):
         ''' SYNOPSIS: Constructor
         '''
         super().__init__(alert_key, alert_owner_team, frequency_minutes)
-        self.disk_warning_pct = disk_warning_pct
-        self.disk_critical_pct = disk_critical_pct
-        self.disk_threshold_gb = disk_threshold_gb
-        self.large_disk_threshold_pct = large_disk_threshold_pct
+        self.buffer_time_minutes = buffer_time_minutes
         self.alert_pyodbc_resultset = None
 
         self.__df_alert_pyodbc_resultset = None
-        self.__fields_for_display = ["sql_instance", "host_name", "disk_volume", "capacity_mb", "used_pct", "free_mb", "state"]
+        #self.__fields_for_display = None
+        self.__fields_for_display = ["sql_instance", "JobName", "Job-Delay", "Threshold", "Success_Time", "state", "Collection Time"]
 
         # severity counts
         self.__critical_count = 0
@@ -129,7 +127,14 @@ class SmaDiskSpaceAlert(SmaAlert):
 
         if self.generate_alert:
             pt = get_pretty_table(self.alert_pyodbc_resultset)
-            self.description = pt.get_string(fields=self.__fields_for_display)
+            if self.__fields_for_display is not None:
+                pt.custom_format = { "Job-Delay": lambda field, value: self.get_pretty_time(int(value),'minutes') }
+                pt.custom_format["Threshold"] = lambda field, value: self.get_pretty_time(int(value),'minutes')
+                pt.custom_format["Success_Time"] = lambda field, value: self.get_pretty_date(value)
+                pt.custom_format["Collection Time"] = lambda field, value: self.get_pretty_date(value)
+                self.description = pt.get_string(fields=self.__fields_for_display)
+            else:
+                self.description = pt.get_string()
         else:
             self.description = f"Alert cleared."
 
@@ -143,7 +148,7 @@ class SmaDiskSpaceAlert(SmaAlert):
 
     def __compute_sqlmonitor_dashboard_url(self):
         url_grafana_dash = get_sma_params(self.sql_connection, param_key='GrafanaDashboardPortal')[0].param_value
-        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_disk_utilization_dashboard_panel')[0].param_value
+        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_sqlmonitor_jobs_dashboard_panel')[0].param_value
 
         self.__sqlmonitor_dashboard_url = f"{url_grafana_dash}d/{url_panel}"
         if self.verbose:

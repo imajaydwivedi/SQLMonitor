@@ -1,23 +1,24 @@
-from SmaAlertPackage.SmaAlert import SmaAlert
+from SmaAlertPackage.AlertClasses.SmaAlert import SmaAlert
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 
-class SmaSqlBlockingAlert(SmaAlert):
+class SmaTempdbAlert(SmaAlert):
     '''
-    SYNOPSIS: Class to represent sql blocking alert
+    SYNOPSIS: Class to represent tempdb alert
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15, blocked_counts_threshold:int=1, blocked_duration_max_seconds_threshold:int=120):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15, data_used_warning_pct:float=50, data_used_critical_pct:float=80, data_used_threshold_gb:int = 100):
         ''' SYNOPSIS: Constructor
         '''
         super().__init__(alert_key, alert_owner_team, frequency_minutes)
-        self.blocked_counts_threshold = blocked_counts_threshold
-        self.blocked_duration_max_seconds_threshold = blocked_duration_max_seconds_threshold
+        self.data_used_warning_pct = data_used_warning_pct
+        self.data_used_critical_pct = data_used_critical_pct
+        self.data_used_threshold_gb = data_used_threshold_gb
         self.alert_pyodbc_resultset = None
 
         self.__df_alert_pyodbc_resultset = None
-        self.__fields_for_display = ["sql_instance", "blocked_counts", "blocked_duration_max_seconds", "state", "collection_time"]
+        self.__fields_for_display = ["sql_instance", "data_size_mb", "data_used_pct", "version_store_pct", "state", "collection_time_utc"]
 
         # severity counts
         self.__critical_count = 0
@@ -127,7 +128,6 @@ class SmaSqlBlockingAlert(SmaAlert):
 
         if self.generate_alert:
             pt = get_pretty_table(self.alert_pyodbc_resultset)
-            pt.custom_format = { "blocked_duration_max_seconds": lambda field, value: self.get_pretty_time(int(value),'seconds') }
             self.description = pt.get_string(fields=self.__fields_for_display)
         else:
             self.description = f"Alert cleared."
@@ -142,7 +142,7 @@ class SmaSqlBlockingAlert(SmaAlert):
 
     def __compute_sqlmonitor_dashboard_url(self):
         url_grafana_dash = get_sma_params(self.sql_connection, param_key='GrafanaDashboardPortal')[0].param_value
-        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_core_health_metrics_dashboard_panel')[0].param_value
+        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_tempdb_utilization_dashboard_panel')[0].param_value
 
         self.__sqlmonitor_dashboard_url = f"{url_grafana_dash}d/{url_panel}"
         if self.verbose:

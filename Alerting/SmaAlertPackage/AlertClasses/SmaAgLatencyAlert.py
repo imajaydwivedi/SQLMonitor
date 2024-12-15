@@ -1,25 +1,25 @@
-from SmaAlertPackage.SmaAlert import SmaAlert
+from SmaAlertPackage.AlertClasses.SmaAlert import SmaAlert
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 
-class SmaDiskLatencyAlert(SmaAlert):
+class SmaAgLatencyAlert(SmaAlert):
     '''
-    SYNOPSIS: Class to represent cpu alert
+    SYNOPSIS: Class to represent ag latency alert
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15, disk_latency_ms_warning_threshold:int=15, disk_latency_ms_critical_threshold:int=30, average_duration_minutes:int = 10):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15, latency_minutes:int=30, redo_queue_size_gb:int=10, log_send_queue_size_gb:int = 5):
         ''' SYNOPSIS: Constructor
         '''
         super().__init__(alert_key, alert_owner_team, frequency_minutes)
-        self.disk_latency_ms_warning_threshold = disk_latency_ms_warning_threshold
-        self.disk_latency_ms_critical_threshold = disk_latency_ms_critical_threshold
-        self.average_duration_minutes = average_duration_minutes
+        self.latency_minutes = latency_minutes
+        self.redo_queue_size_gb = redo_queue_size_gb
+        self.log_send_queue_size_gb = log_send_queue_size_gb
         self.alert_pyodbc_resultset = None
 
         self.__df_alert_pyodbc_resultset = None
         #self.__fields_for_display = None
-        self.__fields_for_display = ["sql_instance", "disk_latency_ms", "ram", "sql_ram", "state", "collection_time"]
+        self.__fields_for_display = ["sql_instance", "replica_database", "ag_name", "is_primary", "ag_listener", "is_local", "synchronization_state", "synchronization_health", "latency", "log_send_queue_size", "redo_queue_size", "is_suspended", "state"]
 
         # severity counts
         self.__critical_count = 0
@@ -130,9 +130,10 @@ class SmaDiskLatencyAlert(SmaAlert):
         if self.generate_alert:
             pt = get_pretty_table(self.alert_pyodbc_resultset)
             if self.__fields_for_display is not None:
-                pt.custom_format = { "ram": lambda field, value: self.get_pretty_data_size(int(value),'kb') }
-                pt.custom_format["sql_ram"] = lambda field, value: self.get_pretty_data_size(int(value),'kb')
-                pt.custom_format["collection_time"] = lambda field, value: self.get_pretty_date(value)
+                pt.custom_format = { "latency": lambda field, value: self.get_pretty_time(value,'seconds') }
+                pt.custom_format["log_send_queue_size"] = lambda field, value: self.get_pretty_data_size(value,'kb')
+                pt.custom_format["redo_queue_size"] = lambda field, value: self.get_pretty_data_size(value,'kb')
+                #pt.custom_format["collection_time"] = lambda field, value: self.get_pretty_date(value)
                 self.description = pt.get_string(fields=self.__fields_for_display)
             else:
                 self.description = pt.get_string()
@@ -149,7 +150,7 @@ class SmaDiskLatencyAlert(SmaAlert):
 
     def __compute_sqlmonitor_dashboard_url(self):
         url_grafana_dash = get_sma_params(self.sql_connection, param_key='GrafanaDashboardPortal')[0].param_value
-        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_core_health_metrics_dashboard_panel')[0].param_value
+        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_alwayson_latency_dashboard_panel')[0].param_value
 
         self.__sqlmonitor_dashboard_url = f"{url_grafana_dash}d/{url_panel}"
         if self.verbose:

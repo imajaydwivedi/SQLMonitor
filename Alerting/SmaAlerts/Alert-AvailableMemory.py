@@ -2,12 +2,16 @@ import pyodbc
 import argparse
 from datetime import datetime
 import os
+import sys
+
+# Import parent directory as module to run this script independently
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
 from SmaAlertPackage.CustomFunctions.get_available_memory import get_available_memory
-import SmaAlertPackage.SmaAvailableMemoryAlert as sma
+import SmaAlertPackage.AlertClasses.SmaAvailableMemoryAlert as sma
 
 # get Script Name
 script_name = os.path.basename(__file__)

@@ -1,21 +1,25 @@
-from SmaAlertPackage.SmaAlert import SmaAlert
+from SmaAlertPackage.AlertClasses.SmaAlert import SmaAlert
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 
-class SmaOfflineServerAlert(SmaAlert):
+class SmaLogSpaceAlert(SmaAlert):
     '''
-    SYNOPSIS: Class to represent offline server alert
+    SYNOPSIS: Class to represent log space alert
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15, log_used_warning_pct:float=70, log_used_critical_pct:float=85, log_used_threshold_gb:int = 250, only_threshold_validated:bool=True):
         ''' SYNOPSIS: Constructor
         '''
         super().__init__(alert_key, alert_owner_team, frequency_minutes)
+        self.log_used_warning_pct = log_used_warning_pct
+        self.log_used_critical_pct = log_used_critical_pct
+        self.log_used_threshold_gb = log_used_threshold_gb
+        self.only_threshold_validated = only_threshold_validated
         self.alert_pyodbc_resultset = None
 
         self.__df_alert_pyodbc_resultset = None
-        self.__fields_for_display = ["sql_instance", "port", "host_name", "online", "link_active", "last_online"]
+        self.__fields_for_display = ["collection_time_utc", "sql_instance", "database_name", "log_reuse_wait_desc", "log_size_mb", "log_used_pct", "pre_validated", "state"]
 
         # severity counts
         self.__critical_count = 0
@@ -48,16 +52,17 @@ class SmaOfflineServerAlert(SmaAlert):
             self.__df_alert_pyodbc_resultset = get_pandas_dataframe(self.alert_pyodbc_resultset, index_col='sql_instance')
 
     def __compute_severity(self):
-        # 'Critical', 'High', 'Medium', 'Low'
+        # 'Critical', 'High', 'Warning', 'Medium', 'Low'
 
+        existing_severity = self.severity
         if self.generate_alert:
             df = self.__df_alert_pyodbc_resultset
 
-            self.__critical_count = len(df)
-            self.__high_count = 0
-            self.__warning_count = 0
-            self.__medium_count = 0
-            self.__low_count = 0
+            self.__critical_count = len(df[df.state=='Critical'])
+            self.__high_count = len(df[df.state=='High'])
+            self.__warning_count = len(df[df.state=='Warning'])
+            self.__medium_count = len(df[df.state=='Medium'])
+            self.__low_count = len(df[df.state=='Low'])
 
         if self.__critical_count > 0:
             self.severity = 'Critical'
@@ -69,6 +74,10 @@ class SmaOfflineServerAlert(SmaAlert):
             self.severity = 'Medium'
         else:
             self.severity = 'Low'
+
+        # upgrade severity if required
+        if existing_severity is not None and (self.severity_dictionary[existing_severity] < self.severity_dictionary[self.severity]):
+            self.action_to_take = 'Upgrade'
 
     def __compute_state(self):
         # 'Active','Suppressed','Cleared', 'Resolved'
@@ -83,16 +92,16 @@ class SmaOfflineServerAlert(SmaAlert):
             self.header = f"No Action"
 
         if self.action_to_take == 'Create':
-            self.header = f"[Active] - [Id#X] - [{self.alert_key}] - {self.__critical_count} Criticals"
+            self.header = f"[Active] - [Id#X] - [{self.alert_key}] - {self.__warning_count} Warnings - {self.__critical_count} Criticals"
 
         if self.action_to_take in ['Update','Upgrade']:
-            self.header = f"[Triggered] - [{self.alert_key}] - {self.__critical_count} Criticals"
+            self.header = f"[Triggered] - [{self.alert_key}] - {self.__warning_count} Warnings - {self.__critical_count} Criticals"
 
         if self.action_to_take == 'SkipNotification':
-            self.header = f"[Suppressed] - [{self.alert_key}] - {self.__critical_count} Criticals"
+            self.header = f"[Suppressed] - [{self.alert_key}] - {self.__warning_count} Warnings - {self.__critical_count} Criticals"
 
         if self.action_to_take == 'Clear':
-            self.header = f"[Cleared] - [{self.alert_key}] - {self.__critical_count} Criticals"
+            self.header = f"[Cleared] - [{self.alert_key}] - {self.__warning_count} Warnings - {self.__critical_count} Criticals"
 
     def __compute_header_slack_markdown(self):
         if self.verbose:
@@ -103,16 +112,16 @@ class SmaOfflineServerAlert(SmaAlert):
             self.header_slack_markdown = f"No Action"
 
         if self.action_to_take == 'Create':
-            self.header_slack_markdown = f"<{self.alert_dashboard_url}|:fire: [Active] - [Id#X]> - <{self.__sqlmonitor_dashboard_url}|[*{self.alert_key}*] - *{self.__critical_count}* Criticals>"
+            self.header_slack_markdown = f"<{self.alert_dashboard_url}|:fire: [Active] - [Id#X]> - <{self.__sqlmonitor_dashboard_url}|[*{self.alert_key}*] - *{self.__warning_count}* Warnings - *{self.__critical_count}* Criticals>"
 
         if self.action_to_take in ['Update','Upgrade']:
-            self.header_slack_markdown = f"<{self.alert_dashboard_url}|{emoji} [Triggered]> - <{self.__sqlmonitor_dashboard_url}|[*{self.alert_key}*] - *{self.__critical_count}* Criticals>"
+            self.header_slack_markdown = f"<{self.alert_dashboard_url}|{emoji} [Triggered]> - <{self.__sqlmonitor_dashboard_url}|[*{self.alert_key}*] - *{self.__warning_count}* Warnings - *{self.__critical_count}* Criticals>"
 
         if self.action_to_take == 'SkipNotification':
-            self.header_slack_markdown = f"<{self.alert_dashboard_url}|{emoji} [Suppressed]> - <{self.__sqlmonitor_dashboard_url}|[*{self.alert_key}*] - *{self.__critical_count}* Criticals>"
+            self.header_slack_markdown = f"<{self.alert_dashboard_url}|{emoji} [Suppressed]> - <{self.__sqlmonitor_dashboard_url}|[*{self.alert_key}*] - *{self.__warning_count}* Warnings - *{self.__critical_count}* Criticals>"
 
         if self.action_to_take == 'Clear':
-            self.header_slack_markdown = f"<{self.alert_dashboard_url}|{emoji} [Cleared]> - <{self.__sqlmonitor_dashboard_url}|[*{self.alert_key}*] - *{self.__critical_count}* Criticals>"
+            self.header_slack_markdown = f"<{self.alert_dashboard_url}|{emoji} [Cleared]> - <{self.__sqlmonitor_dashboard_url}|[*{self.alert_key}*] - *{self.__warning_count}* Warnings - *{self.__critical_count}* Criticals>"
 
     def __compute_description(self):
         if self.verbose:
@@ -134,7 +143,7 @@ class SmaOfflineServerAlert(SmaAlert):
 
     def __compute_sqlmonitor_dashboard_url(self):
         url_grafana_dash = get_sma_params(self.sql_connection, param_key='GrafanaDashboardPortal')[0].param_value
-        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_offline_servers_dashboard_panel')[0].param_value
+        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_logspace_utilization_dashboard_panel')[0].param_value
 
         self.__sqlmonitor_dashboard_url = f"{url_grafana_dash}d/{url_panel}"
         if self.verbose:
@@ -165,8 +174,7 @@ class SmaOfflineServerAlert(SmaAlert):
                                     justify='center', index=False, escape=False, decimal=',',
                                     formatters={
                                         'sql_instance': lambda x: f'<b>{x}</b>',
-                                        #'state': self.state_colorizer
-                                        'online': lambda x: f'<span style="background-color:OrangeRed">{x}</span>'
+                                        'state': self.state_colorizer
                                     }
                                 )
 
@@ -175,16 +183,16 @@ class SmaOfflineServerAlert(SmaAlert):
             alert_mail_table = f"No Action"
 
         if self.action_to_take == 'Create':
-            alert_mail_header = f'<h3><a href="{self.alert_dashboard_url}" target="_blank">[Active] - [Id#X]</a> - <a href="{self.__sqlmonitor_dashboard_url}" target="_blank">[{self.alert_key}] - {self.__critical_count} Criticals</a></h3>'
+            alert_mail_header = f'<h3><a href="{self.alert_dashboard_url}" target="_blank">[Active] - [Id#X]</a> - <a href="{self.__sqlmonitor_dashboard_url}" target="_blank">[{self.alert_key}] - {self.__warning_count} Warnings - {self.__critical_count} Criticals</a></h3>'
 
         if self.action_to_take in ['Update','Upgrade']:
-            alert_mail_header = f'<h3><a href="{self.alert_dashboard_url}" target="_blank">[Triggered] - [Id#{self.id}]</a> - <a href="{self.__sqlmonitor_dashboard_url}" target="_blank">[{self.alert_key}] - {self.__critical_count} Criticals</a></h3>'
+            alert_mail_header = f'<h3><a href="{self.alert_dashboard_url}" target="_blank">[Triggered] - [Id#{self.id}]</a> - <a href="{self.__sqlmonitor_dashboard_url}" target="_blank">[{self.alert_key}] - {self.__warning_count} Warnings - {self.__critical_count} Criticals</a></h3>'
 
         if self.action_to_take == 'SkipNotification':
-            alert_mail_header = f'<h3><a href="{self.alert_dashboard_url}" target="_blank">[Suppressed] - [Id#{self.id}]</a> - <a href="{self.__sqlmonitor_dashboard_url}" target="_blank">[{self.alert_key}] - {self.__critical_count} Criticals</a></h3>'
+            alert_mail_header = f'<h3><a href="{self.alert_dashboard_url}" target="_blank">[Suppressed] - [Id#{self.id}]</a> - <a href="{self.__sqlmonitor_dashboard_url}" target="_blank">[{self.alert_key}] - {self.__warning_count} Warnings - {self.__critical_count} Criticals</a></h3>'
 
         if self.action_to_take == 'Clear':
-            alert_mail_header = f'<h3><a href="{self.alert_dashboard_url}" target="_blank">[Cleared] - [Id#{self.id}]</a> - <a href="{self.__sqlmonitor_dashboard_url}" target="_blank">[{self.alert_key}] - {self.__critical_count} Criticals</a></h3>'
+            alert_mail_header = f'<h3><a href="{self.alert_dashboard_url}" target="_blank">[Cleared] - [Id#{self.id}]</a> - <a href="{self.__sqlmonitor_dashboard_url}" target="_blank">[{self.alert_key}] - {self.__warning_count} Warnings - {self.__critical_count} Criticals</a></h3>'
 
         if self.generate_alert:
             self.alert_mail_body = f"{alert_mail_header}<br><br>{alert_mail_table}<br><br><br>Regards,<br>{self.alert_job_name}"

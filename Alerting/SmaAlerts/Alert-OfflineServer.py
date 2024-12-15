@@ -2,25 +2,31 @@ import pyodbc
 import argparse
 from datetime import datetime
 import os
+import sys
+
+# Import parent directory as module to run this script independently
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
-from SmaAlertPackage.CustomFunctions.get_ag_latency import get_ag_latency
-import SmaAlertPackage.SmaAgLatencyAlert as sma
+from SmaAlertPackage.CustomFunctions.get_offline_server import get_offline_server
+import SmaAlertPackage.AlertClasses.SmaOfflineServerAlert as sma
 
 # get Script Name
 script_name = os.path.basename(__file__)
 
-parser = argparse.ArgumentParser(description="Script to raise memory grants pending alert", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(description="Script to raise offline server alert", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--inventory_server", type=str, required=False, action="store", default="localhost", help="Inventory Server")
 parser.add_argument("--inventory_database", type=str, required=False, action="store", default="DBA", help="Inventory Database")
 parser.add_argument("--credential_manager_database", type=str, required=False, action="store", default="DBA", help="Credential Manager Database")
 parser.add_argument("--login_name", type=str, required=False, action="store", default="sa", help="Login name for sql authentication")
 parser.add_argument("--login_password", type=str, required=False, action="store", default="", help="Login password for sql authentication")
-parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-AgLatency", help="Alert Name")
-parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-AgLatency", help="Script/Job calling this script")
+parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-OfflineServer", help="Alert Name")
+parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-OfflineServer", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
+#parser.add_argument("--frequency_minutes", type=int, required=False, action="store", default=30, help="Time gap between next execution for same alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
 parser.add_argument("--log_file", type=str, required=False, action="store", default="", help="Log file path if logging should be done in files.")
 
@@ -38,6 +44,7 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     alert_name = args.alert_name
     alert_job_name = args.alert_job_name
     alert_owner_team = args.alert_owner_team
+    #frequency_minutes = args.frequency_minutes
     verbose = args.verbose
     log_file = args.log_file
 
@@ -61,13 +68,10 @@ cursor = cnxn.cursor()
 
 # Create SmaAlert object to retrieve defaults
 logger.info(f"Create SmaAlert child class object with default values..")
-alert_obj = sma.SmaAgLatencyAlert()
+alert_obj = sma.SmaOfflineServerAlert()
 
 if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
     frequency_minutes = alert_obj.frequency_minutes
-    latency_minutes = alert_obj.latency_minutes
-    redo_queue_size_gb = alert_obj.redo_queue_size_gb
-    log_send_queue_size_gb = alert_obj.log_send_queue_size_gb
 
 # Print variables values
 if 'Print Variables' == 'Print Variables':
@@ -81,21 +85,15 @@ if 'Print Variables' == 'Print Variables':
     logger.info(f"alert_job_name = '{alert_job_name}'")
     logger.info(f"alert_owner_team = '{alert_owner_team}'")
     logger.info(f"frequency_minutes = '{frequency_minutes}'")
-    logger.info(f"latency_minutes = '{latency_minutes}'")
-    logger.info(f"redo_queue_size_gb = '{redo_queue_size_gb}'")
-    logger.info(f"log_send_queue_size_gb = '{log_send_queue_size_gb}'")
     logger.info(f"verbose = '{verbose}'")
 
 # Get Alert Raw Data
 if 'Get Alert Raw Data' == 'Get Alert Raw Data':
-    logger.info(f"Query table dbo.ag_health_state_all_servers..")
+    logger.info(f"Query table dbo.instance_details..")
     query_params = dict(logger = logger,
-                        verbose = verbose,
-                        latency_minutes = latency_minutes,
-                        redo_queue_size_gb = redo_queue_size_gb,
-                        log_send_queue_size_gb = log_send_queue_size_gb
+                        verbose = verbose
                         )
-    alert_pyodbc_resultset = get_ag_latency(cnxn, **query_params)
+    alert_pyodbc_resultset = get_offline_server(cnxn, **query_params)
 
     if len(alert_pyodbc_resultset) > 0:
         logger.info(f"Before creating pt & df on alert_pyodbc_resultset..")

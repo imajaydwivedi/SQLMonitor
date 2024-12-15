@@ -1,24 +1,25 @@
-from SmaAlertPackage.SmaAlert import SmaAlert
+from SmaAlertPackage.AlertClasses.SmaAlert import SmaAlert
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 
-class SmaNonAgDbBackupIssueAlert(SmaAlert):
+class SmaDiskLatencyAlert(SmaAlert):
     '''
-    SYNOPSIS: Class to represent backup issue alert
+    SYNOPSIS: Class to represent cpu alert
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=10, full_threshold_days:int=8, diff_threshold_hours:int=26, tlog_threshold_minutes:int = 240):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15, disk_latency_ms_warning_threshold:int=15, disk_latency_ms_critical_threshold:int=30, average_duration_minutes:int = 10):
         ''' SYNOPSIS: Constructor
         '''
         super().__init__(alert_key, alert_owner_team, frequency_minutes)
-        self.full_threshold_days = full_threshold_days
-        self.diff_threshold_hours = diff_threshold_hours
-        self.tlog_threshold_minutes = tlog_threshold_minutes
+        self.disk_latency_ms_warning_threshold = disk_latency_ms_warning_threshold
+        self.disk_latency_ms_critical_threshold = disk_latency_ms_critical_threshold
+        self.average_duration_minutes = average_duration_minutes
         self.alert_pyodbc_resultset = None
 
         self.__df_alert_pyodbc_resultset = None
-        self.__fields_for_display = ["sql_instance", "database_name", "full_latency", "diff_latency", "tlog_latency", "state"]
+        #self.__fields_for_display = None
+        self.__fields_for_display = ["sql_instance", "disk_latency_ms", "ram", "sql_ram", "state", "collection_time"]
 
         # severity counts
         self.__critical_count = 0
@@ -128,11 +129,10 @@ class SmaNonAgDbBackupIssueAlert(SmaAlert):
 
         if self.generate_alert:
             pt = get_pretty_table(self.alert_pyodbc_resultset)
-            #self.description = pt.get_string()
             if self.__fields_for_display is not None:
-                pt.custom_format = { "full_latency": lambda field, value: self.get_pretty_time(int(value),'days') }
-                pt.custom_format["diff_latency"] = lambda field, value: self.get_pretty_time(value,'hours')
-                pt.custom_format["tlog_latency"] = lambda field, value: self.get_pretty_time(value,'minutes')
+                pt.custom_format = { "ram": lambda field, value: self.get_pretty_data_size(int(value),'kb') }
+                pt.custom_format["sql_ram"] = lambda field, value: self.get_pretty_data_size(int(value),'kb')
+                pt.custom_format["collection_time"] = lambda field, value: self.get_pretty_date(value)
                 self.description = pt.get_string(fields=self.__fields_for_display)
             else:
                 self.description = pt.get_string()
@@ -149,7 +149,7 @@ class SmaNonAgDbBackupIssueAlert(SmaAlert):
 
     def __compute_sqlmonitor_dashboard_url(self):
         url_grafana_dash = get_sma_params(self.sql_connection, param_key='GrafanaDashboardPortal')[0].param_value
-        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_backups_nonag_dbs_dashboard_panel')[0].param_value
+        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_core_health_metrics_dashboard_panel')[0].param_value
 
         self.__sqlmonitor_dashboard_url = f"{url_grafana_dash}d/{url_panel}"
         if self.verbose:

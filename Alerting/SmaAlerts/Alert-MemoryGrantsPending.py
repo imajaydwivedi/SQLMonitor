@@ -2,12 +2,16 @@ import pyodbc
 import argparse
 from datetime import datetime
 import os
+import sys
+
+# Import parent directory as module to run this script independently
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
-from SmaAlertPackage.CustomFunctions.get_disk_latency import get_disk_latency
-import SmaAlertPackage.SmaDiskLatencyAlert as sma
+from SmaAlertPackage.CustomFunctions.get_memory_grants_pending import get_memory_grants_pending
+import SmaAlertPackage.AlertClasses.SmaMemoryGrantsPendingAlert as sma
 
 # get Script Name
 script_name = os.path.basename(__file__)
@@ -18,8 +22,8 @@ parser.add_argument("--inventory_database", type=str, required=False, action="st
 parser.add_argument("--credential_manager_database", type=str, required=False, action="store", default="DBA", help="Credential Manager Database")
 parser.add_argument("--login_name", type=str, required=False, action="store", default="sa", help="Login name for sql authentication")
 parser.add_argument("--login_password", type=str, required=False, action="store", default="", help="Login password for sql authentication")
-parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-DiskLatency", help="Alert Name")
-parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-DiskLatency", help="Script/Job calling this script")
+parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-MemoryGrantsPending", help="Alert Name")
+parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-MemoryGrantsPending", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
 parser.add_argument("--log_file", type=str, required=False, action="store", default="", help="Log file path if logging should be done in files.")
@@ -61,12 +65,11 @@ cursor = cnxn.cursor()
 
 # Create SmaAlert object to retrieve defaults
 logger.info(f"Create SmaAlert child class object with default values..")
-alert_obj = sma.SmaDiskLatencyAlert()
+alert_obj = sma.SmaMemoryGrantsPendingAlert()
 
 if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
     frequency_minutes = alert_obj.frequency_minutes
-    disk_latency_ms_warning_threshold = alert_obj.disk_latency_ms_warning_threshold
-    disk_latency_ms_critical_threshold = alert_obj.disk_latency_ms_critical_threshold
+    grants_pending_threshold = alert_obj.grants_pending_threshold
     average_duration_minutes = alert_obj.average_duration_minutes
 
 # Print variables values
@@ -81,8 +84,7 @@ if 'Print Variables' == 'Print Variables':
     logger.info(f"alert_job_name = '{alert_job_name}'")
     logger.info(f"alert_owner_team = '{alert_owner_team}'")
     logger.info(f"frequency_minutes = '{frequency_minutes}'")
-    logger.info(f"disk_latency_ms_warning_threshold = '{disk_latency_ms_warning_threshold}'")
-    logger.info(f"disk_latency_ms_critical_threshold = '{disk_latency_ms_critical_threshold}'")
+    logger.info(f"grants_pending_threshold = '{grants_pending_threshold}'")
     logger.info(f"average_duration_minutes = '{average_duration_minutes}'")
     logger.info(f"verbose = '{verbose}'")
 
@@ -91,11 +93,10 @@ if 'Get Alert Raw Data' == 'Get Alert Raw Data':
     logger.info(f"Query table dbo.all_server_volatile_info_history..")
     query_params = dict(logger = logger,
                         verbose = verbose,
-                        disk_latency_ms_warning_threshold = disk_latency_ms_warning_threshold,
-                        disk_latency_ms_critical_threshold = disk_latency_ms_critical_threshold,
+                        grants_pending_threshold = grants_pending_threshold,
                         average_duration_minutes = average_duration_minutes
                         )
-    alert_pyodbc_resultset = get_disk_latency(cnxn, **query_params)
+    alert_pyodbc_resultset = get_memory_grants_pending(cnxn, **query_params)
 
     if len(alert_pyodbc_resultset) > 0:
         logger.info(f"Before creating pt & df on alert_pyodbc_resultset..")

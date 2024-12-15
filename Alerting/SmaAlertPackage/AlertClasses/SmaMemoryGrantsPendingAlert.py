@@ -1,25 +1,24 @@
-from SmaAlertPackage.SmaAlert import SmaAlert
+from SmaAlertPackage.AlertClasses.SmaAlert import SmaAlert
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 
-class SmaLogSpaceAlert(SmaAlert):
+class SmaMemoryGrantsPendingAlert(SmaAlert):
     '''
-    SYNOPSIS: Class to represent log space alert
+    SYNOPSIS: Class to represent cpu alert
     '''
 
-    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15, log_used_warning_pct:float=70, log_used_critical_pct:float=85, log_used_threshold_gb:int = 250, only_threshold_validated:bool=True):
+    def __init__(self, alert_key:str=None, alert_owner_team:str='', frequency_minutes:int=15, grants_pending_threshold:int=1, average_duration_minutes:int = 2):
         ''' SYNOPSIS: Constructor
         '''
         super().__init__(alert_key, alert_owner_team, frequency_minutes)
-        self.log_used_warning_pct = log_used_warning_pct
-        self.log_used_critical_pct = log_used_critical_pct
-        self.log_used_threshold_gb = log_used_threshold_gb
-        self.only_threshold_validated = only_threshold_validated
+        self.grants_pending_threshold = grants_pending_threshold
+        self.average_duration_minutes = average_duration_minutes
         self.alert_pyodbc_resultset = None
 
         self.__df_alert_pyodbc_resultset = None
-        self.__fields_for_display = ["collection_time_utc", "sql_instance", "database_name", "log_reuse_wait_desc", "log_size_mb", "log_used_pct", "pre_validated", "state"]
+        #self.__fields_for_display = None
+        self.__fields_for_display = ["sql_instance", "grants_pending", "ram", "sql_ram", "memory_consumers", "state", "collection_time"]
 
         # severity counts
         self.__critical_count = 0
@@ -129,7 +128,13 @@ class SmaLogSpaceAlert(SmaAlert):
 
         if self.generate_alert:
             pt = get_pretty_table(self.alert_pyodbc_resultset)
-            self.description = pt.get_string(fields=self.__fields_for_display)
+            if self.__fields_for_display is not None:
+                pt.custom_format = { "ram": lambda field, value: self.get_pretty_data_size(int(value),'kb') }
+                pt.custom_format["sql_ram"] = lambda field, value: self.get_pretty_data_size(int(value),'kb')
+                pt.custom_format["collection_time"] = lambda field, value: self.get_pretty_date(value)
+                self.description = pt.get_string(fields=self.__fields_for_display)
+            else:
+                self.description = pt.get_string()
         else:
             self.description = f"Alert cleared."
 
@@ -143,7 +148,7 @@ class SmaLogSpaceAlert(SmaAlert):
 
     def __compute_sqlmonitor_dashboard_url(self):
         url_grafana_dash = get_sma_params(self.sql_connection, param_key='GrafanaDashboardPortal')[0].param_value
-        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_logspace_utilization_dashboard_panel')[0].param_value
+        url_panel = get_sma_params(self.sql_connection, param_key='url_all_servers_core_health_metrics_dashboard_panel')[0].param_value
 
         self.__sqlmonitor_dashboard_url = f"{url_grafana_dash}d/{url_panel}"
         if self.verbose:

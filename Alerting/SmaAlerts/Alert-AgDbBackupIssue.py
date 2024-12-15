@@ -2,24 +2,29 @@ import pyodbc
 import argparse
 from datetime import datetime
 import os
+import sys
+
+# Import parent directory as module to run this script independently
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
-from SmaAlertPackage.CustomFunctions.get_cpu import get_cpu
-import SmaAlertPackage.SmaCpuAlert as sma
+from SmaAlertPackage.CustomFunctions.get_ag_db_backup_issue import get_ag_db_backup_issue
+import SmaAlertPackage.AlertClasses.SmaAgDbBackupIssueAlert as sma
+
 
 # get Script Name
 script_name = os.path.basename(__file__)
 
-parser = argparse.ArgumentParser(description="Script to raise cpu alert", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(description="Script to raise ag databases backup issue alert", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--inventory_server", type=str, required=False, action="store", default="localhost", help="Inventory Server")
 parser.add_argument("--inventory_database", type=str, required=False, action="store", default="DBA", help="Inventory Database")
 parser.add_argument("--credential_manager_database", type=str, required=False, action="store", default="DBA", help="Credential Manager Database")
 parser.add_argument("--login_name", type=str, required=False, action="store", default="sa", help="Login name for sql authentication")
 parser.add_argument("--login_password", type=str, required=False, action="store", default="", help="Login password for sql authentication")
-parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-Cpu", help="Alert Name")
-parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-Cpu", help="Script/Job calling this script")
+parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-AgDbBackupIssue", help="Alert Name")
+parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-AgDbBackupIssue", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
 parser.add_argument("--log_file", type=str, required=False, action="store", default="", help="Log file path if logging should be done in files.")
@@ -61,13 +66,13 @@ cursor = cnxn.cursor()
 
 # Create SmaAlert object to retrieve defaults
 logger.info(f"Create SmaAlert child class object with default values..")
-alert_obj = sma.SmaCpuAlert()
+alert_obj = sma.SmaAgDbBackupIssueAlert()
 
 if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
     frequency_minutes = alert_obj.frequency_minutes
-    cpu_warning_pct = alert_obj.cpu_warning_pct
-    cpu_critical_pct = alert_obj.cpu_critical_pct
-    average_duration_minutes = alert_obj.average_duration_minutes
+    full_threshold_days = alert_obj.full_threshold_days
+    diff_threshold_hours = alert_obj.diff_threshold_hours
+    tlog_threshold_minutes = alert_obj.tlog_threshold_minutes
 
 # Print variables values
 if 'Print Variables' == 'Print Variables':
@@ -81,8 +86,9 @@ if 'Print Variables' == 'Print Variables':
     logger.info(f"alert_job_name = '{alert_job_name}'")
     logger.info(f"alert_owner_team = '{alert_owner_team}'")
     logger.info(f"frequency_minutes = '{frequency_minutes}'")
-    logger.info(f"cpu_warning_pct = '{cpu_warning_pct}'")
-    logger.info(f"cpu_critical_pct = '{cpu_critical_pct}'")
+    logger.info(f"full_threshold_days = '{full_threshold_days}'")
+    logger.info(f"diff_threshold_hours = '{diff_threshold_hours}'")
+    logger.info(f"tlog_threshold_minutes = '{tlog_threshold_minutes}'")
     logger.info(f"verbose = '{verbose}'")
 
 # Get Alert Raw Data
@@ -90,11 +96,11 @@ if 'Get Alert Raw Data' == 'Get Alert Raw Data':
     logger.info(f"Query table dbo.all_server_volatile_info_history..")
     query_params = dict(logger = logger,
                         verbose = verbose,
-                        cpu_warning_pct = cpu_warning_pct,
-                        cpu_critical_pct = cpu_critical_pct,
-                        average_duration_minutes = average_duration_minutes
+                        full_threshold_days = full_threshold_days,
+                        diff_threshold_hours = diff_threshold_hours,
+                        tlog_threshold_minutes = tlog_threshold_minutes
                         )
-    alert_pyodbc_resultset = get_cpu(cnxn, **query_params)
+    alert_pyodbc_resultset = get_ag_db_backup_issue(cnxn, **query_params)
 
     if len(alert_pyodbc_resultset) > 0:
         logger.info(f"Before creating pt & df on alert_pyodbc_resultset..")
