@@ -16,13 +16,14 @@ import psutil
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_sma_params import get_sma_params
 from SmaAlertPackage.CommonFunctions.get_sm_credential import get_sm_credential
-from SmaAlertPackage.SmaAlert import SmaAlert
+from SmaAlertPackage.AlertClasses.SmaAlert import SmaAlert
 
 # get Script Name
 script_name = os.path.basename(__file__)
 script_full_path = os.path.abspath(__file__)
 script_directory = os.path.abspath(os.path.abspath(os.path.dirname(__file__)))
 script_parent_directory = os.path.split(os.path.abspath(script_directory))[0]
+sma_alerts_directory = os.path.join(script_directory, "SmaAlerts")
 
 parser = argparse.ArgumentParser(description="Script to run SQLMonitor Alert Engine Web Server", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--inventory_server", type=str, required=False, action="store", default="localhost", help="Inventory Server")
@@ -64,8 +65,9 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     log_server_startup = os.getenv('log_server_startup', args.log_server_startup)
     run_scheduled_jobs = os.getenv('run_scheduled_jobs', args.run_scheduled_jobs)
 
-print(f"inventory_server = {inventory_server}")
-print(f"login_password = {login_password}")
+if verbose:
+    print(f"inventory_server = {inventory_server}")
+    print(f"login_password = {login_password}")
 
 # determine os
 if os.name == 'nt':
@@ -100,6 +102,7 @@ logger.info(f"\n\n***** BEGIN:  {script_name}")
 # ssl_certificate
 logger.info(f"script_parent_directory = '{script_parent_directory}'")
 logger.info(f"script_directory = '{script_directory}'")
+logger.info(f"sma_alerts_directory = '{sma_alerts_directory}'")
 if has_ssl_certificate:
     ssl_certificate = f"{script_parent_directory}{path_separator}Private{path_separator}ssl_certificates{path_separator}fullchain.pem"
     ssl_certificate_key = f"{script_parent_directory}{path_separator}Private{path_separator}ssl_certificates{path_separator}privkey.pem"
@@ -462,28 +465,28 @@ def call_5_minute_job_script():
     logger.info(f"Inside call_5_minute_job_script()")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-DiskSpace.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-DiskSpace.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-SqlMonitorJobs.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-SqlMonitorJobs.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-NonAgDbBackupIssue.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-NonAgDbBackupIssue.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-AgDbBackupIssue.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-AgDbBackupIssue.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
@@ -493,35 +496,35 @@ def call_2_minute_job_script():
     logger.info(f"Inside call_2_minute_job_script()")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-Cpu.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-Cpu.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-SqlBlocking.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-SqlBlocking.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-AvailableMemory.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-AvailableMemory.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-DiskLatency.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-DiskLatency.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-AgLatency.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-AgLatency.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
@@ -532,35 +535,35 @@ def call_1_minute_job_script():
     auto_resolve_cleared_alerts()
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-MemoryGrantsPending.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-MemoryGrantsPending.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-OfflineAgent.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-OfflineAgent.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-OfflineServer.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-OfflineServer.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-LogSpace.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-LogSpace.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"Error exception [{exception_name}] occurred. \n{e}")
 
     try:
-        alert_script_path = os.path.join(script_directory, "Alert-Tempdb.py")
+        alert_script_path = os.path.join(sma_alerts_directory, "Alert-Tempdb.py")
         subprocess.run(['python',alert_script_path]+script_arguments, capture_output=False, text=True)
     except Exception as e:
         exception_name = type(e).__name__

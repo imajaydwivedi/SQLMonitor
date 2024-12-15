@@ -2,24 +2,28 @@ import pyodbc
 import argparse
 from datetime import datetime
 import os
+import sys
+
+# Import parent directory as module to run this script independently
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from SmaAlertPackage.CommonFunctions.get_script_logger import get_script_logger
 from SmaAlertPackage.CommonFunctions.connect_dba_instance import connect_dba_instance
 from SmaAlertPackage.CommonFunctions.get_pandas_dataframe import get_pandas_dataframe
 from SmaAlertPackage.CommonFunctions.get_pretty_table import get_pretty_table
-from SmaAlertPackage.CustomFunctions.get_log_space import get_log_space
-import SmaAlertPackage.SmaLogSpaceAlert as sma
+from SmaAlertPackage.CustomFunctions.get_sqlmonitor_jobs import get_sqlmonitor_jobs
+import SmaAlertPackage.AlertClasses.SmaSqlMonitorJobsAlert as sma
 
 # get Script Name
 script_name = os.path.basename(__file__)
 
-parser = argparse.ArgumentParser(description="Script to raise log space alert", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(description="Script to raise sqlmonitor jobs alert", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--inventory_server", type=str, required=False, action="store", default="localhost", help="Inventory Server")
 parser.add_argument("--inventory_database", type=str, required=False, action="store", default="DBA", help="Inventory Database")
 parser.add_argument("--credential_manager_database", type=str, required=False, action="store", default="DBA", help="Credential Manager Database")
 parser.add_argument("--login_name", type=str, required=False, action="store", default="sa", help="Login name for sql authentication")
 parser.add_argument("--login_password", type=str, required=False, action="store", default="", help="Login password for sql authentication")
-parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-LogSpace", help="Alert Name")
-parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-LogSpace", help="Script/Job calling this script")
+parser.add_argument("--alert_name", type=str, required=False, action="store", default="Alert-SqlMonitorJobs", help="Alert Name")
+parser.add_argument("--alert_job_name", type=str, required=False, action="store", default="(dba) Alert-SqlMonitorJobs", help="Script/Job calling this script")
 parser.add_argument("--alert_owner_team", type=str, required=False, action="store", default="DBA", help="Default team who would own alert")
 parser.add_argument("--verbose", type=bool, required=False, action="store", default=False, help="Extra debug message when enabled")
 parser.add_argument("--log_file", type=str, required=False, action="store", default="", help="Log file path if logging should be done in files.")
@@ -61,14 +65,11 @@ cursor = cnxn.cursor()
 
 # Create SmaAlert object to retrieve defaults
 logger.info(f"Create SmaAlert child class object with default values..")
-alert_obj = sma.SmaLogSpaceAlert()
+alert_obj = sma.SmaSqlMonitorJobsAlert()
 
 if 'Retrieve Class Attribute Defaults' == 'Retrieve Class Attribute Defaults':
     frequency_minutes = alert_obj.frequency_minutes
-    log_used_warning_pct = alert_obj.log_used_warning_pct
-    log_used_critical_pct = alert_obj.log_used_critical_pct
-    log_used_threshold_gb = alert_obj.log_used_threshold_gb
-    only_threshold_validated = alert_obj.only_threshold_validated
+    buffer_time_minutes = alert_obj.buffer_time_minutes
 
 # Print variables values
 if 'Print Variables' == 'Print Variables':
@@ -82,23 +83,17 @@ if 'Print Variables' == 'Print Variables':
     logger.info(f"alert_job_name = '{alert_job_name}'")
     logger.info(f"alert_owner_team = '{alert_owner_team}'")
     logger.info(f"frequency_minutes = '{frequency_minutes}'")
-    logger.info(f"log_used_warning_pct = '{log_used_warning_pct}'")
-    logger.info(f"log_used_critical_pct = '{log_used_critical_pct}'")
-    logger.info(f"log_used_threshold_gb = '{log_used_threshold_gb}'")
-    logger.info(f"only_threshold_validated = '{only_threshold_validated}'")
+    logger.info(f"buffer_time_minutes = '{buffer_time_minutes}'")
     logger.info(f"verbose = '{verbose}'")
 
 # Get Alert Raw Data
 if 'Get Alert Raw Data' == 'Get Alert Raw Data':
-    logger.info(f"Query table dbo.log_space_consumers_all_servers..")
+    logger.info(f"Query table dbo.sql_agent_jobs_all_servers..")
     query_params = dict(logger = logger,
                         verbose = verbose,
-                        log_used_warning_pct = log_used_warning_pct,
-                        log_used_critical_pct = log_used_critical_pct,
-                        log_used_threshold_gb = log_used_threshold_gb,
-                        only_threshold_validated = only_threshold_validated
+                        buffer_time_minutes = buffer_time_minutes
                         )
-    alert_pyodbc_resultset = get_log_space(cnxn, **query_params)
+    alert_pyodbc_resultset = get_sqlmonitor_jobs(cnxn, **query_params)
 
     if len(alert_pyodbc_resultset) > 0:
         logger.info(f"Before creating pt & df on alert_pyodbc_resultset..")
