@@ -26,6 +26,7 @@
 *__pycache__*
 __pycache__/
 .DS_Store
+.vscode
 
 # Ignore Virtual Env Folder
 /SQLMonitorVenv/*

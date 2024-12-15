@@ -19,6 +19,7 @@ def connect_dba_instance(sql_instance='localhost', database='DBA', login_name=''
                 DATABASE={database};
                 UID={login_name};
                 PWD={login_password};
+                Encrypt=yes;
                 APP={app_name};
                 TrustServerCertificate=yes;
                 """
@@ -28,6 +29,7 @@ def connect_dba_instance(sql_instance='localhost', database='DBA', login_name=''
                 DRIVER={{{sql_driver}}};
                 SERVER={sql_instance};
                 DATABASE={database};
+                Encrypt=yes;
                 APP={app_name};
                 Trusted_Connection=Yes;
                 TrustServerCertificate=yes;
