@@ -40,6 +40,9 @@ Param (
     [bool]$DryRun = $true,
 
     [Parameter(Mandatory=$false)]
+    [bool]$ScriptOut = $false,
+
+    [Parameter(Mandatory=$false)]
     [bool]$RenewCertificate = $true,
 
     [Parameter(Mandatory=$false)]
@@ -133,6 +136,7 @@ $masterKeyExists = $resultBasicDetails.master_key_exists
 $saveEncryptionPassword = $false
 
 # get current & previous certificate
+[String]$certificateSubject = $serverName+' Certificate'
 [string]$currentCertificateName = $null
 [int]$currentCertificateAgeLeft = $null
 [string]$previousCertificateName = $null
@@ -145,15 +149,17 @@ $saveEncryptionPassword = $false
 # If there are user databases, then extract info
 if($resultDbEncryptionDetails.Count -gt 0)
 {
-    $currentCertificateName = $resultDbEncryptionDetails | Sort-Object -Property certificate_start_date -Descending | `
+    $currentCertificateName = $resultDbEncryptionDetails | Where-Object {$_.certificate_subject -eq $certificateSubject} | `
+                                Sort-Object -Property certificate_start_date -Descending | `
                                 Select-Object -ExpandProperty certificate_name -First 1
     
     if(-not [String]::($currentCertificateName)) {
         $currentCertificateAgeLeft = $resultDbEncryptionDetails | Where-Object {$_.certificate_name -eq $currentCertificateName} | `
                                     Select-Object -ExpandProperty certificate_expiry_days -First 1
-        $previousCertificateName = $resultDbEncryptionDetails | Where-Object {$_.certificate_name -notin @($currentCertificateName)} | `
+        $previousCertificateName = $resultDbEncryptionDetails | `
+                                    Where-Object { ($_.certificate_subject -eq $certificateSubject) -and ($_.certificate_name -notin @($currentCertificateName)) } | `
                                     Sort-Object -Property certificate_start_date -Descending | `
-                                        Select-Object -ExpandProperty certificate_name -First 1
+                                    Select-Object -ExpandProperty certificate_name -First 1
     }
 
     $pendingDbCount = ($resultDbEncryptionDetails | Where-Object {[String]::IsNullOrEmpty($_.encryption_state_desc)}).Count
@@ -161,25 +167,31 @@ if($resultDbEncryptionDetails.Count -gt 0)
     $expiredDbCount = ($resultDbEncryptionDetails | Where-Object { (-not [String]::IsNullOrEmpty($_.certificate_expiry_days)) -and ($_.certificate_expiry_days -le $ExpiryDaysThreshold) }).Count
 }
 
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$encryptedDbCount = $encryptedDbCount"
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$currentCertificateAgeLeft = $currentCertificateAgeLeft"
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$ExpiryDaysThreshold = $ExpiryDaysThreshold"
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$expiredDbCount = $expiredDbCount"
 
 # has certificates expired?
-if( ($encryptedDbCount -gt 0) -and ($currentCertificateAgeLeft -lt $ExpiryDaysThreshold) -and ($expiredDbCount -eq 0) ) {
+if( ($encryptedDbCount -gt 0) -and ($currentCertificateAgeLeft -lt $ExpiryDaysThreshold) -and ($expiredDbCount -gt 0) ) {
     $hasCertificateExpired = $true
-    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$hasCertificateExpired = $true"
-
 }
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$hasCertificateExpired = $hasCertificateExpired"
+
 
 # return if no encryption, or no certificate renewal issue
 if( $pendingDbCount -eq 0 -and $hasCertificateExpired -eq $false -and $expiredDbCount -eq 0 ) {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'RESULT:', "No database pending for encryption."
-    return
+
+    if(-not $ScriptOut) {
+        return
+    }
 }
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Either there are dbs to be encrypted, or certificate renewal is required."
 
 # get new certificate
 [String]$certificateName = $null
-[String]$certificateSubject = $serverName+' Certificate'
 if($hasCertificateExpired) {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "currentCertificateName: '$currentCertificateName'"    
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Certificate renewal is needed."
@@ -200,13 +212,6 @@ else {
         $certificateName = $serverNameDeSensitized+'__Certificate'
     }
 }
-
-#$currentCertificateName -match ".+(__Certificate__\d+)*$"
-#$currentCertificateName = "SqlPractice__Certificate"
-#$currentCertificateName = "SqlPractice__Certificate__2"
-#$currentCertificateName -match ".+__Certificate__(?'cert_no'\d+)*$"
-#$Matches
-#$serverNameDeSensitized+'__Certificate'+'__'+$( ([int]$Matches['cert_no'])+1 )
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Configure Local Backup Directory.."
 $backupDirectory = $LocalBackupDirectory
@@ -256,6 +261,16 @@ if($resultFetchPassword.Count -eq 0) {
         if($masterKeyExists) {
             "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "Master Key on $SqlInstanceToEncrypt exists."
             "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'ERROR:', "But existing Encryption Password not found in Credential Manager or Parameter."
+
+            $sql4Debugging = @"
+select * from sys.symmetric_keys where name LIKE '%DatabaseMasterKey%';
+select name, state_desc, is_encrypted, is_master_key_encrypted_by_server 
+	from sys.databases where name = 'master';
+
+-- encrypt master key by Password
+alter master key add encryption by password = '<<<YouMasterDbMasterKeyPasswordHere>>>';
+"@
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'DEBUG:', "Following code can be used for debugging-`n$sql4Debugging`n"
             "Kindly rectify above error" | Write-Error
         }
         else {
@@ -499,9 +514,9 @@ $hadrDatabases = @()
 $hadrDatabases += $resultGetAllUserDatabases | Where-Object {([String]::IsNullOrEmpty($_.role_desc) -eq $false) -or ([String]::IsNullOrEmpty($_.mirroring_role_desc) -eq $false)}
                                 #Select-Object -ExpandProperty database_name
 
-#$UserDatabasesToEncrypt | ogv
-#$hadrDatabases | ogv
-
+#$resultGetAllUserDatabases | ogv -Title 'resultGetAllUserDatabases'
+#$UserDatabasesToEncrypt | ogv -Title 'UserDatabasesToEncrypt'
+#$hadrDatabases | ogv -Title 'hadrDatabases'
 
 if($hadrDatabases.Count -gt 0) 
 {
@@ -534,7 +549,6 @@ create certificate [$certificateName] /* Step 2: Details similar to Source Serve
     $horizontalLine + "`n" + $sqlRestoreCertificate | Write-Host -ForegroundColor Magenta
 }
 
-
 # Loop through each database, and generate encryption key
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Loop through each database & generate Encryption Key.."
 foreach($databaseObj in $UserDatabasesToEncrypt)
@@ -542,6 +556,10 @@ foreach($databaseObj in $UserDatabasesToEncrypt)
     $is_db_encrypted = $false
     [int]$certificate_expiry_days = 0
     $database = $databaseObj.database_name
+
+    #Write-Debug "Inside loop"
+
+    "`t$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Checking [$database] database.."
 
     # values which may not be present all the time
     if($databaseObj.is_encrypted) {
@@ -576,6 +594,14 @@ end
 else
 	print 'Database Encryption key exists';
 "@
+        $sqlCreateOrAlterEncryptionKey + "`nGO`n`n" | Out-File -FilePath $scriptOutfile -Append
+        if($DryRun) {
+            $sqlCreateOrAlterEncryptionKey | Write-Host -ForegroundColor Magenta
+        }
+        else {
+            Invoke-DbaQuery -SqlInstance $conSqlInstanceToEncrypt -Database master -Query $sqlCreateOrAlterEncryptionKey `
+                        -MessagesToOutput -EnableException | Write-Host -ForegroundColor Cyan
+        }
     }
     else 
     {
@@ -745,10 +771,12 @@ notepad $scriptOutfile
 Import-Module dbatools
 
 # $allServerLoginCredential = Get-Credential -UserName 'sa' -Message 'All Server Login Credential'
-$Server2Encrypt = 'SqlPractice'
+$Server2Encrypt = 'AgHost-1A'
 
 cls
 E:\Github\SQLMonitor\Work-TDE\Encrypt-SQLDatabases.ps1 `
         -SqlInstanceToEncrypt $Server2Encrypt `
-        -SqlCredential $allServerLoginCredential
+        -SqlCredential $allServerLoginCredential `
+        -ScriptOut $False `
+        #-EncryptionPassword 'YourMasterKeyPasswordHere' #-Debug
 #>
