@@ -162,9 +162,17 @@ if($resultDbEncryptionDetails.Count -gt 0)
                                     Select-Object -ExpandProperty certificate_name -First 1
     }
 
-    $pendingDbCount = ($resultDbEncryptionDetails | Where-Object {[String]::IsNullOrEmpty($_.encryption_state_desc)}).Count
-    $encryptedDbCount = ($resultDbEncryptionDetails | Where-Object {-not [String]::IsNullOrEmpty($_.encryption_state_desc)}).Count
-    $expiredDbCount = ($resultDbEncryptionDetails | Where-Object { (-not [String]::IsNullOrEmpty($_.certificate_expiry_days)) -and ($_.certificate_expiry_days -le $ExpiryDaysThreshold) }).Count
+    $pendingDbs = @()
+    $pendingDbs += ($resultDbEncryptionDetails | Where-Object {[String]::IsNullOrEmpty($_.encryption_state_desc)})
+    $pendingDbCount = $pendingDbs.Count
+
+    $encryptedDbs = @()
+    $encryptedDbs += ($resultDbEncryptionDetails | Where-Object {-not [String]::IsNullOrEmpty($_.encryption_state_desc)})
+    $encryptedDbCount = $encryptedDbs.Count
+
+    $expiredDbs = @()
+    $expiredDbs += ($resultDbEncryptionDetails | Where-Object { (-not [String]::IsNullOrEmpty($_.certificate_expiry_days)) -and ($_.certificate_expiry_days -le $ExpiryDaysThreshold) })
+    $expiredDbCount = $expiredDbs.Count
 }
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$encryptedDbCount = $encryptedDbCount"
