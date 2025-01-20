@@ -24,6 +24,7 @@ curl http://localhost:5000
 
 # Manage container
 podman ps
+podman ps --all
 
 podman logs sqlmonitor-alert-engine
 podman logs -f sqlmonitor-alert-engine
