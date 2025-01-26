@@ -25,16 +25,11 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 22,
+  "id": 6,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -44,15 +39,6 @@
       "id": 154,
       "panels": [],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "LIVE Metrics - OS Info - [$fqdn] - [$ip]",
       "type": "row"
     },
@@ -118,7 +104,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -210,7 +196,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -271,7 +257,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -338,7 +324,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -424,7 +410,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -510,7 +496,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -660,7 +646,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -741,7 +727,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -815,7 +801,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -876,7 +862,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -940,7 +926,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1013,7 +999,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1073,7 +1059,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1149,7 +1135,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1167,10 +1153,6 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1180,15 +1162,6 @@
       "id": 37,
       "panels": [],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "LIVE Metrics - [$host_name\\$instance_name] @ ${perfmon_collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
@@ -1250,7 +1223,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1314,7 +1287,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1406,7 +1379,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1475,7 +1448,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1537,7 +1510,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1610,7 +1583,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1689,7 +1662,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1768,7 +1741,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1834,7 +1807,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1924,7 +1897,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1932,9 +1905,28 @@
             "type": "mssql",
             "uid": "${sqlmonitor_datasource}"
           },
+          "editorMode": "code",
           "format": "table",
+          "rawQuery": true,
           "rawSql": "declare @blocked_count int;\nset @blocked_count = (case when len('$blocked_duration_max_seconds')>0 then cast('$blocked_duration_max_seconds' as int) else 0 end);\nselect @blocked_count;",
-          "refId": "A"
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Longest Blocking",
@@ -2007,7 +1999,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -2082,7 +2074,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -2147,7 +2139,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -2155,9 +2147,28 @@
             "type": "mssql",
             "uid": "${sqlmonitor_datasource}"
           },
+          "editorMode": "code",
           "format": "table",
+          "rawQuery": true,
           "rawSql": "select $ring_buffer_pcnt_user_mode as user_mode --, $ring_buffer_pcnt_kernel_mode as kernel_mode;",
-          "refId": "A"
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "% User Mode",
@@ -2238,7 +2249,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -2345,7 +2356,7 @@
         "textMode": "value",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -2427,7 +2438,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -2435,9 +2446,28 @@
             "type": "mssql",
             "uid": "${sqlmonitor_datasource}"
           },
+          "editorMode": "code",
           "format": "table",
+          "rawQuery": true,
           "rawSql": "select os_uptime =\r\n        Concat\r\n        (\r\n            RIGHT('000'+CAST(ISNULL((datediff(second,'${sqlserver_start_time_utc:date}',GETUTCDATE()) / 3600 / 24), 0) AS VARCHAR(3)),3)\r\n            ,' '\r\n            ,RIGHT('00'+CAST(ISNULL(datediff(second,'${sqlserver_start_time_utc:date}',GETUTCDATE()) / 3600  % 24, 0) AS VARCHAR(2)),2)\r\n            ,':'\r\n            ,RIGHT('00'+CAST(ISNULL(datediff(second,'${sqlserver_start_time_utc:date}',GETUTCDATE()) / 60 % 60, 0) AS VARCHAR(2)),2)\r\n            ,':'\r\n            ,RIGHT('00'+CAST(ISNULL(datediff(second,'${sqlserver_start_time_utc:date}',GETUTCDATE()) % 3600 % 60, 0) AS VARCHAR(2)),2)\r\n        );\r\n        ",
-          "refId": "A"
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "SqlServer Uptime",
@@ -2490,7 +2520,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -2714,7 +2744,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -3210,10 +3240,6 @@
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -3234,11 +3260,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "% CPU",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -3271,7 +3299,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   }
                 ]
               },
@@ -3289,13 +3318,13 @@
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "lastNotNull"
+                "lastNotNull",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -3303,7 +3332,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3340,24 +3369,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Trend - CPU Utilization",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -3390,7 +3406,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -3518,10 +3535,11 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 28
+            "y": 20
           },
           "id": 111,
           "options": {
+            "cellHeight": "sm",
             "footer": {
               "countRows": false,
               "fields": "",
@@ -3538,7 +3556,7 @@
               }
             ]
           },
-          "pluginVersion": "9.4.7",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3575,25 +3593,11 @@
         }
       ],
       "repeat": "datasource",
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Blocking Tree (Queries) - ACTIVE - [sp_WhoIsActive] @ ${whoisactive_collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -3614,11 +3618,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -3627,6 +3633,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineStyle": {
                   "fill": "solid"
@@ -3652,7 +3659,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -3664,7 +3672,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 29
+            "y": 21
           },
           "id": 149,
           "options": {
@@ -3684,7 +3692,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3762,7 +3770,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 179
           },
           "id": 152,
           "options": {
@@ -3800,24 +3808,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Lead Blockers - @ ${perfmon_collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -3837,11 +3832,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -3850,6 +3847,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -3872,7 +3870,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "orange",
@@ -3892,7 +3891,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 61
+            "y": 22
           },
           "id": 57,
           "options": {
@@ -3911,7 +3910,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3945,20 +3944,10 @@
             }
           ],
           "title": "Memory Grants Pending",
-          "transformations": [],
           "type": "timeseries"
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Trend - Memory Grants Pending",
       "type": "row"
     },
@@ -4151,7 +4140,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 23
+            "y": 208
           },
           "id": 177,
           "options": {
@@ -4240,7 +4229,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4272,7 +4262,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -4357,7 +4348,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -4468,7 +4460,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -4539,7 +4532,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -4590,7 +4584,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "dataset": "AdventureWorks2019",
@@ -4649,7 +4643,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4681,7 +4676,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -4766,7 +4762,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -4877,7 +4874,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -4948,7 +4946,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -4983,7 +4982,7 @@
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 28
+            "y": 160
           },
           "id": 190,
           "options": {
@@ -4999,7 +4998,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "dataset": "AdventureWorks2019",
@@ -5453,7 +5452,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 25
+            "y": 210
           },
           "id": 192,
           "options": {
@@ -5510,10 +5509,6 @@
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -5534,11 +5529,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -5547,6 +5544,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -5569,7 +5567,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   }
                 ]
               },
@@ -5603,7 +5602,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -5624,14 +5624,14 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 63
+            "y": 26
           },
           "id": 138,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
@@ -5644,7 +5644,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -5681,24 +5681,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "SQL Connections & Winsock Rejections",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -5730,7 +5717,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5886,10 +5874,11 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 33
+            "y": 27
           },
           "id": 115,
           "options": {
+            "cellHeight": "sm",
             "footer": {
               "countRows": false,
               "fields": "",
@@ -5901,7 +5890,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "9.4.7",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -5938,24 +5927,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Long Running Queries",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -5976,11 +5952,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -5989,6 +5967,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -6010,7 +5989,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "red"
+                    "color": "red",
+                    "value": null
                   },
                   {
                     "color": "transparent",
@@ -6026,14 +6006,13 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 65
+            "y": 28
           },
           "id": 8,
           "options": {
             "legend": {
               "calcs": [
                 "lastNotNull",
-                "max",
                 "min"
               ],
               "displayMode": "table",
@@ -6045,7 +6024,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -6082,24 +6061,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Trend - Page Life Expectancy",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -6120,12 +6086,14 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisGridShow": true,
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -6134,6 +6102,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -6156,7 +6125,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -6172,7 +6142,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 66
+            "y": 29
           },
           "id": 18,
           "options": {
@@ -6180,7 +6150,7 @@
               "calcs": [
                 "lastNotNull",
                 "max",
-                "min"
+                "p99"
               ],
               "displayMode": "table",
               "placement": "bottom",
@@ -6191,7 +6161,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "9.0.2",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -6228,24 +6198,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Trend - Batch Request/Sec",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -6279,7 +6236,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "dark-orange",
@@ -6299,10 +6257,11 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 36
+            "y": 30
           },
           "id": 124,
           "options": {
+            "cellHeight": "sm",
             "footer": {
               "countRows": false,
               "fields": "",
@@ -6313,7 +6272,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "9.4.7",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -6354,7 +6313,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -6390,10 +6350,11 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 43
+            "y": 78
           },
           "id": 131,
           "options": {
+            "cellHeight": "sm",
             "footer": {
               "countRows": false,
               "fields": "",
@@ -6405,7 +6366,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "9.4.7",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -6446,7 +6407,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -6482,10 +6444,11 @@
             "h": 12,
             "w": 8,
             "x": 8,
-            "y": 43
+            "y": 78
           },
           "id": 128,
           "options": {
+            "cellHeight": "sm",
             "footer": {
               "countRows": false,
               "fields": "",
@@ -6497,7 +6460,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "9.4.7",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -6538,7 +6501,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -6574,10 +6538,11 @@
             "h": 12,
             "w": 8,
             "x": 16,
-            "y": 43
+            "y": 78
           },
           "id": 129,
           "options": {
+            "cellHeight": "sm",
             "footer": {
               "countRows": false,
               "fields": "",
@@ -6589,7 +6554,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "9.4.7",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -6630,7 +6595,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -6655,10 +6621,11 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 49
+            "y": 84
           },
           "id": 130,
           "options": {
+            "cellHeight": "sm",
             "footer": {
               "countRows": false,
               "fields": "",
@@ -6670,7 +6637,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "9.4.7",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -6688,24 +6655,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "SQL Connections - Distribution",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -6726,11 +6680,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "bars",
                 "fillOpacity": 100,
                 "gradientMode": "hue",
@@ -6739,6 +6695,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 1,
@@ -6760,7 +6717,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -6785,7 +6743,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 68
+            "y": 31
           },
           "id": 144,
           "options": {
@@ -6798,14 +6756,14 @@
               "placement": "right",
               "showLegend": true,
               "sortBy": "Mean",
-              "sortDesc": true
+              "sortDesc": false
             },
             "tooltip": {
               "mode": "multi",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -6852,11 +6810,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -6865,6 +6825,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineStyle": {
                   "fill": "solid"
@@ -6889,7 +6850,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -6914,7 +6876,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 79
+            "y": 62
           },
           "id": 145,
           "options": {
@@ -6934,7 +6896,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -6971,24 +6933,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "OS Tasks (Processes) - CPU Utilization",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -7009,11 +6958,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "bars",
                 "fillOpacity": 100,
                 "gradientMode": "hue",
@@ -7022,6 +6973,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 1,
@@ -7043,7 +6995,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -7068,7 +7021,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 69
+            "y": 32
           },
           "id": 146,
           "options": {
@@ -7088,7 +7041,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -7116,11 +7069,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -7129,6 +7084,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineStyle": {
                   "fill": "solid"
@@ -7153,7 +7109,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -7178,7 +7135,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 79
+            "y": 42
           },
           "id": 147,
           "options": {
@@ -7198,7 +7155,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -7216,24 +7173,11 @@
         }
       ],
       "repeat": "cpu_delta_minutes",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "OS Tasks (Processes) - Memory Utilization",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -7421,7 +7365,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 39
+            "y": 281
           },
           "id": 86,
           "options": {
@@ -7473,15 +7417,6 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Running Jobs & Maintenance Workloads  - [sp_WhoIsActive]",
       "type": "row"
     },
@@ -8085,7 +8020,7 @@
             "h": 16,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 282
           },
           "id": 185,
           "options": {
@@ -8140,10 +8075,6 @@
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -8323,7 +8254,7 @@
             "h": 16,
             "w": 24,
             "x": 0,
-            "y": 55
+            "y": 297
           },
           "id": 173,
           "options": {
@@ -8354,24 +8285,11 @@
           "type": "table"
         }
       ],
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Disk Space - [$host_name] @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -8440,7 +8358,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 36
+            "y": 278
           },
           "id": 133,
           "options": {
@@ -8496,24 +8414,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "WaitStats",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -8524,14 +8429,17 @@
       "panels": [
         {
           "description": "",
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
           "gridPos": {
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 88
+            "y": 330
           },
           "id": 119,
-          "links": [],
           "options": {
             "folderId": 1,
             "maxItems": 50,
@@ -8548,22 +8456,13 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Other Dashboards",
       "type": "row"
     }
   ],
+  "preload": false,
   "refresh": "1m",
-  "revision": 1,
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -8573,51 +8472,42 @@
     "list": [
       {
         "current": {
-          "selected": false,
           "text": "SQLMonitor",
-          "value": "ygPVA4snk"
+          "value": "ce5l4mjr3amm8d"
         },
         "description": "Inventory Server Name",
         "hide": 2,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
-        "queryValue": "",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21L-LTPABL-1187",
-          "value": "21L-LTPABL-1187"
+          "text": "SQLMonitor",
+          "value": "SQLMonitor"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"\nselect distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
-        "hide": 0,
         "includeAll": false,
         "label": "Sql Instance",
-        "multi": false,
         "name": "server",
         "options": [],
         "query": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"\nselect distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "DBA",
           "value": "DBA"
         },
@@ -8629,19 +8519,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Inventory Database",
-        "multi": false,
         "name": "inventory_db",
         "options": [],
         "query": "SELECT DB_NAME() as [db_name]",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "1",
           "value": "1"
         },
@@ -8653,19 +8539,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Is Local SQL Instance",
-        "multi": false,
         "name": "is_local",
         "options": [],
         "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "DBA",
           "value": "DBA"
         },
@@ -8677,45 +8559,36 @@
         "hide": 2,
         "includeAll": false,
         "label": "DBA Database",
-        "multi": false,
         "name": "dba_db",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21L-LTPABL-1187",
-          "value": "21L-LTPABL-1187"
+          "text": "SQLMONITOR",
+          "value": "SQLMONITOR"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select host_name from dbo.instance_details\nwhere sql_instance = @sql_instance order by created_date_utc\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
-        "hide": 0,
         "includeAll": false,
         "label": "Host Name",
-        "multi": false,
         "name": "perfmon_host_name",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select host_name from dbo.instance_details\nwhere sql_instance = @sql_instance order by created_date_utc\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21L-LTPABL-1187",
-          "value": "21L-LTPABL-1187"
+          "text": "SQLMONITOR",
+          "value": "SQLMONITOR"
         },
         "datasource": {
           "type": "mssql",
@@ -8725,19 +8598,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Host Name",
-        "multi": false,
         "name": "host_name",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "MSSQLSERVER",
           "value": "MSSQLSERVER"
         },
@@ -8746,27 +8615,21 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect case when @@servicename = 'MSSQLSERVER' then @@servicename else 'mssql$'+@@servicename end;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
-        "hide": 0,
         "includeAll": false,
         "label": "Service Name",
-        "multi": false,
         "name": "perfmon_service_name",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect case when @@servicename = 'MSSQLSERVER' then @@servicename else 'mssql$'+@@servicename end;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": true,
           "text": "300",
           "value": "300"
         },
         "description": "How many rows to return from resultset",
-        "hide": 0,
         "label": "Rows Limit",
         "name": "row_limit",
         "options": [
@@ -8777,17 +8640,14 @@
           }
         ],
         "query": "300",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": true,
           "text": "15",
           "value": "15"
         },
         "description": "Threshold duration in minutes for Long Running Queries",
-        "hide": 0,
         "label": "Duration (Min)",
         "name": "duration",
         "options": [
@@ -8798,14 +8658,12 @@
           }
         ],
         "query": "15",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": false,
-          "text": "WORKGROUP",
-          "value": "WORKGROUP"
+          "text": "LAB",
+          "value": "LAB"
         },
         "datasource": {
           "type": "mssql",
@@ -8816,21 +8674,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Domain",
-        "multi": false,
         "name": "domain",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select asi.domain from dbo.vw_all_server_info asi where asi.srv_name = @sql_instance;\"\nset quoted_identifier on;\n\nexec dbo.sp_executesql @sql, @params, @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "192.168.1.2",
-          "value": "192.168.1.2"
+          "text": "192.168.100.10",
+          "value": "192.168.100.10"
         },
         "datasource": {
           "type": "mssql",
@@ -8841,21 +8695,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "IP Address",
-        "multi": false,
         "name": "ip",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21L-LTPABL-1187",
-          "value": "21L-LTPABL-1187"
+          "text": "SQLMonitor",
+          "value": "SQLMonitor"
         },
         "datasource": {
           "type": "mssql",
@@ -8865,21 +8715,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Machine Name",
-        "multi": false,
         "name": "machine_name",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,SERVERPROPERTY('MachineName')) as [machine_name];\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "15.0.4395.2",
-          "value": "15.0.4395.2"
+          "text": "15.0.4410.1",
+          "value": "15.0.4410.1"
         },
         "datasource": {
           "type": "mssql",
@@ -8889,21 +8735,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Product Version",
-        "multi": false,
         "name": "product_version",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"declare @server_product_version varchar(20);\n\nSET @server_product_version = CONVERT(varchar,SERVERPROPERTY('ProductVersion'));\nSELECT\t[@server_product_version] = @server_product_version\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "WORKGROUP",
-          "value": "WORKGROUP"
+          "text": "SQLMonitor.Lab.com",
+          "value": "SQLMonitor.Lab.com"
         },
         "datasource": {
           "type": "mssql",
@@ -8913,19 +8755,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Fully Qualified Domain Name",
-        "multi": false,
         "name": "fqdn",
         "options": [],
         "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "MSSQLSERVER",
           "value": "MSSQLSERVER"
         },
@@ -8937,29 +8775,29 @@
         "hide": 2,
         "includeAll": false,
         "label": "Instance Name",
-        "multi": false,
         "name": "instance_name",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar, @@servicename) as [instance_name]\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
+        "current": {
+          "text": "dbo.vw_performance_counters",
+          "value": "dbo.vw_performance_counters"
+        },
         "hide": 2,
         "label": "Perfmon Table Name",
         "name": "perfmon_table_name",
         "query": "dbo.vw_performance_counters",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667209957",
-          "value": "1729667209957"
+          "text": "1734691476601",
+          "value": "1734691476601"
         },
         "datasource": {
           "type": "mssql",
@@ -8969,29 +8807,29 @@
         "hide": 2,
         "includeAll": false,
         "label": "Collection Time UTC",
-        "multi": false,
         "name": "perfmon_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select top 1 collection_time_utc\nfrom $perfmon_table_name with (nolock)\nwhere host_name = @perfmon_host_name\norder by collection_time_utc desc;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
+        "current": {
+          "text": "dbo.vw_os_task_list",
+          "value": "dbo.vw_os_task_list"
+        },
         "hide": 2,
         "label": "OS Tasks Table Name",
         "name": "os_task_list_table_name",
         "query": "dbo.vw_os_task_list",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667164028",
-          "value": "1729667164028"
+          "text": "1734691443476",
+          "value": "1734691443476"
         },
         "datasource": {
           "type": "mssql",
@@ -9001,29 +8839,29 @@
         "hide": 2,
         "includeAll": false,
         "label": "Collection Time UTC",
-        "multi": false,
         "name": "os_task_list_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select top 1 collection_time_utc\nfrom $os_task_list_table_name with (nolock)\nwhere host_name = @perfmon_host_name\norder by collection_time_utc desc;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
+        "current": {
+          "text": "dbo.WhoIsActive",
+          "value": "dbo.WhoIsActive"
+        },
         "hide": 2,
         "label": "WhoIsActive Table Name",
         "name": "whoisactive_table_name",
         "query": "dbo.WhoIsActive",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667286180",
-          "value": "1729667286180"
+          "text": "1734691441280",
+          "value": "1734691441280"
         },
         "datasource": {
           "type": "mssql",
@@ -9033,19 +8871,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "WhoIsActive Collection Time UTC",
-        "multi": false,
         "name": "whoisactive_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time )\nfrom $whoisactive_table_name with (nolock)\norder by collection_time desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "2",
           "value": "2"
         },
@@ -9056,21 +8890,17 @@
         "definition": "declare @start_time datetime = $__timeFrom()\ndeclare @end_time datetime = $__timeTo();\n\ndeclare @_duration_minute int = datediff(minute,@start_time,@end_time);\nselect [@delta_minutes] = (case when @_duration_minute <= 30 then 1 \n                                                           when @_duration_minute <= 60 then 2\n                                                           when @_duration_minute <= 120 then 5\n                                                           when @_duration_minute <= 480 then 10\n                                                           when @_duration_minute <= 1440 then 15\n                                                           when @_duration_minute <= 2880 then 20\n                                                           when @_duration_minute <= 10080 then 30\n                                                           else 60 end);\n",
         "hide": 2,
         "includeAll": false,
-        "multi": false,
         "name": "cpu_delta_minutes",
         "options": [],
         "query": "declare @start_time datetime = $__timeFrom()\ndeclare @end_time datetime = $__timeTo();\n\ndeclare @_duration_minute int = datediff(minute,@start_time,@end_time);\nselect [@delta_minutes] = (case when @_duration_minute <= 30 then 1 \n                                                           when @_duration_minute <= 60 then 2\n                                                           when @_duration_minute <= 120 then 5\n                                                           when @_duration_minute <= 480 then 10\n                                                           when @_duration_minute <= 1440 then 15\n                                                           when @_duration_minute <= 2880 then 20\n                                                           when @_duration_minute <= 10080 then 30\n                                                           else 60 end);\n",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "8",
-          "value": "8"
+          "text": "4",
+          "value": "4"
         },
         "datasource": {
           "type": "mssql",
@@ -9080,21 +8910,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "SQL Schedulers",
-        "multi": false,
         "name": "sql_schedulers",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_os_schedulers dos where status = 'VISIBLE ONLINE' and is_online = 1;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729306010863",
-          "value": "1729306010863"
+          "text": "1734691002887",
+          "value": "1734691002887"
         },
         "datasource": {
           "type": "mssql",
@@ -9104,21 +8930,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "SqlInstance Start Time UTC",
-        "multi": false,
         "name": "sqlserver_start_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667247703",
-          "value": "1729667247703"
+          "text": "1734691544300",
+          "value": "1734691544300"
         },
         "datasource": {
           "type": "mssql",
@@ -9128,21 +8950,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Ring Buffer Event Time",
-        "multi": false,
         "name": "ring_buffer_event_time",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT --event_time\n\t\tevent_time_utc\n\t\t/*\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "38",
-          "value": "38"
+          "text": "7",
+          "value": "7"
         },
         "datasource": {
           "type": "mssql",
@@ -9152,21 +8970,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Ring Buffer OS CPU",
-        "multi": false,
         "name": "ring_buffer_os_cpu",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\tevent_time_utc\n\t\t*/\n\t\tsystem_cpu\n\t\t/*\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -9176,21 +8990,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Ring Buffer SQL CPU",
-        "multi": false,
         "name": "ring_buffer_sql_cpu",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t*/\n\t\tsql_cpu\n\t\t/*\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "62",
-          "value": "62"
+          "text": "93",
+          "value": "93"
         },
         "datasource": {
           "type": "mssql",
@@ -9200,45 +9010,37 @@
         "hide": 2,
         "includeAll": false,
         "label": "Ring Buffer Idle CPU",
-        "multi": false,
         "name": "ring_buffer_idle_cpu",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t*/\n\t\tidle_system_cpu\n\t\t/*\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "89",
-          "value": "89"
+          "text": "85",
+          "value": "85"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
-        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t*/\n\t\tuser_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t/*\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t*/\n\t\tcoalesce(user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms),0) as [pcnt_user_mode]\n\t\t/*\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
         "includeAll": false,
         "label": "Ring Buffer Percent User Mode",
-        "multi": false,
         "name": "ring_buffer_pcnt_user_mode",
         "options": [],
-        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t*/\n\t\tuser_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t/*\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t*/\n\t\tcoalesce(user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms),0) as [pcnt_user_mode]\n\t\t/*\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "10",
-          "value": "10"
+          "text": "14",
+          "value": "14"
         },
         "datasource": {
           "type": "mssql",
@@ -9248,21 +9050,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Ring Buffer Percent Kernel Mode",
-        "multi": false,
         "name": "ring_buffer_pcnt_kernel_mode",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t*/\n\t\tkernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t/*\n\t\t,page_faults_kb\n\t\t*/\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "412328",
-          "value": "412328"
+          "text": "492112",
+          "value": "492112"
         },
         "datasource": {
           "type": "mssql",
@@ -9272,29 +9070,29 @@
         "hide": 2,
         "includeAll": false,
         "label": "Ring Buffer Page Faults KB",
-        "multi": false,
         "name": "ring_buffer_page_faults_kb",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nSELECT /*\n\t\tevent_time\n\t\t,event_time_utc\n\t\t,system_cpu\n\t\t,sql_cpu\n\t\t,idle_system_cpu\n\t\t,user_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_user_mode]\n\t\t,kernel_mode_time_ms * 100 / (user_mode_time_ms + kernel_mode_time_ms) as [pcnt_kernel_mode]\n\t\t*/\n\t\tpage_faults_kb\nFROM (\n\t\tSELECT\tDATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS event_time\n\t\t\t\t,DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE())) AS event_time_utc\n\t\t\t\t,100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS idle_system_cpu\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/UserModeTime)[1]', 'bigint')/10000 AS user_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/KernelModeTime)[1]', 'bigint')/10000 AS kernel_mode_time_ms\n\t\t\t\t,record.value('(Record/SchedulerMonitorEvent/SystemHealth/PageFaults)[1]', 'bigint')*8.0 AS page_faults_kb\n\t\t\t\t,record\n\t\tFROM (\tSELECT\tTOP 1 timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now\n\t\t\t\tFROM sys.dm_os_ring_buffers orb cross apply sys.dm_os_sys_info osi\n\t\t\t\tWHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'\n\t\t\t\tAND record LIKE '%<SystemHealth>%'\n\t\t\t\tORDER BY [timestamp] DESC\n\t\t) AS rd\n) as t;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
+        "current": {
+          "text": "60",
+          "value": "60"
+        },
         "hide": 2,
         "label": "Blocking Threshold Seconds",
         "name": "blocked_threshold_seconds",
         "query": "60",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "6",
-          "value": "6"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -9304,45 +9102,37 @@
         "hide": 2,
         "includeAll": false,
         "label": "Blocked Session Counts",
-        "multi": false,
         "name": "blocked_counts",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect count(*) as blocked_counts --, max(wait_time)/1000 as wait_time_s\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000) -- Over 60 seconds\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "314889",
-          "value": "314889"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
-        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect  max(wait_time)/1000 as wait_time_s --,count(*) as blocked_counts\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000); -- Over 60 seconds\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect  coalesce(max(wait_time)/1000,0) as wait_time_s --,count(*) as blocked_counts\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000); -- Over 60 seconds\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
         "includeAll": false,
         "label": "Blocked Duration for Longest Session",
-        "multi": false,
         "name": "blocked_duration_max_seconds",
         "options": [],
-        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect  max(wait_time)/1000 as wait_time_s --,count(*) as blocked_counts\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000); -- Over 60 seconds\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect  coalesce(max(wait_time)/1000,0) as wait_time_s --,count(*) as blocked_counts\nfrom sys.dm_exec_requests r with (nolock) \nwhere r.blocking_session_id <> 0\nand wait_time >= ($blocked_threshold_seconds*1000); -- Over 60 seconds\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "33236984",
-          "value": "33236984"
+          "text": "25165280",
+          "value": "25165280"
         },
         "datasource": {
           "type": "mssql",
@@ -9352,21 +9142,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Total Physical Memory KB",
-        "multi": false,
         "name": "total_physical_memory_kb",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\tosm.total_physical_memory_kb\n\t\t--,osm.available_physical_memory_kb\n\t\t--,case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]\n\t\t--,opm.physical_memory_in_use_kb\n\t\t--,opm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "918776",
-          "value": "918776"
+          "text": "19204436",
+          "value": "19204436"
         },
         "datasource": {
           "type": "mssql",
@@ -9376,21 +9162,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Available Physical Memory KB",
-        "multi": false,
         "name": "available_physical_memory_kb",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\t--osm.total_physical_memory_kb\n\t\tosm.available_physical_memory_kb\n\t\t--,case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]\n\t\t--,opm.physical_memory_in_use_kb\n\t\t--,opm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "0",
-          "value": "0"
+          "text": "1",
+          "value": "1"
         },
         "datasource": {
           "type": "mssql",
@@ -9400,21 +9182,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "System Memory State",
-        "multi": false,
         "name": "system_high_memory_signal_state",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\t--osm.total_physical_memory_kb\n\t\t--osm.available_physical_memory_kb\n\t\tconvert(int,system_high_memory_signal_state)\n\t\t--,opm.physical_memory_in_use_kb\n\t\t--,opm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "12537456",
-          "value": "12537456"
+          "text": "2288992",
+          "value": "2288992"
         },
         "datasource": {
           "type": "mssql",
@@ -9424,19 +9202,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "RAM Used",
-        "multi": false,
         "name": "physical_memory_in_use_kb",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\t--osm.total_physical_memory_kb\n\t\t--osm.available_physical_memory_kb\n\t\t--case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]\n\t\topm.physical_memory_in_use_kb\n\t\t--,opm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "100",
           "value": "100"
         },
@@ -9448,19 +9222,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "RAM Used",
-        "multi": false,
         "name": "sql_allocated_memory_used_percent",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect\t--osm.total_physical_memory_kb\n\t\t--osm.available_physical_memory_kb\n\t\t--case when system_high_memory_signal_state = 1 then 'High' else 'Low' end as [Memory State]\n\t\t--opm.physical_memory_in_use_kb\n\t\topm.memory_utilization_percentage\nfrom sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -9472,21 +9242,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "RAM Used",
-        "multi": false,
         "name": "memory_grants_pending",
         "options": [],
         "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server'\n\t\t\t\t,@output = 'memory_grants_pending'",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "23281",
-          "value": "23281"
+          "text": "551",
+          "value": "551"
         },
         "datasource": {
           "type": "mssql",
@@ -9496,19 +9262,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Page Life Expectency",
-        "multi": false,
         "name": "ple",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"declare @object_name varchar(255);\nset @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);\n\nSELECT cntr_value \nFROM sys.dm_os_performance_counters WITH (NOLOCK) \nWHERE [object_name] like (@object_name+':Buffer Manager%') AND counter_name = N'Page life expectancy'\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "15",
           "value": "15"
         },
@@ -9520,21 +9282,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Server Major Version Number",
-        "multi": false,
         "name": "major_version_number",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"declare @server_major_version_number tinyint;\nSET @server_major_version_number = CONVERT(tinyint, SERVERPROPERTY('ProductMajorVersion'))\n\nif @server_major_version_number is null\nbegin\n\t;with t_versions as \n\t( select CONVERT(varchar,SERVERPROPERTY('ProductVersion')) as ProductVersion\n\t\t\t ,LEFT(CONVERT(varchar,SERVERPROPERTY('ProductVersion')), CHARINDEX('.',CONVERT(varchar,SERVERPROPERTY('ProductVersion')))-1) AS MajorVersion\n\t)\n\tselect @server_major_version_number = MajorVersion from t_versions;\nend\n\nselect\t[@server_major_version_number] = @server_major_version_number;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "4395",
-          "value": "4395"
+          "text": "4410",
+          "value": "4410"
         },
         "datasource": {
           "type": "mssql",
@@ -9544,21 +9302,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Server Minor Version Number",
-        "multi": false,
         "name": "minor_version_number",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\ndeclare @server_product_version varchar(20);\ndeclare @server_major_version_number tinyint;\ndeclare @server_minor_version_number smallint;\n\nSET @server_product_version = CONVERT(varchar,SERVERPROPERTY('ProductVersion'));\nSET @server_major_version_number = CONVERT(tinyint, SERVERPROPERTY('ProductMajorVersion'));\n\nif @server_major_version_number is null\nbegin\n\t;with t_versions as \n\t( select CONVERT(varchar,SERVERPROPERTY('ProductVersion')) as ProductVersion\n\t\t\t ,LEFT(CONVERT(varchar,SERVERPROPERTY('ProductVersion')), CHARINDEX('.',CONVERT(varchar,SERVERPROPERTY('ProductVersion')))-1) AS MajorVersion\n\t)\n\tselect @server_major_version_number = MajorVersion from t_versions;\nend\n\ndeclare @server_minor_version_number_intermediate varchar(20);\nset @server_minor_version_number_intermediate = REPLACE(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.'+CONVERT(varchar, SERVERPROPERTY('ProductMinorVersion'))+'.','');\n\nif(@server_minor_version_number_intermediate is null)\nbegin\n\t;with t_versions as\n\t( select replace(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.','') as VrsnString )\n\tselect @server_minor_version_number_intermediate = REPLACE(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.'+LEFT(VrsnString,CHARINDEX('.',VrsnString)-1)+'.','')\n\tfrom t_versions;\nend\n\nset @server_minor_version_number = left(@server_minor_version_number_intermediate,charindex('.',@server_minor_version_number_intermediate)-1);\n\nSELECT\t[@server_minor_version_number] = @server_minor_version_number\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "35",
-          "value": "35"
+          "text": "19",
+          "value": "19"
         },
         "datasource": {
           "type": "mssql",
@@ -9568,21 +9322,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "SQL Server Connection Count",
-        "multi": false,
         "name": "connection_count",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_exec_connections with (nolock);\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "8",
-          "value": "8"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -9592,21 +9342,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "SQL Active Requests Count",
-        "multi": false,
         "name": "active_requests_count",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\n--\tQuery to find what's is running on server\nSELECT\tCOUNT(*) as active_request_count\nFROM\tsys.dm_exec_sessions AS s\nLEFT JOIN sys.dm_exec_requests AS r ON r.session_id = s.session_id\nOUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS st\nOUTER APPLY sys.dm_exec_query_plan(r.plan_handle) AS bqp\nOUTER APPLY sys.dm_exec_text_query_plan(r.plan_handle,r.statement_start_offset, r.statement_end_offset) as sqp\nWHERE\ts.session_id != @@SPID\n\tAND (\t(CASE\tWHEN\ts.session_id IN (select ri.blocking_session_id from sys.dm_exec_requests as ri )\n\t\t\t\t\t--\tGet sessions involved in blocking (including system sessions)\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tWHEN\tr.blocking_session_id IS NOT NULL AND r.blocking_session_id <> 0\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tELSE\t0\n\t\t\tEND) = 1\n\t\t\tOR\n\t\t\t(CASE\tWHEN\ts.session_id > 50\n\t\t\t\t\t\t\tAND r.session_id IS NOT NULL -- either some part of session has active request\n\t\t\t\t\t\t\t--AND ISNULL(open_resultset_count,0) > 0 -- some result is open\n\t\t\t\t\t\t\tAND s.status <> 'sleeping'\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tELSE\t0\n\t\t\tEND) = 1\n\t\t\tOR\n\t\t\t(CASE\tWHEN\ts.session_id > 50\n\t\t\t\t\t\t\tAND ISNULL(r.open_transaction_count,0) > 0\n\t\t\t\t\tTHEN\t1\n\t\t\t\t\tELSE\t0\n\t\t\tEND) = 1\n\t\t);\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "2",
-          "value": "2"
+          "text": "-127",
+          "value": "-127"
         },
         "datasource": {
           "type": "mssql",
@@ -9616,29 +9362,29 @@
         "hide": 2,
         "includeAll": false,
         "label": "Waits (Sec) Per Core Per Minute",
-        "multi": false,
         "name": "waits_per_core_per_minute",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"declare @waits_seconds__per_core_per_minute bigint;\nexec usp_waits_per_core_per_minute @waits_seconds__per_core_per_minute = @waits_seconds__per_core_per_minute output;\nselect [waits_seconds__per_core_per_minute] = @waits_seconds__per_core_per_minute;\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
+        "current": {
+          "text": "[dbo].[vw_disk_space]",
+          "value": "[dbo].[vw_disk_space]"
+        },
         "hide": 2,
         "label": "DiskSpaceTableName",
         "name": "diskspace_table_name",
         "query": "[dbo].[vw_disk_space]",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729666829181",
-          "value": "1729666829181"
+          "text": "1734690608669",
+          "value": "1734690608669"
         },
         "datasource": {
           "type": "mssql",
@@ -9648,19 +9394,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "DiskSpace Collection Time UTC",
-        "multi": false,
         "name": "diskspace_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 collection_time_utc\nfrom $diskspace_table_name with (nolock)\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "SQLServer",
           "value": "SQLServer"
         },
@@ -9672,19 +9414,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Perfmon Object Filter",
-        "multi": false,
         "name": "perfmon_object",
         "options": [],
         "query": "select [object_name] = (case when '$perfmon_service_name' = 'MSSQLSERVER' then 'SQLServer' else '$perfmon_service_name' end);",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -9696,19 +9434,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Is Cluster Instance",
-        "multi": false,
         "name": "is_clustered",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(tinyint,SERVERPROPERTY('IsClustered')) as IsClustered;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -9720,19 +9454,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Is AG Replica",
-        "multi": false,
         "name": "is_hadr_enabled",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(tinyint,SERVERPROPERTY('IsHadrEnabled')) as IsHadrEnabled;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "Cluster",
           "value": "Cluster"
         },
@@ -9744,26 +9474,20 @@
         "hide": 2,
         "includeAll": false,
         "label": "HADR Description",
-        "multi": false,
         "name": "hadr_string",
         "options": [],
         "query": "select case when $is_hadr_enabled = 1 then 'AG' else 'Cluster' end",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "500",
           "value": "500"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "M/r Grant (MB)",
-        "multi": false,
         "name": "memory_grant_threshold_mb",
         "options": [
           {
@@ -9793,14 +9517,12 @@
           }
         ],
         "query": "500, 2048, 5120, 10240, 20480",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667102321",
-          "value": "1729667102321"
+          "text": "1734691501430",
+          "value": "1734691501430"
         },
         "datasource": {
           "type": "mssql",
@@ -9810,26 +9532,20 @@
         "hide": 2,
         "includeAll": false,
         "label": "SQL Agent Jobs Stats CollectionTimeUTC",
-        "multi": false,
         "name": "sql_agent_job_stats_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 js.[UpdatedDateUTC]\nfrom [dbo].[sql_agent_job_stats] js\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "Running",
           "value": "Running"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Jobs",
-        "multi": false,
         "name": "Jobs",
         "options": [
           {
@@ -9844,15 +9560,12 @@
           }
         ],
         "query": "All, Running",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
-          "text": "Windows 10 Pro",
-          "value": "Windows 10 Pro"
+          "text": "Windows Server 2019 Datacenter",
+          "value": "Windows Server 2019 Datacenter"
         },
         "datasource": {
           "type": "mssql",
@@ -9862,21 +9575,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Host Distribution",
-        "multi": false,
         "name": "host_distribution",
         "options": [],
         "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server'\n\t\t\t\t,@output = 'host_distribution'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz",
-          "value": "11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz"
+          "text": "AMD Ryzen 9 5950X 16-Core Processor            ",
+          "value": "AMD Ryzen 9 5950X 16-Core Processor            "
         },
         "datasource": {
           "type": "mssql",
@@ -9886,21 +9595,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Processor Name",
-        "multi": false,
         "name": "processor_name",
         "options": [],
         "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server'\n\t\t\t\t,@output = 'processor_name'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667100902",
-          "value": "1729667100902"
+          "text": "1734691501148",
+          "value": "1734691501148"
         },
         "datasource": {
           "type": "mssql",
@@ -9910,21 +9615,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "TempdbSaver CollectionTimeUTC",
-        "multi": false,
         "name": "tempdb_space_usage_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 [collection_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time)\nfrom [dbo].[tempdb_space_usage] tsu\norder by collection_time desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1729667100968",
-          "value": "1729667100968"
+          "text": "1734691501195",
+          "value": "1734691501195"
         },
         "datasource": {
           "type": "mssql",
@@ -9934,21 +9635,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "LogSaver CollectionTimeUTC",
-        "multi": false,
         "name": "log_space_consumers_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 [collection_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time)\nfrom [dbo].[log_space_consumers] lsc\norder by collection_time desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "3",
-          "value": "3"
+          "text": "7",
+          "value": "7"
         },
         "datasource": {
           "type": "mssql",
@@ -9958,21 +9655,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Avg Disk Wait MilliSeconds",
-        "multi": false,
         "name": "avg_disk_wait_ms",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"declare @avg_disk_wait_ms bigint;\nexec usp_avg_disk_wait_ms @avg_disk_wait_ms = @avg_disk_wait_ms output;\nselect [avg_disk_wait_ms] = @avg_disk_wait_ms;\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "2",
-          "value": "2"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -9982,14 +9675,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "Avg Disk Latency MilliSeconds",
-        "multi": false,
         "name": "avg_disk_latency_ms",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"exec usp_avg_disk_latency_ms\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -10010,6 +9700,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - Distributed",
   "uid": "distributed_live_dashboard",
-  "version": 94,
+  "version": 11,
   "weekStart": ""
 }

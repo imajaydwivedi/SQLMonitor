@@ -27,16 +27,11 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 23,
+  "id": 7,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -57,6 +52,7 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
@@ -64,6 +60,7 @@
                 "axisSoftMax": 100,
                 "axisSoftMin": 0,
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 5,
                 "gradientMode": "none",
@@ -72,6 +69,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -93,7 +91,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "orange",
@@ -113,19 +112,19 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 9
+            "y": 1
           },
           "id": 62,
           "options": {
             "legend": {
               "calcs": [
                 "last",
-                "mean"
+                "p99"
               ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -133,7 +132,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -180,11 +179,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -193,6 +194,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -215,7 +217,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -231,22 +234,24 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 16
+            "y": 1378
           },
           "id": 64,
           "options": {
             "legend": {
-              "calcs": [],
-              "displayMode": "list",
+              "calcs": [
+                "p99"
+              ],
+              "displayMode": "table",
               "placement": "bottom",
-              "showLegend": false
+              "showLegend": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -283,24 +288,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "CPU & Processor - [$fqdn] - [$ip] - [$host_name\\$instance_name] - @ ${perfmon_collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -321,11 +313,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -334,6 +328,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 3,
@@ -355,7 +350,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -371,22 +367,26 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 10
+            "y": 2
           },
           "id": 26,
           "options": {
             "legend": {
-              "calcs": [],
-              "displayMode": "list",
+              "calcs": [
+                "last",
+                "min",
+                "p1"
+              ],
+              "displayMode": "table",
               "placement": "bottom",
-              "showLegend": false
+              "showLegend": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -414,11 +414,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -427,6 +429,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -449,7 +452,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -465,20 +469,20 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 16
+            "y": 1354
           },
           "id": 58,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -486,7 +490,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -533,11 +537,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -546,6 +552,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -568,7 +575,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -584,7 +592,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 27
+            "y": 1365
           },
           "id": 60,
           "options": {
@@ -606,7 +614,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -643,24 +651,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "OS Memory & Paging Performance Counters ",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -753,7 +748,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -850,7 +845,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 1073
           },
           "id": 30,
           "options": {
@@ -871,7 +866,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -973,7 +968,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 25
+            "y": 1084
           },
           "id": 66,
           "options": {
@@ -994,7 +989,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -1031,24 +1026,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "SQL Server: Memory Manager Counters",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1069,11 +1051,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -1082,6 +1066,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -1103,7 +1088,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1119,26 +1105,28 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 11
+            "y": 4
           },
           "id": 105,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
+                "max",
+                "p99",
+                "p98"
               ],
               "displayMode": "table",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -1185,11 +1173,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -1198,6 +1188,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -1220,7 +1211,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1236,27 +1228,29 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 17
+            "y": 863
           },
           "id": 106,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
                 "max",
-                "sum"
+                "p99",
+                "p98"
               ],
               "displayMode": "table",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -1293,24 +1287,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "MSSQL Data Access Performance Counters",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1331,11 +1312,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -1344,6 +1327,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 2,
@@ -1365,7 +1349,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1381,20 +1366,20 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 13
+            "y": 5
           },
           "id": 110,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
+                "max",
+                "p99",
+                "p98"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -1402,7 +1387,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -1449,11 +1434,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -1462,6 +1449,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 2,
@@ -1483,7 +1471,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1499,19 +1488,19 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 732
           },
           "id": 112,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "lastNotNull"
+                "p99",
+                "p98"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -1519,7 +1508,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -1566,11 +1555,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -1579,6 +1570,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 2,
@@ -1600,7 +1592,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1616,19 +1609,19 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 24
+            "y": 738
           },
           "id": 114,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "lastNotNull"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -1636,7 +1629,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -1673,24 +1666,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Logical Disk Counters",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1711,11 +1691,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -1724,6 +1706,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -1745,7 +1728,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1761,26 +1745,28 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 6
           },
           "id": 34,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -1827,11 +1813,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -1840,6 +1828,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -1862,7 +1851,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1878,25 +1868,27 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 19
+            "y": 620
           },
           "id": 68,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "lastNotNull"
+                "lastNotNull",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -1943,11 +1935,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -1956,6 +1950,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 2,
@@ -1978,7 +1973,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1994,19 +1990,20 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 25
+            "y": 626
           },
           "id": 69,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "lastNotNull"
+                "lastNotNull",
+                "p99",
+                "max"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -2014,7 +2011,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -2051,24 +2048,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Physical Disk Counters",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2089,11 +2073,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -2102,6 +2088,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -2123,7 +2110,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -2139,26 +2127,28 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 15
+            "y": 7
           },
           "id": 71,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -2195,24 +2185,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Network Interface Counters",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2233,11 +2210,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -2246,6 +2225,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -2268,7 +2248,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -2284,19 +2265,20 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 16
+            "y": 8
           },
           "id": 38,
           "options": {
             "legend": {
               "calcs": [
                 "max",
-                "mean"
+                "min",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Max",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -2304,7 +2286,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -2357,11 +2339,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -2370,6 +2354,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 2,
@@ -2392,7 +2377,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -2408,20 +2394,20 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 31
+            "y": 462
           },
           "id": 115,
           "options": {
             "legend": {
               "calcs": [
-                "lastNotNull",
                 "max",
-                "mean"
+                "min",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Last *",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -2429,7 +2415,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -2472,24 +2458,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "MSSQL Databases - Size Counters",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2510,11 +2483,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -2523,6 +2498,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -2545,7 +2521,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -2561,20 +2538,18 @@
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 17
+            "y": 9
           },
           "id": 119,
           "options": {
             "legend": {
               "calcs": [
-                "lastNotNull",
-                "max",
-                "mean"
+                "p99"
               ],
               "displayMode": "table",
-              "placement": "bottom",
+              "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -2582,7 +2557,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -2635,11 +2610,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -2648,6 +2625,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 2,
@@ -2670,7 +2648,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -2686,19 +2665,18 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 26
+            "y": 309
           },
           "id": 121,
           "options": {
             "legend": {
               "calcs": [
-                "last",
-                "mean"
+                "p99"
               ],
               "displayMode": "table",
-              "placement": "bottom",
+              "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -2706,6 +2684,7 @@
               "sort": "desc"
             }
           },
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -2752,11 +2731,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -2765,6 +2746,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineStyle": {
                   "fill": "solid"
@@ -2790,7 +2772,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -2806,19 +2789,19 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 36
+            "y": 319
           },
           "id": 123,
           "options": {
             "legend": {
               "calcs": [
                 "last",
-                "mean"
+                "p99"
               ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -2826,6 +2809,7 @@
               "sort": "desc"
             }
           },
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -2862,24 +2846,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "MSSQL User Database - Performance Counters",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2900,11 +2871,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -2913,6 +2886,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -2935,7 +2909,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -2951,15 +2926,15 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 375
           },
           "id": 22,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "bottom",
@@ -2970,7 +2945,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3007,24 +2982,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "SQL Server - SQL Statistics - Auto Parameterization",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -3045,11 +3007,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -3058,6 +3022,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -3079,7 +3044,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3095,26 +3061,28 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 19
+            "y": 11
           },
           "id": 126,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3161,11 +3129,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -3174,6 +3144,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -3195,7 +3166,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3211,27 +3183,28 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 25
+            "y": 265
           },
           "id": 14,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max",
-                "min"
+                "min",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": false
             },
             "tooltip": {
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3278,11 +3251,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -3291,6 +3266,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -3313,7 +3289,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3329,21 +3306,19 @@
             "h": 17,
             "w": 24,
             "x": 0,
-            "y": 32
+            "y": 272
           },
           "id": 124,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max",
-                "min"
+                "p99"
               ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -3351,7 +3326,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3388,15 +3363,6 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "MSSQL Buffer Manager & Memory Performance Counters",
       "type": "row"
     },
@@ -3422,6 +3388,7 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
@@ -3429,6 +3396,7 @@
                 "axisSoftMax": 100,
                 "axisSoftMin": 0,
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 5,
                 "gradientMode": "none",
@@ -3437,6 +3405,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -3459,7 +3428,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   }
                 ]
               },
@@ -3471,20 +3441,20 @@
             "h": 13,
             "w": 24,
             "x": 0,
-            "y": 20
+            "y": 12
           },
           "id": 153,
           "options": {
             "legend": {
               "calcs": [
                 "last",
-                "mean",
-                "max"
+                "max",
+                "p95"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "95th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -3492,7 +3462,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3533,10 +3503,6 @@
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -3557,11 +3523,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -3570,6 +3538,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -3591,7 +3560,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3607,13 +3577,12 @@
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 21
+            "y": 13
           },
           "id": 77,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
                 "max"
               ],
@@ -3628,7 +3597,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3675,11 +3644,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -3688,6 +3659,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -3710,7 +3682,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3726,20 +3699,20 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 30
+            "y": 146
           },
           "id": 128,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -3747,7 +3720,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3784,24 +3757,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "MSSQL “How is My Memory Being Used” Performance Counters",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -3822,11 +3782,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -3835,6 +3797,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -3857,7 +3820,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3873,19 +3837,19 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 22
+            "y": 14
           },
           "id": 46,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -3893,7 +3857,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -3940,11 +3904,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -3953,6 +3919,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -3975,7 +3942,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3991,25 +3959,27 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 28
+            "y": 116
           },
           "id": 129,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -4056,11 +4026,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -4069,6 +4041,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -4091,7 +4064,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4107,26 +4081,28 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 36
+            "y": 124
           },
           "id": 78,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -4173,11 +4149,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -4186,6 +4164,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -4208,7 +4187,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4224,20 +4204,20 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 43
+            "y": 131
           },
           "id": 130,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -4245,7 +4225,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -4282,24 +4262,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "MSSQL Workload Performance Counters",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -4320,11 +4287,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -4333,6 +4302,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -4355,7 +4325,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4371,19 +4342,19 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 23
+            "y": 15
           },
           "id": 134,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -4391,7 +4362,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -4438,11 +4409,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -4451,6 +4424,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -4473,7 +4447,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4489,19 +4464,19 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 28
+            "y": 93
           },
           "id": 137,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -4509,7 +4484,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -4556,11 +4531,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -4569,6 +4546,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -4591,7 +4569,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4607,19 +4586,19 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 34
+            "y": 99
           },
           "id": 135,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -4627,7 +4606,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -4674,11 +4653,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -4687,6 +4668,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -4709,7 +4691,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4725,19 +4708,19 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 105
           },
           "id": 136,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -4745,7 +4728,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -4782,24 +4765,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "SQL Server : Plan Cache : Cache Manager Instance",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -4820,11 +4790,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -4833,6 +4805,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -4854,7 +4827,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4870,7 +4844,7 @@
             "h": 5,
             "w": 11,
             "x": 0,
-            "y": 24
+            "y": 16
           },
           "id": 85,
           "options": {
@@ -4885,7 +4859,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -4931,11 +4905,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -4944,6 +4920,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -4965,7 +4942,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4981,7 +4959,7 @@
             "h": 5,
             "w": 13,
             "x": 11,
-            "y": 24
+            "y": 16
           },
           "id": 89,
           "options": {
@@ -5000,7 +4978,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -5046,11 +5024,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -5059,6 +5039,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -5080,7 +5061,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5096,7 +5078,7 @@
             "h": 5,
             "w": 11,
             "x": 0,
-            "y": 29
+            "y": 74
           },
           "id": 88,
           "options": {
@@ -5111,7 +5093,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -5157,11 +5139,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -5170,6 +5154,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -5191,7 +5176,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5207,7 +5193,7 @@
             "h": 5,
             "w": 13,
             "x": 11,
-            "y": 29
+            "y": 74
           },
           "id": 90,
           "options": {
@@ -5222,7 +5208,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -5259,24 +5245,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "SQLServer:Transactions",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -5297,11 +5270,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -5310,6 +5285,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -5332,7 +5308,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "orange",
@@ -5352,14 +5329,14 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 25
+            "y": 17
           },
           "id": 151,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "list",
               "placement": "bottom",
@@ -5372,7 +5349,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -5418,11 +5395,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -5431,6 +5410,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -5453,7 +5433,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5463,51 +5444,26 @@
               },
               "unit": "short"
             },
-            "overrides": [
-              {
-                "__systemRef": "hideSeriesFrom",
-                "matcher": {
-                  "id": "byNames",
-                  "options": {
-                    "mode": "exclude",
-                    "names": [
-                      "processes blocked"
-                    ],
-                    "prefix": "All except:",
-                    "readOnly": true
-                  }
-                },
-                "properties": [
-                  {
-                    "id": "custom.hideFrom",
-                    "value": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": true
-                    }
-                  }
-                ]
-              }
-            ]
+            "overrides": []
           },
           "gridPos": {
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 33
+            "y": 63
           },
           "id": 16,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -5515,7 +5471,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "8.4.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -5552,24 +5508,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "SQLServer:General Statistics",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -5589,11 +5532,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "points",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -5602,6 +5547,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -5624,7 +5570,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5640,20 +5587,20 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 26
+            "y": 18
           },
           "id": 80,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -5661,7 +5608,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -5708,11 +5655,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -5721,6 +5670,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -5743,7 +5693,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5759,20 +5710,20 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 34
+            "y": 40
           },
           "id": 79,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -5780,7 +5731,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -5827,11 +5778,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -5840,6 +5793,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -5862,7 +5816,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5878,20 +5833,20 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 42
+            "y": 48
           },
           "id": 82,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
                 "lastNotNull",
-                "max"
+                "max",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true,
-              "sortBy": "Mean",
+              "sortBy": "99th %",
               "sortDesc": true
             },
             "tooltip": {
@@ -5899,7 +5854,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -5936,24 +5891,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "MSSQL Locks Performance Counters",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -5973,11 +5915,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -5986,6 +5930,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -6008,7 +5953,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -6024,25 +5970,27 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 27
+            "y": 19
           },
           "id": 102,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "lastNotNull"
+                "lastNotNull",
+                "p99"
               ],
               "displayMode": "table",
               "placement": "right",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -6089,11 +6037,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 10,
                 "gradientMode": "none",
@@ -6102,6 +6052,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -6124,7 +6075,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -6140,22 +6092,26 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 33
+            "y": 25
           },
           "id": 100,
           "options": {
             "legend": {
-              "calcs": [],
+              "calcs": [
+                "p99"
+              ],
               "displayMode": "table",
               "placement": "right",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.4.6",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -6192,24 +6148,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "MSSQL Latches Performance Counters",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -6281,7 +6224,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 43
+            "y": 2675
           },
           "id": 148,
           "options": {
@@ -6377,7 +6320,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 51
+            "y": 2683
           },
           "id": 147,
           "options": {
@@ -6413,24 +6356,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "SQLServer:Replication",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -6501,7 +6431,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 44
+            "y": 2676
           },
           "id": 149,
           "options": {
@@ -6539,24 +6469,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "SQLAgent:Jobs",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -6565,24 +6482,11 @@
       },
       "id": 143,
       "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "SQLServer:Database Mirroring",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -6591,22 +6495,13 @@
       },
       "id": 145,
       "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "SQLServer:Resource Pool Stats",
       "type": "row"
     }
   ],
+  "preload": false,
   "refresh": "5m",
-  "revision": 1,
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": [
     "Performance-Counter",
     "mssql",
@@ -6616,37 +6511,36 @@
     "list": [
       {
         "current": {
-          "selected": false,
           "text": "SQLMonitor",
-          "value": "ygPVA4snk"
+          "value": "ce5l4mjr3amm8d"
         },
         "description": "Inventory Server Name",
         "hide": 2,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
-        "queryValue": "",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
+        "current": {
+          "text": "dbo.vw_os_task_list",
+          "value": "dbo.vw_os_task_list"
+        },
         "hide": 2,
         "label": "OS Task List Table",
         "name": "os_task_list_table_name",
         "query": "dbo.vw_os_task_list",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "fe80::79b8:2aef:cb0:40f6%17",
-          "value": "fe80::79b8:2aef:cb0:40f6%17"
+          "text": "192.168.100.10",
+          "value": "192.168.100.10"
         },
         "datasource": {
           "type": "mssql",
@@ -6656,43 +6550,35 @@
         "hide": 2,
         "includeAll": false,
         "label": "IP Address",
-        "multi": false,
         "name": "ip",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21I-LTPABL-1187",
-          "value": "21I-LTPABL-1187"
+          "text": "SQLMonitor",
+          "value": "SQLMonitor"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
-        "hide": 0,
         "includeAll": false,
         "label": "Sql Instance",
-        "multi": false,
         "name": "server",
         "options": [],
         "query": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "DBA",
           "value": "DBA"
         },
@@ -6704,19 +6590,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Inventory Database",
-        "multi": false,
         "name": "inventory_db",
         "options": [],
         "query": "SELECT DB_NAME() as [db_name]",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "DBA",
           "value": "DBA"
         },
@@ -6728,53 +6610,48 @@
         "hide": 2,
         "includeAll": false,
         "label": "DBA Database",
-        "multi": false,
         "name": "dba_db",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
+        "current": {
+          "text": "dbo.vw_performance_counters",
+          "value": "dbo.vw_performance_counters"
+        },
         "hide": 2,
         "label": "Perfmon Table Name",
         "name": "perfmon_table_name",
         "query": "dbo.vw_performance_counters",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21I-LTPABL-1187",
-          "value": "21I-LTPABL-1187"
+          "text": "SQLMONITOR",
+          "value": "SQLMONITOR"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select host_name from dbo.instance_details\nwhere sql_instance = @sql_instance order by created_date_utc\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
-        "hide": 0,
         "includeAll": false,
         "label": "Host Name",
-        "multi": false,
         "name": "perfmon_host_name",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select host_name from dbo.instance_details\nwhere sql_instance = @sql_instance order by created_date_utc\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1730968949970",
-          "value": "1730968949970"
+          "text": "1734692077148",
+          "value": "1734692077148"
         },
         "datasource": {
           "type": "mssql",
@@ -6784,21 +6661,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Collection Time UTC",
-        "multi": false,
         "name": "perfmon_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select top 1 collection_time_utc\nfrom $perfmon_table_name with (nolock)\nwhere host_name = @perfmon_host_name\norder by collection_time_utc desc;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21I-LTPABL-1187",
-          "value": "21I-LTPABL-1187"
+          "text": "SQLMONITOR",
+          "value": "SQLMONITOR"
         },
         "datasource": {
           "type": "mssql",
@@ -6808,19 +6681,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Host Name",
-        "multi": false,
         "name": "host_name",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "MSSQLSERVER",
           "value": "MSSQLSERVER"
         },
@@ -6829,22 +6698,17 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect case when @@servicename = 'MSSQLSERVER' then @@servicename else 'MSSQL$'+@@servicename end;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
-        "hide": 0,
         "includeAll": false,
         "label": "Service Name",
-        "multi": false,
         "name": "perfmon_service_name",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect case when @@servicename = 'MSSQLSERVER' then @@servicename else 'MSSQL$'+@@servicename end;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "__All__",
           "value": "__All__"
         },
@@ -6853,22 +6717,18 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select ds.disk_volume as disk_drive\n\tfrom dbo.disk_space ds\n\twhere ds.collection_time_utc = (select max(i.collection_time_utc) from dbo.disk_space i)\n\tunion all\n\tselect '__All__' as disk_drive\n\torder by disk_drive\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
-        "hide": 0,
         "includeAll": false,
         "label": "Disk Drive",
-        "multi": false,
         "name": "disk_drive",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select ds.disk_volume as disk_drive\n\tfrom dbo.disk_space ds\n\twhere ds.collection_time_utc = (select max(i.collection_time_utc) from dbo.disk_space i)\n\tunion all\n\tselect '__All__' as disk_drive\n\torder by disk_drive\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "__All__",
           "value": "__All__"
         },
@@ -6878,24 +6738,20 @@
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "description": "Database Name",
-        "hide": 0,
         "includeAll": false,
         "label": "Database",
-        "multi": false,
         "name": "database",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "WORKGROUP",
-          "value": "WORKGROUP"
+          "text": "SQLMonitor.Lab.com",
+          "value": "SQLMonitor.Lab.com"
         },
         "datasource": {
           "type": "mssql",
@@ -6905,19 +6761,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "FQDN",
-        "multi": false,
         "name": "fqdn",
         "options": [],
         "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "MSSQLSERVER",
           "value": "MSSQLSERVER"
         },
@@ -6929,21 +6781,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Instance Name",
-        "multi": false,
         "name": "instance_name",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar, @@servicename) as [instance_name]\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "8",
-          "value": "8"
+          "text": "4",
+          "value": "4"
         },
         "datasource": {
           "type": "mssql",
@@ -6953,19 +6801,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "SQL Schedulers",
-        "multi": false,
         "name": "sql_schedulers",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_os_schedulers dos where status = 'VISIBLE ONLINE' and is_online = 1;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "sqlserver",
           "value": "sqlserver"
         },
@@ -6977,19 +6821,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Perfmon Object Filter",
-        "multi": false,
         "name": "perfmon_object",
         "options": [],
         "query": "select [object_name] = (case when '$perfmon_service_name' = 'MSSQLSERVER' then 'sqlserver' else '$perfmon_service_name' end);",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "1",
           "value": "1"
         },
@@ -7001,28 +6841,29 @@
         "hide": 2,
         "includeAll": false,
         "label": "Is Local SQL Instance",
-        "multi": false,
         "name": "is_local",
         "options": [],
         "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
+        "current": {
+          "text": "dbo.memory_clerks",
+          "value": "dbo.memory_clerks"
+        },
         "hide": 2,
         "label": "memory_clerks_table_name",
         "name": "memory_clerks_table_name",
         "query": "dbo.memory_clerks",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
       }
     ]
   },
   "time": {
-    "from": "now-2h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -7039,6 +6880,6 @@
   "timezone": "",
   "title": "Monitoring - Perfmon Counters - Quest Softwares - Distributed",
   "uid": "distributed_perfmon",
-  "version": 8,
+  "version": 13,
   "weekStart": ""
 }

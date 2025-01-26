@@ -28,6 +28,7 @@ __pycache__/
 .DS_Store
 .vscode
 tempCodeRunnerFile.ps1
+/FlaskRestAPI/
 
 # Ignore Virtual Env Folder
 /SQLMonitorVenv/*
