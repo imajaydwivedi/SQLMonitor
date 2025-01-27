@@ -32,6 +32,21 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="Experiment:sa">
+          <Created>2025-01-27T21:34:32.9429817+05:30</Created>
+          <Type>SQL</Type>
+          <Server>Experiment</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <HostNameInServerCertificate />
+          <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="localhost:LAB\adwivedi">
           <Created>2024-11-17T20:31:38.0762642+05:30</Created>
           <Type>SQL</Type>
@@ -43,6 +58,36 @@
           <TrustServerCertificate>True</TrustServerCertificate>
           <HostNameInServerCertificate />
           <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="Workstation:LAB\adwivedi">
+          <Created>2025-01-27T12:39:31.8092764+05:30</Created>
+          <Type>SQL</Type>
+          <Server>Workstation</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <HostNameInServerCertificate />
+          <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="Workstation\SQL2014:LAB\adwivedi">
+          <Created>2025-01-27T12:39:41.768562+05:30</Created>
+          <Type>SQL</Type>
+          <Server>Workstation\SQL2014</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <HostNameInServerCertificate />
+          <EncryptionOption>False</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -165,9 +210,15 @@
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Collect-DiskSpace].sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-DiskSpace-ManagedInstance].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Workstation\SQL2014:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Workstation\SQL2014</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-DiskSpace-ManagedInstance].sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-Job-[(dba) Collect-FileIOStats].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Workstation\SQL2014:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Workstation\SQL2014</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Collect-FileIOStats].sql</FullPath>
         </FileNode>
@@ -189,6 +240,12 @@
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Collect-PerfmonData].sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Collect-PerfmonData-ManagedInstance].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Workstation\SQL2014:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Workstation\SQL2014</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Collect-PerfmonData-ManagedInstance].sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-Job-[(dba) Collect-PrivilegedInfo].sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -196,8 +253,8 @@
           <FullPath>SCH-Job-[(dba) Collect-PrivilegedInfo].sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Job-[(dba) Collect-WaitStats].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Workstation\SQL2014:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Workstation\SQL2014</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Collect-WaitStats].sql</FullPath>
         </FileNode>
@@ -453,6 +510,12 @@
           <AssociatedConnUserName />
           <FullPath>SCH-usp_collect_all_server_login_expiration_info.sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-usp_collect_disk_space.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Workstation\SQL2014:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Workstation\SQL2014</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-usp_collect_disk_space.sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-usp_collect_file_io_stats.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -460,10 +523,16 @@
           <FullPath>SCH-usp_collect_file_io_stats.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_collect_memory_clerks.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Workstation\SQL2014:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Workstation\SQL2014</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_collect_memory_clerks.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_collect_performance_metrics.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Experiment:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Experiment</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <FullPath>SCH-usp_collect_performance_metrics.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_collect_privileged_info.sql">
           <AssociatedConnectionMoniker />
