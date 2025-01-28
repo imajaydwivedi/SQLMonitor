@@ -26,6 +26,7 @@ ALTER PROCEDURE dbo.usp_GetAllServerDashboardMail
 	@available_physical_memory_mb_threshold bigint = 4096,
 	@system_high_memory_signal_state_threshold varchar(20) = 'Low',
 	@memory_grants_pending_threshold int = 1,
+	@avg_disk_latency_ms int = 10,
 	@connection_count_threshold int = 1000,
 	@waits_per_core_per_minute_threshold decimal(20,2) = 180,
 	@data_used_pct float = 70,
@@ -57,11 +58,13 @@ ALTER PROCEDURE dbo.usp_GetAllServerDashboardMail
 AS 
 BEGIN
 	/*
-		Version:		1.6.5
-		Update:			2024-01-11 - #7 - Adding Backup Issues in mailer
+		Version:		2025-Jan-28
+		Update:			2025-Jan-28 - Added Disk Latency in Core Health Metrics Table
+						2024-01-11 - #7 - Adding Backup Issues in mailer
 						2023-12-31 - #24 - Daily Mailer containing similar content of 'Monitoring - Live - All Servers' dashboard
 
-		EXEC dbo.usp_GetAllServerDashboardMail @recipients = 'ajay.dwivedi2007@gmail.com', @verbose = 2
+		EXEC dbo.usp_GetAllServerDashboardMail @recipients = 'sqlagentservice@gmail.com', 
+							@only_threshold_validated = 1, @send_mail = 1, @verbose = 2;
 	*/
 	SET NOCOUNT ON; 
 	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
@@ -74,8 +77,10 @@ BEGIN
 	declare @dashboard_link varchar(200);
 	select @dashboard_link = p.param_value from dbo.sma_params p where p.param_key = 'GrafanaDashboardPortal';
 	
-	IF right(@dashboard_link ,3) <> '/d/'
-		raiserror ('@dashboard_link should be ending with ''/d/''. For example, https://grafana.somedomain.com:3000/d/', 20, -1) with log;
+	IF right(@dashboard_link ,1) <> '/'
+		raiserror ('@dashboard_link should be ending with ''/''. For example, https://grafana.somedomain.com:3000/', 20, -1) with log;
+	IF right(@dashboard_link ,1) <> '/d/'
+		set @dashboard_link = @dashboard_link + 'd/';
 
 	-- Local Variables
 	DECLARE @_sql nvarchar(MAX);
@@ -212,8 +217,8 @@ BEGIN
 		set @_table_headline = N'<h3><a href="'+@_url_core_health_panel+'" target="_blank">All Servers - Health Metrics - Require ATTENTION</a></h3>';
 		set @_table_header = N'<tr><th>Server</th> <th>OS CPU %</th> <th>SQL CPU %</th>'
 						+N'<th>Blocked Over '+convert(varchar,@blocked_duration_max_seconds_threshold)+' seconds</th>'
-						+N'<th>Longest Blocking</th> <th>Available Memory</th> <th>OS Memory State</th>'
-						+N'<th>Used SQL Memory</th> <th>Memory Grants Pending</th> <th>SQL Connections</th>'
+						+N'<th>Longest Blocking</th> <th>Disk Latency</th> <th>Available Memory</th>'
+						+N'<th>Used SQL Memory</th> <th>Memory Grants Pending</th>'
 						+N'<th>Waits Per Core Per Minute</th>';
 		set @_table_data = NULL;
 
@@ -222,9 +227,39 @@ BEGIN
 
 		if @verbose > 1
 		begin
-			;with t_cte as (
-				select	srv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, waits_per_core_per_minute
+			;with asi as (
+				select	srv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, avg_disk_latency_ms,
+						available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, 
+						memory_grants_pending, connection_count, waits_per_core_per_minute
+						,issue_rank =   (case when os_cpu >= 90 then 3 when os_cpu >= @os_cpu_threshold then 1 else 0 end) +
+                            (case when os_cpu >= 80 then 3 when sql_cpu >= @sql_cpu_threshold then 1 else 0 end) +
+                            (case when blocked_counts >= 20 then 5
+                                    when blocked_counts >= 10 then 4
+                                    when blocked_counts >= 5 then 2
+                                    when blocked_counts >= @blocked_counts_threshold then 1
+                                    else 0
+                                    end) +
+                            (case when blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold then 1 else 0 end) +
+                            (case when ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) and system_high_memory_signal_state = @system_high_memory_signal_state_threshold ) then 1 else 0 end) +
+                            (case when memory_grants_pending > 10 then 5
+                                    when memory_grants_pending > 5 then 4
+                                    when memory_grants_pending > @memory_grants_pending_threshold then 2
+                                    else 0
+                                    end) +
+                            (case when connection_count >= @connection_count_threshold then 1 else 0 end) +
+                            (case when avg_disk_latency_ms >= 100 then 5
+                                    when avg_disk_latency_ms >= 80 then 4
+                                    when avg_disk_latency_ms >= 50 then 3
+                                    when avg_disk_latency_ms >= 35 then 2
+                                    when avg_disk_latency_ms >= @avg_disk_latency_ms then 1
+                                    else 0
+                                    end) +
+                            (case when waits_per_core_per_minute > @waits_per_core_per_minute_threshold then 1 else 0 end)
 				from dbo.vw_all_server_info
+			)
+			,asi_filtered as (
+				select *
+				from asi
 				where 1=1
 				and (   os_cpu >= @os_cpu_threshold
 					or  sql_cpu >= @sql_cpu_threshold 
@@ -234,19 +269,64 @@ BEGIN
 						and system_high_memory_signal_state = @system_high_memory_signal_state_threshold 
 						)
 					or  memory_grants_pending > @memory_grants_pending_threshold
-					or  connection_count >= @connection_count_threshold
+					--or  connection_count >= @connection_count_threshold
 					or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold
+					or  avg_disk_latency_ms >= @avg_disk_latency_ms
 					)
 			)
-			select [RunningQuery], t_cte.*
-			from t_cte
+			select [RunningQuery], cte.*
+			from asi_filtered cte
 			full outer join (select [RunningQuery] = 'Core Health Metrics') rq
 				on 1=1
+			order by issue_rank desc, avg_disk_latency_ms desc, srv_name;
 		end
 
 		;with asi as (
-			select	srv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, memory_grants_pending, connection_count, waits_per_core_per_minute
+			select	srv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, avg_disk_latency_ms,
+					available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, 
+					memory_grants_pending, connection_count, waits_per_core_per_minute
+					,issue_rank =   (case when os_cpu >= 90 then 3 when os_cpu >= @os_cpu_threshold then 1 else 0 end) +
+                        (case when os_cpu >= 80 then 3 when sql_cpu >= @sql_cpu_threshold then 1 else 0 end) +
+                        (case when blocked_counts >= 20 then 5
+                                when blocked_counts >= 10 then 4
+                                when blocked_counts >= 5 then 2
+                                when blocked_counts >= @blocked_counts_threshold then 1
+                                else 0
+                                end) +
+                        (case when blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold then 1 else 0 end) +
+                        (case when ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) and system_high_memory_signal_state = @system_high_memory_signal_state_threshold ) then 1 else 0 end) +
+                        (case when memory_grants_pending > 10 then 5
+                                when memory_grants_pending > 5 then 4
+                                when memory_grants_pending > @memory_grants_pending_threshold then 2
+                                else 0
+                                end) +
+                        (case when connection_count >= @connection_count_threshold then 1 else 0 end) +
+                        (case when avg_disk_latency_ms >= 100 then 5
+                                when avg_disk_latency_ms >= 80 then 4
+                                when avg_disk_latency_ms >= 50 then 3
+                                when avg_disk_latency_ms >= 35 then 2
+                                when avg_disk_latency_ms >= @avg_disk_latency_ms then 1
+                                else 0
+                                end) +
+                        (case when waits_per_core_per_minute > @waits_per_core_per_minute_threshold then 1 else 0 end)
 			from dbo.vw_all_server_info
+		)
+		,asi_filtered as (
+			select *
+			from asi
+			where 1=1
+			and (   os_cpu >= @os_cpu_threshold
+				or  sql_cpu >= @sql_cpu_threshold 
+				or  blocked_counts >= @blocked_counts_threshold
+				or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold
+				or  ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) 
+					and system_high_memory_signal_state = @system_high_memory_signal_state_threshold 
+					)
+				or  memory_grants_pending > @memory_grants_pending_threshold
+				--or  connection_count >= @connection_count_threshold
+				or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold
+				or  avg_disk_latency_ms >= @avg_disk_latency_ms
+				)
 		)
 		,t_cte as (
 			select	'<tr>'
@@ -277,6 +357,11 @@ BEGIN
 							when blocked_duration_max_seconds < 86400 then convert(varchar,floor(blocked_duration_max_seconds/3600))+' hrs'
 							when blocked_duration_max_seconds >= 86400 then convert(varchar,floor(blocked_duration_max_seconds/86400))+' days'
 							else 'xx' end),0)+'</td>'
+					+'<td class="'+(case when avg_disk_latency_ms >= 50 then 'bg_red'
+									when avg_disk_latency_ms >= 35 then 'bg_orange'
+									when avg_disk_latency_ms >= 10 then 'bg_yellow_medium'
+									else 'bg_none'
+									end)+'">'+convert(varchar,isnull(avg_disk_latency_ms,0))+' ms</td>'
 					+'<td class="'+(case when available_physical_memory_kb > 4194304 then 'bg_none'
 									when available_physical_memory_kb > 2097152 then 'bg_yellow'
 									when available_physical_memory_kb > 512000 then 'bg_orange'
@@ -286,7 +371,7 @@ BEGIN
 							when available_physical_memory_kb < 1024*1024*1024 then convert(varchar,floor(available_physical_memory_kb/(1024*1024)))+' gb'
 							when available_physical_memory_kb >= 1024*1024*1024 then convert(varchar,floor(available_physical_memory_kb/(1024*1024*1024)))+' tb'
 							else 'xx' end)+'</td>'
-					+'<td>'+system_high_memory_signal_state+'</td>'
+					--+'<td>'+system_high_memory_signal_state+'</td>'
 					+'<td>'+(case when physical_memory_in_use_kb < 1024 then convert(varchar,physical_memory_in_use_kb)+' kb'
 							when physical_memory_in_use_kb < 1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/1024))+' mb'
 							when physical_memory_in_use_kb < 1024*1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/(1024*1024)))+' gb'
@@ -295,11 +380,13 @@ BEGIN
 					+'<td class="'+(case when memory_grants_pending > 0 then 'bg_red'
 									else 'bg_none'
 									end)+'">'+convert(varchar,isnull(memory_grants_pending,0))+'</td>'
+					/*
 					+'<td class="'+(case when connection_count >= 1200 then 'bg_red'
 									when connection_count >= 1000 then 'bg_orange'
 									when connection_count >= 800 then 'bg_yellow'
 									else 'bg_none'
 									end)+'">'+convert(varchar,connection_count)+'</td>'
+					*/
 					+'<td class="'+(case when waits_per_core_per_minute >= 300 then 'bg_red'
 									when waits_per_core_per_minute >= 240 then 'bg_orange'
 									when waits_per_core_per_minute >= 180 then 'bg_yellow'
@@ -310,19 +397,8 @@ BEGIN
 							when waits_per_core_per_minute >= 86400 then convert(varchar,floor(waits_per_core_per_minute/86400))+' days'
 							else 'xx' end),'-1')+'</td>'
 					+'</tr>' as [table_row]
-			from asi cte
+			from asi_filtered cte
 			where 1=1
-			and (   os_cpu >= @os_cpu_threshold
-				or  sql_cpu >= @sql_cpu_threshold 
-				or  blocked_counts >= @blocked_counts_threshold
-				or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold
-				or  ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) 
-					and system_high_memory_signal_state = @system_high_memory_signal_state_threshold 
-					)
-				or  memory_grants_pending > @memory_grants_pending_threshold
-				or  connection_count >= @connection_count_threshold
-				or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold
-				)
 		)
 		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
 		from t_cte;
@@ -332,6 +408,7 @@ BEGIN
 							+' || @sql_cpu_threshold:'+convert(varchar,@sql_cpu_threshold)
 							+' || @blocked_counts_threshold:'+convert(varchar,@blocked_counts_threshold)
 							+' || @blocked_duration_max_seconds_threshold:'+convert(varchar,@blocked_duration_max_seconds_threshold)
+							+' || @avg_disk_latency_ms:'+convert(varchar,@avg_disk_latency_ms)
 							+' || @available_physical_memory_mb_threshold:'+convert(varchar,@available_physical_memory_mb_threshold)
 							+' || @system_high_memory_signal_state_threshold:'+convert(varchar,@system_high_memory_signal_state_threshold)
 							+' || @memory_grants_pending_threshold:'+convert(varchar,@memory_grants_pending_threshold)
@@ -1283,11 +1360,3 @@ BEGIN
 END
 GO
 
-if APP_NAME() = 'Microsoft SQL Server Management Studio - Query'
-	EXEC dbo.usp_GetAllServerDashboardMail 
-			@recipients = 'ajay.dwivedi2007@gmail.com;',
-			@dashboard_link = 'https://sqlmonitor.ajaydwivedi.com:3000/d/',
-			@collect_offline_servers = 1, @collect_sqlmonitor_jobs = 1,
-			@collect_disk_space = 1,
-			@only_threshold_validated = 1, @send_mail = 1, @verbose = 2
-go
