@@ -490,6 +490,22 @@ begin
 			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'Logouts/sec%' )
 		  );
 
+		if @verbose > 0
+			print @_tab+'Collect Disk Latency - Snapshot 01..';
+
+		-- Collect Disk Latency - Snapshot 01
+		if object_id('tempdb..#virtual_file_stats_s1') is not null
+			drop table #virtual_file_stats_s1;
+		select	collection_time_utc = sysutcdatetime(),
+				ovs.volume_mount_point, [num_of_reads] = sum(num_of_reads), [num_of_bytes_read] = sum(num_of_bytes_read), 
+				[io_stall_read_ms] = sum(io_stall_read_ms), [num_of_writes] = sum(num_of_writes), 
+				[num_of_bytes_written] = sum(num_of_bytes_written), [io_stall_write_ms] = sum(io_stall_write_ms), 
+				[io_stall] = sum(io_stall),	[size_on_disk_bytes] = sum(size_on_disk_bytes)
+		into #virtual_file_stats_s1
+		from sys.dm_io_virtual_file_stats(null,null) vfs
+		outer apply sys.dm_os_volume_stats(vfs.database_id, vfs.file_id) ovs
+		group by ovs.volume_mount_point;
+
 		--
 		if @verbose > 0
 			print @_tab+'WAITFOR DELAY '+@snapshot_delay_hhmmss+'..';
@@ -601,6 +617,22 @@ begin
 		  );
 
 		if @verbose > 0
+			print @_tab+'Collect Disk Latency - Snapshot 02..';
+
+		-- Collect Disk Latency - Snapshot 02
+		if object_id('tempdb..#virtual_file_stats_s2') is not null
+			drop table #virtual_file_stats_s2;
+		select	collection_time_utc = sysutcdatetime(),
+				ovs.volume_mount_point, [num_of_reads] = sum(num_of_reads), [num_of_bytes_read] = sum(num_of_bytes_read), 
+				[io_stall_read_ms] = sum(io_stall_read_ms), [num_of_writes] = sum(num_of_writes), 
+				[num_of_bytes_written] = sum(num_of_bytes_written), [io_stall_write_ms] = sum(io_stall_write_ms), 
+				[io_stall] = sum(io_stall),	[size_on_disk_bytes] = sum(size_on_disk_bytes)
+		into #virtual_file_stats_s2
+		from sys.dm_io_virtual_file_stats(null,null) vfs
+		outer apply sys.dm_os_volume_stats(vfs.database_id, vfs.file_id) ovs
+		group by ovs.volume_mount_point;
+
+		if @verbose > 0
 			print @_tab+'Populate dbo.performance_counters for [PERF_AVERAGE_BULK]..';
 		;WITH Time_Samples AS (
 			SELECT t1.collection_time as time1, t2.collection_time as time2,
@@ -657,6 +689,69 @@ begin
 				--,cntr_type = cntr_type_t2
 				--,id = ROW_NUMBER()OVER(ORDER BY SYSDATETIME())
 		FROM Time_Samples;
+
+		if @verbose > 0
+			print @_tab+'Compute #volume_stats..';
+		if object_id('tempdb..#volume_stats') is not null
+			drop table #volume_stats;
+		;with stats as (
+			select	[time_sample_ms] = DATEDIFF(MILLISECOND,s1.collection_time_utc,s2.collection_time_utc),
+					[time_sample_sec] = DATEDIFF(SECOND,s1.collection_time_utc,s2.collection_time_utc),
+					[disk_volume] = s2.volume_mount_point,
+					[num_of_reads] = s2.num_of_reads-isnull(s1.num_of_reads,0),
+					[num_of_bytes_read] = s2.num_of_bytes_read-isnull(s1.num_of_bytes_read,0),
+					[io_stall_read_ms] = s2.io_stall_read_ms-isnull(s1.io_stall_read_ms,0),
+					[num_of_writes] = s2.num_of_writes-isnull(s1.num_of_writes,0),
+					[num_of_bytes_written] = s2.num_of_bytes_written-isnull(s1.num_of_bytes_written,0),
+					[io_stall_write_ms] = s2.io_stall_write_ms-isnull(s1.io_stall_write_ms,0),
+					[io_stall] = s2.io_stall-isnull(s1.io_stall,0)
+			from #virtual_file_stats_s2 s2
+			left join #virtual_file_stats_s1 s1
+				on s1.volume_mount_point = s2.volume_mount_point
+		)
+		select	[collection_time_utc] = SYSUTCDATETIME(), 
+				[disk_volume] = left(s.disk_volume, len(s.disk_volume)-1),
+				[read_latency_ms] = case when [num_of_reads] = 0 then 0
+										else [io_stall_read_ms]/[num_of_reads]
+										end,
+				[write_latency_ms] = case when [num_of_writes] = 0 then 0
+										else [io_stall_write_ms]/[num_of_writes]
+										end,
+				[read_bytes_per_second] = [num_of_bytes_read]/[time_sample_sec],
+				[written_bytes_per_second] = [num_of_bytes_written]/[time_sample_sec]
+		into #volume_stats
+		from stats s;
+
+		if @verbose > 0
+			print @_tab+'Populate dbo.performance_counters with Disk Metrics..';
+		;with cte_unpvt as 
+		(
+			select *
+			from (
+				select	[disk_volume], 
+						[read_latency_sec] = convert(numeric(20,6),read_latency_ms/1000.0),
+						[write_latency_sec] = convert(numeric(20,6),write_latency_ms/1000.0), 
+						[read_bytes_per_sec] = convert(numeric(20,6),read_bytes_per_second),
+						[written_bytes_per_sec] = convert(numeric(20,6),written_bytes_per_second)
+				from #volume_stats
+			) vs
+			unpivot (
+				value for counter in ([read_latency_sec], [write_latency_sec], [read_bytes_per_sec], [written_bytes_per_sec])
+			) as unpvt
+		)
+		insert dbo.performance_counters
+		(collection_time_utc, host_name, object, counter, value, instance)
+		select	[collection_time_utc] = SYSUTCDATETIME(),	[host_name] = @_host_name,
+				[object] = 'logicaldisk',
+				[counter] = case when unpvt.counter = 'read_latency_sec' then 'avg. disk sec/read'
+								when unpvt.counter = 'write_latency_sec' then 'avg. disk sec/write'
+								when unpvt.counter = 'read_bytes_per_sec' then 'disk read bytes/sec'
+								when unpvt.counter = 'written_bytes_per_sec' then 'disk write bytes/sec'
+								else unpvt.counter
+								end,
+				[value] = unpvt.value,
+				[instance] = [disk_volume]
+		from cte_unpvt unpvt;
 
 	end
 
