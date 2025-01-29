@@ -81,6 +81,7 @@ $params = @{
     #ReturnInlineErrorMessage = $true
     #ForceTSQLStepType4TsqlJobs = $true
     #IsManagedInstance = $true
+    #InstanceScopeFeaturesOnly = $true
     #$GrafanaDashboardPortal = 'https://sqlmonitor.ajaydwivedi.com:3000/d/'
 }
 
