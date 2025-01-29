@@ -45,6 +45,21 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="Experiment:sa">
+          <Created>2025-01-27T20:49:30.4114381+05:30</Created>
+          <Type>SQL</Type>
+          <Server>Experiment</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <HostNameInServerCertificate />
+          <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="localhost:LAB\adwivedi">
           <Created>2023-10-09T17:55:17.115376+05:30</Created>
           <Type>SQL</Type>
@@ -238,9 +253,9 @@
           <FullPath>QRY-sp_BlitzCache-Specific.sql</FullPath>
         </FileNode>
         <FileNode Name="QRY-sp_WhoIsActive-Usages.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Experiment:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Experiment</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>QRY-sp_WhoIsActive-Usages.sql</FullPath>
         </FileNode>
         <FileNode Name="QRY-SQLMonitor-Table-Size-Estimate.sql">

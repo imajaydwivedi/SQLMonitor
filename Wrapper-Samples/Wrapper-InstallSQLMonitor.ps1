@@ -4,7 +4,7 @@
 
 cls
 Import-Module dbatools;
-$SqlInstanceToBaseline = 'Workstation'
+$SqlInstanceToBaseline = 'Experiment'
 $SqlInstanceAsDataDestination = $SqlInstanceToBaseline
 #$SqlInstanceAsDataDestination = 'Workstation'
 #$SqlInstanceForPowershellJobs = 'Workstation'
@@ -80,6 +80,8 @@ $params = @{
     #MemoryOptimizedObjectsUsage = $false
     #ReturnInlineErrorMessage = $true
     #ForceTSQLStepType4TsqlJobs = $true
+    #IsManagedInstance = $true
+    #InstanceScopeFeaturesOnly = $true
     #$GrafanaDashboardPortal = 'https://sqlmonitor.ajaydwivedi.com:3000/d/'
 }
 
