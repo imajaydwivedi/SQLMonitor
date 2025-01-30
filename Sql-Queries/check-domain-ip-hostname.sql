@@ -6,9 +6,9 @@ select @@SERVERNAME, name, recovery_model_desc, collation_name from sys.database
 go
 
 --	Find used/free space in Database Files
-select SERVERPROPERTY('MachineName') AS srv_name,
-			DB_NAME() AS [db_name], f.type_desc, fg.name as file_group, f.name, f.physical_name, (f.size*8.0)/1024/1024 as size_GB, f.max_size, f.growth,
-	CAST(FILEPROPERTY(f.name, 'SpaceUsed') as BIGINT)/128.0/1024 AS SpaceUsed_gb
+select	SERVERPROPERTY('MachineName') AS srv_name,
+		DB_NAME() AS [db_name], f.type_desc, fg.name as file_group, f.name, f.physical_name, (f.size*8.0)/1024/1024 as size_GB, f.max_size, f.growth,
+		CAST(FILEPROPERTY(f.name, 'SpaceUsed') as BIGINT)/128.0/1024 AS SpaceUsed_gb
 		,(size/128.0 -CAST(FILEPROPERTY(f.name,'SpaceUsed') AS INT)/128.0)/1024 AS FreeSpace_GB
 		,cast((FILEPROPERTY(f.name,'SpaceUsed')*100.0)/size as decimal(20,2)) as Used_Percentage
 		,CASE WHEN f.type_desc = 'LOG' THEN (select d.log_reuse_wait_desc from sys.databases as d where d.name = DB_NAME()) ELSE NULL END as log_reuse_wait_desc
@@ -33,6 +33,12 @@ from (
 		where local_net_address is not null
 	) p;
 
+;with server_services as (
+	select *
+	from sys.dm_server_services 
+	where servicename like 'SQL Server (%)'
+	or servicename like 'SQL Server Agent (%)'
+)
 select	[domain] = DEFAULT_DOMAIN(),
 		[domain_reg] = @Domain,
 		[ip] = CONNECTIONPROPERTY('local_net_address'),
@@ -42,12 +48,13 @@ select	[domain] = DEFAULT_DOMAIN(),
 		[host_name] = COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')),
 		[sql_version] = @@VERSION,
 		[service_name_str] = servicename,
-		[service_name] = case	when @@servicename = 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQLSERVER'
+		[service_name] = case	when @@servicename is null then 'MSSQLSERVER'
+								when @@servicename = 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQLSERVER'
 								when @@servicename = 'MSSQLSERVER' and servicename like 'SQL Server Agent (%)' then 'SQLSERVERAGENT'
 								when @@servicename <> 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQL$'+@@servicename
 								when @@servicename <> 'MSSQLSERVER' and servicename like 'SQL Server Agent (%)' then 'SQLAgent'+@@servicename
 								else 'MSSQL$'+@@servicename end,
-		[instance_name] = @@servicename,
+		[instance_name] = coalesce(@@servicename,'MSSQLSERVER'),
 		service_account,
 		[@ports] = @ports,
 		SERVERPROPERTY('Edition') AS Edition,
@@ -55,9 +62,9 @@ select	[domain] = DEFAULT_DOMAIN(),
 		SERVERPROPERTY('ProductLevel') AS ProductLevel
 		--,instant_file_initialization_enabled
 		--,*
-from sys.dm_server_services 
-where servicename like 'SQL Server (%)'
-or servicename like 'SQL Server Agent (%)'
+from (values ('Basic-Details')) d (RunningQuery)
+full outer join	server_services ss
+	on 1=1;
 go
 
 select *

@@ -45,6 +45,21 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342:adwivedi">
+          <Created>2025-01-30T12:11:53.3854499+05:30</Created>
+          <Type>SQL</Type>
+          <Server>dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342</Server>
+          <UserName>adwivedi</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <HostNameInServerCertificate />
+          <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="Experiment:sa">
           <Created>2025-01-27T20:49:30.4114381+05:30</Created>
           <Type>SQL</Type>
@@ -127,9 +142,9 @@
           <FullPath>_Other-Scripts-Links.sql</FullPath>
         </FileNode>
         <FileNode Name="check-domain-ip-hostname.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342:False:adwivedi</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342</AssociatedConnSrvName>
+          <AssociatedConnUserName>adwivedi</AssociatedConnUserName>
           <FullPath>check-domain-ip-hostname.sql</FullPath>
         </FileNode>
         <FileNode Name="datetime-conversions.sql">

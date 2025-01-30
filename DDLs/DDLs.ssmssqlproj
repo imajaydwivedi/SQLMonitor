@@ -157,10 +157,16 @@
           <FullPath>SCH-Create-Inventory-Specific-Objects.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Create-XEvents.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Create-XEvents.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Create-XEvents-ManagedInstance.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Create-XEvents-ManagedInstance.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-fn_get_hash_for_string.sql">
           <AssociatedConnectionMoniker />
@@ -511,8 +517,8 @@
           <FullPath>SCH-usp_collect_all_server_login_expiration_info.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_collect_disk_space.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Workstation\SQL2014:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>Workstation\SQL2014</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_collect_disk_space.sql</FullPath>
         </FileNode>
