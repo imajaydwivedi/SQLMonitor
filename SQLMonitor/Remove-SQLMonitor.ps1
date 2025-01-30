@@ -1062,7 +1062,7 @@ select	[domain] = default_domain(),
 		[@@SERVERNAME] = @@SERVERNAME,
 		[MachineName] = serverproperty('MachineName'),
 		[ServerName] = serverproperty('ServerName'),
-		[host_name] = SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),
+		[host_name] = COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')),
 		SERVERPROPERTY('ProductVersion') AS ProductVersion,
 		[service_name_str] = servicename,
 		[service_name] = case	when @@servicename = 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQLSERVER'

@@ -32,7 +32,7 @@ begin
 	([collection_time_utc], [host_name], [disk_volume], [label], [capacity_mb], [free_mb], [block_size], [filesystem])
 	select	distinct
 			[collection_time_utc] = SYSUTCDATETIME(),
-			[host_name] = convert(varchar(225),SERVERPROPERTY('ComputerNamePhysicalNetBIOS')),
+			[host_name] = convert(varchar(225),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))),
 			[disk_volume] = vs.volume_mount_point,
 			[label] = null,
 			[capacity_mb] = vs.total_bytes / 1048576,

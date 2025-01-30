@@ -73,7 +73,7 @@ begin
 	set @_current_time_utc = sysutcdatetime();
 	set @_tab = '  ';
 	set @_object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
-	set @_host_name = convert(varchar(255),SERVERPROPERTY('ComputerNamePhysicalNetBIOS'));
+	set @_host_name = convert(varchar(255),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')));
 
 	if @verbose > 0
 		print '@_object_name => '+@_object_name;

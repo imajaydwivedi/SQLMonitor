@@ -268,10 +268,10 @@ end
 go
 
 
-if ( (APP_NAME() = 'Microsoft SQL Server Management Studio - Query') and (not exists (select * from dbo.instance_hosts where host_name = CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')))) )
+if ( (APP_NAME() = 'Microsoft SQL Server Management Studio - Query') and (not exists (select * from dbo.instance_hosts where host_name = CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))))) )
 begin
 	insert dbo.instance_hosts 
-	select [host_name] = CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS'));
+	select [host_name] = CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')));
 end
 go
 
@@ -313,7 +313,7 @@ begin
 		)
 	select	[sql_instance] = convert(varchar,serverproperty('MachineName')),
 			--[ip] = convert(varchar,CONNECTIONPROPERTY('local_net_address')),
-			[host_name] = CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')),
+			[host_name] = CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))),
 			[database] = DB_NAME(),
 			--[service_name] = case when @@servicename = 'MSSQLSERVER' then @@servicename else 'MSSQL$'+@@servicename end,
 			[collector_tsql_jobs_server] = convert(varchar,serverproperty('MachineName')),

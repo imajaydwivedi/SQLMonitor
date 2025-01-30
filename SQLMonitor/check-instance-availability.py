@@ -39,7 +39,7 @@ sql_get_servers = f"""
 select distinct [sql_instance], [sql_instance_port], [database]
 from dbo.instance_details id
 where is_enabled = 1 and is_alias = 0
-and id.host_name <> CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS'))
+and id.host_name <> CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')))
 """
 
 invCursor.execute(sql_get_servers)

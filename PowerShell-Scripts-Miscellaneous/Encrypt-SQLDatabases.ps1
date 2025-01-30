@@ -83,7 +83,7 @@ select	srv_name = '$SqlInstanceToEncrypt',
 		at_server_name = @@SERVERNAME,
 		server_name = convert(varchar,SERVERPROPERTY('ServerName')),
 		domain = default_domain(),
-		server_host_name = SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),
+		server_host_name = COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')),
 		total_database_count = (select count(*) from sys.databases d where d.state_desc = 'ONLINE' and is_read_only = 0 and d.database_id > 4),
 		error_log_file = SERVERPROPERTY('ErrorLogFileName'),
         master_key_exists = convert(bit,case when exists (select * from sys.symmetric_keys where name LIKE '%DatabaseMasterKey%') then 1 else 0 end)

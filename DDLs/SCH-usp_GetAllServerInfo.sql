@@ -605,7 +605,7 @@ BEGIN
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'host_name') )
 		begin
 			delete from @_result;
-			set @_sql = "select CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]";
+			set @_sql = "select CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) as [host_name]";
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
@@ -2158,7 +2158,7 @@ from
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.vw_performance_counters
 	where 1=1
 	and collection_time_utc >= dateadd(minute,-120,getutcdate())
-	--and [host_name] = CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) 
+	--and [host_name] = CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) 
 	order by collection_time_utc desc
 ) od
 full outer join (select [dummy_latency_minutes] = 10080) dmy -- 7 days
@@ -2307,7 +2307,7 @@ from
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.vw_os_task_list
 	where 1=1
 	and collection_time_utc >= dateadd(minute,-120,getutcdate())
-	--and [host_name] = CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) 
+	--and [host_name] = CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) 
 	order by collection_time_utc desc
 ) od
 full outer join (select [dummy_latency_minutes] = 10080) dmy -- 7 days
@@ -2358,7 +2358,7 @@ from
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.vw_disk_space
 	where 1=1
 	and collection_time_utc >= dateadd(minute,-120,getutcdate())
-	--and [host_name] = CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) 
+	--and [host_name] = CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) 
 	order by collection_time_utc desc
 ) od
 full outer join (select [dummy_latency_minutes] = 10080) dmy -- 7 days

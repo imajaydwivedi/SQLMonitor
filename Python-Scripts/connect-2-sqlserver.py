@@ -39,7 +39,7 @@ select	[domain] = DEFAULT_DOMAIN(),
 		[@@SERVERNAME] = @@SERVERNAME,
 		[MachineName] = convert(varchar,serverproperty('MachineName')),
 		[ServerName] = convert(varchar,serverproperty('ServerName')),
-		[host_name] = convert(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')),
+		[host_name] = convert(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))),
 		[sql_version] = @@VERSION,
 		[service_name_str] = servicename,
 		[service_name] = case	when @@servicename = 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQLSERVER'
