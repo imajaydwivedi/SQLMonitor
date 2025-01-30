@@ -100,9 +100,9 @@
           <FullPath>(dba) ReSetup-PerfmonDataCollector.sql</FullPath>
         </FileNode>
         <FileNode Name="__DEMO__Blocking-Test.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342:False:adwivedi</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342</AssociatedConnSrvName>
+          <AssociatedConnUserName>adwivedi</AssociatedConnUserName>
           <FullPath>__DEMO__Blocking-Test.sql</FullPath>
         </FileNode>
         <FileNode Name="__DEMO__Blocking-Test-2.sql">

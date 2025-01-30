@@ -1065,10 +1065,10 @@ select	[domain] = default_domain(),
 		[host_name] = COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')),
 		SERVERPROPERTY('ProductVersion') AS ProductVersion,
 		[service_name_str] = servicename,
-		[service_name] = case	when @@servicename = 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQLSERVER'
-								when @@servicename = 'MSSQLSERVER' and servicename like 'SQL Server Agent (%)' then 'SQLSERVERAGENT'
-								when @@servicename <> 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQL$'+@@servicename
-								when @@servicename <> 'MSSQLSERVER' and servicename like 'SQL Server Agent (%)' then 'SQLAgent'+@@servicename
+		[service_name] = case	when coalesce(@@servicename,'MSSQLSERVER') = 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQLSERVER'
+								when coalesce(@@servicename,'MSSQLSERVER') = 'MSSQLSERVER' and servicename like 'SQL Server Agent (%)' then 'SQLSERVERAGENT'
+								when coalesce(@@servicename,'MSSQLSERVER') <> 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQL$'+@@servicename
+								when coalesce(@@servicename,'MSSQLSERVER') <> 'MSSQLSERVER' and servicename like 'SQL Server Agent (%)' then 'SQLAgent'+@@servicename
 								else 'MSSQL$'+@@servicename end,
         service_account,
 		SERVERPROPERTY('Edition') AS Edition,

@@ -17,13 +17,14 @@ GO
 alter procedure [dbo].[usp_collect_performance_metrics]
 	@metrics varchar(125) = 'all',
 	@snapshot_delay_hhmmss char(8) = '00:00:10',
-	@verbose tinyint = 1
+	@verbose tinyint = 0
 as
 begin
 /*	Created By:		Ajay Dwivedi (https://ajaydwivedi.com/go/sqlmonitor)
 	Version:		1.0
-	Modification:	2025-Jan-26 - Integrate in SQLMonitor
+	Modification:	2025-Jan-30 - Integrate in SQLMonitor
 
+	exec dbo.[usp_collect_performance_metrics] @verbose = 2;
 	exec dbo.[usp_collect_performance_metrics] @metrics = 'dm_os_sys_memory';
 	exec dbo.[usp_collect_performance_metrics] @metrics = 'dm_os_process_memory';
 	exec dbo.[usp_collect_performance_metrics] @metrics = 'dm_os_performance_counters';
@@ -66,17 +67,33 @@ begin
 	declare @_current_time_utc datetime2; /* removing usage of this due to high Page Splits */
 	declare @_tab nchar(2);
 	declare @_object_name varchar(255);
+	declare @_instance_id varchar(255);
+	declare @_object_name_new varchar(255);
 	declare @_step_name varchar(50);
 	declare @_host_name varchar(255);
 
 	-- Initialize variables
 	set @_current_time_utc = sysutcdatetime();
 	set @_tab = '  ';
-	set @_object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
 	set @_host_name = convert(varchar(255),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')));
+	select @_instance_id = instance_id from dbo.fn_get_instanceid();
+	set @_object_name = (case when @@servicename is null then 'MSSQL$'+@_instance_id
+							when @@servicename = 'MSSQLSERVER' then 'SQLServer' 
+							else 'MSSQL$'+@@SERVICENAME 
+							end);
+	set @_object_name_new = case when coalesce(@@SERVICENAME,'MSSQLSERVER') = 'MSSQLSERVER' then  'SQLServer' else 'MSSQL$'+@@SERVICENAME end;
+
+	if @verbose >= 2
+		select [@@servicename] = @@servicename, [@_object_name] = @_object_name, [@_instance_id] = @_instance_id;
 
 	if @verbose > 0
+	begin
+		if @@SERVICENAME is null
+			print '@@servicename IS NULL';
+		print '@_instance_id => '+@_instance_id;
 		print '@_object_name => '+@_object_name;
+		print '@_object_name_new => '+@_object_name_new;
+	end
 
 	-- Get Total RAM & Available Memory
 	set @_step_name = 'dm_os_sys_memory';
@@ -148,7 +165,7 @@ begin
 		insert dbo.performance_counters
 		(collection_time_utc, host_name, object, counter, value, instance)
 		select	[collection_time_utc] = SYSUTCDATETIME(),	[host_name] = @_host_name,
-				[object] =	@_object_name+':'+
+				[object] =	@_object_name_new+':'+
 							case when unpvt.counter in ('physical_memory_in_use_kb', 'locked_page_allocations_kb','page_fault_count',
 														'memory_utilization_percentage','large_page_allocations_kb')
 								then 'memory'
@@ -222,7 +239,7 @@ begin
 					[instance] = case when unpvt.counter = 'system_cpu_utilization'
 									then '_total'
 									when unpvt.counter = 'sql_cpu_utilization'
-									then 'sqlservr$'+convert(varchar(125),@@SERVICENAME)
+									then 'sqlservr$'+convert(varchar(125),coalesce(@@servicename,'MSSQLSERVER'))
 									else null
 									end
 			from cte_unpvt unpvt
@@ -249,7 +266,7 @@ begin
 		select	/* -- all performance counters that do not require additional calculation */
 				[collection_time_utc] = SYSUTCDATETIME(), 
 				[host_name] = @_host_name,
-				[object] = lower(rtrim(object_name)), 
+				[object] = lower(rtrim(replace(pc.object_name, 'MSSQL$'+@_instance_id, @_object_name_new))), 
 				[counter] = lower(rtrim(counter_name)), 
 				[value] = cntr_value,
 				[instance] = lower(rtrim(instance_name))		
@@ -296,9 +313,21 @@ begin
 			or
 			( [object_name] like (@_object_name+':Databases%') and [counter_name] like 'Percent Log Used%' )
 			or
+			( [object_name] like (@_object_name+':Databases%') and [counter_name] like 'XTP Memory Used (KB)%' )
+			or
+			( [object_name] like (@_object_name+':Databases%') and [counter_name] like 'Active Transactions%' )
+			or
 			( [object_name] like (@_object_name+':Cursor Manager by Type%') and [counter_name] like 'Active cursors%' )
 			or
 			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'User Connections%' )
+			or
+			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'Active Temp Tables%' )
+			or
+			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'Transactions%' )
+			or
+			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'Processes blocked%' )
+			or
+			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'Temp Tables For Destruction%' )
 			or
 			( [object_name] like (@_object_name+':Wait Statistics%') )
 			or
@@ -325,7 +354,8 @@ begin
 		SELECT	/* counter that require Fraction & Base */
 				[collection_time_utc] = SYSUTCDATETIME(),
 				[host_name] = @_host_name, 
-				[object] = lower(rtrim(fr.object_name)),
+				--[object] = lower(rtrim(fr.object_name)),
+				[object] = lower(rtrim(replace(fr.object_name, 'MSSQL$'+@_instance_id, @_object_name_new))),
 				[counter] = lower(rtrim(fr.counter_name)),
 				[value] = case when bs.cntr_value <> 0 then (100*(fr.cntr_value/bs.cntr_value)) else fr.cntr_value end,
 				[instance] = lower(rtrim(fr.instance_name))
@@ -366,7 +396,8 @@ begin
 		SELECT	/* -- all performance counters that do not require additional calculation */
 				[collection_time_utc] = sysutcdatetime(), 
 				[host_name] = @_host_name,
-				[object] = lower(rtrim(object_name)),
+				--[object] = lower(rtrim(object_name)),
+				[object] = lower(rtrim(replace(pc.object_name, 'MSSQL$'+@_instance_id, @_object_name_new))),
 				[counter] = lower(rtrim(counter_name)),
 				[value] = cntr_value,
 				[instance] = lower(rtrim(instance_name))
@@ -488,6 +519,8 @@ begin
 			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'Logins/sec%' )
 			or
 			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'Logouts/sec%' )
+			or
+			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'Temp Tables Creation Rate%' )
 		  );
 
 		if @verbose > 0
@@ -614,6 +647,8 @@ begin
 			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'Logins/sec%' )
 			or
 			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'Logouts/sec%' )
+			or
+			( [object_name] like (@_object_name+':General Statistics%') and [counter_name] like 'Temp Tables Creation Rate%' )
 		  );
 
 		if @verbose > 0
@@ -650,7 +685,8 @@ begin
 		([collection_time_utc], [host_name], [object], [counter], [value], [instance])
 		SELECT	[collection_time_utc] = SYSUTCDATETIME(),
 				[host_name] = @_host_name,
-				[object] = lower(rtrim(fr.object_name)), 
+				--[object] = lower(rtrim(fr.object_name)), 
+				[object] = lower(rtrim(replace(fr.object_name, 'MSSQL$'+@_instance_id, @_object_name_new))),
 				[counter] = lower(rtrim(fr.counter_name)), 
 				[value] = case when (bs.cntr_value_t2-bs.cntr_value_t1) <> 0 then (fr.cntr_value_t2-fr.cntr_value_t1)/(bs.cntr_value_t2-bs.cntr_value_t1) 
 								else (fr.cntr_value_t2-fr.cntr_value_t1) end,
@@ -682,7 +718,8 @@ begin
 		([collection_time_utc], [host_name], [object], [counter], [value], [instance])
 		SELECT	[collection_time_utc] = SYSUTCDATETIME(),
 				[host_name] = @_host_name,
-				[object] = lower(rtrim(object_name)),
+				--[object] = lower(rtrim(object_name)),
+				[object] = lower(rtrim(replace(object_name, 'MSSQL$'+@_instance_id, @_object_name_new))),
 				[counter] = lower(rtrim(counter_name)),
 				[value] = (cntr_value_t2-cntr_value_t1)/(DATEDIFF(SECOND,time1,time2)),
 				[instance] = lower(rtrim(instance_name))

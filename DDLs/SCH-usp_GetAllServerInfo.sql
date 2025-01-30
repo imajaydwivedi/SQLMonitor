@@ -35,8 +35,9 @@ AS
 BEGIN
 
 	/*
-		Version:		2024-11-13
-		Date:			2024-11-13 - Enhancement#4 - Get Max Server Memory in dbo.all_server_stable_info
+		Version:		2025-01-30
+		Date:			2025-01-30 - Enhancement#24 - Add support for Managed Instance (PAAS)
+						2024-11-13 - Enhancement#4 - Get Max Server Memory in dbo.all_server_stable_info
 						2024-06-05 - Enhancement#42 - Get [avg_disk_wait_ms]
 						2023-08-17 - Enhancement#274 - Populate [is_linked_server_working]
 						2023-07-14 - Enhancement#268 - Add tables sql_agent_job_stats & memory_clerks in Collection Latency Dashboard
@@ -48,7 +49,7 @@ BEGIN
 		Help:			https://www.sommarskog.se/grantperm.html
 						https://stackoverflow.com/questions/10191193/how-to-test-linkedservers-connectivity-in-tsql
 
-		declare @srv_name varchar(125) = convert(varchar,serverproperty('MachineName'));
+		declare @srv_name varchar(125) = CONVERT(varchar(125),serverproperty('MachineName'));
 		exec dbo.usp_GetAllServerInfo @servers = @srv_name
 		--exec dbo.usp_GetAllServerInfo @servers = 'Workstation,SqlPractice,SqlMonitor' ,@output = 'srv_name, os_start_time_utc'
 		--exec dbo.usp_GetAllServerInfo @servers = 'SQLMONITOR' ,@output = 'system_high_memory_signal_state'
@@ -195,7 +196,7 @@ BEGIN
 	IF @verbose >= 2
 	BEGIN
 		SELECT @_int_variable = COUNT(1) FROM @_tbl_servers;
-		PRINT 'No of servers to process => '+CONVERT(varchar,@_int_variable)+'';
+		PRINT 'No of servers to process => '+CONVERT(varchar(125),@_int_variable)+'';
 		SELECT [RunningQuery] = 'select * from @_tbl_servers', *
 		FROM @_tbl_servers;
 	END
@@ -221,7 +222,7 @@ BEGIN
 	IF @verbose >= 2
 	BEGIN
 		SELECT @_int_variable = COUNT(1) FROM @_tbl_output_columns;
-		PRINT 'No of columns to return in result => '+CONVERT(varchar,@_int_variable)+'';
+		PRINT 'No of columns to return in result => '+CONVERT(varchar(125),@_int_variable)+'';
 		SELECT [RunningQuery] = 'select * from @_tbl_output_columns', *
 		FROM @_tbl_output_columns;
 	END
@@ -328,8 +329,8 @@ BEGIN
 		set @_WhoIsActive__latency_minutes = NULL;
 
 		-- If not local server
-		if ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @_srv_name) 
-			or (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @_srv_name)
+		if ( (CONVERT(varchar(125),SERVERPROPERTY('MachineName')) = @_srv_name) 
+			or (CONVERT(varchar(125),SERVERPROPERTY('ServerName')) = @_srv_name)
 			)
 		begin
 			set @_isLocalHost = 1;
@@ -353,11 +354,11 @@ BEGIN
 
 				if @verbose >= 1
 				begin
-					print  '	ErrorNumber => '+convert(varchar,ERROR_NUMBER());
-					print  '	ErrorSeverity => '+convert(varchar,ERROR_SEVERITY());
-					print  '	ErrorState => '+convert(varchar,ERROR_STATE());
+					print  '	ErrorNumber => '+CONVERT(varchar(125),ERROR_NUMBER());
+					print  '	ErrorSeverity => '+CONVERT(varchar(125),ERROR_SEVERITY());
+					print  '	ErrorState => '+CONVERT(varchar(125),ERROR_STATE());
 					--print  '	ErrorProcedure => '+ERROR_PROCEDURE();
-					print  '	ErrorLine => '+convert(varchar,ERROR_LINE());
+					print  '	ErrorLine => '+CONVERT(varchar(125),ERROR_LINE());
 					print  '	ErrorMessage => '+ERROR_MESSAGE();
 				end
 				set @_linked_server_failed = 1;
@@ -410,7 +411,7 @@ BEGIN
 		if @_linked_server_failed = 0 and (@output is null or exists (select * from @_tbl_output_columns where column_name = 'at_server_name'))
 		begin
 			delete from @_result;
-			set @_sql = "SELECT	[at_server_name] = CONVERT(varchar,  @@SERVERNAME )";
+			set @_sql = "SELECT	[at_server_name] = CONVERT(varchar(125),  @@SERVERNAME )";
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
@@ -435,9 +436,9 @@ BEGIN
 						[function_call_arguments] = 'at_server_name', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -449,7 +450,7 @@ BEGIN
 		if @_linked_server_failed = 0 and (@output is null or exists (select * from @_tbl_output_columns where column_name = 'machine_name'))
 		begin
 			delete from @_result;
-			set @_sql = "select CONVERT(varchar,SERVERPROPERTY('MachineName')) as [machine_name]";
+			set @_sql = "select CONVERT(varchar(125),SERVERPROPERTY('MachineName')) as [machine_name]";
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
@@ -474,9 +475,9 @@ BEGIN
 						[function_call_arguments] = 'machine_name', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -488,7 +489,7 @@ BEGIN
 		if @_linked_server_failed = 0 and (@output is null or exists (select * from @_tbl_output_columns where column_name = 'server_name'))
 		begin
 			delete from @_result;
-			set @_sql = "select CONVERT(varchar,SERVERPROPERTY('ServerName')) as [server_name]";
+			set @_sql = "select CONVERT(varchar(125),SERVERPROPERTY('ServerName')) as [server_name]";
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
@@ -513,9 +514,9 @@ BEGIN
 						[function_call_arguments] = 'server_name', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -527,7 +528,7 @@ BEGIN
 		if @_linked_server_failed = 0 and (@output is null or exists (select * from @_tbl_output_columns where column_name = 'ip'))
 		begin
 			delete from @_result;
-			set @_sql = "SELECT	[ip] = CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') )";
+			set @_sql = "SELECT	[ip] = CONVERT(varchar(125),  CONNECTIONPROPERTY('local_net_address') )";
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
@@ -552,9 +553,9 @@ BEGIN
 						[function_call_arguments] = 'ip', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -591,9 +592,9 @@ BEGIN
 						[function_call_arguments] = 'domain', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -605,7 +606,7 @@ BEGIN
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'host_name') )
 		begin
 			delete from @_result;
-			set @_sql = "select CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) as [host_name]";
+			set @_sql = "select CONVERT(varchar(125),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) as [host_name]";
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
@@ -630,9 +631,9 @@ BEGIN
 						[function_call_arguments] = 'host_name', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -668,9 +669,9 @@ BEGIN
 						[function_call_arguments] = 'fqdn', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -707,9 +708,9 @@ BEGIN
 						[function_call_arguments] = 'host_distribution', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -746,9 +747,9 @@ BEGIN
 						[function_call_arguments] = 'processor_name', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -760,7 +761,7 @@ BEGIN
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'product_version') )
 		begin
 			delete from @_result;
-			set @_sql = "select CONVERT(varchar,SERVERPROPERTY('ProductVersion')) as [product_version]";
+			set @_sql = "select CONVERT(varchar(125),SERVERPROPERTY('ProductVersion')) as [product_version]";
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
@@ -785,9 +786,9 @@ BEGIN
 						[function_call_arguments] = 'product_version', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -799,7 +800,7 @@ BEGIN
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'edition') )
 		begin
 			delete from @_result;
-			set @_sql = "select CONVERT(varchar,SERVERPROPERTY('Edition')) as [Edition]";
+			set @_sql = "select CONVERT(varchar(125),SERVERPROPERTY('Edition')) as [Edition]";
 			-- Decorate for remote query if LinkedServer
 			if @_isLocalHost = 0
 				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
@@ -824,9 +825,9 @@ BEGIN
 						[function_call_arguments] = 'edition', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -863,9 +864,9 @@ BEGIN
 						[function_call_arguments] = 'sqlserver_start_time_utc', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -922,9 +923,9 @@ FROM (
 						[function_call_arguments] = 'os_cpu', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -982,9 +983,9 @@ FROM (
 						[function_call_arguments] = 'sql_cpu', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1042,9 +1043,9 @@ FROM (
 						[function_call_arguments] = 'pcnt_kernel_mode', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1102,9 +1103,9 @@ FROM (
 						[function_call_arguments] = 'page_faults_kb', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1121,7 +1122,7 @@ FROM (
 select count(*) as blocked_counts --, max(wait_time)/1000 as wait_time_s
 from sys.dm_exec_requests r with (nolock) 
 where r.blocking_session_id <> 0
-and wait_time >= ("+convert(varchar,@blocked_threshold_seconds)+"*1000) -- Over 60 seconds
+and wait_time >= ("+CONVERT(varchar(125),@blocked_threshold_seconds)+"*1000) -- Over 60 seconds
 
 "
 			-- Decorate for remote query if LinkedServer
@@ -1148,9 +1149,9 @@ and wait_time >= ("+convert(varchar,@blocked_threshold_seconds)+"*1000) -- Over 
 						[function_call_arguments] = 'blocked_counts', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1169,7 +1170,7 @@ declare @_wait_time_s bigint = 0;
 select @_wait_time_s = floor(max(wait_time)/1000) --,count(*) as blocked_counts
 from sys.dm_exec_requests r with (nolock) 
 where r.blocking_session_id <> 0
-and wait_time >= ("+convert(varchar,@blocked_threshold_seconds)+"*1000) -- Over 60 seconds
+and wait_time >= ("+CONVERT(varchar(125),@blocked_threshold_seconds)+"*1000) -- Over 60 seconds
 
 select isnull(@_wait_time_s,0) as [blocked_duration_max_seconds];
 
@@ -1198,9 +1199,9 @@ select isnull(@_wait_time_s,0) as [blocked_duration_max_seconds];
 						[function_call_arguments] = 'blocked_duration_max_seconds', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1246,9 +1247,9 @@ from sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;
 						[function_call_arguments] = 'total_physical_memory_kb', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1294,9 +1295,9 @@ from sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;
 						[function_call_arguments] = 'available_physical_memory_kb', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1342,9 +1343,9 @@ from sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;
 						[function_call_arguments] = 'system_high_memory_signal_state', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1390,9 +1391,9 @@ from sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;
 						[function_call_arguments] = 'physical_memory_in_use_kb', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1406,7 +1407,19 @@ from sys.dm_os_sys_memory osm, sys.dm_os_process_memory opm;
 			set @_sql =  "
 "+(case when @enable_lock_timeout = 1 then '' else '--' end)+"SET LOCK_TIMEOUT 60000;
 declare @object_name varchar(255);
-set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
+declare @_instance_id varchar(255);
+
+;WITH ple AS (SELECT TOP 1 pc.*, [idx_dollar] = CHARINDEX('$', pc.object_name), [idx_colon] = CHARINDEX(':', pc.object_name)
+  FROM sys.dm_os_performance_counters pc
+  WHERE counter_name = N'Page life expectancy'
+)
+SELECT @_instance_id = SUBSTRING(object_name, [idx_dollar] + 1, [idx_colon] - [idx_dollar] - 1)
+FROM ple;
+
+set @object_name = (case when @@servicename is null then 'MSSQL$'+@_instance_id
+						when @@servicename = 'MSSQLSERVER' then 'SQLServer' 
+						else 'MSSQL$'+@@SERVICENAME 
+						end);
 
 SELECT cntr_value
 FROM sys.dm_os_performance_counters WITH (NOLOCK) 
@@ -1438,9 +1451,9 @@ AND counter_name = N'Memory Grants Pending';
 						[function_call_arguments] = 'memory_grants_pending', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1480,9 +1493,9 @@ select count(*) as counts from sys.dm_exec_connections with (nolock)
 						[function_call_arguments] = 'connection_count', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1523,9 +1536,9 @@ exec usp_active_requests_count;
 						[function_call_arguments] = 'active_requests_count', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1566,9 +1579,9 @@ exec usp_waits_per_core_per_minute;
 						[function_call_arguments] = 'waits_per_core_per_minute', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1609,9 +1622,9 @@ exec usp_avg_disk_wait_ms;
 						[function_call_arguments] = 'avg_disk_wait_ms', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1652,9 +1665,9 @@ exec usp_avg_disk_latency_ms;
 						[function_call_arguments] = 'avg_disk_latency_ms', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1694,9 +1707,9 @@ select [os_start_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), 
 						[function_call_arguments] = 'os_start_time_utc', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1734,9 +1747,9 @@ select [os_start_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), 
 						[function_call_arguments] = 'cpu_count', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1774,9 +1787,9 @@ select [os_start_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), 
 						[function_call_arguments] = 'scheduler_count', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1795,8 +1808,8 @@ SET @server_major_version_number = CONVERT(tinyint, SERVERPROPERTY('ProductMajor
 if @server_major_version_number is null
 begin
 	;with t_versions as 
-	( select CONVERT(varchar,SERVERPROPERTY('ProductVersion')) as ProductVersion
-			 ,LEFT(CONVERT(varchar,SERVERPROPERTY('ProductVersion')), CHARINDEX('.',CONVERT(varchar,SERVERPROPERTY('ProductVersion')))-1) AS MajorVersion
+	( select CONVERT(varchar(125),SERVERPROPERTY('ProductVersion')) as ProductVersion
+			 ,LEFT(CONVERT(varchar(125),SERVERPROPERTY('ProductVersion')), CHARINDEX('.',CONVERT(varchar(125),SERVERPROPERTY('ProductVersion')))-1) AS MajorVersion
 	)
 	select @server_major_version_number = MajorVersion from t_versions;
 end
@@ -1828,9 +1841,9 @@ select	[@server_major_version_number] = @server_major_version_number;
 						[function_call_arguments] = 'major_version_number', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1847,26 +1860,26 @@ declare @server_product_version varchar(20);
 declare @server_major_version_number tinyint;
 declare @server_minor_version_number smallint;
 
-SET @server_product_version = CONVERT(varchar,SERVERPROPERTY('ProductVersion'));
+SET @server_product_version = CONVERT(varchar(125),SERVERPROPERTY('ProductVersion'));
 SET @server_major_version_number = CONVERT(tinyint, SERVERPROPERTY('ProductMajorVersion'));
 
 if @server_major_version_number is null
 begin
 	;with t_versions as 
-	( select CONVERT(varchar,SERVERPROPERTY('ProductVersion')) as ProductVersion
-			 ,LEFT(CONVERT(varchar,SERVERPROPERTY('ProductVersion')), CHARINDEX('.',CONVERT(varchar,SERVERPROPERTY('ProductVersion')))-1) AS MajorVersion
+	( select CONVERT(varchar(125),SERVERPROPERTY('ProductVersion')) as ProductVersion
+			 ,LEFT(CONVERT(varchar(125),SERVERPROPERTY('ProductVersion')), CHARINDEX('.',CONVERT(varchar(125),SERVERPROPERTY('ProductVersion')))-1) AS MajorVersion
 	)
 	select @server_major_version_number = MajorVersion from t_versions;
 end
 
 declare @server_minor_version_number_intermediate varchar(20);
-set @server_minor_version_number_intermediate = REPLACE(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.'+CONVERT(varchar, SERVERPROPERTY('ProductMinorVersion'))+'.','');
+set @server_minor_version_number_intermediate = REPLACE(@server_product_version,CONVERT(varchar(125),@server_major_version_number)+'.'+CONVERT(varchar(125), SERVERPROPERTY('ProductMinorVersion'))+'.','');
 
 if(@server_minor_version_number_intermediate is null)
 begin
 	;with t_versions as
-	( select replace(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.','') as VrsnString )
-	select @server_minor_version_number_intermediate = REPLACE(@server_product_version,CONVERT(varchar,@server_major_version_number)+'.'+LEFT(VrsnString,CHARINDEX('.',VrsnString)-1)+'.','')
+	( select replace(@server_product_version,CONVERT(varchar(125),@server_major_version_number)+'.','') as VrsnString )
+	select @server_minor_version_number_intermediate = REPLACE(@server_product_version,CONVERT(varchar(125),@server_major_version_number)+'.'+LEFT(VrsnString,CHARINDEX('.',VrsnString)-1)+'.','')
 	from t_versions;
 end
 
@@ -1899,9 +1912,9 @@ SELECT	[@server_minor_version_number] = @server_minor_version_number
 						[function_call_arguments] = 'minor_version_number', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1943,9 +1956,9 @@ where c.name = 'max server memory (MB)'
 						[function_call_arguments] = 'max_server_memory_mb', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -1959,7 +1972,19 @@ where c.name = 'max server memory (MB)'
 			delete from @_result;
 			set @_sql = "
 declare @object_name varchar(255);
-set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
+declare @_instance_id varchar(255);
+
+;WITH ple AS (SELECT TOP 1 pc.*, [idx_dollar] = CHARINDEX('$', pc.object_name), [idx_colon] = CHARINDEX(':', pc.object_name)
+  FROM sys.dm_os_performance_counters pc
+  WHERE counter_name = N'Page life expectancy'
+)
+SELECT @_instance_id = SUBSTRING(object_name, [idx_dollar] + 1, [idx_colon] - [idx_dollar] - 1)
+FROM ple;
+
+set @object_name = (case when @@servicename is null then 'MSSQL$'+@_instance_id
+						when @@servicename = 'MSSQLSERVER' then 'SQLServer' 
+						else 'MSSQL$'+@@SERVICENAME 
+						end);
 
 SELECT [page_life_expectancy] = cntr_value 
 FROM sys.dm_os_performance_counters WITH (NOLOCK) 
@@ -1992,9 +2017,9 @@ and counter_name = N'Page life expectancy'
 						[function_call_arguments] = 'page_life_expectancy', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2038,9 +2063,9 @@ and (der.granted_query_memory*8) > (@granted_memory_threshold_mb*1024) -- conver
 						[function_call_arguments] = 'memory_consumers', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2054,7 +2079,19 @@ and (der.granted_query_memory*8) > (@granted_memory_threshold_mb*1024) -- conver
 			delete from @_result;
 			set @_sql = "
 declare @object_name varchar(255);
-set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
+declare @_instance_id varchar(255);
+
+;WITH ple AS (SELECT TOP 1 pc.*, [idx_dollar] = CHARINDEX('$', pc.object_name), [idx_colon] = CHARINDEX(':', pc.object_name)
+  FROM sys.dm_os_performance_counters pc
+  WHERE counter_name = N'Page life expectancy'
+)
+SELECT @_instance_id = SUBSTRING(object_name, [idx_dollar] + 1, [idx_colon] - [idx_dollar] - 1)
+FROM ple;
+
+set @object_name = (case when @@servicename is null then 'MSSQL$'+@_instance_id
+						when @@servicename = 'MSSQLSERVER' then 'SQLServer' 
+						else 'MSSQL$'+@@SERVICENAME 
+						end);
 
 SELECT [target_server_memory_kb] = cntr_value
 FROM sys.dm_os_performance_counters WITH (NOLOCK) 
@@ -2087,9 +2124,9 @@ AND counter_name = N'Target Server Memory (KB)'
 						[function_call_arguments] = 'target_server_memory_kb', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2103,7 +2140,19 @@ AND counter_name = N'Target Server Memory (KB)'
 			delete from @_result;
 			set @_sql = "
 declare @object_name varchar(255);
-set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
+declare @_instance_id varchar(255);
+
+;WITH ple AS (SELECT TOP 1 pc.*, [idx_dollar] = CHARINDEX('$', pc.object_name), [idx_colon] = CHARINDEX(':', pc.object_name)
+  FROM sys.dm_os_performance_counters pc
+  WHERE counter_name = N'Page life expectancy'
+)
+SELECT @_instance_id = SUBSTRING(object_name, [idx_dollar] + 1, [idx_colon] - [idx_dollar] - 1)
+FROM ple;
+
+set @object_name = (case when @@servicename is null then 'MSSQL$'+@_instance_id
+						when @@servicename = 'MSSQLSERVER' then 'SQLServer' 
+						else 'MSSQL$'+@@SERVICENAME 
+						end);
 
 SELECT [total_server_memory_kb] = cntr_value
 FROM sys.dm_os_performance_counters WITH (NOLOCK) 
@@ -2136,9 +2185,9 @@ AND counter_name = N'Total Server Memory (KB)'
 						[function_call_arguments] = 'total_server_memory_kb', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2158,7 +2207,7 @@ from
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.vw_performance_counters
 	where 1=1
 	and collection_time_utc >= dateadd(minute,-120,getutcdate())
-	--and [host_name] = CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) 
+	--and [host_name] = CONVERT(varchar(125),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) 
 	order by collection_time_utc desc
 ) od
 full outer join (select [dummy_latency_minutes] = 10080) dmy -- 7 days
@@ -2186,9 +2235,9 @@ on 1=1";
 						[function_call_arguments] = 'performance_counters__latency_minutes', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2236,9 +2285,9 @@ on 1=1";
 						[function_call_arguments] = 'xevent_metrics__latency_minutes', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2285,9 +2334,9 @@ on 1=1";
 						[function_call_arguments] = 'WhoIsActive__latency_minutes', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2307,7 +2356,7 @@ from
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.vw_os_task_list
 	where 1=1
 	and collection_time_utc >= dateadd(minute,-120,getutcdate())
-	--and [host_name] = CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) 
+	--and [host_name] = CONVERT(varchar(125),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) 
 	order by collection_time_utc desc
 ) od
 full outer join (select [dummy_latency_minutes] = 10080) dmy -- 7 days
@@ -2336,9 +2385,9 @@ on 1=1";
 						[function_call_arguments] = 'os_task_list__latency_minutes', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2358,7 +2407,7 @@ from
 (	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.vw_disk_space
 	where 1=1
 	and collection_time_utc >= dateadd(minute,-120,getutcdate())
-	--and [host_name] = CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) 
+	--and [host_name] = CONVERT(varchar(125),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) 
 	order by collection_time_utc desc
 ) od
 full outer join (select [dummy_latency_minutes] = 10080) dmy -- 7 days
@@ -2386,9 +2435,9 @@ on 1=1";
 						[function_call_arguments] = 'disk_space__latency_minutes', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2434,9 +2483,9 @@ on 1=1";
 						[function_call_arguments] = 'file_io_stats__latency_minutes', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2480,9 +2529,9 @@ on 1=1";
 						[function_call_arguments] = 'sql_agent_job_stats__latency_minutes', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2528,9 +2577,9 @@ on 1=1";
 						[function_call_arguments] = 'memory_clerks__latency_minutes', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2576,9 +2625,9 @@ on 1=1";
 						[function_call_arguments] = 'wait_stats__latency_minutes', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2625,9 +2674,9 @@ on 1=1";
 						[function_call_arguments] = 'BlitzIndex__latency_days', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2674,9 +2723,9 @@ on 1=1";
 						[function_call_arguments] = 'BlitzIndex_Mode0__latency_days', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2723,9 +2772,9 @@ on 1=1";
 						[function_call_arguments] = 'BlitzIndex_Mode1__latency_days', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2772,9 +2821,9 @@ on 1=1";
 						[function_call_arguments] = 'BlitzIndex_Mode4__latency_days', [server] = @_srv_name, [error] = @_errorMessage, 
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
-				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
-								'. State: '+convert(varchar,isnull(@_errorState,'')) +
-								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
+								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
+								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
 								'. Error Message::: '+ @_errorMessage;
 
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
@@ -2908,7 +2957,7 @@ on 1=1";
 
 	exec (@_sql);
 
-	print 'Transaction Counts => '+convert(varchar,@@trancount);
+	print 'Transaction Counts => '+CONVERT(varchar(125),@@trancount);
 END
 set quoted_identifier on;
 GO

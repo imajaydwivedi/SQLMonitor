@@ -122,3 +122,8 @@ use [DBA]
 if OBJECT_ID('dbo.fn_IsJobRunning') is not null
 	exec ('grant execute on object::dbo.fn_IsJobRunning to [grafana]')
 go
+
+use [DBA]
+if OBJECT_ID('dbo.fn_get_instanceid') is not null
+	exec ('grant select on object::dbo.fn_get_instanceid to [grafana]')
+go

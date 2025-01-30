@@ -1,6 +1,7 @@
 /*
-	Version:		2024-11-28
-	Date:			2024-11-28 - Enhancement#12 - Optimize table dbo.all_server_volatile_info_history
+	Version:		2025-01-30
+	Date:			2025-01-30 - Enhancement#24 - Add support for Managed Instance (PAAS)
+					2024-11-28 - Enhancement#12 - Optimize table dbo.all_server_volatile_info_history
 					2024-11-14 - Issue#6 - Preserve data of History Tables in Inventory Upgrade
 					2024-11-13 - Enhancement#4 - Get Max Server Memory in dbo.all_server_stable_info
 					2024-11-12 - Enhancement#3 - Add table dbo.all_server_stable_info_history
