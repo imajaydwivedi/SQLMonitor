@@ -18,7 +18,8 @@ create or alter procedure dbo.usp_wrapper_populate_sma_sql_instance
 as
 begin
 /*	Purpose:		Populate inventory tables from SQLMonitor tables
-	Modifications:	2024-07-31 - Initial Draft
+	Modifications:	2025-01-30 - Add support for Managed Instances (PAAS)
+					2024-07-31 - Initial Draft
 	Examples:		
 
 		exec dbo.usp_wrapper_populate_sma_sql_instance @send_mail = 0, @verbose = 2, @truncate_log_table = 0
@@ -140,6 +141,8 @@ begin
 			set @_id = SCOPE_IDENTITY();
 	
 			begin try
+				if @verbose > 0
+					print 'exec dbo.usp_populate_sma_sql_instance @server = '''+@_sql_instance+''', @execute = 1 ,@verbose = 2;'
 				exec dbo.usp_populate_sma_sql_instance @server = @_sql_instance ,@collection_time = @_start_time ,@execute = 1 ,@verbose = 0;
 			end try
 			begin catch

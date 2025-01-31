@@ -96,7 +96,7 @@ BEGIN
 			print @_crlf+@_long_star_line+@_crlf+'Working on server ['+@_sql_Instance+']..'+@_crlf
 		set @_sql = '
 		;with t_login_info as (
-			SELECT 	[host_name] = convert(varchar,SERVERPROPERTY(''ComputerNamePhysicalNetBIOS'')),
+			SELECT 	[host_name] = convert(varchar,COALESCE(SERVERPROPERTY(''ComputerNamePhysicalNetBIOS''),SERVERPROPERTY(''ServerName''))),
 					[login_name] = sl.name, [login_sid] = sl.sid, [create_date] = sl.create_date,
 					[modify_date] = sl.modify_date, sl.default_database_name,
 					sl.is_policy_checked, sl.is_expiration_checked,

@@ -82,7 +82,7 @@ exec usp_extended_results @host_distribution = @host_distribution output;
 exec usp_extended_results @processor_name = @processor_name output;
 exec usp_extended_results @fqdn = @fqdn output;
 
-select	[host_name] = CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')),
+select	[host_name] = CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))),
 		[host_distribution] = @host_distribution,
 		[processor_name] = @processor_name,
 		[fqdn] = (case when default_domain() = 'WORKGROUP' then 'WORKGROUP' ELSE @fqdn END);

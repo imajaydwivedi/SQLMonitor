@@ -91,7 +91,7 @@ BEGIN
 			select	--RunningQuery = ''sys.dm_os_cluster_nodes'', 
 					NodeName, status_description, 
 					[current_role] = case when is_current_owner = 1 then ''Active'' else ''Passive'' end, 
-					[host_name] = convert(varchar,SERVERPROPERTY(''ComputerNamePhysicalNetBIOS''))
+					[host_name] = convert(varchar,COALESCE(SERVERPROPERTY(''ComputerNamePhysicalNetBIOS''),SERVERPROPERTY(''ServerName'')))
 			from sys.dm_os_cluster_nodes
 			';
 		if @@SERVERNAME <> @server
@@ -243,6 +243,9 @@ BEGIN
 
 	if ('Populate-[sma_servers]' = 'Populate-[sma_servers]')
 	begin
+		if @verbose > 0
+			print 'Populate-[sma_servers]..'
+
 		if OBJECT_ID('tempdb..#sma_servers') is not null
 			drop table #sma_servers;
 		select	[server] = sql_instance, [server_port] = sql_instance_port, 
@@ -297,6 +300,9 @@ BEGIN
 	
 	if ('Populate-[sma_sql_server_extended_info]' = 'Populate-[sma_sql_server_extended_info]')
 	begin
+		if @verbose > 0
+			print 'Populate-[sma_sql_server_extended_info]..'
+
 		if object_id('tempdb..#sma_sql_server_extended_info') is not null
 			drop table #sma_sql_server_extended_info;
 		select	[server] = id.sql_instance, [at_server_name] = asi.at_server_name, 
@@ -339,6 +345,9 @@ BEGIN
 
 	if ('Populate-[sma_sql_server_hosts]' = 'Populate-[sma_sql_server_hosts]')
 	begin
+		if @verbose > 0
+			print 'Populate-[sma_sql_server_hosts]..'
+
 		if OBJECT_ID('tempdb..#sma_sql_server_hosts') is not null
 			drop table #sma_sql_server_hosts;
 		;with cte_instance_details as (
@@ -436,6 +445,9 @@ BEGIN
 
 	if ('Populate-[sma_hadr_ag]' = 'Populate-[sma_hadr_ag]')
 	begin
+		if @verbose > 0
+			print 'Populate-[sma_hadr_ag]..'
+
 		if OBJECT_ID('tempdb..#sma_hadr_ag') is not null
 			drop table #sma_hadr_ag;
 		select	[server] = @server, [ag_name] = ag.ag_name, 
@@ -494,6 +506,9 @@ BEGIN
 
 	if ('Populate-[sma_hadr_sql_cluster]' = 'Populate-[sma_hadr_sql_cluster]')
 	begin
+		if @verbose > 0
+			print 'Populate-[sma_hadr_sql_cluster]..'
+
 		if OBJECT_ID('tempdb..#sma_hadr_sql_cluster') is not null
 			drop table #sma_hadr_sql_cluster;
 		select	[server] = @server, 
@@ -532,7 +547,8 @@ BEGIN
 	if ('Update-has_hadr-flag' = 'Update-has_hadr-flag')
 	begin
 		if @verbose >= 1
-			print 'Update [has_hadr] & [hadr_strategy] for AG servers..'
+			print 'Update-has_hadr-flag..'
+
 		update s set has_hadr = 1, hadr_strategy = 'ag'
 		from dbo.sma_servers s
 		where s.is_decommissioned = 0

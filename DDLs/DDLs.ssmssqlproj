@@ -32,6 +32,21 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342:adwivedi">
+          <Created>2025-01-30T14:05:27.2186957+05:30</Created>
+          <Type>SQL</Type>
+          <Server>dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342</Server>
+          <UserName>adwivedi</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <HostNameInServerCertificate />
+          <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="Experiment:sa">
           <Created>2025-01-27T21:34:32.9429817+05:30</Created>
           <Type>SQL</Type>
@@ -157,10 +172,16 @@
           <FullPath>SCH-Create-Inventory-Specific-Objects.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Create-XEvents.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Create-XEvents.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-Create-XEvents-RingBuffer.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342:False:adwivedi</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342</AssociatedConnSrvName>
+          <AssociatedConnUserName>adwivedi</AssociatedConnUserName>
+          <FullPath>SCH-Create-XEvents-RingBuffer.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-fn_get_hash_for_string.sql">
           <AssociatedConnectionMoniker />
@@ -505,14 +526,14 @@
           <FullPath>SCH-usp_collect_ag_health_state.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_collect_all_server_login_expiration_info.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_collect_all_server_login_expiration_info.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_collect_disk_space.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Workstation\SQL2014:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>Workstation\SQL2014</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_collect_disk_space.sql</FullPath>
         </FileNode>
@@ -547,9 +568,9 @@
           <FullPath>SCH-usp_collect_wait_stats.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_collect_xevent_metrics.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342:False:adwivedi</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342</AssociatedConnSrvName>
+          <AssociatedConnUserName>adwivedi</AssociatedConnUserName>
           <FullPath>SCH-usp_collect_xevent_metrics.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_collect_xevent_metrics_hashed.sql">
@@ -557,6 +578,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>SCH-usp_collect_xevent_metrics_hashed.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-usp_collect_xevent_metrics_ringbuffer.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342:False:adwivedi</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342</AssociatedConnSrvName>
+          <AssociatedConnUserName>adwivedi</AssociatedConnUserName>
+          <FullPath>SCH-usp_collect_xevent_metrics_ringbuffer.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_compute_all_server_volatile_info_history_hourly.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
@@ -595,9 +622,9 @@
           <FullPath>SCH-usp_GetAllServerDashboardMail.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_GetAllServerInfo.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <AssociatedConnUserName />
           <FullPath>SCH-usp_GetAllServerInfo.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_LogSaver.sql">
@@ -612,11 +639,11 @@
           <AssociatedConnUserName />
           <FullPath>SCH-usp_partition_maintenance.sql</FullPath>
         </FileNode>
-        <FileNode Name="SCH-usp_populate_sma_servers.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+        <FileNode Name="SCH-usp_populate_sma_sql_instance.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>SCH-usp_populate_sma_servers.sql</FullPath>
+          <FullPath>SCH-usp_populate_sma_sql_instance.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_purge_tables.sql">
           <AssociatedConnectionMoniker />
@@ -625,8 +652,8 @@
           <FullPath>SCH-usp_purge_tables.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_rebuilt_xevent_metrics.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_rebuilt_xevent_metrics.sql</FullPath>
         </FileNode>
@@ -673,8 +700,8 @@
           <FullPath>SCH-usp_wrapper_GetAllServerInfo.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_wrapper_populate_sma_sql_instance.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_wrapper_populate_sma_sql_instance.sql</FullPath>
         </FileNode>

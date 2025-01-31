@@ -54,7 +54,7 @@ BEGIN
 		from dbo.instance_details id
 		where is_enabled = 1 and is_alias = 0
 		and (@test_all_servers = 1 or is_available = 0)
-		and id.host_name <> CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS'));
+		and id.host_name <> CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')));
 	END
 
 	DECLARE cur_servers CURSOR LOCAL FORWARD_ONLY FOR
@@ -62,7 +62,7 @@ BEGIN
 		from dbo.instance_details id
 		where is_enabled = 1 and is_alias = 0
 		and (@test_all_servers = 1 or is_available = 0)
-		and id.host_name <> CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS'));
+		and id.host_name <> CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')));
 
 	OPEN cur_servers;
 	FETCH NEXT FROM cur_servers INTO @_srv_name;

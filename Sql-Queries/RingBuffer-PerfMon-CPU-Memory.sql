@@ -141,7 +141,7 @@ WHERE	s.session_id != @@SPID
 
 /* Get Metrics related to Memory/Blockings */
 declare @object_name varchar(255);
-set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
+set @object_name = (case when coalesce(@@servicename,'MSSQLSERVER') = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
 
 ;with t_PerfMon as
 (

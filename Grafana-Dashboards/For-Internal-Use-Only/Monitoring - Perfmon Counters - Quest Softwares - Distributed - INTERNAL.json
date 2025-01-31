@@ -91,8 +91,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent",
-                    "value": null
+                    "color": "transparent"
                   },
                   {
                     "color": "orange",
@@ -217,8 +216,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -234,7 +232,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 1378
+            "y": 9973
           },
           "id": 64,
           "options": {
@@ -262,7 +260,7 @@
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time, \n\tobject + ': '+ counter as metric\n\t--,instance,\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'system' and pc.counter = 'processor queue length'\nand pc.value <> 0.0\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time, \n\tobject + ': '+ counter as metric\n\t--,instance,\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'system' and pc.counter = 'processor queue length'\nand pc.value <> 0.0\norder by time\n\"\nset quoted_identifier on;\n\nif '$InstanceScopeFeaturesOnly' = 'true'\n\tselect [time], remarks as metric, [value]\n\tfrom (values ('This feature is not available for this SQLInstance',getutcdate(), 0)) dummy(remarks, [time], value)\n\torder by [time]\nelse\nbegin\n\tif ($is_local = 1)\n\t\texec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\n\telse\n\t\texec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nend",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -350,8 +348,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -452,8 +449,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -469,7 +465,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 1354
+            "y": 7246
           },
           "id": 58,
           "options": {
@@ -501,7 +497,7 @@
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time, counter as metric , pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name\nand\tpc.object = 'memory' and pc.counter in ('pages input/sec','pages/sec')\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time, counter as metric , pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name\nand\tpc.object = 'memory' and pc.counter in ('pages input/sec','pages/sec')\norder by time\n\"\nset quoted_identifier on;\n\nif '$InstanceScopeFeaturesOnly' = 'true'\n\tselect [time], remarks as metric, [value]\n\tfrom (values ('This feature is not available for this SQLInstance',getutcdate(), 0)) dummy(remarks, [time], value)\n\torder by [time]\nelse\nbegin\n\tif ($is_local = 1)\n      exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\n    else\n      exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nend",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -575,8 +571,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -592,7 +587,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 1365
+            "y": 7257
           },
           "id": 60,
           "options": {
@@ -625,7 +620,7 @@
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time, counter as metric , pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name\nand pc.object = 'paging file' and pc.counter in ('% usage','% usage peak')\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time, counter as metric , pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name\nand pc.object = 'paging file' and pc.counter in ('% usage','% usage peak')\norder by time\n\"\nset quoted_identifier on;\n\nif '$InstanceScopeFeaturesOnly' = 'true'\n\tselect [time], remarks as metric, [value]\n\tfrom (values ('This feature is not available for this SQLInstance',getutcdate(), 0)) dummy(remarks, [time], value)\n\torder by [time]\nelse\nbegin\n\tif ($is_local = 1)\n      exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\n    else\n      exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nend",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -714,8 +709,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               },
@@ -832,8 +826,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               },
@@ -845,7 +838,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 1073
+            "y": 5608
           },
           "id": 30,
           "options": {
@@ -951,8 +944,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -968,7 +960,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 1084
+            "y": 5619
           },
           "id": 66,
           "options": {
@@ -1088,8 +1080,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1211,8 +1202,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1228,7 +1218,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 863
+            "y": 4843
           },
           "id": 106,
           "options": {
@@ -1349,8 +1339,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1398,7 +1387,7 @@
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125), @disk_drive varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance as metric\n\t--,object, counter, instance\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'logicaldisk' and pc.counter = 'avg. disk queue length'\nand (pc.instance <> '_total' and pc.instance not like 'harddiskvolume%')\n\"+(case when @disk_drive is null then '-- ' else '' end)+\"and (pc.instance+'\\') = @disk_drive\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object, @disk_drive, @database;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object, @disk_drive, @database;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125), @disk_drive varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance as metric\n\t--,object, counter, instance\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'logicaldisk' and pc.counter = 'avg. disk queue length'\nand (pc.instance <> '_total' and pc.instance not like 'harddiskvolume%')\n\"+(case when @disk_drive is null then '-- ' else '' end)+\"and (pc.instance+'\\') = @disk_drive\norder by time\n\"\nset quoted_identifier on;\n\nif '$InstanceScopeFeaturesOnly' = 'true'\n\tselect [time], remarks as metric, [value]\n\tfrom (values ('This feature is not available for this SQLInstance',getutcdate(), 0)) dummy(remarks, [time], value)\n\torder by [time]\nelse\nbegin\n\tif ($is_local = 1)\n\t\t\texec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object, @disk_drive, @database;\n\t\telse\n\t\t\texec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object, @disk_drive, @database;\nend",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1471,8 +1460,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1488,7 +1476,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 732
+            "y": 4825
           },
           "id": 112,
           "options": {
@@ -1592,8 +1580,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1609,7 +1596,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 738
+            "y": 4831
           },
           "id": 114,
           "options": {
@@ -1728,8 +1715,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1777,7 +1763,7 @@
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance as metric\n\t--,object, counter, instance\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name\nand pc.object = 'physicaldisk' and pc.counter = 'avg. disk queue length'\nand pc.instance <> '_total'\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance as metric\n\t--,object, counter, instance\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name\nand pc.object = 'physicaldisk' and pc.counter = 'avg. disk queue length'\nand pc.instance <> '_total'\norder by time\n\"\nset quoted_identifier on;\n\nif '$InstanceScopeFeaturesOnly' = 'true'\n\tselect [time], remarks as metric, [value]\n\tfrom (values ('This feature is not available for this SQLInstance',getutcdate(), 0)) dummy(remarks, [time], value)\n\torder by [time]\nelse\nbegin\n\tif ($is_local = 1)\n\t\t\texec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\n\t\telse\n\t\t\texec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\nend",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1851,8 +1837,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1868,7 +1853,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 620
+            "y": 4199
           },
           "id": 68,
           "options": {
@@ -1899,7 +1884,7 @@
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance+' ('+replace(counter,'Avg. Disk ','')+')' as metric\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'physicaldisk' and pc.counter in ('avg. disk sec/read','avg. disk sec/write')\nand pc.instance <> '_total'\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance+' ('+replace(counter,'Avg. Disk ','')+')' as metric\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'physicaldisk' and pc.counter in ('avg. disk sec/read','avg. disk sec/write')\nand pc.instance <> '_total'\norder by time\n\"\nset quoted_identifier on;\n\nif '$InstanceScopeFeaturesOnly' = 'true'\n\tselect [time], remarks as metric, [value]\n\tfrom (values ('This feature is not available for this SQLInstance',getutcdate(), 0)) dummy(remarks, [time], value)\n\torder by [time]\nelse\nbegin\n\tif ($is_local = 1)\n      exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\n    else\n      exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\nend",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1973,8 +1958,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1990,7 +1974,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 626
+            "y": 4205
           },
           "id": 69,
           "options": {
@@ -2022,7 +2006,7 @@
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance+' ('+replace(counter,'disk ','')+')' as metric\n\t--,object, counter, instance\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'physicaldisk' and pc.counter in ('disk bytes/sec','disk write bytes/sec','disk read bytes/sec')\nand pc.instance <> '_total'\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance+' ('+replace(counter,'disk ','')+')' as metric\n\t--,object, counter, instance\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'physicaldisk' and pc.counter in ('disk bytes/sec','disk write bytes/sec','disk read bytes/sec')\nand pc.instance <> '_total'\norder by time\n\"\nset quoted_identifier on;\n\nif '$InstanceScopeFeaturesOnly' = 'true'\n\tselect [time], remarks as metric, [value]\n\tfrom (values ('This feature is not available for this SQLInstance',getutcdate(), 0)) dummy(remarks, [time], value)\n\torder by [time]\nelse\nbegin\n\tif ($is_local = 1)\n\t\t\texec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\n\t\telse\n\t\t\texec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\nend",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2110,8 +2094,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2159,7 +2142,7 @@
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance as metric\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'network interface' and pc.counter = 'bytes total/sec'\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance as metric\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'network interface' and pc.counter = 'bytes total/sec'\norder by time\n\"\nset quoted_identifier on;\n\nif '$InstanceScopeFeaturesOnly' = 'true'\n\tselect [time], remarks as metric, [value]\n\tfrom (values ('This feature is not available for this SQLInstance',getutcdate(), 0)) dummy(remarks, [time], value)\n\torder by [time]\nelse\nbegin\n\tif ($is_local = 1)\n      exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\n    else\n      exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\nend\n",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2248,8 +2231,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2265,7 +2247,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 8
+            "y": 15
           },
           "id": 38,
           "options": {
@@ -2377,8 +2359,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2394,7 +2375,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 462
+            "y": 30
           },
           "id": 115,
           "options": {
@@ -2521,8 +2502,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2538,7 +2518,7 @@
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 9
+            "y": 1897
           },
           "id": 119,
           "options": {
@@ -2648,8 +2628,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2665,7 +2644,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 309
+            "y": 1906
           },
           "id": 121,
           "options": {
@@ -2772,8 +2751,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2789,7 +2767,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 319
+            "y": 1916
           },
           "id": 123,
           "options": {
@@ -2909,8 +2887,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2926,7 +2903,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 375
+            "y": 2666
           },
           "id": 22,
           "options": {
@@ -3044,8 +3021,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3061,7 +3037,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 11
+            "y": 2677
           },
           "id": 126,
           "options": {
@@ -3166,8 +3142,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3183,7 +3158,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 265
+            "y": 2683
           },
           "id": 14,
           "options": {
@@ -3289,8 +3264,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3306,7 +3280,7 @@
             "h": 17,
             "w": 24,
             "x": 0,
-            "y": 272
+            "y": 2690
           },
           "id": 124,
           "options": {
@@ -3428,8 +3402,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent",
-                    "value": null
+                    "color": "transparent"
                   }
                 ]
               },
@@ -3441,7 +3414,7 @@
             "h": 13,
             "w": 24,
             "x": 0,
-            "y": 12
+            "y": 2956
           },
           "id": 153,
           "options": {
@@ -3560,8 +3533,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3577,7 +3549,7 @@
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 13
+            "y": 2970
           },
           "id": 77,
           "options": {
@@ -3682,8 +3654,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3699,7 +3670,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 146
+            "y": 2979
           },
           "id": 128,
           "options": {
@@ -3820,8 +3791,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3837,7 +3807,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 3116
           },
           "id": 46,
           "options": {
@@ -3942,8 +3912,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3959,7 +3928,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 116
+            "y": 3122
           },
           "id": 129,
           "options": {
@@ -4064,8 +4033,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4081,7 +4049,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 124
+            "y": 3130
           },
           "id": 78,
           "options": {
@@ -4187,8 +4155,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4204,7 +4171,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 131
+            "y": 3137
           },
           "id": 130,
           "options": {
@@ -4325,8 +4292,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4342,7 +4308,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 15
+            "y": 19640
           },
           "id": 134,
           "options": {
@@ -4447,8 +4413,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4464,7 +4429,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 93
+            "y": 19718
           },
           "id": 137,
           "options": {
@@ -4569,8 +4534,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4586,7 +4550,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 99
+            "y": 19724
           },
           "id": 135,
           "options": {
@@ -4691,8 +4655,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4708,7 +4671,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 105
+            "y": 19730
           },
           "id": 136,
           "options": {
@@ -4827,8 +4790,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4844,7 +4806,7 @@
             "h": 5,
             "w": 11,
             "x": 0,
-            "y": 16
+            "y": 3242
           },
           "id": 85,
           "options": {
@@ -4942,8 +4904,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4959,7 +4920,7 @@
             "h": 5,
             "w": 13,
             "x": 11,
-            "y": 16
+            "y": 3242
           },
           "id": 89,
           "options": {
@@ -5061,8 +5022,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -5078,7 +5038,7 @@
             "h": 5,
             "w": 11,
             "x": 0,
-            "y": 74
+            "y": 3247
           },
           "id": 88,
           "options": {
@@ -5176,8 +5136,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -5193,7 +5152,7 @@
             "h": 5,
             "w": 13,
             "x": 11,
-            "y": 74
+            "y": 3247
           },
           "id": 90,
           "options": {
@@ -5308,8 +5267,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent",
-                    "value": null
+                    "color": "transparent"
                   },
                   {
                     "color": "orange",
@@ -5329,7 +5287,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 17
+            "y": 3253
           },
           "id": 151,
           "options": {
@@ -5360,7 +5318,7 @@
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255) = '$server';\ndeclare @perfmon_host_name varchar(255) = '$perfmon_host_name';\ndeclare @start_time_utc datetime2 = $__timeFrom();\ndeclare @end_time_utc datetime2 = $__timeTo();\ndeclare @perfmon_object varchar(125) = LOWER('$perfmon_object');\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\n\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time, \n\t\t'winsock rejected connections/sec' as metric,\n\tpc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand object = 'microsoft winsock bsp' and counter = 'rejected connections/sec'\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;",
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255) = '$server';\ndeclare @perfmon_host_name varchar(255) = '$perfmon_host_name';\ndeclare @start_time_utc datetime2 = $__timeFrom();\ndeclare @end_time_utc datetime2 = $__timeTo();\ndeclare @perfmon_object varchar(125) = LOWER('$perfmon_object');\ndeclare @crlf nchar(2) = nchar(13)+nchar(10);\n\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time, \n\t\t'winsock rejected connections/sec' as metric,\n\tpc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand object = 'microsoft winsock bsp' and counter = 'rejected connections/sec'\norder by time\n\"\nset quoted_identifier on;\n\nif '$InstanceScopeFeaturesOnly' = 'true'\n\tselect [time], remarks as metric, [value]\n\tfrom (values ('This feature is not available for this SQLInstance',getutcdate(), 0)) dummy(remarks, [time], value)\n\torder by [time]\nelse\nbegin\n\tif ($is_local = 1)\n      exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\n    else\n      exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\nend",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -5433,8 +5391,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -5450,7 +5407,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 63
+            "y": 3261
           },
           "id": 16,
           "options": {
@@ -5570,8 +5527,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -5587,7 +5543,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 3370
           },
           "id": 80,
           "options": {
@@ -5693,8 +5649,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -5710,7 +5665,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 3378
           },
           "id": 79,
           "options": {
@@ -5816,8 +5771,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -5833,7 +5787,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 48
+            "y": 3386
           },
           "id": 82,
           "options": {
@@ -5953,8 +5907,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -5970,7 +5923,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 19
+            "y": 19644
           },
           "id": 102,
           "options": {
@@ -6075,8 +6028,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -6092,7 +6044,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 25
+            "y": 19650
           },
           "id": 100,
           "options": {
@@ -6224,7 +6176,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 2675
+            "y": 22300
           },
           "id": 148,
           "options": {
@@ -6320,7 +6272,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 2683
+            "y": 22308
           },
           "id": 147,
           "options": {
@@ -6431,7 +6383,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 2676
+            "y": 22301
           },
           "id": 149,
           "options": {
@@ -6650,8 +6602,8 @@
       },
       {
         "current": {
-          "text": "1734692077148",
-          "value": "1734692077148"
+          "text": "1738250320072",
+          "value": "1738250320072"
         },
         "datasource": {
           "type": "mssql",
@@ -6677,13 +6629,13 @@
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
-        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "hide": 2,
         "includeAll": false,
         "label": "Host Name",
         "name": "host_name",
         "options": [],
-        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
         "type": "query"
@@ -6697,12 +6649,12 @@
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
-        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect case when @@servicename = 'MSSQLSERVER' then @@servicename else 'MSSQL$'+@@servicename end;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect case when coalesce(@@servicename,'MSSQLSERVER') = 'MSSQLSERVER' then coalesce(@@servicename,'MSSQLSERVER') else 'MSSQL$'+@@servicename end;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "includeAll": false,
         "label": "Service Name",
         "name": "perfmon_service_name",
         "options": [],
-        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect case when @@servicename = 'MSSQLSERVER' then @@servicename else 'MSSQL$'+@@servicename end;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect case when coalesce(@@servicename,'MSSQLSERVER') = 'MSSQLSERVER' then coalesce(@@servicename,'MSSQLSERVER') else 'MSSQL$'+@@servicename end;\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
         "type": "query"
@@ -6777,13 +6729,13 @@
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
-        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar, @@servicename) as [instance_name]\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar, coalesce(@@servicename,'MSSQLSERVER')) as [instance_name]\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "hide": 2,
         "includeAll": false,
         "label": "Instance Name",
         "name": "instance_name",
         "options": [],
-        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar, @@servicename) as [instance_name]\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar, coalesce(@@servicename,'MSSQLSERVER')) as [instance_name]\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "refresh": 1,
         "regex": "",
         "type": "query"
@@ -6859,6 +6811,25 @@
         "query": "dbo.memory_clerks",
         "skipUrlSync": true,
         "type": "constant"
+      },
+      {
+        "current": {
+          "text": "false",
+          "value": "false"
+        },
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @sql_instance varchar(255);\nset @sql_instance = '${server}';\n\n--select @sql_instance;\n\nselect top 1 [InstanceScopeFeaturesOnly] = coalesce(JSON_VALUE(more_info, '$.InstanceScopeFeaturesOnly'), 'false')\nfrom dbo.instance_details id\nwhere 1=1\nand id.sql_instance = @sql_instance;\n",
+        "hide": 2,
+        "label": "InstanceScopeFeaturesOnly",
+        "name": "InstanceScopeFeaturesOnly",
+        "options": [],
+        "query": "declare @sql_instance varchar(255);\nset @sql_instance = '${server}';\n\n--select @sql_instance;\n\nselect top 1 [InstanceScopeFeaturesOnly] = coalesce(JSON_VALUE(more_info, '$.InstanceScopeFeaturesOnly'), 'false')\nfrom dbo.instance_details id\nwhere 1=1\nand id.sql_instance = @sql_instance;\n",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
       }
     ]
   },
@@ -6880,6 +6851,6 @@
   "timezone": "",
   "title": "Monitoring - Perfmon Counters - Quest Softwares - Distributed",
   "uid": "distributed_perfmon",
-  "version": 13,
+  "version": 23,
   "weekStart": ""
 }

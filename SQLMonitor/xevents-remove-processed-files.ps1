@@ -36,7 +36,7 @@ if($SqlInstance -match "(?'SqlInstance'.+),(?'PortNo'\d+)") {
 }
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetch HostName.."
-$HostName = $conSqlInstance | Invoke-DbaQuery -Query "Select SERVERPROPERTY('ComputerNamePhysicalNetBIOS') as HostName" -EnableException | 
+$HostName = $conSqlInstance | Invoke-DbaQuery -Query "Select COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')) as HostName" -EnableException | 
                     Select-Object -ExpandProperty HostName;
 
 
