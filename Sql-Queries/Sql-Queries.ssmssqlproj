@@ -89,6 +89,21 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="pgprod:sa">
+          <Created>2025-01-31T15:14:51.7724212+05:30</Created>
+          <Type>SQL</Type>
+          <Server>pgprod</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <HostNameInServerCertificate />
+          <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -100,9 +115,9 @@
           <FullPath>(dba) ReSetup-PerfmonDataCollector.sql</FullPath>
         </FileNode>
         <FileNode Name="__DEMO__Blocking-Test.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342:False:adwivedi</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342</AssociatedConnSrvName>
-          <AssociatedConnUserName>adwivedi</AssociatedConnUserName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
           <FullPath>__DEMO__Blocking-Test.sql</FullPath>
         </FileNode>
         <FileNode Name="__DEMO__Blocking-Test-2.sql">
@@ -142,9 +157,9 @@
           <FullPath>_Other-Scripts-Links.sql</FullPath>
         </FileNode>
         <FileNode Name="check-domain-ip-hostname.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342:False:adwivedi</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>dba-managed-instance-prod.public.8f765cb03d7d.database.windows.net,3342</AssociatedConnSrvName>
-          <AssociatedConnUserName>adwivedi</AssociatedConnUserName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:pgprod:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>pgprod</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>check-domain-ip-hostname.sql</FullPath>
         </FileNode>
         <FileNode Name="datetime-conversions.sql">

@@ -18,8 +18,9 @@ ALTER PROCEDURE dbo.usp_collect_xevent_metrics
 AS 
 BEGIN
 	/*
-		Version:		1.1.5
-		Date:			2022-11-11
+		Version:		2025-01-31
+		Purpose:		Extract Extended Event [xevent_metrics] data from *.xel files into [dbo].[vw_xevent_metrics]
+		Date:			2025-01-31 - Added purpose here
 
 		EXEC dbo.usp_collect_xevent_metrics
 
