@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 17,
+  "id": 3,
   "links": [],
   "panels": [
     {
@@ -1289,8 +1289,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1327,8 +1326,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1367,8 +1365,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1393,8 +1390,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1474,8 +1470,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1500,8 +1495,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -1620,8 +1614,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "red",
-                          "value": null
+                          "color": "red"
                         },
                         {
                           "color": "orange",
@@ -2271,7 +2264,9 @@
       "type": "row"
     }
   ],
-  "schemaVersion": 39,
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -2282,25 +2277,21 @@
     "list": [
       {
         "current": {
-          "selected": false,
           "text": "SQLMonitor",
-          "value": "a28aeb06-bb6e-4c74-81af-65de433776c8"
+          "value": "ce5l4mjr3amm8d"
         },
         "hide": 2,
         "includeAll": false,
         "label": "SQL Monitor Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
         "refresh": 1,
         "regex": "SQLMonitor",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "selected": false,
           "text": "DBA",
           "value": "DBA"
         },
@@ -2312,19 +2303,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Inventory Database",
-        "multi": false,
         "name": "inventory_db",
         "options": [],
         "query": "SELECT DB_NAME() as [db_name]",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "All",
           "value": "All"
         },
@@ -2333,24 +2320,19 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select *\nfrom (values ('Online'),('Offline'),('All')\n    ) status(status)",
-        "hide": 0,
         "includeAll": false,
         "label": "Server Status",
-        "multi": false,
         "name": "server_status",
         "options": [],
         "query": "select *\nfrom (values ('Online'),('Offline'),('All')\n    ) status(status)",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "12",
-          "value": "12"
+          "text": "11",
+          "value": "11"
         },
         "datasource": {
           "type": "mssql",
@@ -2360,21 +2342,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Online Server in dbo.sma_servers",
-        "multi": false,
         "name": "sma_servers_count_online",
         "options": [],
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_servers s\nwhere s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "12",
-          "value": "12"
+          "text": "11",
+          "value": "11"
         },
         "datasource": {
           "type": "mssql",
@@ -2384,21 +2362,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Online SQL Server in dbo.sma_servers",
-        "multi": false,
         "name": "sql_servers_count_online",
         "options": [],
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_sql_server_extended_info e\njoin dbo.sma_servers s\n\ton s.server = e.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "12",
-          "value": "12"
+          "text": "11",
+          "value": "11"
         },
         "datasource": {
           "type": "mssql",
@@ -2408,19 +2382,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Online SQL Server Hosts",
-        "multi": false,
         "name": "sql_server_hosts_count_online",
         "options": [],
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_sql_server_hosts h\njoin dbo.sma_servers s\n\ton s.server = h.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "2",
           "value": "2"
         },
@@ -2432,19 +2402,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Online SQL Server Hosts",
-        "multi": false,
         "name": "sql_ags_count_online",
         "options": [],
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_hadr_ag ag\njoin dbo.sma_servers s\n\ton s.server = ag.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -2456,23 +2422,18 @@
         "hide": 2,
         "includeAll": false,
         "label": "Online SQL Server Clusters",
-        "multi": false,
         "name": "sql_cluster_count_online",
         "options": [],
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(*)\nfrom dbo.sma_hadr_sql_cluster cl\njoin dbo.sma_servers s\n\ton s.server = cl.server\nwhere 1=1\nand s.is_decommissioned = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": true,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Server",
         "name": "server_input",
         "options": [
@@ -2483,16 +2444,13 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": true,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Host",
         "name": "host_input",
         "options": [
@@ -2503,16 +2461,13 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": true,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Login",
         "name": "login_input",
         "options": [
@@ -2523,16 +2478,13 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": true,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Email",
         "name": "email",
         "options": [
@@ -2543,19 +2495,15 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": false,
           "text": "60",
           "value": "60"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Login Expiry Warning Days",
-        "multi": false,
         "name": "login_expiry_warning_threshold_days",
         "options": [
           {
@@ -2585,20 +2533,15 @@
           }
         ],
         "query": "20,25,30,45,60",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "10",
           "value": "10"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Login Expiry Critical Days",
-        "multi": false,
         "name": "login_expiry_critical_threshold_days",
         "options": [
           {
@@ -2623,14 +2566,12 @@
           }
         ],
         "query": "10, 8,5,3",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -2640,21 +2581,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Login Expiry Warning Count",
-        "multi": false,
         "name": "login_expiry_warnings_count",
         "options": [],
         "query": "declare @warning_threshold_days int;\ndeclare @critical_threshold_days int;\ndeclare @sql nvarchar(max)\ndeclare @params nvarchar(max)\ndeclare @login_expiry_warnings_count int = 0\n\nset @warning_threshold_days = $login_expiry_warning_threshold_days;\nset @critical_threshold_days = $login_expiry_critical_threshold_days;\n\nset @params = N'@warning_threshold_days int, @critical_threshold_days int, @login_expiry_warnings_count int output';\n\nset @sql = 'select\t@login_expiry_warnings_count = count(*)\nfrom dbo.all_server_login_expiry_info_dashboard lei\nwhere 1=1\nand left(lower(login_name),6) <> ''dba.''\n--and lei.days_until_expiration <= @warning_threshold_days\n';\n\nexec dbo.sp_executesql @sql, @params, @warning_threshold_days, @critical_threshold_days, @login_expiry_warnings_count = @login_expiry_warnings_count output;\n\nselect @login_expiry_warnings_count ",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -2663,21 +2600,17 @@
         "definition": "declare @warning_threshold_days int;\ndeclare @critical_threshold_days int;\n\nset @warning_threshold_days = $login_expiry_warning_threshold_days;\nset @critical_threshold_days = $login_expiry_critical_threshold_days;\n\nselect\tcount(*)\nfrom dbo.all_server_login_expiry_info_dashboard lei\nwhere 1=1\nand left(lower(login_name),6) <> 'dba.'\nand lei.days_until_expiration <= @critical_threshold_days;",
         "hide": 2,
         "includeAll": false,
-        "multi": false,
         "name": "login_expiry_criticals_count",
         "options": [],
         "query": "declare @warning_threshold_days int;\ndeclare @critical_threshold_days int;\n\nset @warning_threshold_days = $login_expiry_warning_threshold_days;\nset @critical_threshold_days = $login_expiry_critical_threshold_days;\n\nselect\tcount(*)\nfrom dbo.all_server_login_expiry_info_dashboard lei\nwhere 1=1\nand left(lower(login_name),6) <> 'dba.'\nand lei.days_until_expiration <= @critical_threshold_days;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1732588209016",
-          "value": "1732588209016"
+          "text": "1738377006548",
+          "value": "1738377006548"
         },
         "datasource": {
           "type": "mssql",
@@ -2686,19 +2619,15 @@
         "definition": "select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_login_expiry_info lei",
         "hide": 2,
         "includeAll": false,
-        "multi": false,
         "name": "login_expiry__collection_time_utc",
         "options": [],
         "query": "select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_login_expiry_info lei",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "11",
           "value": "11"
         },
@@ -2710,19 +2639,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "SQLMonitor SQLInstance Count",
-        "multi": false,
         "name": "sqlmonitor_servers_count",
         "options": [],
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(distinct sql_instance)\nfrom dbo.instance_details id\nwhere id.is_enabled = 1\nand id.is_alias = 0\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "0",
           "value": "0"
         },
@@ -2734,19 +2659,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "SQLMonitor Alias Count",
-        "multi": false,
         "name": "sqlmonitor_alias_count",
         "options": [],
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\n/* $__dashboard */\nselect count(distinct sql_instance)\nfrom dbo.instance_details id\nwhere id.is_enabled = 1\nand id.is_alias = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "15",
           "value": "15"
         },
@@ -2757,21 +2678,17 @@
         "definition": "select 15",
         "hide": 2,
         "includeAll": false,
-        "multi": false,
         "name": "lama_days_for_analysis",
         "options": [],
         "query": "select 15",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1732619101770",
-          "value": "1732619101770"
+          "text": "1738399808047",
+          "value": "1738399808047"
         },
         "datasource": {
           "type": "mssql",
@@ -2780,19 +2697,15 @@
         "definition": "select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_stable_info_history",
         "hide": 2,
         "includeAll": false,
-        "multi": false,
         "name": "lama_computed_metrics__collection_time_utc",
         "options": [],
         "query": "select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), max(collection_time))\nfrom dbo.all_server_stable_info_history",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "dba",
           "value": "dba"
         },
@@ -2804,14 +2717,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "DBA Login Name Prefix",
-        "multi": false,
         "name": "dba_login_prefix",
         "options": [],
         "query": "select dba_login_prefix = p.param_value from dbo.sma_params p where p.param_key = 'dba_login_prefix';",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -2824,6 +2734,6 @@
   "timezone": "browser",
   "title": "DBA Inventory",
   "uid": "t__DBA_Inventory",
-  "version": 12,
+  "version": 1,
   "weekStart": ""
 }

@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 20,
+  "id": 8,
   "links": [],
   "panels": [
     {
@@ -502,7 +502,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "dataset": "DBA",
@@ -1714,8 +1714,9 @@
       "type": "row"
     }
   ],
+  "preload": false,
   "refresh": "5s",
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -1726,25 +1727,21 @@
     "list": [
       {
         "current": {
-          "selected": false,
           "text": "SQLMonitor",
-          "value": "a28aeb06-bb6e-4c74-81af-65de433776c8"
+          "value": "ce5l4mjr3amm8d"
         },
         "hide": 2,
         "includeAll": false,
         "label": "SQL Monitor Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
         "refresh": 1,
         "regex": "SQLMonitor",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "selected": false,
           "text": "DBA",
           "value": "DBA"
         },
@@ -1756,20 +1753,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Inventory Database",
-        "multi": false,
         "name": "inventory_db",
         "options": [],
         "query": "SELECT DB_NAME() as [db_name]",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
-        "allValue": "",
         "current": {
-          "selected": false,
           "text": "_All_",
           "value": "_All_"
         },
@@ -1778,26 +1770,21 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select team_name\nfrom dbo.sma_oncall_teams\nunion all\nselect '_All_'",
-        "hide": 0,
         "includeAll": false,
         "label": "Alert Owner Team",
-        "multi": false,
         "name": "oncall_team",
         "options": [],
         "query": "select team_name\nfrom dbo.sma_oncall_teams\nunion all\nselect '_All_'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 7,
         "type": "query"
       },
       {
         "current": {
-          "selected": true,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Alert Id",
         "name": "alert_id",
         "options": [
@@ -1808,16 +1795,13 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": true,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Alert Key",
         "name": "alert_key",
         "options": [
@@ -1828,20 +1812,22 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
+        "current": {
+          "text": "168",
+          "value": "168"
+        },
         "hide": 2,
         "label": "Logs History Threshold (Hrs)",
         "name": "log_threshold_hours",
         "query": "168",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
           "text": "https://alertengine.ajaydwivedi.com/",
           "value": "https://alertengine.ajaydwivedi.com/"
         },
@@ -1853,23 +1839,18 @@
         "hide": 2,
         "includeAll": false,
         "label": "Alert Engine URL",
-        "multi": false,
         "name": "alertengine_website_url",
         "options": [],
         "query": "select param_value\nfrom dbo.sma_params p\nwhere 1=1\nand p.param_key = 'url_for_alertengine_website'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Remarks To Add",
         "name": "remarks_to_add",
         "options": [
@@ -1880,7 +1861,6 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       }
     ]
@@ -1893,6 +1873,6 @@
   "timezone": "browser",
   "title": "SQLMonitor-Alerts",
   "uid": "alerts",
-  "version": 47,
+  "version": 1,
   "weekStart": ""
 }
