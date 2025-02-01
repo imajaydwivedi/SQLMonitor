@@ -290,11 +290,13 @@ Param (
 
 $startTime = Get-Date
 $ErrorActionPreference = "Stop"
-$sqlmonitorVersion = '2024-08-30'
-$sqlmonitorVersionDate = '2024-Aug-30'
+$sqlmonitorVersion = '2025-02-01'
+$sqlmonitorVersionDate = '2025-Feb-01'
 $releaseDiscussionURL = "https://ajaydwivedi.com/sqlmonitor/common-errors"
 $clientName = "Wrapper-RemoveSQLMonitor.ps1"
 <#
+    v2025-Feb-01
+        -> Issue#24 - Add support for Managed Instance
     v2024-Sep-30
         -> Issue#51 - Updated objects for Inventory Infra
         -> Issue#13 - Capture sp_Blitz & Create Dashboard
@@ -1056,26 +1058,37 @@ begin catch
 	print 'some erorr accessing registry'
 end catch
 
-select	[domain] = default_domain(),
+;with server_services as (
+	select *
+	from sys.dm_server_services 
+	where servicename like 'SQL Server (%)'
+	or servicename like 'SQL Server Agent (%)'
+)
+select	[domain] = DEFAULT_DOMAIN(),
 		[domain_reg] = @Domain,
-		--[ip] = CONNECTIONPROPERTY('local_net_address'),
+		[ip] = CONNECTIONPROPERTY('local_net_address'),
 		[@@SERVERNAME] = @@SERVERNAME,
 		[MachineName] = serverproperty('MachineName'),
 		[ServerName] = serverproperty('ServerName'),
 		[host_name] = COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')),
-		SERVERPROPERTY('ProductVersion') AS ProductVersion,
+		[sql_version] = @@VERSION,
 		[service_name_str] = servicename,
-		[service_name] = case	when coalesce(@@servicename,'MSSQLSERVER') = 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQLSERVER'
-								when coalesce(@@servicename,'MSSQLSERVER') = 'MSSQLSERVER' and servicename like 'SQL Server Agent (%)' then 'SQLSERVERAGENT'
-								when coalesce(@@servicename,'MSSQLSERVER') <> 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQL$'+@@servicename
-								when coalesce(@@servicename,'MSSQLSERVER') <> 'MSSQLSERVER' and servicename like 'SQL Server Agent (%)' then 'SQLAgent'+@@servicename
+		[service_name] = case	when @@servicename is null then 'MSSQLSERVER'
+								when @@servicename = 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQLSERVER'
+								when @@servicename = 'MSSQLSERVER' and servicename like 'SQL Server Agent (%)' then 'SQLSERVERAGENT'
+								when @@servicename <> 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQL$'+@@servicename
+								when @@servicename <> 'MSSQLSERVER' and servicename like 'SQL Server Agent (%)' then 'SQLAgent'+@@servicename
 								else 'MSSQL$'+@@servicename end,
-        service_account,
+		[instance_name] = coalesce(@@servicename,'MSSQLSERVER'),
+		service_account,
 		SERVERPROPERTY('Edition') AS Edition,
-        [is_clustered] = case when exists (select 1 from sys.dm_os_cluster_nodes) then 1 else 0 end
-from sys.dm_server_services 
-where servicename like 'SQL Server (%)'
-or servicename like 'SQL Server Agent (%)'
+		SERVERPROPERTY('ProductVersion') AS ProductVersion,
+		SERVERPROPERTY('ProductLevel') AS ProductLevel
+		--,instant_file_initialization_enabled
+		--,*
+from (values ('Basic-Details')) d (RunningQuery)
+full outer join	server_services ss
+	on 1=1;
 "@
 try {
     $resultServerInfo = $conSqlInstanceToBaseline | Invoke-DbaQuery -Query $sqlServerInfo -EnableException
@@ -1124,14 +1137,37 @@ if([String]::IsNullOrEmpty($SqlInstanceForTsqlJobs)) { $SqlInstanceForTsqlJobs =
 if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) { $SqlInstanceForPowershellJobs = $instanceDetailsForRemoval.collector_powershell_jobs_server }
 if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) { $SqlInstanceForPowershellJobs = $SqlInstanceToBaseline }
 $hasTaskSchedulerJobs = $false
+$hasInstanceScopeFeaturesOnly = $false
+$isManagedInstance = $false
+
 if (-not [String]::IsNullOrEmpty($instanceDetailsForRemoval.more_info)) {
     $moreInfoJSON = $instanceDetailsForRemoval.more_info
     $moreInfo = $moreInfoJSON | ConvertFrom-Json
+
+    if($moreInfo.InstanceScopeFeaturesOnly -eq $true) {
+        $hasInstanceScopeFeaturesOnly = $true
+    }
+    if($moreInfo.IsManagedInstance -eq $true) {
+        $isManagedInstance = $true
+    }
 
     if( ($moreInfo.ForceSetupOfTaskSchedulerJobs -eq $true) -and ($hasTaskSchedulerJobs -eq $false) ) {
         "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Task Scheduler jobs are being used."
         $hasTaskSchedulerJobs = $true
     }
+}
+
+# Reset some parameters if Managed Instance
+if($hasInstanceScopeFeaturesOnly -or $isManagedInstance) {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Remove steps that are not present in [InstanceScopeFeaturesOnly] scenario"
+
+    $SkipRDPSessionSteps = $true
+    $nonInstanceScopeFeatures = @('13__RemoveJob_RemoveXEventFiles','142__RemoveXEventFilesFromDisk')
+
+    $SkipSteps = $SkipSteps + $($RDPSessionSteps | % {if($_ -notin $SkipSteps){$_}});
+    $SkipSteps = $SkipSteps + $($nonInstanceScopeFeatures | % {if($_ -notin $SkipSteps){$_}});
+
+    $Steps2Execute = $Steps2Execute | % {if($_ -notin $SkipSteps){$_}}
 }
 
 
@@ -1152,6 +1188,8 @@ if( ($RemoteSQLMonitorPath -ne $instanceDetailsForRemoval.sqlmonitor_script_path
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceForTsqlJobs = [$SqlInstanceForTsqlJobs]"
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$SqlInstanceForPowershellJobs = [$SqlInstanceForPowershellJobs]"
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$RemoteSQLMonitorPath = [$RemoteSQLMonitorPath]"
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$hasInstanceScopeFeaturesOnly = [$hasInstanceScopeFeaturesOnly]"
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$isManagedInstance = [$isManagedInstance]"
 
 # Get SQL Connections
 if([String]::IsNullOrEmpty($SqlInstanceAsDataDestination)) {
@@ -1175,7 +1213,7 @@ if([String]::IsNullOrEmpty($SqlInstanceForPowershellJobs)) {
 
 
 # Setup PSSession on HostName having Perfmon Data Collector. $ssn4PerfmonSetup
-if( (-not $SkipRDPSessionSteps) ) #-and ($HostName -ne $env:COMPUTERNAME)
+if( -not ($SkipRDPSessionSteps -or $hasInstanceScopeFeaturesOnly -or $isManagedInstance) ) #-and ($HostName -ne $env:COMPUTERNAME)
 {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Create PSSession for host [$HostName].."
     $ssnHostName = $HostName
@@ -1250,7 +1288,7 @@ if( (-not $SkipRDPSessionSteps) ) #-and ($HostName -ne $env:COMPUTERNAME)
 
 
 # Check No of SQL Services on HostName
-if( (($SkipRemovePowerShellJobs -eq $false) -or ('13__RemoveJob_RemoveXEventFiles' -in $Steps2Execute)) -and ($SkipRDPSessionSteps -eq $false) )
+if( ( (-not ($SkipRemovePowerShellJobs -or $SkipRDPSessionSteps -or $hasInstanceScopeFeaturesOnly -or $isManagedInstance) ) -or ('13__RemoveJob_RemoveXEventFiles' -in $Steps2Execute)) )
 {
     "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Check for number of SQLServices on [$HostName].."
 
