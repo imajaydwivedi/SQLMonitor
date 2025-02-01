@@ -5,13 +5,13 @@ Param (
     [String]$Action = "AddStep",
 
     [Parameter(Mandatory=$false)]
-    [String]$StepName = "140__DropTable_SmaSqlServerHostsWrapper",
+    [String]$StepName = "55__DropProc_UspCollectPerformanceMetrics",
 
     [Parameter(Mandatory=$false)]
     [Bool]$PrintUserFriendlyFormat = $true,
 
     [Parameter(Mandatory=$false)]
-    [String]$ScriptFile = 'E:\GitHub\SQLMonitor\Work\Remove-SQLMonitor __new.ps1',
+    [String]$ScriptFile = 'E:\GitHub\SQLMonitor\SQLMonitor\Remove-SQLMonitor.ps1',
 
     [Parameter(Mandatory=$false)]
     [bool]$SkipFileContentWriting = $false
