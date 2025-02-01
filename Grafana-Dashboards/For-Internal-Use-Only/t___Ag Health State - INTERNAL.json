@@ -25,9 +25,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 32,
+  "id": 9,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": true,
@@ -1464,11 +1463,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "series",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1537,7 +1538,7 @@
           "sort": "desc"
         }
       },
-      "pluginVersion": "9.2.2",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
@@ -1574,10 +1575,6 @@
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1588,6 +1585,10 @@
       "panels": [
         {
           "description": "",
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
           "gridPos": {
             "h": 14,
             "w": 24,
@@ -1595,7 +1596,6 @@
             "y": 2
           },
           "id": 119,
-          "links": [],
           "options": {
             "folderId": 1,
             "maxItems": 50,
@@ -1612,23 +1612,13 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Other Dashboards",
       "type": "row"
     }
   ],
+  "preload": false,
   "refresh": "1m",
-  "revision": 1,
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 40,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -1638,51 +1628,42 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "SqlServer",
-          "value": "ygPVA4snk"
+          "text": "SQLMonitor",
+          "value": "ce5l4mjr3amm8d"
         },
         "description": "Inventory Server Name",
         "hide": 2,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
-        "queryValue": "",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21L-LTPABL-1187",
-          "value": "21L-LTPABL-1187"
+          "text": "Experiment",
+          "value": "Experiment"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
-        "hide": 0,
         "includeAll": false,
         "label": "Sql Instance",
-        "multi": false,
         "name": "server",
         "options": [],
         "query": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "__All__",
           "value": "__All__"
         },
@@ -1691,22 +1672,18 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
-        "hide": 0,
         "includeAll": false,
         "label": "Database",
-        "multi": false,
         "name": "database",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "DBA",
           "value": "DBA"
         },
@@ -1718,21 +1695,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Inventory Database",
-        "multi": false,
         "name": "inventory_db",
         "options": [],
         "query": "SELECT DB_NAME() as [db_name]",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -1742,27 +1715,21 @@
         "hide": 2,
         "includeAll": false,
         "label": "Is Local SQL Instance",
-        "multi": false,
         "name": "is_local",
         "options": [],
         "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": true,
           "text": "-1",
           "value": "-1"
         },
         "description": "Threshold duration in minutes for Long Running Queries",
-        "hide": 0,
         "includeAll": false,
         "label": "Latency (Min)",
-        "multi": false,
         "name": "latency_minutes",
         "options": [
           {
@@ -1852,15 +1819,12 @@
           }
         ],
         "query": "-1,0,1,2,5,10,15,20,30,45,60,90,120,180,260,300,480",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
-          "text": "100.64.0.1",
-          "value": "100.64.0.1"
+          "text": "192.168.1.86",
+          "value": "192.168.1.86"
         },
         "datasource": {
           "type": "mssql",
@@ -1871,43 +1835,35 @@
         "hide": 2,
         "includeAll": false,
         "label": "IP Address",
-        "multi": false,
         "name": "ip",
         "options": [],
         "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21L-LTPABL-1187",
-          "value": "21L-LTPABL-1187"
+          "text": "EXPERIMENT",
+          "value": "EXPERIMENT"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
-        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "hide": 2,
         "includeAll": false,
         "label": "Host Name",
-        "multi": false,
         "name": "host_name",
         "options": [],
-        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "WORKGROUP",
           "value": "WORKGROUP"
         },
@@ -1919,19 +1875,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Fully Qualified Domain Name",
-        "multi": false,
         "name": "fqdn",
         "options": [],
         "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "DBA",
           "value": "DBA"
         },
@@ -1943,19 +1895,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "DBA Database",
-        "multi": false,
         "name": "dba_db",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "1",
           "value": "1"
         },
@@ -1971,12 +1919,10 @@
           }
         ],
         "query": "1",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": false,
           "text": "200",
           "value": "200"
         },
@@ -1992,14 +1938,11 @@
           }
         ],
         "query": "200",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "isNone": true,
-          "selected": false,
-          "text": "None",
+          "text": "",
           "value": ""
         },
         "datasource": {
@@ -2010,19 +1953,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Ag Health State Collection Time UTC",
-        "multi": false,
         "name": "ag_health_state_collection_time_utc",
         "options": [],
         "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 collection_time_utc\nfrom [$dba_db].dbo.ag_health_state\norder by collection_time_utc desc\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "__ALL__",
           "value": "__ALL__"
         },
@@ -2032,22 +1971,18 @@
         },
         "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct replica_server_name\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "description": "Replica Server Name",
-        "hide": 0,
         "includeAll": false,
         "label": "Replica",
-        "multi": false,
         "name": "replica_server_name",
         "options": [],
         "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct replica_server_name\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "__ALL__",
           "value": "__ALL__"
         },
@@ -2057,22 +1992,18 @@
         },
         "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct ag_name\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "description": "Ag Name",
-        "hide": 0,
         "includeAll": false,
         "label": "Ag",
-        "multi": false,
         "name": "ag_name",
         "options": [],
         "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct ag_name\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "__ALL__",
           "value": "__ALL__"
         },
@@ -2082,30 +2013,24 @@
         },
         "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct ag_listener\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "description": "Ag Listener Name",
-        "hide": 0,
         "includeAll": false,
         "label": "Ag Listener",
-        "multi": false,
         "name": "ag_listener",
         "options": [],
         "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect distinct ag_listener\nfrom [$dba_db].dbo.ag_health_state ahs\nwhere 1=1\nand ahs.collection_time_utc = (select max(i.collection_time_utc) from dbo.ag_health_state i)\n--\nUNION ALL\n--\nselect '__ALL__'\n\"\nSET QUOTED_IDENTIFIER ON\n\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "__ALL__",
           "value": "__ALL__"
         },
         "description": "Replica Type",
-        "hide": 0,
         "includeAll": false,
         "label": "Type",
-        "multi": false,
         "name": "replica_type",
         "options": [
           {
@@ -2130,20 +2055,15 @@
           }
         ],
         "query": "__ALL__, Primary, Secondary, Local",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "__ALL__",
           "value": "__ALL__"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Sync State",
-        "multi": false,
         "name": "sync_state_desc",
         "options": [
           {
@@ -2178,19 +2098,15 @@
           }
         ],
         "query": "__ALL__, NOT SYNCHRONIZING, SYNCHRONIZING, SYNCHRONIZED, REVERTING, INITIALIZING",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": true,
           "text": "__ALL__",
           "value": "__ALL__"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Sync Health",
-        "multi": false,
         "name": "sync_health_desc",
         "options": [
           {
@@ -2215,8 +2131,6 @@
           }
         ],
         "query": "__ALL__, NOT_HEALTHY, PARTIALLY_HEALTHY, HEALTHY",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       }
     ]
@@ -2238,8 +2152,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "t__Ag Health State",
+  "title": "t___Ag Health State",
   "uid": "ag_health_state",
-  "version": 4,
+  "version": 2,
   "weekStart": ""
 }

@@ -15,13 +15,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.1.4"
+      "version": "11.3.1"
     },
     {
       "type": "datasource",
       "id": "mssql",
       "name": "Microsoft SQL Server",
-      "version": "1.0.0"
+      "version": "11.3.0"
     },
     {
       "type": "panel",
@@ -57,9 +57,9 @@
   "graphTooltip": 0,
   "id": null,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -67,6 +67,7 @@
         "y": 0
       },
       "id": 8,
+      "panels": [],
       "title": "Overall Status @ ${collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
@@ -223,7 +224,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "datasource": {
@@ -368,7 +369,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "datasource": {
@@ -525,7 +526,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "datasource": {
@@ -682,7 +683,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "datasource": {
@@ -749,8 +750,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -817,8 +817,7 @@
     }
   ],
   "refresh": "5s",
-  "revision": 1,
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -831,13 +830,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "SQLMonitor Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
         "refresh": 1,
         "regex": "SQLMonitor",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
@@ -847,16 +844,13 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\nselect distinct srvname = sql_instance from dbo.instance_details\nwhere is_available = 1 and is_enabled =1\nunion all\nselect '__All__' as srvname \n\torder by srvname\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
-        "hide": 0,
         "includeAll": false,
         "label": "Server",
-        "multi": false,
         "name": "server",
         "options": [],
         "query": "declare @sql nvarchar(max);\nset quoted_identifier off;\nset @sql = \"\nselect distinct srvname = sql_instance from dbo.instance_details\nwhere is_available = 1 and is_enabled =1\nunion all\nselect '__All__' as srvname \n\torder by srvname\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 3,
         "type": "query"
       },
@@ -870,14 +864,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "Inventory Database",
-        "multi": false,
         "name": "inventory_db",
         "options": [],
         "query": "SELECT DB_NAME() as [db_name]",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -890,14 +881,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "Collection Time UTC",
-        "multi": false,
         "name": "collection_time_utc",
         "options": [],
         "query": "select top 1 collection_time_utc = CollectionTimeUTC\nfrom dbo.sql_agent_jobs_all_servers",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -910,14 +898,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "Server Collection Time UTC",
-        "multi": false,
         "name": "server_collection_time_utc",
         "options": [],
         "query": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\n\nset @_sql_instance = '${server}';\nset @_params = N'@_sql_instance varchar(125)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect max(UpdatedDateUTC)\nfrom dbo.sql_agent_jobs_all_servers saj\nwhere 1=1\n\"+(case when @_sql_instance = '__ALL__' then '--' else '' end)+\"and saj.sql_instance in (select case when id.source_sql_instance is not null then id.source_sql_instance else id.sql_instance end from dbo.instance_details id where id.sql_instance = @_sql_instance or id.source_sql_instance = @_sql_instance)\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance;\n",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -927,17 +912,13 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\ndeclare @_job_category varchar(255);\ndeclare @_job_name varchar(255);\ndeclare @_only_enabled_jobs bit = 1;\ndeclare @_next_clock_hours int;\ndeclare @_prev_clock_hours int;\ndeclare @_execution_duration_minutes int;\ndeclare @_is_blocked bit;\ndeclare @_success_ratio_threshold decimal(12,2);\ndeclare @_job_status varchar(20);\n\nset @_params = N'@_sql_instance varchar(125), @_job_category varchar(255), @_job_name varchar(255), @_only_enabled_jobs bit = 1, @_next_clock_hours int, @_prev_clock_hours int, @_execution_duration_minutes int, @_is_blocked bit, @_success_ratio_threshold decimal(12,2), @_job_status varchar(20)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect '__ALL__'\nunion all\nselect [JobCategory]\nfrom dbo.sql_agent_jobs_all_servers saj\ngroup by [JobCategory]\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance, @_job_category, @_job_name, @_only_enabled_jobs, @_next_clock_hours, @_prev_clock_hours, @_execution_duration_minutes, @_is_blocked, @_success_ratio_threshold, @_job_status;\n\n\n",
-        "hide": 0,
         "includeAll": false,
         "label": "Job Category",
-        "multi": false,
         "name": "job_category",
         "options": [],
         "query": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\ndeclare @_job_category varchar(255);\ndeclare @_job_name varchar(255);\ndeclare @_only_enabled_jobs bit = 1;\ndeclare @_next_clock_hours int;\ndeclare @_prev_clock_hours int;\ndeclare @_execution_duration_minutes int;\ndeclare @_is_blocked bit;\ndeclare @_success_ratio_threshold decimal(12,2);\ndeclare @_job_status varchar(20);\n\nset @_params = N'@_sql_instance varchar(125), @_job_category varchar(255), @_job_name varchar(255), @_only_enabled_jobs bit = 1, @_next_clock_hours int, @_prev_clock_hours int, @_execution_duration_minutes int, @_is_blocked bit, @_success_ratio_threshold decimal(12,2), @_job_status varchar(20)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect '__ALL__'\nunion all\nselect [JobCategory]\nfrom dbo.sql_agent_jobs_all_servers saj\ngroup by [JobCategory]\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance, @_job_category, @_job_name, @_only_enabled_jobs, @_next_clock_hours, @_prev_clock_hours, @_execution_duration_minutes, @_is_blocked, @_success_ratio_threshold, @_job_status;\n\n\n",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -947,29 +928,22 @@
           "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\ndeclare @_job_category varchar(255);\ndeclare @_job_name varchar(255);\ndeclare @_only_enabled_jobs bit = 1;\ndeclare @_next_clock_hours int;\ndeclare @_prev_clock_hours int;\ndeclare @_execution_duration_minutes int;\ndeclare @_is_blocked bit;\ndeclare @_success_ratio_threshold decimal(12,2);\ndeclare @_job_status varchar(20);\n\nset @_params = N'@_sql_instance varchar(125), @_job_category varchar(255), @_job_name varchar(255), @_only_enabled_jobs bit = 1, @_next_clock_hours int, @_prev_clock_hours int, @_execution_duration_minutes int, @_is_blocked bit, @_success_ratio_threshold decimal(12,2), @_job_status varchar(20)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect '__ALL__' as [JobName]\nunion all\nselect [JobName]\nfrom dbo.sql_agent_jobs_all_servers saj\ngroup by [JobName]\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance, @_job_category, @_job_name, @_only_enabled_jobs, @_next_clock_hours, @_prev_clock_hours, @_execution_duration_minutes, @_is_blocked, @_success_ratio_threshold, @_job_status;\n\n\n",
-        "hide": 0,
         "includeAll": false,
         "label": "Job Name",
-        "multi": false,
         "name": "job_name",
         "options": [],
         "query": "declare @_sql nvarchar(max);\ndeclare @_params nvarchar(max);\ndeclare @_sql_instance varchar(125);\ndeclare @_job_category varchar(255);\ndeclare @_job_name varchar(255);\ndeclare @_only_enabled_jobs bit = 1;\ndeclare @_next_clock_hours int;\ndeclare @_prev_clock_hours int;\ndeclare @_execution_duration_minutes int;\ndeclare @_is_blocked bit;\ndeclare @_success_ratio_threshold decimal(12,2);\ndeclare @_job_status varchar(20);\n\nset @_params = N'@_sql_instance varchar(125), @_job_category varchar(255), @_job_name varchar(255), @_only_enabled_jobs bit = 1, @_next_clock_hours int, @_prev_clock_hours int, @_execution_duration_minutes int, @_is_blocked bit, @_success_ratio_threshold decimal(12,2), @_job_status varchar(20)';\n\nset quoted_identifier off;\nset @_sql = \"\nselect '__ALL__' as [JobName]\nunion all\nselect [JobName]\nfrom dbo.sql_agent_jobs_all_servers saj\ngroup by [JobName]\n\"\nset quoted_identifier off;\n\nexec sp_executesql @_sql, @_params, @_sql_instance, @_job_category, @_job_name, @_only_enabled_jobs, @_next_clock_hours, @_prev_clock_hours, @_execution_duration_minutes, @_is_blocked, @_success_ratio_threshold, @_job_status;\n\n\n",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "Yes",
           "value": "Yes"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Enabled",
-        "multi": false,
         "name": "enabled",
         "options": [
           {
@@ -989,20 +963,15 @@
           }
         ],
         "query": "Yes,No,__ALL__",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "__ALL__",
           "value": "__ALL__"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Blocked",
-        "multi": false,
         "name": "blocked",
         "options": [
           {
@@ -1022,20 +991,15 @@
           }
         ],
         "query": "__ALL__,Yes,No",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "-1",
           "value": "-1"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "% Success (>)",
-        "multi": false,
         "name": "success_pct",
         "options": [
           {
@@ -1095,20 +1059,15 @@
           }
         ],
         "query": "-1,10,20,30,40,50,60,70,80,90,100",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "-1",
           "value": "-1"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "% Failure (>)",
-        "multi": false,
         "name": "failure_pct",
         "options": [
           {
@@ -1168,20 +1127,15 @@
           }
         ],
         "query": "-1,10,20,30,40,50,60,70,80,90,100",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "Running",
           "value": "Running"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Status",
-        "multi": false,
         "name": "status",
         "options": [
           {
@@ -1201,20 +1155,15 @@
           }
         ],
         "query": "__All__,Running,Idle",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "__ALL__",
           "value": "__ALL__"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Last Outcome",
-        "multi": false,
         "name": "last_outcome",
         "options": [
           {
@@ -1239,8 +1188,6 @@
           }
         ],
         "query": "__ALL__,Failed,Succeeded,Canceled",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
@@ -1248,11 +1195,9 @@
         "auto_count": 30,
         "auto_min": "10s",
         "current": {
-          "selected": false,
           "text": "0m",
           "value": "0m"
         },
-        "hide": 0,
         "label": "In Next (Time)",
         "name": "next_interval",
         "options": [
@@ -1333,9 +1278,7 @@
           }
         ],
         "query": "0m,1m,10m,30m,1h,2h,3h,4h,6h,12h,1d,2d,7d,14d,30d",
-        "queryValue": "",
         "refresh": 2,
-        "skipUrlSync": false,
         "type": "interval"
       },
       {
@@ -1343,11 +1286,9 @@
         "auto_count": 30,
         "auto_min": "10s",
         "current": {
-          "selected": false,
           "text": "0m",
           "value": "0m"
         },
-        "hide": 0,
         "label": "In Prev (Time)",
         "name": "prev_interval",
         "options": [
@@ -1428,18 +1369,14 @@
           }
         ],
         "query": "0m,1m,10m,30m,1h,2h,3h,4h,6h,12h,1d,2d,7d,14d,30d",
-        "queryValue": "",
         "refresh": 2,
-        "skipUrlSync": false,
         "type": "interval"
       },
       {
         "current": {
-          "selected": false,
           "text": "1",
           "value": "1"
         },
-        "hide": 0,
         "label": "Page No",
         "name": "page_no",
         "options": [
@@ -1450,16 +1387,13 @@
           }
         ],
         "query": "1",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": false,
           "text": "100",
           "value": "100"
         },
-        "hide": 0,
         "label": "Page Size",
         "name": "page_size",
         "options": [
@@ -1470,7 +1404,6 @@
           }
         ],
         "query": "100",
-        "skipUrlSync": false,
         "type": "textbox"
       }
     ]
@@ -1483,6 +1416,6 @@
   "timezone": "",
   "title": "Monitoring - Live - All Servers - Job Activity Monitor",
   "uid": "job_activity_monitor",
-  "version": 8,
+  "version": 1,
   "weekStart": ""
 }

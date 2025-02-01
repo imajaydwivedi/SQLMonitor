@@ -25,16 +25,11 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 28,
+  "id": 14,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -395,17 +390,7 @@
             }
           ],
           "title": "Disk Space - [$server] - [$perfmon_host_name] @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}___",
-          "transformations": [],
           "type": "table"
-        }
-      ],
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
         }
       ],
       "title": "Disk Space - Latest Snapshot @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
@@ -535,7 +520,6 @@
             }
           ],
           "title": "Used Disk Space - [$server] - [$perfmon_host_name] @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}___",
-          "transformations": [],
           "type": "timeseries"
         }
       ],
@@ -665,7 +649,6 @@
             }
           ],
           "title": "% Used Disk Space - [$server] - [$perfmon_host_name] @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}___",
-          "transformations": [],
           "type": "timeseries"
         }
       ],
@@ -998,7 +981,6 @@
             }
           ],
           "title": "Db File Space Usage - [$server] - [$host_name] @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}___",
-          "transformations": [],
           "type": "table"
         }
       ],
@@ -1127,7 +1109,6 @@
             }
           ],
           "title": "Db File Size - Trend - [$server] - [$host_name] @ ${diskspace_collection_time_utc:date:YYYY-MM-DD HH.mm}___",
-          "transformations": [],
           "type": "timeseries"
         }
       ],
@@ -1135,10 +1116,9 @@
       "type": "row"
     }
   ],
+  "preload": false,
   "refresh": "",
-  "revision": 1,
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 40,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -1148,50 +1128,42 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "SqlServer",
-          "value": "ygPVA4snk"
+          "text": "SQLMonitor",
+          "value": "ce5l4mjr3amm8d"
         },
         "description": "Inventory Server Name",
         "hide": 2,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21L-LTPABL-1187",
-          "value": "21L-LTPABL-1187"
+          "text": "Experiment",
+          "value": "Experiment"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
-        "hide": 0,
         "includeAll": false,
         "label": "Sql Instance",
-        "multi": false,
         "name": "server",
         "options": [],
         "query": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "DBA",
           "value": "DBA"
         },
@@ -1203,21 +1175,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Inventory Database",
-        "multi": false,
         "name": "inventory_db",
         "options": [],
         "query": "SELECT DB_NAME()",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -1227,19 +1195,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "Is Local SQL Instance",
-        "multi": false,
         "name": "is_local",
         "options": [],
         "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "DBA",
           "value": "DBA"
         },
@@ -1251,69 +1215,56 @@
         "hide": 2,
         "includeAll": false,
         "label": "DBA Database",
-        "multi": false,
         "name": "dba_db",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21L-LTPABL-1187",
-          "value": "21L-LTPABL-1187"
+          "text": "EXPERIMENT",
+          "value": "EXPERIMENT"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select host_name from dbo.instance_details\nwhere sql_instance = @sql_instance order by created_date_utc\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
-        "hide": 0,
         "includeAll": false,
         "label": "Host Name",
-        "multi": false,
         "name": "perfmon_host_name",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select host_name from dbo.instance_details\nwhere sql_instance = @sql_instance order by created_date_utc\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "21L-LTPABL-1187",
-          "value": "21L-LTPABL-1187"
+          "text": "EXPERIMENT",
+          "value": "EXPERIMENT"
         },
         "datasource": {
           "type": "mssql",
           "uid": "${sqlmonitor_datasource}"
         },
-        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "hide": 2,
         "includeAll": false,
         "label": "Current Host Name",
-        "multi": false,
         "name": "host_name",
         "options": [],
-        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
+        "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nset quoted_identifier on;\n\nif (@sql_instance = SERVERPROPERTY('SERVERNAME'))\n  exec dbo.sp_executesql @sql;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "fe80::92e0:20cc:952c:1b57%9",
-          "value": "fe80::92e0:20cc:952c:1b57%9"
+          "text": "192.168.1.86",
+          "value": "192.168.1.86"
         },
         "datasource": {
           "type": "mssql",
@@ -1323,19 +1274,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "IP Address",
-        "multi": false,
         "name": "ip",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "WORKGROUP",
           "value": "WORKGROUP"
         },
@@ -1347,29 +1294,29 @@
         "hide": 2,
         "includeAll": false,
         "label": "FQDN",
-        "multi": false,
         "name": "fqdn",
         "options": [],
         "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
+        "current": {
+          "text": "dbo.vw_disk_space",
+          "value": "dbo.vw_disk_space"
+        },
         "hide": 2,
         "label": "DiskSpace table name",
         "name": "diskspace_table_name",
         "query": "dbo.vw_disk_space",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1704945625471",
-          "value": "1704945625471"
+          "text": "1738398601007",
+          "value": "1738398601007"
         },
         "datasource": {
           "type": "mssql",
@@ -1379,21 +1326,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "Disk Space Collection Time UTC",
-        "multi": false,
         "name": "diskspace_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 collection_time_utc\nfrom $diskspace_table_name with (nolock)\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "8",
-          "value": "8"
+          "text": "2",
+          "value": "2"
         },
         "datasource": {
           "type": "mssql",
@@ -1403,21 +1346,17 @@
         "hide": 2,
         "includeAll": false,
         "label": "SQL Schedulers",
-        "multi": false,
         "name": "sql_schedulers",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_os_schedulers dos where status = 'VISIBLE ONLINE' and is_online = 1;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1704298182597",
-          "value": "1704298182597"
+          "text": "1738375008353",
+          "value": "1738375008353"
         },
         "datasource": {
           "type": "mssql",
@@ -1427,19 +1366,15 @@
         "hide": 2,
         "includeAll": false,
         "label": "SqlInstance Start Time UTC",
-        "multi": false,
         "name": "sqlserver_start_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "__All__",
           "value": "__All__"
         },
@@ -1448,22 +1383,18 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\n        select ds.disk_volume as disk_drive\n\tfrom $diskspace_table_name ds\n\twhere ds.host_name = @perfmon_host_name\n           and ds.collection_time_utc = (select max(i.collection_time_utc) from $diskspace_table_name as i\n                                                                   where i.host_name = @perfmon_host_name\n                                                                )\n\tunion all\n\tselect '__All__' as disk_drive\n\torder by disk_drive\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
-        "hide": 0,
         "includeAll": false,
         "label": "Disk Drive",
-        "multi": false,
         "name": "disk_drive",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\n        select ds.disk_volume as disk_drive\n\tfrom $diskspace_table_name ds\n\twhere ds.host_name = @perfmon_host_name\n           and ds.collection_time_utc = (select max(i.collection_time_utc) from $diskspace_table_name as i\n                                                                   where i.host_name = @perfmon_host_name\n                                                                )\n\tunion all\n\tselect '__All__' as disk_drive\n\torder by disk_drive\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "__All__",
           "value": "__All__"
         },
@@ -1472,32 +1403,32 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
-        "hide": 0,
         "includeAll": false,
         "label": "Database",
-        "multi": false,
         "name": "database",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
       {
+        "current": {
+          "text": "dbo.file_io_stats",
+          "value": "dbo.file_io_stats"
+        },
         "hide": 2,
         "label": "File_io_stats Table Name",
         "name": "fileiostats_table_name",
         "query": "dbo.file_io_stats",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1704945601595",
-          "value": "1704945601595"
+          "text": "1738399800709",
+          "value": "1738399800709"
         },
         "datasource": {
           "type": "mssql",
@@ -1507,14 +1438,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "File IO Stats Collection Time",
-        "multi": false,
         "name": "fileiostats_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect top 1 collection_time_utc\nfrom $fileiostats_table_name with (nolock)\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -1537,6 +1465,6 @@
   "timezone": "",
   "title": "t___Disk Space",
   "uid": "disk_space",
-  "version": 5,
+  "version": 1,
   "weekStart": ""
 }

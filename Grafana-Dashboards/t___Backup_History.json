@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_SQLSERVER",
-      "label": "SqlServer",
+      "name": "DS_SQLMONITOR",
+      "label": "SQLMonitor",
       "description": "",
       "type": "datasource",
       "pluginId": "mssql",
@@ -15,13 +15,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.1.0"
+      "version": "11.3.1"
     },
     {
       "type": "datasource",
       "id": "mssql",
       "name": "Microsoft SQL Server",
-      "version": "1.0.0"
+      "version": "11.3.0"
     },
     {
       "type": "panel",
@@ -58,7 +58,6 @@
   "graphTooltip": 0,
   "id": null,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
@@ -76,7 +75,7 @@
     {
       "datasource": {
         "type": "mssql",
-        "uid": "${DS_SQLSERVER}"
+        "uid": "${sqlmonitor_datasource}"
       },
       "description": "select * from dbo.backups_all_servers",
       "fieldConfig": {
@@ -542,13 +541,13 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${DS_SQLMONITOR}"
           },
           "editorMode": "code",
           "format": "table",
@@ -576,15 +575,10 @@
         }
       ],
       "title": "Backup History - Latest - Per Database @ ____${backups_all_servers_collection_time_utc:date:YYYY-MM-DD HH.mm}_____  - [$fqdn] - [$ip]",
-      "transformations": [],
       "type": "table"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -596,7 +590,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "select * from dbo.backups_all_servers",
           "fieldConfig": {
@@ -937,7 +931,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -965,17 +959,7 @@
             }
           ],
           "title": "Backup History - Latest - Per File @ ____${backups_all_servers_collection_time_utc:date:YYYY-MM-DD HH.mm}_____  - [$fqdn] - [$ip]",
-          "transformations": [],
           "type": "table"
-        }
-      ],
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
         }
       ],
       "title": "Backup History - Latest - Per File @ ____${backups_all_servers_collection_time_utc:date:YYYY-MM-DD HH.mm}_____  - [$fqdn] - [$ip]",
@@ -983,9 +967,7 @@
     }
   ],
   "refresh": "15m",
-  "revision": 1,
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 40,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -994,41 +976,32 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "SqlServer",
-          "value": "ygPVA4snk"
-        },
+        "current": {},
         "description": "Inventory Server Name",
         "hide": 2,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
-        "hide": 0,
         "includeAll": false,
         "label": "Sql Instance",
-        "multi": false,
         "name": "server",
         "options": [],
         "query": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
@@ -1036,165 +1009,140 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "SELECT DB_NAME()",
         "hide": 2,
         "includeAll": false,
         "label": "Inventory Database",
-        "multi": false,
         "name": "inventory_db",
         "options": [],
         "query": "SELECT DB_NAME()",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
         "hide": 2,
         "includeAll": false,
         "label": "Is Local SQL Instance",
-        "multi": false,
         "name": "is_local",
         "options": [],
         "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "hide": 2,
         "includeAll": false,
         "label": "DBA Database",
-        "multi": false,
         "name": "dba_db",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "hide": 2,
         "includeAll": false,
         "label": "IP Address",
-        "multi": false,
         "name": "ip",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
         "hide": 2,
         "includeAll": false,
         "label": "FQDN",
-        "multi": false,
         "name": "fqdn",
         "options": [],
         "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 collection_time_utc\nfrom [dbo].[backups_all_servers]\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
         "hide": 2,
         "includeAll": false,
         "label": "dbo.backups_all_servers - Collection Time UTC",
-        "multi": false,
         "name": "backups_all_servers_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 collection_time_utc\nfrom [dbo].[backups_all_servers]\norder by collection_time_utc desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "hide": 2,
         "includeAll": false,
         "label": "SqlInstance Start Time UTC",
-        "multi": false,
         "name": "sqlserver_start_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
-        "hide": 0,
         "includeAll": false,
         "label": "Database",
-        "multi": false,
         "name": "database",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
       {
         "current": {
-          "selected": true,
           "text": "",
           "value": ""
         },
@@ -1209,19 +1157,15 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": false,
           "text": "No Choice",
           "value": "No Choice"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Apply Filters",
-        "multi": false,
         "name": "filter_for_latency",
         "options": [
           {
@@ -1241,20 +1185,15 @@
           }
         ],
         "query": "No Choice,Yes,No",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "8",
           "value": "8"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Full Threshold (Days)",
-        "multi": false,
         "name": "full_threshold_days",
         "options": [
           {
@@ -1309,20 +1248,15 @@
           }
         ],
         "query": "1,3,7,8,9,10,15,30,90,366",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "26",
           "value": "26"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Diff Threshold (Hrs)",
-        "multi": false,
         "name": "diff_threshold_hours",
         "options": [
           {
@@ -1372,20 +1306,15 @@
           }
         ],
         "query": "4,8,12,24,26,28,32,36,48",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "60",
           "value": "60"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "TLog Threshold (Min)",
-        "multi": false,
         "name": "tlog_threshold_minutes",
         "options": [
           {
@@ -1445,31 +1374,22 @@
           }
         ],
         "query": "5,10,15,20,30,45,60,90,120,240,360",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": [
-            "Full Database"
+            "$__all"
           ],
           "value": [
-            "Full Database"
+            "$__all"
           ]
         },
-        "hide": 0,
         "includeAll": true,
         "label": "Backup Type",
         "multi": true,
         "name": "backup_type",
         "options": [
-          {
-            "selected": false,
-            "text": "All",
-            "value": "$__all"
-          },
           {
             "selected": false,
             "text": "Full Database Backup",
@@ -1512,8 +1432,6 @@
           }
         ],
         "query": "Full Database Backup,Full Copy-Only Database Backup,Differential database Backup,Transaction Log Backup,File or filegroup Backup,Differential file Backup,Partial Backup,Differential partial Backup",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       }
     ]
@@ -1537,6 +1455,6 @@
   "timezone": "",
   "title": "t___Backup_History",
   "uid": "backup_history",
-  "version": 57,
+  "version": 1,
   "weekStart": ""
 }

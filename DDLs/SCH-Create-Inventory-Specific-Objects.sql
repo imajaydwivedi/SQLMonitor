@@ -1210,11 +1210,13 @@ begin
 						select * 
 						from inserted i
 						where i.is_alias = 0
+						and coalesce(JSON_VALUE(i.more_info, '$.InstanceScopeFeaturesOnly'),'false') = 'false'
 						and exists (select * from dbo.instance_details id 
 									where id.is_enabled = 1 and id.is_alias = 0
 									and id.sql_instance <> i.sql_instance
 									and id.host_name = i.host_name
 									and id.data_destination_sql_instance <> i.data_destination_sql_instance
+									and coalesce(JSON_VALUE(id.more_info, '$.InstanceScopeFeaturesOnly'),'false') = 'false'
 									)
 					)
 			begin

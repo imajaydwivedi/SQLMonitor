@@ -43,13 +43,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.1.4"
+      "version": "11.3.1"
     },
     {
       "type": "datasource",
       "id": "mssql",
       "name": "Microsoft SQL Server",
-      "version": "1.0.0"
+      "version": "11.3.0"
     },
     {
       "type": "panel",
@@ -86,7 +86,6 @@
   "graphTooltip": 0,
   "id": null,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": true,
@@ -122,8 +121,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -232,10 +230,6 @@
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -268,8 +262,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -361,15 +354,6 @@
           "type": "table"
         }
       ],
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Tables with \"Zero Growth\" in Last __\"$delta_days_threshold\"__Days -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
       "type": "row"
     },
@@ -407,8 +391,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -565,8 +548,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -845,8 +827,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -1189,7 +1170,6 @@
             }
           ],
           "title": "All INDEX -- FILTERED - Paginated - Page No {$page_no} - Page Size {$page_size}  ____@ ____${mode2_collection_time_utc:date:YYYY-MM-DD HH.mm}_____ - [$fqdn] - [$ip]",
-          "transformations": [],
           "type": "table"
         }
       ],
@@ -1198,7 +1178,7 @@
     }
   ],
   "refresh": "15m",
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -1212,13 +1192,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
@@ -1228,16 +1206,13 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_enabled = 1 and is_available = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
-        "hide": 0,
         "includeAll": false,
         "label": "Sql Instance",
-        "multi": false,
         "name": "server",
         "options": [],
         "query": "declare @sql nvarchar(max);\n\nset quoted_identifier off;\nset @sql = \"select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_enabled = 1 and is_available = 1\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
@@ -1251,14 +1226,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "Inventory Database",
-        "multi": false,
         "name": "inventory_db",
         "options": [],
         "query": "SELECT DB_NAME()",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -1271,14 +1243,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "Is Local SQL Instance",
-        "multi": false,
         "name": "is_local",
         "options": [],
         "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -1291,14 +1260,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "DBA Database",
-        "multi": false,
         "name": "dba_db",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -1311,14 +1277,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "IP Address",
-        "multi": false,
         "name": "ip",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n\nset @sql_instance = '$server';\nset @params = N'@sql_instance varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip];\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql --, @params, @sql_instance;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql --, @params, @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -1331,14 +1294,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "FQDN",
-        "multi": false,
         "name": "fqdn",
         "options": [],
         "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -1351,14 +1311,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "BlitzIndex_Mode2 - Collection Time UTC",
-        "multi": false,
         "name": "mode2_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -1371,14 +1328,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "SQL Schedulers",
-        "multi": false,
         "name": "sql_schedulers",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select count(*) as counts from sys.dm_os_schedulers dos where status = 'VISIBLE ONLINE' and is_online = 1;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -1391,14 +1345,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "SqlInstance Start Time UTC",
-        "multi": false,
         "name": "sqlserver_start_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info as osi;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -1411,13 +1362,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "Disk Drive",
-        "multi": false,
         "name": "disk_drive",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select ds.disk_volume as disk_drive\n\tfrom dbo.disk_space ds\n\twhere ds.collection_time_utc = (select max(i.collection_time_utc) from dbo.disk_space i)\n\tunion all\n\tselect '__All__' as disk_drive\n\torder by disk_drive\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
@@ -1428,16 +1377,13 @@
           "uid": "${sqlmonitor_datasource}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
-        "hide": 0,
         "includeAll": false,
         "label": "Database",
-        "multi": false,
         "name": "database",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
@@ -1446,7 +1392,7 @@
         "label": "BlitzIndex Table",
         "name": "blitzindex_table_name",
         "query": "${VAR_BLITZINDEX_TABLE_NAME}",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant",
         "current": {
           "value": "${VAR_BLITZINDEX_TABLE_NAME}",
@@ -1463,14 +1409,11 @@
       },
       {
         "current": {
-          "selected": false,
           "text": "5",
           "value": "5"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Delta Days",
-        "multi": false,
         "name": "delta_days_threshold",
         "options": [
           {
@@ -1520,18 +1463,14 @@
           }
         ],
         "query": "5,10,15,20,30,60,90,180,365",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": true,
           "text": "1",
           "value": "1"
         },
         "description": "Page No Used for Paginated Res",
-        "hide": 0,
         "label": "Page No",
         "name": "page_no",
         "options": [
@@ -1542,17 +1481,14 @@
           }
         ],
         "query": "1",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": true,
           "text": "100",
           "value": "100"
         },
         "description": "Page Size Used for Paginated Res",
-        "hide": 0,
         "label": "Page Size",
         "name": "page_size",
         "options": [
@@ -1563,17 +1499,14 @@
           }
         ],
         "query": "100",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": true,
           "text": "",
           "value": ""
         },
         "description": "Table Name Filter",
-        "hide": 0,
         "label": "Table Name",
         "name": "table_name",
         "options": [
@@ -1584,7 +1517,6 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
@@ -1592,7 +1524,7 @@
         "label": "BlitzIndex Table",
         "name": "blitzindex_mode0_table_name",
         "query": "${VAR_BLITZINDEX_MODE0_TABLE_NAME}",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant",
         "current": {
           "value": "${VAR_BLITZINDEX_MODE0_TABLE_NAME}",
@@ -1612,7 +1544,7 @@
         "label": "BlitzIndex Table",
         "name": "blitzindex_mode1_table_name",
         "query": "${VAR_BLITZINDEX_MODE1_TABLE_NAME}",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant",
         "current": {
           "value": "${VAR_BLITZINDEX_MODE1_TABLE_NAME}",
@@ -1632,7 +1564,7 @@
         "label": "BlitzIndex Table",
         "name": "blitzindex_mode4_table_name",
         "query": "${VAR_BLITZINDEX_MODE4_TABLE_NAME}",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant",
         "current": {
           "value": "${VAR_BLITZINDEX_MODE4_TABLE_NAME}",
@@ -1657,14 +1589,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "BlitzIndex_Mode0 - Collection Time UTC",
-        "multi": false,
         "name": "mode0_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_mode0_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -1677,14 +1606,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "BlitzIndex_Mode1 - Collection Time UTC",
-        "multi": false,
         "name": "mode1_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_mode1_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -1697,14 +1623,11 @@
         "hide": 2,
         "includeAll": false,
         "label": "BlitzIndex_Mode4 - Collection Time UTC",
-        "multi": false,
         "name": "mode4_collection_time_utc",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), run_datetime )\nfrom $blitzindex_mode4_table_name\norder by run_datetime desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -1725,6 +1648,6 @@
   "timezone": "",
   "title": "t___BlitzIndex_Analysis",
   "uid": "t___BlitzIndex_Analysis",
-  "version": 4,
+  "version": 1,
   "weekStart": ""
 }

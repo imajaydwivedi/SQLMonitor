@@ -157,7 +157,7 @@ begin
 									'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
 									'. Error Message::: '+ @_errorMessage;
 
-				print @_crlf+@_long_star_line+@_crlf+'Error Occurred while processing server ['+@_sql_Instance+'].'+@_crlf+@_errorMessage+@_crlf+@_long_star_line+@_crlf;
+				print @_crlf+@_long_star_line+@_crlf+'Error Occurred while processing server ['+@_sql_instance+'].'+@_crlf+@_errorMessage+@_crlf+@_long_star_line+@_crlf;
 
 				update dbo.sma_servers_logs
 				set status = 'Failed', remarks = @_errorMessage
@@ -543,8 +543,8 @@ begin
 							h.host_ips,
 							source = 'sma_hadr_ag' 
 					from dbo.sma_hadr_ag ag join dbo.sma_servers s on s.server = ag.server
-					cross apply (select replica_name = Value from string_split(ag.ag_replicas_CSV,',')) r
-					cross apply (select top 1 [replica_host] = ltrim(rtrim(Value)) from string_split(ltrim(rtrim(r.replica_name)),'\')o) rh
+					cross apply (select replica_name = value from string_split(ag.ag_replicas_CSV,',')) r
+					cross apply (select top 1 [replica_host] = ltrim(rtrim(value)) from string_split(ltrim(rtrim(r.replica_name)),'\')o) rh
 					outer apply (select top 1 host_ips from dbo.sma_sql_server_hosts h where h.is_decommissioned = 0 and h.host_name = rh.replica_host ) h
 					where s.is_decommissioned = 0 and ag.is_decommissioned = 0 -- get list of ag replicas	
 				)h
