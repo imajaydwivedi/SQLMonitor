@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_SQLSERVER",
-      "label": "SqlServer",
+      "name": "DS_SQLMONITOR",
+      "label": "SQLMonitor",
       "description": "",
       "type": "datasource",
       "pluginId": "mssql",
@@ -28,13 +28,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.1.0"
+      "version": "11.3.1"
     },
     {
       "type": "datasource",
       "id": "mssql",
       "name": "Microsoft SQL Server",
-      "version": "1.0.0"
+      "version": "11.3.0"
     },
     {
       "type": "panel",
@@ -71,14 +71,9 @@
   "graphTooltip": 0,
   "id": null,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -90,7 +85,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "exec dbo.sp_WhatIsRunning ",
           "fieldConfig": {
@@ -187,7 +182,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -218,15 +213,6 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "What's Running - Custom Query - [$fqdn] - [$ip]",
       "type": "row"
     },
@@ -243,7 +229,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "Blocking Details____In Selected Time Duration____Since____${__from:date:YYYY-MM-DD HH.mm}___till___${whoisactive_collection_time_utc:date:YYYY-MM-DD HH.mm}____",
           "fieldConfig": {
@@ -418,7 +404,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -464,7 +450,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -662,7 +648,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -697,10 +683,6 @@
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -712,7 +694,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -922,7 +904,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -952,24 +934,11 @@
           "type": "table"
         }
       ],
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "What's Running - [sp_WhoIsActive]  @ ${whoisactive_collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -981,7 +950,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -1167,7 +1136,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -1198,24 +1167,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "What's Running - [sp_WhoIsActive] - DBA Maintenance - Workload  @ ${whoisactive_collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1227,7 +1183,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -1425,7 +1381,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -1456,24 +1412,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "What's Running - [sp_WhoIsActive] - SQL Server Agent Jobs @ ${whoisactive_collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1485,7 +1428,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -1683,7 +1626,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -1714,24 +1657,11 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Long Running Queries - [sp_WhoIsActive] @ ${whoisactive_collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1743,7 +1673,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "",
           "fieldConfig": {
@@ -1954,7 +1884,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -1985,16 +1915,6 @@
         }
       ],
       "repeat": "datasource",
-      "repeatDirection": "h",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "M/r Consumers - [sp_WhoIsActive] - For Duration - Paginated - Page No {$page_no} - Page Size {$page_size}",
       "type": "row"
     },
@@ -2011,7 +1931,7 @@
         {
           "datasource": {
             "type": "mssql",
-            "uid": "${DS_SQLSERVER}"
+            "uid": "${sqlmonitor_datasource}"
           },
           "description": "",
           "fieldConfig": {
@@ -2222,7 +2142,7 @@
               "alias": "",
               "datasource": {
                 "type": "mssql",
-                "uid": "${DS_SQLSERVER}"
+                "uid": "${DS_SQLMONITOR}"
               },
               "editorMode": "code",
               "format": "table",
@@ -2257,10 +2177,6 @@
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "mssql",
-        "uid": "5Qr_lHw7z"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2271,6 +2187,10 @@
       "panels": [
         {
           "description": "",
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
           "gridPos": {
             "h": 14,
             "w": 24,
@@ -2278,7 +2198,6 @@
             "y": 10
           },
           "id": 119,
-          "links": [],
           "options": {
             "folderId": 1,
             "maxItems": 50,
@@ -2295,23 +2214,12 @@
         }
       ],
       "repeat": "datasource",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mssql",
-            "uid": "5Qr_lHw7z"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Other Dashboards",
       "type": "row"
     }
   ],
   "refresh": "2m",
-  "revision": 1,
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 40,
   "tags": [
     "mssql",
     "sqlmonitor",
@@ -2320,52 +2228,40 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "SqlServer",
-          "value": "ygPVA4snk"
-        },
+        "current": {},
         "description": "Inventory Server Name",
         "hide": 2,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "sqlmonitor_datasource",
         "options": [],
         "query": "mssql",
-        "queryValue": "",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
-        "hide": 0,
         "includeAll": false,
         "label": "Sql Instance",
-        "multi": false,
         "name": "server",
         "options": [],
         "query": "select distinct srvname = sql_instance from dbo.instance_details with (nolock)\nwhere is_available = 1 and is_enabled = 1",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "current": {
-          "selected": true,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Session ID",
         "name": "session_id",
         "options": [
@@ -2376,26 +2272,22 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
-        "hide": 0,
         "includeAll": false,
         "label": "Database",
-        "multi": false,
         "name": "database",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"select name from sys.databases d where d.state_desc = 'ONLINE' union all select '__All__' as name order by name;\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
@@ -2403,53 +2295,44 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "SELECT DB_NAME() as [db_name]",
         "hide": 2,
         "includeAll": false,
         "label": "Inventory Database",
-        "multi": false,
         "name": "inventory_db",
         "options": [],
         "query": "SELECT DB_NAME() as [db_name]",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
         "hide": 2,
         "includeAll": false,
         "label": "Is Local SQL Instance",
-        "multi": false,
         "name": "is_local",
         "options": [],
         "query": "declare @sql_instance varchar(255); \nset @sql_instance = '$server';\nselect is_local = case when ( (CONVERT(varchar,SERVERPROPERTY('MachineName')) = @sql_instance ) \n\t\t\tor (CONVERT(varchar,SERVERPROPERTY('ServerName')) = @sql_instance )\n\t\t\t)  then 1 else 0 end",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": true,
           "text": "1",
           "value": "1"
         },
         "description": "Threshold duration in minutes for Long Running Queries",
-        "hide": 0,
         "includeAll": false,
         "label": "Duration (Min)",
-        "multi": false,
         "name": "duration",
         "options": [
           {
@@ -2534,89 +2417,75 @@
           }
         ],
         "query": "0,1,2,5,10,15,20,30,45,60,90,120,180,260,300,480",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "description": "IP Address of Sql Instance",
         "hide": 2,
         "includeAll": false,
         "label": "IP Address",
-        "multi": false,
         "name": "ip",
         "options": [],
         "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,  CONNECTIONPROPERTY('local_net_address') ) as [ip]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
-        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "hide": 2,
         "includeAll": false,
         "label": "Host Name",
-        "multi": false,
         "name": "host_name",
         "options": [],
-        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
+        "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect CONVERT(varchar,SERVERPROPERTY('ComputerNamePhysicalNetBIOS')) as [host_name]\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
         "hide": 2,
         "includeAll": false,
         "label": "Fully Qualified Domain Name",
-        "multi": false,
         "name": "fqdn",
         "options": [],
         "query": "exec dbo.usp_GetAllServerInfo \n\t\t\t\t@servers = '$server',\n\t\t\t\t@output = 'fqdn'",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 collection_time_utc\nfrom [$inventory_db].dbo.vw_performance_counters\nwhere host_name = '$host_name'\norder by collection_time_utc desc\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "hide": 2,
         "includeAll": false,
         "label": "Collection Time UTC",
-        "multi": false,
         "name": "collection_time_utc",
         "options": [],
         "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 collection_time_utc\nfrom [$inventory_db].dbo.vw_performance_counters\nwhere host_name = '$host_name'\norder by collection_time_utc desc\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -2624,7 +2493,7 @@
         "label": "WhoIsActive Table Name",
         "name": "whoisactive_table_name",
         "query": "${VAR_WHOISACTIVE_TABLE_NAME}",
-        "skipUrlSync": false,
+        "skipUrlSync": true,
         "type": "constant",
         "current": {
           "value": "${VAR_WHOISACTIVE_TABLE_NAME}",
@@ -2643,30 +2512,25 @@
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${sqlmonitor_datasource}"
         },
         "definition": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time )\nfrom [$dba_db].$whoisactive_table_name\norder by collection_time desc\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "hide": 2,
         "includeAll": false,
         "label": "WhoIsActive Collection Time UTC",
-        "multi": false,
         "name": "whoisactive_collection_time_utc",
         "options": [],
         "query": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time )\nfrom [$dba_db].$whoisactive_table_name\norder by collection_time desc\n\"\nSET QUOTED_IDENTIFIER ON\n\n--IF ('$server' = SERVERPROPERTY('ServerName'))\nif ($is_local = 1)\n  EXEC (@sql);\nELSE\n  EXEC (@sql) AT [$server];",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "",
           "value": ""
         },
         "description": "program_name in sys.dm_exec_sessions",
-        "hide": 0,
         "label": "Program",
         "name": "program_name",
         "options": [
@@ -2677,16 +2541,13 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": false,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Login",
         "name": "login_name",
         "options": [
@@ -2697,16 +2558,13 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": true,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Host Name",
         "name": "session_host_name",
         "options": [
@@ -2717,16 +2575,13 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": true,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Query Pattern",
         "name": "query_pattern",
         "options": [
@@ -2737,39 +2592,32 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {},
         "datasource": {
           "type": "mssql",
-          "uid": "${DS_SQLSERVER}"
+          "uid": "${DS_SQLMONITOR}"
         },
         "definition": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "hide": 2,
         "includeAll": false,
         "label": "DBA Database",
-        "multi": false,
         "name": "dba_db",
         "options": [],
         "query": "declare @sql nvarchar(max);\ndeclare @sql_instance varchar(255);\nset @sql_instance = '$server';\n\nset quoted_identifier off;\nset @sql = \"select top 1 [database] from dbo.instance_details id\nwhere id.sql_instance = @sql_instance\n\";\nset quoted_identifier off;\n\nexec dbo.sp_executesql @sql, N'@sql_instance varchar(255)', @sql_instance;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "500",
           "value": "500"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "M/r Grant (MB)",
-        "multi": false,
         "name": "memory_grant_threshold_mb",
         "options": [
           {
@@ -2799,18 +2647,14 @@
           }
         ],
         "query": "500, 2048, 5120, 10240, 20480",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "1",
           "value": "1"
         },
         "description": "Page No Used for Paginated Result",
-        "hide": 0,
         "label": "Page No",
         "name": "page_no",
         "options": [
@@ -2821,17 +2665,14 @@
           }
         ],
         "query": "1",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
-          "selected": false,
           "text": "200",
           "value": "200"
         },
         "description": "Page Size for Paginated Result",
-        "hide": 0,
         "label": "Page Size",
         "name": "page_size",
         "options": [
@@ -2842,7 +2683,6 @@
           }
         ],
         "query": "200",
-        "skipUrlSync": false,
         "type": "textbox"
       }
     ]
@@ -2866,6 +2706,6 @@
   "timezone": "browser",
   "title": "WhoIsActive - SQL Server Queries - Workload",
   "uid": "WhoIsActive",
-  "version": 8,
+  "version": 1,
   "weekStart": ""
 }

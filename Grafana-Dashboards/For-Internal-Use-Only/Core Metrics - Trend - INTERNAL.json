@@ -86,8 +86,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               },
@@ -215,8 +214,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               },
@@ -228,7 +226,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 51
+            "y": 31
           },
           "id": 155,
           "options": {
@@ -344,8 +342,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -361,7 +358,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 62
+            "y": 42
           },
           "id": 157,
           "options": {
@@ -493,7 +490,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 567
+            "y": 547
           },
           "id": 143,
           "options": {
@@ -609,7 +606,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 607
+            "y": 587
           },
           "id": 146,
           "options": {
@@ -739,7 +736,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 568
+            "y": 548
           },
           "id": 147,
           "options": {
@@ -868,7 +865,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 617
+            "y": 597
           },
           "id": 151,
           "options": {
@@ -998,7 +995,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 570
+            "y": 550
           },
           "id": 153,
           "options": {
@@ -1128,7 +1125,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 572
+            "y": 552
           },
           "id": 149,
           "options": {
@@ -1204,7 +1201,7 @@
             "h": 20,
             "w": 24,
             "x": 0,
-            "y": 650
+            "y": 630
           },
           "id": 119,
           "options": {
@@ -1322,8 +1319,8 @@
       },
       {
         "current": {
-          "text": "1732910400000",
-          "value": "1732910400000"
+          "text": "1738360800000",
+          "value": "1738360800000"
         },
         "datasource": {
           "type": "mssql",
@@ -1394,8 +1391,8 @@
       },
       {
         "current": {
-          "text": "SQLMonitor",
-          "value": "SQLMonitor"
+          "text": "Experiment",
+          "value": "Experiment"
         },
         "datasource": {
           "type": "mssql",
@@ -1413,8 +1410,8 @@
       },
       {
         "current": {
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -1452,7 +1449,7 @@
     ]
   },
   "time": {
-    "from": "now-15d",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {
