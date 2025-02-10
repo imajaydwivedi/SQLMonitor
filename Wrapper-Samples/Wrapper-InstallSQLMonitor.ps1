@@ -41,10 +41,10 @@ $params = @{
                 "40__CreateJobGetAllServerDiskSpace", "41__CreateJobGetAllServerLogSpaceConsumers", "42__CreateJobGetAllServerTempdbSpaceUsage",
                 "43__CreateJobGetAllServerAgHealthState", "44__CreateJobGetAllServerServices", "45__CreateJobGetAllServerBackups",
                 "46__CreateJobGetAllServerDashboardMail", "47__CreateJobStopStuckSQLMonitorJobs", "48__CreateJobCollectLoginExpirationInfo",
-                "49__CreateJobPopulateInventoryTables", "50__CreateJobSendLoginExpiryEmails", "51__WhoIsActivePartition",
-                "52__BlitzIndexPartition", "53__BlitzPartition", "54__EnablePageCompression",
-                "55__GrafanaLogin", "56__LinkedServerOnInventory", "57__LinkedServerForDataDestinationInstance",
-                "58__AlterViewsForDataDestinationInstance")
+                "49__CreateJobPopulateInventoryTables", "50__CreateJobSendLoginExpiryEmails", "51__CreateJobComputeAllServerVolatileInfoHistoryHourly",
+                "52__WhoIsActivePartition", "53__BlitzIndexPartition", "54__BlitzPartition",
+                "55__EnablePageCompression", "56__GrafanaLogin", "57__LinkedServerOnInventory",
+                "58__LinkedServerForDataDestinationInstance", "59__AlterViewsForDataDestinationInstance")
     #>
     #OnlySteps = @( "2__AllDatabaseObjects" )
     #StartAtStep = '1__sp_WhoIsActive'
