@@ -49,7 +49,10 @@ Param (
     [int]$ExpiryDaysThreshold = 365, # if expiring in days
 
     [Parameter(Mandatory=$false)]
-    [int]$ExpiryYearsToSetForCertificate = 5 # set expiry date for certificate from today
+    [int]$ExpiryYearsToSetForCertificate = 5, # set expiry date for certificate from today
+
+    [Parameter(Mandatory=$false)]
+    [bool]$OverrideHostCheck = $false
 )
 
 cls
@@ -83,13 +86,13 @@ select	srv_name = '$SqlInstanceToEncrypt',
 		at_server_name = @@SERVERNAME,
 		server_name = convert(varchar,SERVERPROPERTY('ServerName')),
 		domain = default_domain(),
-		server_host_name = COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')),
+		server_host_name = SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),
 		total_database_count = (select count(*) from sys.databases d where d.state_desc = 'ONLINE' and is_read_only = 0 and d.database_id > 4),
 		error_log_file = SERVERPROPERTY('ErrorLogFileName'),
         master_key_exists = convert(bit,case when exists (select * from sys.symmetric_keys where name LIKE '%DatabaseMasterKey%') then 1 else 0 end)
 "@
 $resultBasicDetails = @()
-$resultBasicDetails += Invoke-DbaQuery -SqlInstance $conSqlInstanceToEncrypt -Database master -Query $sqlBasicDetails
+$resultBasicDetails += $conSqlInstanceToEncrypt | Invoke-DbaQuery -Database master -Query $sqlBasicDetails
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "[Invoke-DbaQuery] Get existing encryption status per database.."
 $sqlDbEncryptionDetails = @"
@@ -118,12 +121,15 @@ and is_read_only = 0
 and d.database_id > 4
 and d.source_database_id is null
 "@
+
+Write-Debug "Stop before sqlDbEncryptionDetails"
 $resultDbEncryptionDetails = @()
-$resultDbEncryptionDetails += Invoke-DbaQuery -SqlInstance $conSqlInstanceToEncrypt -Database master -Query $sqlDbEncryptionDetails
+$resultDbEncryptionDetails += $conSqlInstanceToEncrypt | Invoke-DbaQuery -Database master -Query $sqlDbEncryptionDetails
 
 #$resultBasicDetails | ogv
 #$resultDbEncryptionDetails | ogv
 
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Extract properties from `$resultDbEncryptionDetails.."
 $serverName = $resultBasicDetails.server_name
 $serverNameDeSensitized = $serverName.Replace('\','_')
 $atServerName = $resultBasicDetails.at_server_name
@@ -149,9 +155,37 @@ $saveEncryptionPassword = $false
 # If there are user databases, then extract info
 if($resultDbEncryptionDetails.Count -gt 0)
 {
+    "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "If there are user databases, then extract info.."
+    $certificateSubjectInDbs = $resultDbEncryptionDetails | Where-Object {$_.certificate_subject -like '* Certificate' -and $_.encryption_state_desc -eq 'ENCRYPTED'} | `
+                                Sort-Object -Property certificate_start_date -Descending | `
+                                Select-Object -ExpandProperty certificate_subject -First 1
+
+
     $currentCertificateName = $resultDbEncryptionDetails | Where-Object {$_.certificate_subject -eq $certificateSubject} | `
                                 Sort-Object -Property certificate_start_date -Descending | `
                                 Select-Object -ExpandProperty certificate_name -First 1
+
+    # If AG databases, then certificate should be generated on original replica
+    if(-not [String]::IsNullOrEmpty($certificateSubjectInDbs) -and [String]::IsNullOrEmpty($currentCertificateName)) 
+    {
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Current host is [$serverName]"
+        "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'RESULT:', "Certificate generation should be done on replica [$($certificateSubjectInDbs -replace ' Certificate', '')]." | Write-Host -ForegroundColor Yellow
+        
+        if($OverrideHostCheck -eq $false) {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'RESULT:', "To override this setting, use parameter 'OverrideHostCheck'" | Write-Host -ForegroundColor Yellow
+
+            return
+        }
+        else {
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Ideally certificate generation should be done on replica [$($certificateSubjectInDbs -replace ' Certificate', '')]."
+            "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'WARNING:', "Still generating certificates with currrent host."
+            
+            $certificateSubject = $certificateSubjectInDbs
+            $currentCertificateName = $resultDbEncryptionDetails | Where-Object {$_.certificate_subject -eq $certificateSubject} | `
+                                Sort-Object -Property certificate_start_date -Descending | `
+                                Select-Object -ExpandProperty certificate_name -First 1
+        }
+    }
     
     if(-not [String]::($currentCertificateName)) {
         $currentCertificateAgeLeft = $resultDbEncryptionDetails | Where-Object {$_.certificate_name -eq $currentCertificateName} | `
@@ -175,10 +209,16 @@ if($resultDbEncryptionDetails.Count -gt 0)
     $expiredDbCount = $expiredDbs.Count
 }
 
+$dbRow = $resultDbEncryptionDetails[1]
+#$dbRow.encryption_state_desc
+#([String]::IsNullOrEmpty($dbRow.encryption_state_desc))
+
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$encryptedDbCount = $encryptedDbCount"
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$currentCertificateAgeLeft = $currentCertificateAgeLeft"
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$ExpiryDaysThreshold = $ExpiryDaysThreshold"
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "`$expiredDbCount = $expiredDbCount"
+
+Write-Debug "Stop and check variables"
 
 # has certificates expired?
 if( ($encryptedDbCount -gt 0) -and ($currentCertificateAgeLeft -lt $ExpiryDaysThreshold) -and ($expiredDbCount -gt 0) ) {
@@ -231,7 +271,7 @@ if([String]::IsNullOrEmpty($backupDirectory)) {
 if([String]::IsNullOrEmpty($backupDirectory)) {
     $sqlGetErrorLog = "exec sp_readerrorlog 0,1,'Log\ERRORLOG','-e'"
     $resultGetErrorLog = @()
-    $resultGetErrorLog += Invoke-DbaQuery -SqlInstance $conSqlInstanceToEncrypt -Database master -Query $sqlGetErrorLog
+    $resultGetErrorLog += $conSqlInstanceToEncrypt | Invoke-DbaQuery -Database master -Query $sqlGetErrorLog
     if($resultGetErrorLog[0].Text -match "\s+-e\s(?'log_directory'.+)\\ERRORLOG") {
         $backupDirectory = $Matches['log_directory']
     }
@@ -255,7 +295,7 @@ and user_name = 'master key'
 
 "`n`n-- Execute below on [$CredentialManagerServer].[$CredentialManagerDatabase]`n" + $sqlFetchPassword + "`nGO`n" | Out-File -FilePath $scriptOutfile -Append
 $resultFetchPassword = @()
-$resultFetchPassword += Invoke-DbaQuery -SqlInstance $conCredentialManagerServer -Database $CredentialManagerDatabase -Query $sqlFetchPassword
+$resultFetchPassword += $conCredentialManagerServer | Invoke-DbaQuery -Database $CredentialManagerDatabase -Query $sqlFetchPassword
 
 # If password does not exist in credential manager
 if($resultFetchPassword.Count -eq 0) {
@@ -312,7 +352,7 @@ if($saveEncryptionPassword -and (-not [String]::IsNullOrEmpty($EncryptionPasswor
                     password_string = $EncryptionPassword
                     remarks = 'Database Master Key'
             }
-    Invoke-DbaQuery -SqlInstance $conCredentialManagerServer -Database $CredentialManagerDatabase `
+    $conCredentialManagerServer | Invoke-DbaQuery -Database $CredentialManagerDatabase `
             -Query usp_add_credential -SqlParameter $params -CommandType StoredProcedure -MessagesToOutput -EnableException
 }
 elseif ($saveEncryptionPassword -and [String]::IsNullOrEmpty($EncryptionPassword) ) {
@@ -362,7 +402,7 @@ if($DryRun) {
     $sqlCreateMasterKey | Write-Host -ForegroundColor Magenta
 }
 else {
-    Invoke-DbaQuery -SqlInstance $conSqlInstanceToEncrypt -Database master -Query $sqlCreateMasterKey `
+    $conSqlInstanceToEncrypt | Invoke-DbaQuery -Database master -Query $sqlCreateMasterKey `
                     -MessagesToOutput -EnableException | Write-Host -ForegroundColor Cyan
 }
 
@@ -393,7 +433,7 @@ if($DryRun) {
     $sqlCreateCertificate | Write-Host -ForegroundColor Magenta
 }
 else {
-    Invoke-DbaQuery -SqlInstance $conSqlInstanceToEncrypt -Database master -Query $sqlCreateCertificate `
+    $conSqlInstanceToEncrypt | Invoke-DbaQuery -Database master -Query $sqlCreateCertificate `
                     -MessagesToOutput -EnableException | Write-Host -ForegroundColor Cyan
 }
 
@@ -465,7 +505,7 @@ if($DryRun) {
     $sqlBackupCertificate | Write-Host -ForegroundColor Magenta
 }
 else {
-    Invoke-DbaQuery -SqlInstance $conSqlInstanceToEncrypt -Database master -Query $sqlBackupCertificate `
+    $conSqlInstanceToEncrypt | Invoke-DbaQuery -Database master -Query $sqlBackupCertificate `
                     -MessagesToOutput -EnableException | Write-Host -ForegroundColor Cyan
 }
 
@@ -511,7 +551,7 @@ where 1=1
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Get list of dbs to Encrypt.."
 $resultGetAllUserDatabases = @()
-$resultGetAllUserDatabases += Invoke-DbaQuery -SqlInstance $conSqlInstanceToEncrypt -Database master `
+$resultGetAllUserDatabases += $conSqlInstanceToEncrypt | Invoke-DbaQuery -Database master `
                                 -Query $sqlGetAllUserDatabases
 
 $UserDatabasesToEncrypt = @()
@@ -607,7 +647,7 @@ else
             $sqlCreateOrAlterEncryptionKey | Write-Host -ForegroundColor Magenta
         }
         else {
-            Invoke-DbaQuery -SqlInstance $conSqlInstanceToEncrypt -Database master -Query $sqlCreateOrAlterEncryptionKey `
+            $conSqlInstanceToEncrypt | Invoke-DbaQuery -Database master -Query $sqlCreateOrAlterEncryptionKey `
                         -MessagesToOutput -EnableException | Write-Host -ForegroundColor Cyan
         }
     }
@@ -637,7 +677,7 @@ print 'Encryption Key certificate updated on [$database].'
             $sqlCreateOrAlterEncryptionKey | Write-Host -ForegroundColor Magenta
         }
         else {
-            Invoke-DbaQuery -SqlInstance $conSqlInstanceToEncrypt -Database master -Query $sqlCreateOrAlterEncryptionKey `
+            $conSqlInstanceToEncrypt | Invoke-DbaQuery -Database master -Query $sqlCreateOrAlterEncryptionKey `
                         -MessagesToOutput | Write-Host -ForegroundColor Cyan
         }
     }
@@ -673,7 +713,7 @@ use [master]; alter database [$database] set encryption on;
             $sqlEncryptDatabase | Write-Host -ForegroundColor Magenta
         }
         else {
-            Invoke-DbaQuery -SqlInstance $conSqlInstanceToEncrypt -Database master -Query $sqlEncryptDatabase `
+            $conSqlInstanceToEncrypt | Invoke-DbaQuery -Database master -Query $sqlEncryptDatabase `
                         -MessagesToOutput | Write-Host -ForegroundColor Cyan
         }
     }
@@ -717,7 +757,7 @@ else
 $horizontalLine + "`n" + $sqlSaveEncryptionDetails + "`nGO`n" | Out-File -FilePath $scriptOutfile -Append
 $sqlSaveEncryptionDetails | Write-Host -ForegroundColor Magenta
 
-Invoke-DbaQuery -SqlInstance $conCredentialManagerServer -Database $CredentialManagerDatabase -Query $sqlSaveEncryptionDetails `
+$conCredentialManagerServer | Invoke-DbaQuery -Database $CredentialManagerDatabase -Query $sqlSaveEncryptionDetails `
                 -MessagesToOutput | Write-Host -ForegroundColor Cyan
 
 
