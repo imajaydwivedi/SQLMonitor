@@ -64,12 +64,12 @@ $params = @{
     #SkipDriveCheck = $true
     #SkipPingCheck = $true
     #SkipMultiServerviewsUpgrade = $false
-    #ForceSetupOfTaskSchedulerJobs = $true
+    #ForceSetupOfTaskSchedulerJobs = $true    
+    #ConfirmSetupOfTaskSchedulerJobs = $true
     SqlInstanceAsDataDestination = $SqlInstanceAsDataDestination
     #SqlInstanceForPowershellJobs = $SqlInstanceForPowershellJobs
     #SqlInstanceForTsqlJobs = $SqlInstanceForTsqlJobs
     #ConfirmValidationOfMultiInstance = $true
-    #ConfirmSetupOfTaskSchedulerJobs = $true
     #HasCustomizedTsqlJobs = $true
     #HasCustomizedPowerShellJobs = $true
     #OverrideCustomizedTsqlJobs = $false
@@ -121,15 +121,7 @@ if($true)
     $downloadsPath = "$($env:USERPROFILE)\Downloads\"
     $modulePath = ($env:PSModulePath -split ';' | Where-Object {$_ -notlike "*$($env:USERNAME)*"})[0]
 
-    # Copy [dbatools] module
-    [string]$dbatoolsSourceDirectory = "$($downloadsPath)dbatools\"
-    [string]$dbatoolsDestinationDirectory = "$($modulePath)\dbatools\"
-    Copy-Item -Force -Recurse -Verbose $dbatoolsSourceDirectory -Destination $dbatoolsDestinationDirectory
-
-    # Copy [dbatools.library] module
-    [string]$dbatoolsLibrarySourceDirectory = "$($downloadsPath)dbatools.library\"
-    [string]$dbatoolsLibraryDestinationDirectory = "$($modulePath)\dbatools.library\"
-    Copy-Item -Force -Recurse -Verbose $dbatoolsLibrarySourceDirectory -Destination $dbatoolsLibraryDestinationDirectory
+    "Copy the folders dbatools & dbatools.library from '$downloadsPath' to folder '$modulePath'" | Write-Host -ForegroundColor Yellow
 }
 
 
