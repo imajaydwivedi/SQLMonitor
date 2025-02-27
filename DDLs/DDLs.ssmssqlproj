@@ -11,6 +11,8 @@
           <Authentication>Windows Authentication</Authentication>
           <InitialDB />
           <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>False</TrustServerCertificate>
+          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -23,6 +25,8 @@
           <Authentication>SQL</Authentication>
           <InitialDB />
           <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>False</TrustServerCertificate>
+          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -35,6 +39,8 @@
           <Authentication>SQL</Authentication>
           <InitialDB />
           <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>False</TrustServerCertificate>
+          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -47,6 +53,8 @@
           <Authentication>SQL</Authentication>
           <InitialDB />
           <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>False</TrustServerCertificate>
+          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -59,6 +67,8 @@
           <Authentication>Windows Authentication</Authentication>
           <InitialDB>msdb</InitialDB>
           <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>False</TrustServerCertificate>
+          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -71,6 +81,8 @@
           <Authentication>Windows Authentication</Authentication>
           <InitialDB>master</InitialDB>
           <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>False</TrustServerCertificate>
+          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -83,6 +95,8 @@
           <Authentication>Windows Authentication</Authentication>
           <InitialDB>DBA</InitialDB>
           <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>False</TrustServerCertificate>
+          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -95,6 +109,8 @@
           <Authentication>Windows Authentication</Authentication>
           <InitialDB />
           <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>False</TrustServerCertificate>
+          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -107,6 +123,8 @@
           <Authentication>Windows Authentication</Authentication>
           <InitialDB />
           <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>False</TrustServerCertificate>
+          <EncryptionOption>True</EncryptionOption>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
@@ -632,8 +650,8 @@
           <FullPath>SCH-usp_GetAllServerInfo.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_LogSaver.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_LogSaver.sql</FullPath>
         </FileNode>
