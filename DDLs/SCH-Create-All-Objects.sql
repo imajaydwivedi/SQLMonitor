@@ -56,6 +56,8 @@
 	31) Add boundaries to partition. 1 boundary per hour
 	32) Remove boundaries with retention of 3 months
 	33) Populate [dbo].[BlitzFirst_WaitStats_Categories]
+	34) Create procedure dbo.usp_print
+	
 */
 
 IF DB_NAME() = 'master'
@@ -1923,5 +1925,48 @@ BEGIN
 			('XE_TIMER_EVENT','Idle',1,1,1)
 	) as Waits (WaitType, WaitCategory, Ignorable, IgnorableOnPerCoreMetric, IgnorableOnDashboard)
 	where WaitType not in (select WaitType from [dbo].[BlitzFirst_WaitStats_Categories]);
+END
+GO
+
+/* ****** 34) Create procedure dbo.usp_print ******* */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '34) Create procedure dbo.usp_print';
+go
+IF OBJECT_ID('dbo.usp_print') IS NULL
+	EXEC('CREATE PROCEDURE dbo.usp_print AS select 1 as dummy;');
+GO
+ALTER PROCEDURE [dbo].[usp_print]
+(
+	@string nvarchar(max),
+	@verbose tinyint = 0 /* 1 => messages, 2 => messages + table results */
+)
+AS
+BEGIN
+/*	Purpose:		
+	Modifications:	2025-Feb-27 - Initial Draft
+
+	exec usp_print @string;
+*/
+	SET NOCOUNT ON
+
+	DECLARE @CurrentEnd BIGINT; /* track the length of the next substring */
+	DECLARE @offset tinyint; /*tracks the amount of offset needed */
+	set @string = replace(  replace(@string, char(13) + char(10), char(10))   , char(13), char(10))
+
+	WHILE LEN(@String) > 1
+	BEGIN
+		IF CHARINDEX(CHAR(10), @String) between 1 AND 4000
+		BEGIN
+			   SET @CurrentEnd =  CHARINDEX(char(10), @String) -1
+			   set @offset = 2
+		END
+		ELSE
+		BEGIN
+			   SET @CurrentEnd = 4000
+				set @offset = 1
+		END   
+		PRINT SUBSTRING(@String, 1, @CurrentEnd) 
+		set @string = SUBSTRING(@String, @CurrentEnd+@offset, LEN(@String))   
+	END /*End While loop*/
 END
 GO

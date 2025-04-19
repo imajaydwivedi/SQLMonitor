@@ -3,6 +3,9 @@ import os
 
 # Pyodbc Cursor - https://github.com/mkleehammer/pyodbc/wiki/Cursor
 
+# Enable pyodbc connection pooling explicitly
+pyodbc.pooling = True
+
 def connect_dba_instance(sql_instance='localhost', database='DBA', login_name='', login_password='', app_name='connect_dba_instance.py', logger=None, verbose:bool=False):
     if os.name == 'nt':
         # driver on windows
