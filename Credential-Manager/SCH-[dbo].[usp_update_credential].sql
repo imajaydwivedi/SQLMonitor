@@ -7,7 +7,7 @@ go
 
 --drop procedure dbo.usp_update_credential
 create or alter procedure dbo.usp_update_credential
-	@server_ip char(15) = null, 
+	@server_ip char(25) = null, 
 	@server_name varchar(125) = null, 
 	@user_name varchar(125), 
 	@old_password_string varchar(256) = null,

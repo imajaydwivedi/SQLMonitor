@@ -7,7 +7,7 @@ go
 
 --drop procedure dbo.usp_get_credential
 create or alter procedure dbo.usp_get_credential
-	@server_ip char(15) = null, 
+	@server_ip char(25) = null, 
 	@server_name varchar(125) = null, 
 	@user_name varchar(125) = null,
 	@passphrase_string varchar(125) = null,
@@ -63,7 +63,7 @@ begin
 	if object_id('tempdb..#matched_credentials') is not null
 		drop table #matched_credentials;
 	create table #matched_credentials
-	(	server_ip char(15) not null,
+	(	server_ip char(25) not null,
 		server_name varchar(125) null,
 		[user_name] varchar(125) not null,
 		is_sql_user bit not null default 0,
@@ -81,7 +81,7 @@ begin
 		context_user varchar(125)
 	);
 
-	set @_params = '@server_ip char(15), @server_name varchar(125), @user_name varchar(125), @passphrase_string varchar(125), @caller_user varchar(125), @is_caller_sysadmin int';
+	set @_params = '@server_ip char(25), @server_name varchar(125), @user_name varchar(125), @passphrase_string varchar(125), @caller_user varchar(125), @is_caller_sysadmin int';
 	set @_sql = '
 	insert #matched_credentials 
 	(server_ip, server_name, [user_name], is_sql_user, is_rdp_user, password_hash, salt, created_date, created_by, updated_date, updated_by, delegate_login_01, delegate_login_02, remarks, is_sysadmin, context_user )

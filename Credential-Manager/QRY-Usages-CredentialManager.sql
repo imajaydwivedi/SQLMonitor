@@ -53,7 +53,7 @@ go
 
 
 /* Get All Credential for Specific Server */
-declare @server_ip char(15) = '*'
+declare @server_ip char(25) = '*'
 select server_ip, server_name, [user_name], is_sql_user, is_rdp_user, 
 		password_hash, [password] = cast(DecryptByPassPhrase(cast(salt as varchar(255)),password_hash ,1, isnull(server_ip,@server_ip)) as varchar(255)),
 		salt, salt_raw = cast(salt as varchar(255)),	created_date, created_by, updated_date, updated_by, 

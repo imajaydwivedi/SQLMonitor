@@ -9,7 +9,7 @@ go
 -- drop table dbo.credential_manager
 -- drop table credential_manager_history
 create table dbo.credential_manager
-(	server_ip char(15) not null,
+(	server_ip char(25) not null,
 	server_name varchar(125) null,
 	[user_name] varchar(125) not null,
 	[password_hash] varbinary(500) not null,
@@ -45,7 +45,7 @@ create table dbo.credential_manager_audit
 	collection_time_utc datetime2 not null default getutcdate(),
 	access_type varchar(50) not null,
 	access_grant_status varchar(50) not null,
-	server_ip char(15) not null,
+	server_ip char(25) not null,
 	server_name varchar(125) null,
 	original_login_name varchar(125) not null default original_login(),
 	effective_login_name varchar(125) not null default suser_name(),
