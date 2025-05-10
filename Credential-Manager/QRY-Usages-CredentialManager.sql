@@ -28,8 +28,8 @@ go
 /* Fetch Credentials */
 declare @password varchar(256);
 exec dbo.usp_get_credential 
-		--@server_ip = '*',
-		--@user_name = 'Lab\SQLServices',
+		@server_ip = '*',
+		@user_name = 'Lab\SQLServices',
 		@password = @password output;
 select @password as [@password];
 go
