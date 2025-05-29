@@ -28,8 +28,7 @@ AS
 BEGIN
 
 	/*
-		Version:		1.0.0
-		Date:			2022-05-03
+		Date:			2025-May-29 - Ajay - Bug/Fix - Datediff overflow
 
 		exec sp_WhatIsRunning @query_pattern = 'usp_SomeThingOther'
 	*/
@@ -40,8 +39,8 @@ BEGIN
 	--	Query to find what's is running on server
 	;WITH T_Requests AS 
 	(
-		select  [elapsed_time_s] = datediff(SECOND,COALESCE(r.start_time, s.last_request_start_time),GETDATE())
-				,[elapsed_time_ms] = datediff(MILLISECOND,COALESCE(r.start_time, s.last_request_start_time),GETDATE())
+		select  cv.start_time, cv.days_threshold_ms, cv.days_gap,
+				[elapsed_time_s] = datediff(SECOND, cv.start_time, GETDATE())
 				,s.session_id
 				,st.text as sql_command
 				,r.command as command
@@ -82,7 +81,6 @@ BEGIN
 				,COALESCE(r.status, s.status) as status
 				,open_transaction_count = s.open_transaction_count
 				,s.host_name as host_name
-				,COALESCE(r.start_time, s.last_request_start_time) as start_time
 				,s.login_time as login_time
 				,r.statement_start_offset ,r.statement_end_offset
 				,[SqlQueryPlan] = case when @get_plans = 1 then CAST(sqp.query_plan AS xml) else null end
@@ -95,6 +93,10 @@ BEGIN
 		OUTER APPLY sys.dm_exec_sql_text(COALESCE(r.sql_handle,dec.sql_handle)) AS st
 		OUTER APPLY sys.dm_exec_query_plan(r.plan_handle) AS bqp
 		OUTER APPLY sys.dm_exec_text_query_plan(r.plan_handle,r.statement_start_offset, r.statement_end_offset) as sqp
+		OUTER APPLY (SELECT [start_time] = COALESCE(r.start_time, s.last_request_start_time),
+                            [days_threshold_ms] = 24,
+                            [days_gap] = DATEDIFF(DAY,COALESCE(r.start_time, s.last_request_start_time),GETDATE())
+            ) cv
 		WHERE	s.session_id != @@SPID
 			AND (	(CASE	WHEN	s.session_id IN (select ri.blocking_session_id from sys.dm_exec_requests as ri)
 							--	Get sessions involved in blocking (including system sessions)
@@ -119,10 +121,10 @@ BEGIN
 				)		
 	)
 	SELECT	[collection_time] = getutcdate(),
-			[dd hh:mm:ss.mss] = right('   0'+convert(varchar, elapsed_time_s/86400),4)+ ' '+convert(varchar,dateadd(MILLISECOND,elapsed_time_ms,'1900-01-01 00:00:00'),114),
+			cv2.[dd hh:mm:ss.mss],
 			[session_id], [blocking_session_id], [command], 
 			[wait_type], 
-			[wait_time] = right('   0'+convert(varchar, [wait_time]/86400000),4)+ ' '+convert(varchar,dateadd(MILLISECOND,[wait_time],'1900-01-01 00:00:00'),114),
+			cv3.[wait_time],
 			[granted_query_memory], [program_name], [login_name], [database_name], [sql_command], 
 			[plan_handle] ,[sql_handle], 
 			--[wait_time], 
@@ -130,6 +132,22 @@ BEGIN
 			[reads], [writes], [cpu_time], [status], [open_transaction_count], [host_name], [start_time], [login_time], 
 			[statement_start_offset], [statement_end_offset]
 	FROM T_Requests AS r
+	CROSS APPLY (   select [elapsed_time_ms] = case when r.days_gap >= r.days_threshold_ms then elapsed_time_s*1000
+                                                    else datediff(MILLISECOND, r.start_time, GETDATE())
+                                                    end
+                ) cv
+    CROSS APPLY (   select [dd hh:mm:ss.mss] = case when r.days_gap >= r.days_threshold_ms
+                                                    then right('   0'+convert(varchar, elapsed_time_s/86400),4)+ ' '+convert(varchar,dateadd(SECOND,elapsed_time_s,'1900-01-01 00:00:00'),114)
+                                                    else right('   0'+convert(varchar, elapsed_time_s/86400),4)+ ' '+convert(varchar,dateadd(MILLISECOND,elapsed_time_ms,'1900-01-01 00:00:00'),114)
+                                                    end
+
+                ) cv2
+    CROSS APPLY (   select [wait_time] = case when r.days_gap >= r.days_threshold_ms
+                                                    then right('   0'+convert(varchar, [wait_time]/86400000),4)+ ' '+convert(varchar,dateadd(SECOND,[wait_time]/1000,'1900-01-01 00:00:00'),114)
+                                                    else right('   0'+convert(varchar, [wait_time]/86400000),4)+ ' '+convert(varchar,dateadd(MILLISECOND,[wait_time],'1900-01-01 00:00:00'),114)
+                                                    end
+
+                ) cv3
 	WHERE 1 = 1
 	AND	(( @query_pattern is null or len(@query_pattern) = 0 )
 			or (	r.sql_command like ('%'+@query_pattern+'%')
