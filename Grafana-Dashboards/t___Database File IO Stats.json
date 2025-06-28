@@ -686,7 +686,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 1
+            "y": 111
           },
           "id": 22,
           "options": {
@@ -1246,7 +1246,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 2
+            "y": 112
           },
           "id": 17,
           "options": {
@@ -1792,7 +1792,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 167
+            "y": 367
           },
           "id": 18,
           "options": {
@@ -1940,7 +1940,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 3
+            "y": 113
           },
           "id": 2,
           "options": {
@@ -2084,7 +2084,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 4
+            "y": 114
           },
           "id": 19,
           "options": {
@@ -2217,7 +2217,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 5
+            "y": 115
           },
           "id": 43,
           "options": {
@@ -2616,7 +2616,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 6
+            "y": 116
           },
           "id": 34,
           "options": {
@@ -2714,7 +2714,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -2986,7 +2987,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "super-light-yellow",
@@ -3019,7 +3021,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 7
+            "y": 118
           },
           "id": 38,
           "options": {
@@ -3103,7 +3105,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -3379,7 +3382,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "super-light-yellow",
@@ -3412,7 +3416,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 67
+            "y": 128
           },
           "id": 32,
           "options": {
@@ -3483,6 +3487,810 @@
         "w": 24,
         "x": 0,
         "y": 7
+      },
+      "id": 46,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "exec sp_BlitzFirst @seconds = 60, @ExpertMode = 1",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "running_query"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "database_name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "left"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Database"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "sample_ms"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Sample Time"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "disk_drive_count"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Disk Drives"
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "files_count"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Db Files"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "disk_volume"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Disk Drive"
+                  },
+                  {
+                    "id": "custom.minWidth",
+                    "value": 250
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "capacity_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Capacity"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "free_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Free"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "db_files_size_on_disk_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Db Files Size"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "total_reads_writes"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "# Reads/Writes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reads_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "writes_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reads_writes_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Read/Written"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "pcnt_reads_writes"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "% Read/Writes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "avg_read_write_stall_ms"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Latency"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "super-light-yellow",
+                          "value": 5
+                        },
+                        {
+                          "color": "#EAB839",
+                          "value": 15
+                        },
+                        {
+                          "color": "orange",
+                          "value": 20
+                        },
+                        {
+                          "color": "super-light-red",
+                          "value": 35
+                        },
+                        {
+                          "color": "red",
+                          "value": 50
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 8
+          },
+          "id": 47,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Latency"
+              }
+            ]
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @disk_drive varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\ndeclare @schedulers smallint;\ndeclare @StatstatsTop tinyint = 10;\ndeclare @StatsPercentTop int = 99;\ndeclare @sample_sec bigint;\ndeclare @collect_time_utc_snap1 datetime2;\ndeclare @collect_time_utc_snap2 datetime2;\n\nselect @schedulers = count(*) from sys.dm_os_schedulers where status = 'VISIBLE ONLINE' and is_online = 1;\n\nselect top 1 @collect_time_utc_snap2 = collection_time_utc, @sample_sec = sample_ms/1000\nfrom dbo.file_io_stats s2\nwhere s2.collection_time_utc <= @end_time_utc\norder by collection_time_utc desc;\n\nselect top 1 @collect_time_utc_snap1 = collection_time_utc\nfrom dbo.file_io_stats s1\nwhere collection_time_utc >=  (case when dateadd(second,-@sample_sec, @collect_time_utc_snap2) > @start_time_utc \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen dateadd(second,-@sample_sec, @collect_time_utc_snap2) \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse @start_time_utc end)\norder by collection_time_utc asc;\n\n;WITH [DiffStats] AS\n(\tSELECT\t-- Stats that weren't in the first snapshot\n\t\t\t--[ts2].[collection_time_utc],\n\t\t\t[ts2].[database_name],\n\t\t\t[ts2].[database_id],\n\t\t\t[ts2].[file_logical_name],\n\t\t\t[ts2].[file_id],\n\t\t\t[ts2].[file_location],\n\t\t\t[ts2].[sample_ms],\n\t\t\t[ts2].[num_of_reads],\n\t\t\t[ts2].[num_of_bytes_read],\n\t\t\t[ts2].[io_stall_read_ms],\n\t\t\t[ts2].[io_stall_queued_read_ms],\n\t\t\t[ts2].[num_of_writes],\n\t\t\t[ts2].[num_of_bytes_written],\n\t\t\t[ts2].[io_stall_write_ms],\n\t\t\t[ts2].[io_stall_queued_write_ms],\n\t\t\t[ts2].[io_stall],\n\t\t\t[ts2].[size_on_disk_bytes],\n\t\t\t[ts2].[io_pending_count]\n\tFROM dbo.file_io_stats AS [ts2]\n\tLEFT OUTER JOIN dbo.file_io_stats AS [ts1]\n\t\tON [ts2].[database_name] = [ts1].[database_name]\n\t\tAND [ts2].[file_logical_name] = [ts1].[file_logical_name]\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\tWHERE [ts1].[file_logical_name] IS NULL\n\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts1.[database_name] = @database\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts2.[database_name] = @database\n\t--\n\tUNION\n\t--\n\tSELECT\t-- Diff of Stats in both snapshots\n\t\t\t[database_name] = [ts2].[database_name],\n\t\t\t[database_id] = [ts2].[database_id],\n\t\t\t[file_logical_name] = [ts2].[file_logical_name],\n\t\t\t[file_id] = [ts2].[file_id],\n\t\t\t[file_location] = [ts2].[file_location],\n\t\t\t[sample_ms] = [ts2].[sample_ms] - [ts1].[sample_ms],\n\t\t\t[num_of_reads] = [ts2].[num_of_reads] - [ts1].[num_of_reads],\n\t\t\t[num_of_bytes_read] = [ts2].[num_of_bytes_read] - [ts1].[num_of_bytes_read],\n\t\t\t[io_stall_read_ms] = [ts2].[io_stall_read_ms] - [ts1].[io_stall_read_ms],\n\t\t\t[io_stall_queued_read_ms] = [ts2].[io_stall_queued_read_ms] - [ts1].[io_stall_queued_read_ms],\n\t\t\t[num_of_writes] = [ts2].[num_of_writes] - [ts1].[num_of_writes],\n\t\t\t[num_of_bytes_written] = [ts2].[num_of_bytes_written] - [ts1].[num_of_bytes_written],\n\t\t\t[io_stall_write_ms] = [ts2].[io_stall_write_ms] - [ts1].[io_stall_write_ms],\n\t\t\t[io_stall_queued_write_ms] = [ts2].[io_stall_queued_write_ms] - [ts1].[io_stall_queued_write_ms],\n\t\t\t[io_stall] = [ts2].[io_stall] - [ts1].[io_stall],\n\t\t\t[size_on_disk_bytes] = [ts2].[size_on_disk_bytes],\n\t\t\t[io_pending_count] = [ts2].[io_pending_count] - [ts1].[io_pending_count]\n\tFROM dbo.file_io_stats AS [ts2]\n\tLEFT OUTER JOIN dbo.file_io_stats AS [ts1]\n\t\tON [ts2].[database_name] = [ts1].[database_name]\n\t\tAND [ts2].[file_logical_name] = [ts1].[file_logical_name]\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\tWHERE [ts1].[file_logical_name] IS NOT NULL\n\tAND ( ([ts2].[num_of_reads]+[ts2].[num_of_writes]) - ([ts1].[num_of_reads]+[ts1].[num_of_writes]) ) > 0\n\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts1.[database_name] = @database\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts2.[database_name] = @database\n)\n,[t_DiskDrives] AS \n(\tselect ds.disk_volume, ds.capacity_mb, ds.free_mb\n\tfrom dbo.disk_space ds\n\twhere ds.collection_time_utc = (select max(i.collection_time_utc) from dbo.disk_space i)\n\t\"+(case when @disk_drive is null then '-- ' else '' end)+\"and ds.disk_volume = @disk_drive\n)\n,[t_FileIO] AS\n(\tSELECT\t[running_query] = 'File IO Stats', [sample_ms], [database_name], \n\t\t\t[file_name_DISPLAY] = [file_logical_name]+' '+QUOTENAME(case when right(file_location,3) = 'ldf' then 'LOG' else 'DATA' end),\n\t\t\t[file_logical_name], [file_location], dv.disk_volume, [size_on_disk_bytes],\n\t\t\t[file_type] = case when right(file_location,3) = 'ldf' then 'LOG' else 'DATA' end,\n\n\t\t\t[total_reads_writes] = [num_of_reads] + [num_of_writes],\n\t\t\t[total_reads_writes_stall_ms] = [io_stall_read_ms]+[io_stall_write_ms],\n\t\t\t[num_of_bytes_read], [num_of_bytes_written], \n\t\t\t[total_reads_writes_bytes] = [num_of_bytes_read]+[num_of_bytes_written],\n\t\t\t\n\t\t\t[reads_pcnt] = convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_read]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end),\n\t\t\t[writes_pcnt] = convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_written]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end),\n\t\t\t[pcnt_reads_writes] = convert(varchar,convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_read]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end)) + ' / ' + convert(varchar,convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_written]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end)),\n\t\t\t\n\t\t\t[read_latency_ms] = convert(numeric(20,2), case when [num_of_reads] = 0 then 0 else (([io_stall_read_ms] * 1.0)/[num_of_reads]) end),\n\t\t\t[write_latency_ms] = convert(numeric(20,2), case when [num_of_writes] = 0 then 0 else (([io_stall_write_ms] * 1.0)/[num_of_writes]) end),\n\t\t\t[latency_ms] = convert(numeric(20,2), case when [num_of_reads] + [num_of_writes] = 0 then 0 else (([io_stall] * 1.0) / ([num_of_reads] + [num_of_writes])) end),\n\n\t\t\t[avg_bytes_per_read] = convert(numeric(20,2), case when [num_of_reads] = 0 then 0 else ( ([num_of_bytes_read] * 1.0) / [num_of_reads] ) end),\n\t\t\t[avg_bytes_per_write] = convert(numeric(20,2), case when [num_of_writes] = 0 then 0 else ( ([num_of_bytes_written] * 1.0) / [num_of_writes] ) end),\n\t\t\t[avg_bytes_per_transfer] = convert(numeric(20,2), case when [num_of_reads] = 0 and [num_of_writes] = 0 then 0 else ( (([num_of_bytes_read]+[num_of_bytes_written]) * 1.0) / ([num_of_reads]+[num_of_writes]) ) end)\n\tFROM [DiffStats] fis\n\tOUTER APPLY (\n\t\t\tselect top 1 dd.*\n\t\t\tfrom [t_DiskDrives] dd\n\t\t\twhere fis.file_location like (dd.disk_volume+'%')\n\t\t\torder by len(dd.disk_volume) desc\n\t\t) dv\n)\nselect\t[running_query] = max(running_query),\n\t\t--[collection_time_utc] = max(collection_time_utc),\n\t\t[sample_ms] = max(sample_ms),\n\t\t[database_name],\n\t\t[files_count] = count(*),\n\t\t[disk_drive_count] = count(distinct dd.disk_volume),\n\t\t[capacity_mb] = max(dd.capacity_mb), \n\t\t[free_mb] = max(dd.free_mb),\n\t\t[db_files_size_on_disk_mb] = convert(numeric(20,2),sum(size_on_disk_bytes/1024.0/1024)),\n\t\t[total_reads_writes] = sum(total_reads_writes),\n\t\t[reads_mb] = convert(numeric(20,2),sum(num_of_bytes_read/1024.0/1024)),\n\t\t[writes_mb] = convert(numeric(20,2),sum(num_of_bytes_written/1024.0/1024)),\n\t\t[reads_writes_mb] = convert(numeric(20,2),sum( (num_of_bytes_read+num_of_bytes_written)/1024.0/1024 )),\n\t\t[pcnt_reads_writes] = convert(varchar,convert(numeric(20,2),(sum(num_of_bytes_read)*100.0/sum(num_of_bytes_read+num_of_bytes_written)))) + ' / ' + convert(varchar,convert(numeric(20,2),(sum(num_of_bytes_written)*100.0/sum(num_of_bytes_read+num_of_bytes_written)))),\n\t\t[avg_read_write_stall_ms] = convert(numeric(20,0),(case when sum(total_reads_writes) > 0 then sum(total_reads_writes_stall_ms)*1.0/sum(total_reads_writes) else 0.0 end))\nfrom [t_FileIO] fio\nleft join [t_DiskDrives] dd on dd.disk_volume = fio.disk_volume\ngroup by database_name\norder by [reads_writes_mb] desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @database;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @database;\n",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Database IO Stats ____In Selected Time Duration____Since____${__from:date:YYYY-MM-DD HH.mm}___till___${__to:date:YYYY-MM-DD HH.mm}____",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "exec sp_BlitzFirst @seconds = 60, @ExpertMode = 1",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "running_query"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "database_name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "left"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Database"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "sample_ms"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Sample Time"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "disk_drive_count"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Disk Drives"
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "files_count"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Db Files"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "disk_volume"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Disk Drive"
+                  },
+                  {
+                    "id": "custom.minWidth",
+                    "value": 250
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "capacity_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Capacity"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "free_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Free"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "db_files_size_on_disk_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Db Files Size"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "total_reads_writes"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "# Reads/Writes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reads_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "writes_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reads_writes_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Read/Written"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "pcnt_reads_writes"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "% Read/Writes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "avg_read_write_stall_ms"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Latency"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "super-light-yellow",
+                          "value": 5
+                        },
+                        {
+                          "color": "#EAB839",
+                          "value": 15
+                        },
+                        {
+                          "color": "orange",
+                          "value": 20
+                        },
+                        {
+                          "color": "super-light-red",
+                          "value": 35
+                        },
+                        {
+                          "color": "red",
+                          "value": 50
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 17
+          },
+          "id": 48,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Latency"
+              }
+            ]
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\n--set @start_time_utc = $__timeFrom();\n--set @end_time_utc = $__timeTo();\n\nset @start_time_utc = '${day_1__start_time_utc:date:iso}';\nset @end_time_utc = '${day_1__end_time_utc:date:iso}';\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @disk_drive varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\ndeclare @schedulers smallint;\ndeclare @StatstatsTop tinyint = 10;\ndeclare @StatsPercentTop int = 99;\ndeclare @sample_sec bigint;\ndeclare @collect_time_utc_snap1 datetime2;\ndeclare @collect_time_utc_snap2 datetime2;\n\nselect @schedulers = count(*) from sys.dm_os_schedulers where status = 'VISIBLE ONLINE' and is_online = 1;\n\nselect top 1 @collect_time_utc_snap2 = collection_time_utc, @sample_sec = sample_ms/1000\nfrom dbo.file_io_stats s2\nwhere s2.collection_time_utc <= @end_time_utc\norder by collection_time_utc desc;\n\nselect top 1 @collect_time_utc_snap1 = collection_time_utc\nfrom dbo.file_io_stats s1\nwhere collection_time_utc >=  (case when dateadd(second,-@sample_sec, @collect_time_utc_snap2) > @start_time_utc \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen dateadd(second,-@sample_sec, @collect_time_utc_snap2) \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse @start_time_utc end)\norder by collection_time_utc asc;\n\n;WITH [DiffStats] AS\n(\tSELECT\t-- Stats that weren't in the first snapshot\n\t\t\t--[ts2].[collection_time_utc],\n\t\t\t[ts2].[database_name],\n\t\t\t[ts2].[database_id],\n\t\t\t[ts2].[file_logical_name],\n\t\t\t[ts2].[file_id],\n\t\t\t[ts2].[file_location],\n\t\t\t[ts2].[sample_ms],\n\t\t\t[ts2].[num_of_reads],\n\t\t\t[ts2].[num_of_bytes_read],\n\t\t\t[ts2].[io_stall_read_ms],\n\t\t\t[ts2].[io_stall_queued_read_ms],\n\t\t\t[ts2].[num_of_writes],\n\t\t\t[ts2].[num_of_bytes_written],\n\t\t\t[ts2].[io_stall_write_ms],\n\t\t\t[ts2].[io_stall_queued_write_ms],\n\t\t\t[ts2].[io_stall],\n\t\t\t[ts2].[size_on_disk_bytes],\n\t\t\t[ts2].[io_pending_count]\n\tFROM dbo.file_io_stats AS [ts2]\n\tLEFT OUTER JOIN dbo.file_io_stats AS [ts1]\n\t\tON [ts2].[database_name] = [ts1].[database_name]\n\t\tAND [ts2].[file_logical_name] = [ts1].[file_logical_name]\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\tWHERE [ts1].[file_logical_name] IS NULL\n\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts1.[database_name] = @database\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts2.[database_name] = @database\n\t--\n\tUNION\n\t--\n\tSELECT\t-- Diff of Stats in both snapshots\n\t\t\t[database_name] = [ts2].[database_name],\n\t\t\t[database_id] = [ts2].[database_id],\n\t\t\t[file_logical_name] = [ts2].[file_logical_name],\n\t\t\t[file_id] = [ts2].[file_id],\n\t\t\t[file_location] = [ts2].[file_location],\n\t\t\t[sample_ms] = [ts2].[sample_ms] - [ts1].[sample_ms],\n\t\t\t[num_of_reads] = [ts2].[num_of_reads] - [ts1].[num_of_reads],\n\t\t\t[num_of_bytes_read] = [ts2].[num_of_bytes_read] - [ts1].[num_of_bytes_read],\n\t\t\t[io_stall_read_ms] = [ts2].[io_stall_read_ms] - [ts1].[io_stall_read_ms],\n\t\t\t[io_stall_queued_read_ms] = [ts2].[io_stall_queued_read_ms] - [ts1].[io_stall_queued_read_ms],\n\t\t\t[num_of_writes] = [ts2].[num_of_writes] - [ts1].[num_of_writes],\n\t\t\t[num_of_bytes_written] = [ts2].[num_of_bytes_written] - [ts1].[num_of_bytes_written],\n\t\t\t[io_stall_write_ms] = [ts2].[io_stall_write_ms] - [ts1].[io_stall_write_ms],\n\t\t\t[io_stall_queued_write_ms] = [ts2].[io_stall_queued_write_ms] - [ts1].[io_stall_queued_write_ms],\n\t\t\t[io_stall] = [ts2].[io_stall] - [ts1].[io_stall],\n\t\t\t[size_on_disk_bytes] = [ts2].[size_on_disk_bytes],\n\t\t\t[io_pending_count] = [ts2].[io_pending_count] - [ts1].[io_pending_count]\n\tFROM dbo.file_io_stats AS [ts2]\n\tLEFT OUTER JOIN dbo.file_io_stats AS [ts1]\n\t\tON [ts2].[database_name] = [ts1].[database_name]\n\t\tAND [ts2].[file_logical_name] = [ts1].[file_logical_name]\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\tWHERE [ts1].[file_logical_name] IS NOT NULL\n\tAND ( ([ts2].[num_of_reads]+[ts2].[num_of_writes]) - ([ts1].[num_of_reads]+[ts1].[num_of_writes]) ) > 0\n\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts1.[database_name] = @database\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts2.[database_name] = @database\n)\n,[t_DiskDrives] AS \n(\tselect ds.disk_volume, ds.capacity_mb, ds.free_mb\n\tfrom dbo.disk_space ds\n\twhere ds.collection_time_utc = (select max(i.collection_time_utc) from dbo.disk_space i)\n\t\"+(case when @disk_drive is null then '-- ' else '' end)+\"and ds.disk_volume = @disk_drive\n)\n,[t_FileIO] AS\n(\tSELECT\t[running_query] = 'File IO Stats', [sample_ms], [database_name], \n\t\t\t[file_name_DISPLAY] = [file_logical_name]+' '+QUOTENAME(case when right(file_location,3) = 'ldf' then 'LOG' else 'DATA' end),\n\t\t\t[file_logical_name], [file_location], dv.disk_volume, [size_on_disk_bytes],\n\t\t\t[file_type] = case when right(file_location,3) = 'ldf' then 'LOG' else 'DATA' end,\n\n\t\t\t[total_reads_writes] = [num_of_reads] + [num_of_writes],\n\t\t\t[total_reads_writes_stall_ms] = [io_stall_read_ms]+[io_stall_write_ms],\n\t\t\t[num_of_bytes_read], [num_of_bytes_written], \n\t\t\t[total_reads_writes_bytes] = [num_of_bytes_read]+[num_of_bytes_written],\n\t\t\t\n\t\t\t[reads_pcnt] = convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_read]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end),\n\t\t\t[writes_pcnt] = convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_written]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end),\n\t\t\t[pcnt_reads_writes] = convert(varchar,convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_read]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end)) + ' / ' + convert(varchar,convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_written]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end)),\n\t\t\t\n\t\t\t[read_latency_ms] = convert(numeric(20,2), case when [num_of_reads] = 0 then 0 else (([io_stall_read_ms] * 1.0)/[num_of_reads]) end),\n\t\t\t[write_latency_ms] = convert(numeric(20,2), case when [num_of_writes] = 0 then 0 else (([io_stall_write_ms] * 1.0)/[num_of_writes]) end),\n\t\t\t[latency_ms] = convert(numeric(20,2), case when [num_of_reads] + [num_of_writes] = 0 then 0 else (([io_stall] * 1.0) / ([num_of_reads] + [num_of_writes])) end),\n\n\t\t\t[avg_bytes_per_read] = convert(numeric(20,2), case when [num_of_reads] = 0 then 0 else ( ([num_of_bytes_read] * 1.0) / [num_of_reads] ) end),\n\t\t\t[avg_bytes_per_write] = convert(numeric(20,2), case when [num_of_writes] = 0 then 0 else ( ([num_of_bytes_written] * 1.0) / [num_of_writes] ) end),\n\t\t\t[avg_bytes_per_transfer] = convert(numeric(20,2), case when [num_of_reads] = 0 and [num_of_writes] = 0 then 0 else ( (([num_of_bytes_read]+[num_of_bytes_written]) * 1.0) / ([num_of_reads]+[num_of_writes]) ) end)\n\tFROM [DiffStats] fis\n\tCROSS APPLY (\n\t\t\tselect top 1 dd.*\n\t\t\tfrom [t_DiskDrives] dd\n\t\t\twhere fis.file_location like (dd.disk_volume+'%')\n\t\t\torder by len(dd.disk_volume) desc\n\t\t) dv\n)\nselect\t[running_query] = max(running_query),\n\t\t--[collection_time_utc] = max(collection_time_utc),\n\t\t[sample_ms] = max(sample_ms),\n\t\t[database_name],\n\t\t[files_count] = count(*),\n\t\t[disk_drive_count] = count(distinct dd.disk_volume),\n\t\t[capacity_mb] = max(dd.capacity_mb), \n\t\t[free_mb] = max(dd.free_mb),\n\t\t[db_files_size_on_disk_mb] = convert(numeric(20,2),sum(size_on_disk_bytes/1024.0/1024)),\n\t\t[total_reads_writes] = sum(total_reads_writes),\n\t\t[reads_mb] = convert(numeric(20,2),sum(num_of_bytes_read/1024.0/1024)),\n\t\t[writes_mb] = convert(numeric(20,2),sum(num_of_bytes_written/1024.0/1024)),\n\t\t[reads_writes_mb] = convert(numeric(20,2),sum( (num_of_bytes_read+num_of_bytes_written)/1024.0/1024 )),\n\t\t[pcnt_reads_writes] = convert(varchar,convert(numeric(20,2),(sum(num_of_bytes_read)*100.0/sum(num_of_bytes_read+num_of_bytes_written)))) + ' / ' + convert(varchar,convert(numeric(20,2),(sum(num_of_bytes_written)*100.0/sum(num_of_bytes_read+num_of_bytes_written)))),\n\t\t[avg_read_write_stall_ms] = convert(numeric(20,0),(case when sum(total_reads_writes) > 0 then sum(total_reads_writes_stall_ms)*1.0/sum(total_reads_writes) else 0.0 end))\nfrom [t_FileIO] fio\nleft join [t_DiskDrives] dd on dd.disk_volume = fio.disk_volume\ngroup by database_name\norder by [reads_writes_mb] desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @database;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @database;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Database IO Stats ____In Selected Time Duration____Since____${day_1__start_time_utc:date:YYYY-MM-DD HH.mm}___till___${day_1__end_time_utc:date:YYYY-MM-DD HH.mm}____ DAY(+/-)",
+          "type": "table"
+        }
+      ],
+      "title": "Comparison - Database IO Stats - Selective - \"__${sql_schedulers} CPUs__\" @ ${collection_time_utc:date:YYYY-MM-DD HH.mm}",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
       },
       "id": 24,
       "panels": [
@@ -3815,7 +4623,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 8
+            "y": 208
           },
           "id": 10,
           "options": {
@@ -3885,7 +4693,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 9
       },
       "id": 30,
       "panels": [
@@ -3913,7 +4721,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -4185,7 +4994,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "super-light-yellow",
@@ -4218,7 +5028,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 9
+            "y": 56
           },
           "id": 31,
           "options": {
@@ -4302,7 +5112,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -4574,7 +5385,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "super-light-yellow",
@@ -4607,7 +5419,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 19
+            "y": 66
           },
           "id": 41,
           "options": {
@@ -4669,6 +5481,802 @@
         }
       ],
       "title": "Disk IO Stats - Selective - \"__${sql_schedulers} CPUs__\" @ ${collection_time_utc:date:YYYY-MM-DD HH.mm}",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 49,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "exec sp_BlitzFirst @seconds = 60, @ExpertMode = 1",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "running_query"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "sample_ms"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Sample Time"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "database_count"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Databases"
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "files_count"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Db Files"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "disk_volume"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Disk Drive"
+                  },
+                  {
+                    "id": "custom.minWidth",
+                    "value": 250
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "capacity_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Capacity"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "free_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Free"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "db_files_size_on_disk_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Db Files Size"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "total_reads_writes"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "# Reads/Writes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reads_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "writes_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reads_writes_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Read/Written"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "pcnt_reads_writes"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "% Read/Writes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "avg_read_write_stall_ms"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Latency"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "super-light-yellow",
+                          "value": 5
+                        },
+                        {
+                          "color": "yellow",
+                          "value": 15
+                        },
+                        {
+                          "color": "orange",
+                          "value": 20
+                        },
+                        {
+                          "color": "super-light-red",
+                          "value": 35
+                        },
+                        {
+                          "color": "red",
+                          "value": 50
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 50,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Latency"
+              }
+            ]
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @disk_drive varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\ndeclare @schedulers smallint;\ndeclare @StatstatsTop tinyint = 10;\ndeclare @StatsPercentTop int = 99;\ndeclare @collect_time_utc_snap1 datetime2;\ndeclare @collect_time_utc_snap2 datetime2;\n\n--select @start_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info;\nselect @schedulers = count(*) from sys.dm_os_schedulers where status = 'VISIBLE ONLINE' and is_online = 1;\n\nselect top 1 @collect_time_utc_snap2 = collection_time_utc\nfrom dbo.file_io_stats s2\nwhere s2.collection_time_utc <= @end_time_utc\norder by collection_time_utc desc;\n\nselect top 1 @collect_time_utc_snap1 = collection_time_utc\nfrom dbo.file_io_stats s1\nwhere collection_time_utc >= @start_time_utc\norder by collection_time_utc asc;\n\n--select @collect_time_utc_snap1, @collect_time_utc_snap2;\n\n;WITH [DiffStats] AS\n(\tSELECT\t-- Stats that weren't in the first snapshot\n\t\t\t--[ts2].[collection_time_utc],\n\t\t\t[ts2].[database_name],\n\t\t\t[ts2].[database_id],\n\t\t\t[ts2].[file_logical_name],\n\t\t\t[ts2].[file_id],\n\t\t\t[ts2].[file_location],\n\t\t\t[ts2].[sample_ms],\n\t\t\t[ts2].[num_of_reads],\n\t\t\t[ts2].[num_of_bytes_read],\n\t\t\t[ts2].[io_stall_read_ms],\n\t\t\t[ts2].[io_stall_queued_read_ms],\n\t\t\t[ts2].[num_of_writes],\n\t\t\t[ts2].[num_of_bytes_written],\n\t\t\t[ts2].[io_stall_write_ms],\n\t\t\t[ts2].[io_stall_queued_write_ms],\n\t\t\t[ts2].[io_stall],\n\t\t\t[ts2].[size_on_disk_bytes],\n\t\t\t[ts2].[io_pending_count]\n\tFROM dbo.file_io_stats AS [ts2]\n\tLEFT OUTER JOIN dbo.file_io_stats AS [ts1]\n\t\tON [ts2].[database_name] = [ts1].[database_name]\n\t\tAND [ts2].[file_logical_name] = [ts1].[file_logical_name]\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\tWHERE [ts1].[file_logical_name] IS NULL\n\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts1.[database_name] = @database\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts2.[database_name] = @database\n\t--\n\tUNION\n\t--\n\tSELECT\t-- Diff of Stats in both snapshots\n\t\t\t--[collection_time_utc] = [ts2].[collection_time_utc] - [ts1].[collection_time_utc],\n\t\t\t[database_name] = [ts2].[database_name],\n\t\t\t[database_id] = [ts2].[database_id],\n\t\t\t[file_logical_name] = [ts2].[file_logical_name],\n\t\t\t[file_id] = [ts2].[file_id],\n\t\t\t[file_location] = [ts2].[file_location],\n\t\t\t[sample_ms] = [ts2].[sample_ms] - [ts1].[sample_ms],\n\t\t\t[num_of_reads] = [ts2].[num_of_reads] - [ts1].[num_of_reads],\n\t\t\t[num_of_bytes_read] = [ts2].[num_of_bytes_read] - [ts1].[num_of_bytes_read],\n\t\t\t[io_stall_read_ms] = [ts2].[io_stall_read_ms] - [ts1].[io_stall_read_ms],\n\t\t\t[io_stall_queued_read_ms] = [ts2].[io_stall_queued_read_ms] - [ts1].[io_stall_queued_read_ms],\n\t\t\t[num_of_writes] = [ts2].[num_of_writes] - [ts1].[num_of_writes],\n\t\t\t[num_of_bytes_written] = [ts2].[num_of_bytes_written] - [ts1].[num_of_bytes_written],\n\t\t\t[io_stall_write_ms] = [ts2].[io_stall_write_ms] - [ts1].[io_stall_write_ms],\n\t\t\t[io_stall_queued_write_ms] = [ts2].[io_stall_queued_write_ms] - [ts1].[io_stall_queued_write_ms],\n\t\t\t[io_stall] = [ts2].[io_stall] - [ts1].[io_stall],\n\t\t\t[size_on_disk_bytes] = [ts2].[size_on_disk_bytes],\n\t\t\t[io_pending_count] = [ts2].[io_pending_count] - [ts1].[io_pending_count]\n\tFROM dbo.file_io_stats AS [ts2]\n\tLEFT OUTER JOIN dbo.file_io_stats AS [ts1]\n\t\tON [ts2].[database_name] = [ts1].[database_name]\n\t\tAND [ts2].[file_logical_name] = [ts1].[file_logical_name]\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\tWHERE [ts1].[file_logical_name] IS NOT NULL\n\tAND ( ([ts2].[num_of_reads]+[ts2].[num_of_writes]) - ([ts1].[num_of_reads]+[ts1].[num_of_writes]) ) > 0\n\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts1.[database_name] = @database\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts2.[database_name] = @database\n)\n,[t_DiskDrives] AS \n(\tselect ds.disk_volume, ds.capacity_mb, ds.free_mb\n\tfrom dbo.disk_space ds\n\twhere ds.collection_time_utc = (select max(i.collection_time_utc) from dbo.disk_space i)\n\t\"+(case when @disk_drive is null then '-- ' else '' end)+\"and ds.disk_volume = @disk_drive\n)\n,[t_FileIO] AS\n(\tSELECT\t[running_query] = 'File IO Stats', [sample_ms], [database_name], \n\t\t\t[file_name_DISPLAY] = [file_logical_name]+' '+QUOTENAME(case when right(file_location,3) = 'ldf' then 'LOG' else 'DATA' end),\n\t\t\t[file_logical_name], [file_location], dv.disk_volume, [size_on_disk_bytes],\n\t\t\t[file_type] = case when right(file_location,3) = 'ldf' then 'LOG' else 'DATA' end,\n\n\t\t\t[total_reads_writes] = [num_of_reads] + [num_of_writes],\n\t\t\t[total_reads_writes_stall_ms] = [io_stall_read_ms]+[io_stall_write_ms],\n\t\t\t[num_of_bytes_read], [num_of_bytes_written], \n\t\t\t[total_reads_writes_bytes] = [num_of_bytes_read]+[num_of_bytes_written],\n\t\t\t\n\t\t\t[reads_pcnt] = convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_read]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end),\n\t\t\t[writes_pcnt] = convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_written]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end),\n\t\t\t[pcnt_reads_writes] = convert(varchar,convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_read]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end)) + ' / ' + convert(varchar,convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_written]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end)),\n\t\t\t\n\t\t\t[read_latency_ms] = convert(numeric(20,2), case when [num_of_reads] = 0 then 0 else (([io_stall_read_ms] * 1.0)/[num_of_reads]) end),\n\t\t\t[write_latency_ms] = convert(numeric(20,2), case when [num_of_writes] = 0 then 0 else (([io_stall_write_ms] * 1.0)/[num_of_writes]) end),\n\t\t\t[latency_ms] = convert(numeric(20,2), case when [num_of_reads] + [num_of_writes] = 0 then 0 else (([io_stall] * 1.0) / ([num_of_reads] + [num_of_writes])) end),\n\n\t\t\t[avg_bytes_per_read] = convert(numeric(20,2), case when [num_of_reads] = 0 then 0 else ( ([num_of_bytes_read] * 1.0) / [num_of_reads] ) end),\n\t\t\t[avg_bytes_per_write] = convert(numeric(20,2), case when [num_of_writes] = 0 then 0 else ( ([num_of_bytes_written] * 1.0) / [num_of_writes] ) end),\n\t\t\t[avg_bytes_per_transfer] = convert(numeric(20,2), case when [num_of_reads] = 0 and [num_of_writes] = 0 then 0 else ( (([num_of_bytes_read]+[num_of_bytes_written]) * 1.0) / ([num_of_reads]+[num_of_writes]) ) end)\n\tFROM [DiffStats] fis\n\tCROSS APPLY (\n\t\t\tselect top 1 dd.*\n\t\t\tfrom [t_DiskDrives] dd\n\t\t\twhere fis.file_location like (dd.disk_volume+'%')\n\t\t\torder by len(dd.disk_volume) desc\n\t\t) dv\n)\nselect\t[running_query] = max(running_query),\n\t\t[sample_ms] = max(sample_ms),\n\t\t[database_count] = count(distinct database_name),\n\t\t[files_count] = count(*),\n\t\t[disk_volume] = max(dd.disk_volume), \n\t\t[capacity_mb] = max(dd.capacity_mb), \n\t\t[free_mb] = max(dd.free_mb),\n\t\t[db_files_size_on_disk_mb] = convert(numeric(20,2),sum(size_on_disk_bytes/1024.0/1024)),\n\t\t[total_reads_writes] = sum(total_reads_writes),\n\t\t[reads_mb] = convert(numeric(20,2),sum(num_of_bytes_read/1024.0/1024)),\n\t\t[writes_mb] = convert(numeric(20,2),sum(num_of_bytes_written/1024.0/1024)),\n\t\t[reads_writes_mb] = convert(numeric(20,2),sum( (num_of_bytes_read+num_of_bytes_written)/1024.0/1024 )),\n\t\t[pcnt_reads_writes] = convert(varchar,convert(numeric(20,2),(sum(num_of_bytes_read)*100.0/sum(num_of_bytes_read+num_of_bytes_written)))) \n\t\t\t\t\t\t\t\t+ ' / ' + \n\t\t\t\t\t\t\t\tconvert(varchar,convert(numeric(20,2),(sum(num_of_bytes_written)*100.0/sum(num_of_bytes_read+num_of_bytes_written)))),\n\t\t[avg_read_write_stall_ms] = convert(numeric(20,0),(case when sum(total_reads_writes) <> 0 then sum(total_reads_writes_stall_ms)*1.0/sum(total_reads_writes) else 0.0 end))\nfrom [t_FileIO] fio\nleft join [t_DiskDrives] dd on dd.disk_volume = fio.disk_volume\ngroup by dd.disk_volume\norder by [reads_writes_mb] desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @database;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @database;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Disk IO Stats ____In Selected Time Duration____Since____${__from:date:YYYY-MM-DD HH.mm}___till___${__to:date:YYYY-MM-DD HH.mm}____",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "exec sp_BlitzFirst @seconds = 60, @ExpertMode = 1",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "running_query"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "sample_ms"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Sample Time"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "database_count"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Databases"
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "files_count"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Db Files"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "disk_volume"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Disk Drive"
+                  },
+                  {
+                    "id": "custom.minWidth",
+                    "value": 250
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "capacity_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Capacity"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "free_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Disk Free"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "db_files_size_on_disk_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Db Files Size"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "total_reads_writes"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "# Reads/Writes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reads_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "writes_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hidden",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reads_writes_mb"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "mbytes"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Read/Written"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "pcnt_reads_writes"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "% Read/Writes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "avg_read_write_stall_ms"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Latency"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "super-light-yellow",
+                          "value": 5
+                        },
+                        {
+                          "color": "yellow",
+                          "value": 15
+                        },
+                        {
+                          "color": "orange",
+                          "value": 20
+                        },
+                        {
+                          "color": "super-light-red",
+                          "value": 35
+                        },
+                        {
+                          "color": "red",
+                          "value": 50
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 46
+          },
+          "id": 51,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": [
+                "sample_ms"
+              ],
+              "reducer": [
+                "first"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Latency"
+              }
+            ]
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\n--declare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n--declare @delta_minutes int;\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\n--set @perfmon_host_name = '$perfmon_host_name';\n--set @start_time_utc = $__timeFrom();\n--set @end_time_utc = $__timeTo();\n--set @delta_minutes = $cpu_delta_minutes;\n\nset @start_time_utc = '${day_1__start_time_utc:date:iso}';\nset @end_time_utc = '${day_1__end_time_utc:date:iso}';\n\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2, @disk_drive varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\ndeclare @schedulers smallint;\ndeclare @StatstatsTop tinyint = 10;\ndeclare @StatsPercentTop int = 99;\ndeclare @collect_time_utc_snap1 datetime2;\ndeclare @collect_time_utc_snap2 datetime2;\n\n--select @start_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), sqlserver_start_time) from sys.dm_os_sys_info;\nselect @schedulers = count(*) from sys.dm_os_schedulers where status = 'VISIBLE ONLINE' and is_online = 1;\n\nselect top 1 @collect_time_utc_snap2 = collection_time_utc\nfrom dbo.file_io_stats s2\nwhere s2.collection_time_utc <= @end_time_utc\norder by collection_time_utc desc;\n\nselect top 1 @collect_time_utc_snap1 = collection_time_utc\nfrom dbo.file_io_stats s1\nwhere collection_time_utc >= @start_time_utc\norder by collection_time_utc asc;\n\n--select @collect_time_utc_snap1, @collect_time_utc_snap2;\n\n;WITH [DiffStats] AS\n(\tSELECT\t-- Stats that weren't in the first snapshot\n\t\t\t--[ts2].[collection_time_utc],\n\t\t\t[ts2].[database_name],\n\t\t\t[ts2].[database_id],\n\t\t\t[ts2].[file_logical_name],\n\t\t\t[ts2].[file_id],\n\t\t\t[ts2].[file_location],\n\t\t\t[ts2].[sample_ms],\n\t\t\t[ts2].[num_of_reads],\n\t\t\t[ts2].[num_of_bytes_read],\n\t\t\t[ts2].[io_stall_read_ms],\n\t\t\t[ts2].[io_stall_queued_read_ms],\n\t\t\t[ts2].[num_of_writes],\n\t\t\t[ts2].[num_of_bytes_written],\n\t\t\t[ts2].[io_stall_write_ms],\n\t\t\t[ts2].[io_stall_queued_write_ms],\n\t\t\t[ts2].[io_stall],\n\t\t\t[ts2].[size_on_disk_bytes],\n\t\t\t[ts2].[io_pending_count]\n\tFROM dbo.file_io_stats AS [ts2]\n\tLEFT OUTER JOIN dbo.file_io_stats AS [ts1]\n\t\tON [ts2].[database_name] = [ts1].[database_name]\n\t\tAND [ts2].[file_logical_name] = [ts1].[file_logical_name]\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\tWHERE [ts1].[file_logical_name] IS NULL\n\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts1.[database_name] = @database\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts2.[database_name] = @database\n\t--\n\tUNION\n\t--\n\tSELECT\t-- Diff of Stats in both snapshots\n\t\t\t--[collection_time_utc] = [ts2].[collection_time_utc] - [ts1].[collection_time_utc],\n\t\t\t[database_name] = [ts2].[database_name],\n\t\t\t[database_id] = [ts2].[database_id],\n\t\t\t[file_logical_name] = [ts2].[file_logical_name],\n\t\t\t[file_id] = [ts2].[file_id],\n\t\t\t[file_location] = [ts2].[file_location],\n\t\t\t[sample_ms] = [ts2].[sample_ms] - [ts1].[sample_ms],\n\t\t\t[num_of_reads] = [ts2].[num_of_reads] - [ts1].[num_of_reads],\n\t\t\t[num_of_bytes_read] = [ts2].[num_of_bytes_read] - [ts1].[num_of_bytes_read],\n\t\t\t[io_stall_read_ms] = [ts2].[io_stall_read_ms] - [ts1].[io_stall_read_ms],\n\t\t\t[io_stall_queued_read_ms] = [ts2].[io_stall_queued_read_ms] - [ts1].[io_stall_queued_read_ms],\n\t\t\t[num_of_writes] = [ts2].[num_of_writes] - [ts1].[num_of_writes],\n\t\t\t[num_of_bytes_written] = [ts2].[num_of_bytes_written] - [ts1].[num_of_bytes_written],\n\t\t\t[io_stall_write_ms] = [ts2].[io_stall_write_ms] - [ts1].[io_stall_write_ms],\n\t\t\t[io_stall_queued_write_ms] = [ts2].[io_stall_queued_write_ms] - [ts1].[io_stall_queued_write_ms],\n\t\t\t[io_stall] = [ts2].[io_stall] - [ts1].[io_stall],\n\t\t\t[size_on_disk_bytes] = [ts2].[size_on_disk_bytes],\n\t\t\t[io_pending_count] = [ts2].[io_pending_count] - [ts1].[io_pending_count]\n\tFROM dbo.file_io_stats AS [ts2]\n\tLEFT OUTER JOIN dbo.file_io_stats AS [ts1]\n\t\tON [ts2].[database_name] = [ts1].[database_name]\n\t\tAND [ts2].[file_logical_name] = [ts1].[file_logical_name]\n\t\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\tAND [ts1].collection_time_utc = @collect_time_utc_snap1\n\tWHERE [ts1].[file_logical_name] IS NOT NULL\n\tAND ( ([ts2].[num_of_reads]+[ts2].[num_of_writes]) - ([ts1].[num_of_reads]+[ts1].[num_of_writes]) ) > 0\n\tAND [ts2].collection_time_utc = @collect_time_utc_snap2\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts1.[database_name] = @database\n\t\"+(case when @database is null then '-- ' else '' end)+\"AND ts2.[database_name] = @database\n)\n,[t_DiskDrives] AS \n(\tselect ds.disk_volume, ds.capacity_mb, ds.free_mb\n\tfrom dbo.disk_space ds\n\twhere ds.collection_time_utc = (select max(i.collection_time_utc) from dbo.disk_space i)\n\t\"+(case when @disk_drive is null then '-- ' else '' end)+\"and ds.disk_volume = @disk_drive\n)\n,[t_FileIO] AS\n(\tSELECT\t[running_query] = 'File IO Stats', [sample_ms], [database_name], \n\t\t\t[file_name_DISPLAY] = [file_logical_name]+' '+QUOTENAME(case when right(file_location,3) = 'ldf' then 'LOG' else 'DATA' end),\n\t\t\t[file_logical_name], [file_location], dv.disk_volume, [size_on_disk_bytes],\n\t\t\t[file_type] = case when right(file_location,3) = 'ldf' then 'LOG' else 'DATA' end,\n\n\t\t\t[total_reads_writes] = [num_of_reads] + [num_of_writes],\n\t\t\t[total_reads_writes_stall_ms] = [io_stall_read_ms]+[io_stall_write_ms],\n\t\t\t[num_of_bytes_read], [num_of_bytes_written], \n\t\t\t[total_reads_writes_bytes] = [num_of_bytes_read]+[num_of_bytes_written],\n\t\t\t\n\t\t\t[reads_pcnt] = convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_read]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end),\n\t\t\t[writes_pcnt] = convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_written]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end),\n\t\t\t[pcnt_reads_writes] = convert(varchar,convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_read]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end)) + ' / ' + convert(varchar,convert(numeric(20,2),case when [num_of_bytes_read] = 0 and [num_of_bytes_written] = 0 then 0\n\t\t\t\t\t\t\t\telse 100.0 * ([num_of_bytes_written]*1.0)/([num_of_bytes_read]+[num_of_bytes_written]) end)),\n\t\t\t\n\t\t\t[read_latency_ms] = convert(numeric(20,2), case when [num_of_reads] = 0 then 0 else (([io_stall_read_ms] * 1.0)/[num_of_reads]) end),\n\t\t\t[write_latency_ms] = convert(numeric(20,2), case when [num_of_writes] = 0 then 0 else (([io_stall_write_ms] * 1.0)/[num_of_writes]) end),\n\t\t\t[latency_ms] = convert(numeric(20,2), case when [num_of_reads] + [num_of_writes] = 0 then 0 else (([io_stall] * 1.0) / ([num_of_reads] + [num_of_writes])) end),\n\n\t\t\t[avg_bytes_per_read] = convert(numeric(20,2), case when [num_of_reads] = 0 then 0 else ( ([num_of_bytes_read] * 1.0) / [num_of_reads] ) end),\n\t\t\t[avg_bytes_per_write] = convert(numeric(20,2), case when [num_of_writes] = 0 then 0 else ( ([num_of_bytes_written] * 1.0) / [num_of_writes] ) end),\n\t\t\t[avg_bytes_per_transfer] = convert(numeric(20,2), case when [num_of_reads] = 0 and [num_of_writes] = 0 then 0 else ( (([num_of_bytes_read]+[num_of_bytes_written]) * 1.0) / ([num_of_reads]+[num_of_writes]) ) end)\n\tFROM [DiffStats] fis\n\tCROSS APPLY (\n\t\t\tselect top 1 dd.*\n\t\t\tfrom [t_DiskDrives] dd\n\t\t\twhere fis.file_location like (dd.disk_volume+'%')\n\t\t\torder by len(dd.disk_volume) desc\n\t\t) dv\n)\nselect\t[running_query] = max(running_query),\n\t\t[sample_ms] = max(sample_ms),\n\t\t[database_count] = count(distinct database_name),\n\t\t[files_count] = count(*),\n\t\t[disk_volume] = max(dd.disk_volume), \n\t\t[capacity_mb] = max(dd.capacity_mb), \n\t\t[free_mb] = max(dd.free_mb),\n\t\t[db_files_size_on_disk_mb] = convert(numeric(20,2),sum(size_on_disk_bytes/1024.0/1024)),\n\t\t[total_reads_writes] = sum(total_reads_writes),\n\t\t[reads_mb] = convert(numeric(20,2),sum(num_of_bytes_read/1024.0/1024)),\n\t\t[writes_mb] = convert(numeric(20,2),sum(num_of_bytes_written/1024.0/1024)),\n\t\t[reads_writes_mb] = convert(numeric(20,2),sum( (num_of_bytes_read+num_of_bytes_written)/1024.0/1024 )),\n\t\t[pcnt_reads_writes] = convert(varchar,convert(numeric(20,2),(sum(num_of_bytes_read)*100.0/sum(num_of_bytes_read+num_of_bytes_written)))) \n\t\t\t\t\t\t\t\t+ ' / ' + \n\t\t\t\t\t\t\t\tconvert(varchar,convert(numeric(20,2),(sum(num_of_bytes_written)*100.0/sum(num_of_bytes_read+num_of_bytes_written)))),\n\t\t[avg_read_write_stall_ms] = convert(numeric(20,0),(case when sum(total_reads_writes) <> 0 then sum(total_reads_writes_stall_ms)*1.0/sum(total_reads_writes) else 0.0 end))\nfrom [t_FileIO] fio\nleft join [t_DiskDrives] dd on dd.disk_volume = fio.disk_volume\ngroup by dd.disk_volume\norder by [reads_writes_mb] desc\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @database;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc, @disk_drive, @database;",
+              "refId": "Query-Db-File-Stats-Since-Startup",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Disk IO Stats ____In Selected Time Duration____Since____${day_1__start_time_utc:date:YYYY-MM-DD HH.mm}___till___${day_1__end_time_utc:date:YYYY-MM-DD HH.mm}____DAY 1",
+          "type": "table"
+        }
+      ],
+      "title": "Comparison - Disk IO Stats - Selective - \"__${sql_schedulers} CPUs__\" @ ${collection_time_utc:date:YYYY-MM-DD HH.mm}",
       "type": "row"
     }
   ],
@@ -4880,6 +6488,54 @@
         "regex": "",
         "sort": 5,
         "type": "query"
+      },
+      {
+        "current": {
+          "text": "-2",
+          "value": "-2"
+        },
+        "label": "Days (+/-)",
+        "name": "day_1__input",
+        "options": [
+          {
+            "selected": true,
+            "text": "-2",
+            "value": "-2"
+          }
+        ],
+        "query": "-2",
+        "type": "textbox"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${DS_SQLMONITOR}"
+        },
+        "definition": "declare @day_1__input varchar(255) = ltrim(rtrim('$day_1__input'));\n\ndeclare @day_1 int = case when @day_1__input <> '' and ISNUMERIC(@day_1__input) = 1 THEN CAST(@day_1__input AS INT) ELSE NULL END;\n\ndeclare @day_1__start_time_utc datetime2;\ndeclare @day_1__end_time_utc datetime2;\n\nset @day_1__start_time_utc = case when @day_1 is not null then dateadd(day,@day_1,$__timeFrom()) else null end;\n\nset @day_1__end_time_utc = case when @day_1 is not null then dateadd(day,@day_1,$__timeTo()) else null end;\n\nselect @day_1__start_time_utc;",
+        "description": "",
+        "hide": 2,
+        "name": "day_1__start_time_utc",
+        "options": [],
+        "query": "declare @day_1__input varchar(255) = ltrim(rtrim('$day_1__input'));\n\ndeclare @day_1 int = case when @day_1__input <> '' and ISNUMERIC(@day_1__input) = 1 THEN CAST(@day_1__input AS INT) ELSE NULL END;\n\ndeclare @day_1__start_time_utc datetime2;\ndeclare @day_1__end_time_utc datetime2;\n\nset @day_1__start_time_utc = case when @day_1 is not null then dateadd(day,@day_1,$__timeFrom()) else null end;\n\nset @day_1__end_time_utc = case when @day_1 is not null then dateadd(day,@day_1,$__timeTo()) else null end;\n\nselect @day_1__start_time_utc;",
+        "refresh": 2,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "mssql",
+          "uid": "${sqlmonitor_datasource}"
+        },
+        "definition": "declare @day_1__input varchar(255) = ltrim(rtrim('$day_1__input'));\n\ndeclare @day_1 int = case when @day_1__input <> '' and ISNUMERIC(@day_1__input) = 1 THEN CAST(@day_1__input AS INT) ELSE NULL END;\n\ndeclare @day_1__start_time_utc datetime2;\ndeclare @day_1__end_time_utc datetime2;\n\nset @day_1__start_time_utc = case when @day_1 is not null then dateadd(day,@day_1,$__timeFrom()) else null end;\n\nset @day_1__end_time_utc = case when @day_1 is not null then dateadd(day,@day_1,$__timeTo()) else null end;\n\nselect @day_1__end_time_utc;",
+        "hide": 2,
+        "name": "day_1__end_time_utc",
+        "options": [],
+        "query": "declare @day_1__input varchar(255) = ltrim(rtrim('$day_1__input'));\n\ndeclare @day_1 int = case when @day_1__input <> '' and ISNUMERIC(@day_1__input) = 1 THEN CAST(@day_1__input AS INT) ELSE NULL END;\n\ndeclare @day_1__start_time_utc datetime2;\ndeclare @day_1__end_time_utc datetime2;\n\nset @day_1__start_time_utc = case when @day_1 is not null then dateadd(day,@day_1,$__timeFrom()) else null end;\n\nset @day_1__end_time_utc = case when @day_1 is not null then dateadd(day,@day_1,$__timeTo()) else null end;\n\nselect @day_1__end_time_utc;",
+        "refresh": 2,
+        "regex": "",
+        "type": "query"
       }
     ]
   },
@@ -4902,6 +6558,6 @@
   "timezone": "",
   "title": "t___Database File IO Stats",
   "uid": "database_file_io_stats",
-  "version": 16,
+  "version": 22,
   "weekStart": ""
 }
