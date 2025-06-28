@@ -1,3 +1,6 @@
+# https://www.youtube.com/watch?v=bRGb0ffGNjM
+
+
 # Validate set based method. DOES NOT allow other values
 function Get-Color {
     [CmdletBinding()]
@@ -72,3 +75,27 @@ function Get-MyService {
     }
     end {}
 }
+
+
+
+# Dynamic argument completions with other features
+function Get-MyProcess {
+    [CmdletBinding()]
+    Param (
+        [ArgumentCompleter({
+            $processNames = Get-Process | Select-Object -ExpandProperty Name
+            $processNames | ForEach-Object {
+                [System.Management.Automation.CompletionResult]::new($_, $_ + " itemText", 'ParameterValue', $_ + ' ToolTipText')
+            }
+        })]
+        [String]$ProcessName
+    )
+    begin {}
+    process {
+        return $ProcessName
+    }
+    end {}
+}
+
+Get-MyProcess -ProcessName 
+
