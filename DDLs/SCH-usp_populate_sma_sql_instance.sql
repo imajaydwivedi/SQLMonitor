@@ -261,7 +261,7 @@ BEGIN
 									else 'standalone'
 									end), 
 				[backup_strategy] = null, [server_owner_email] = null, 
-				[rdp_credential] = null, [sql_credential] = 'linkadmin', [is_monitoring_enabled] = 1, [is_maintenance_scheduled] =  0, 
+				[rdp_credential] = null, [sql_credential] = 'sqladmin', [is_monitoring_enabled] = 1, [is_maintenance_scheduled] =  0, 
 				[is_tde_implemented] = 0, [enabled_restart_schedule] = 0, [is_decommissioned] = 0, [more_info] = null, [is_onboarded] = 1
 		into #sma_servers
 		from dbo.instance_details id
