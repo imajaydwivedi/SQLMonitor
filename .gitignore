@@ -27,6 +27,7 @@
 __pycache__/
 .DS_Store
 .vscode
+.vs
 tempCodeRunnerFile.ps1
 /FlaskRestAPI/
 
