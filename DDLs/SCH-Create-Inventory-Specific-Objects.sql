@@ -1,6 +1,7 @@
 /*
-	Version:		2025-01-30
-	Date:			2025-01-30 - Enhancement#24 - Add support for Managed Instance (PAAS)
+	Version:		2025-06-28
+	Date:			2025-06-28 - Enhancement#43 - Add constraint to present wrong sql_instance_ip in dbo.login_email_mapping table
+					2025-01-30 - Enhancement#24 - Add support for Managed Instance (PAAS)
 					2024-11-28 - Enhancement#12 - Optimize table dbo.all_server_volatile_info_history
 					2024-11-14 - Issue#6 - Preserve data of History Tables in Inventory Upgrade
 					2024-11-13 - Enhancement#4 - Get Max Server Memory in dbo.all_server_stable_info
@@ -63,7 +64,6 @@
 	39) Create table dbo.sma_errorlog
 	40) Add dbo.purge_table entry for dbo.sma_errorlog
 	41) Create table dbo.sma_params
-
 	42) Create table dbo.sma_servers
 	43) Create table dbo.sma_sql_server_extended_info
 	44) Create table dbo.sma_sql_server_hosts
@@ -81,7 +81,8 @@
 	56) Create Trigger dbo.tgr_dml__sma_servers__server_owner_email__validation on dbo.sma_servers
 	57) Create Trigger dbo.tgr_dml__sma_applications__email__validation on dbo.sma_applications
 	58) Create table dbo.login_email_mapping
-	59) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping
+	59.a) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping
+	59.b) Create Trigger dbo.tgr_dml__login_email_mapping__sql_instance_ip__validation on dbo.login_email_mapping
 	60) Create table dbo.all_server_login_expiry_info
 	61) Create table dbo.server_login_expiry_collection_computed used for [usp_send_login_expiry_emails]
 	62) Create table dbo.all_server_login_expiry_info_dashboard used for [usp_send_login_expiry_emails]
@@ -2260,9 +2261,9 @@ END
 go
 
 
-/* ***** 59) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping ***************************** */
+/* ***** 59.a) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping ***************************** */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
-	print '59) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping';
+	print '59.a) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping';
 go
 create or alter trigger dbo.tgr_dml__login_email_mapping__email__validation
 	on dbo.login_email_mapping
@@ -2288,6 +2289,23 @@ begin
 	begin
 		RAISERROR ('Provided email address(s) is invalid. Kindly ensure to provide semicolon(;) separated emails if multiple emails are provided.', 16, 1);  
 		ROLLBACK TRANSACTION; 
+	end
+end
+go
+
+/* ***** 59.b) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping ***************************** */
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '59.b) Create Trigger dbo.tgr_dml__login_email_mapping__email__validation on dbo.login_email_mapping';
+go
+create or alter trigger dbo.tgr_dml__login_email_mapping__sql_instance_ip__validation
+	on dbo.login_email_mapping
+	for insert, update
+as 
+begin
+	if exists (select * from inserted i where i.sql_instance_ip <> '*' and i.sql_instance_ip not in (select s.server from dbo.sma_servers s where s.is_decommissioned = 0))
+	begin
+		raiserror ('[sql_instance_ip] should be a valid server from [dbo].[sma_servers].', 16, 1);  
+		rollback transaction;
 	end
 end
 go
