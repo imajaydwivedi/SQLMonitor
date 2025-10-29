@@ -293,8 +293,6 @@ if 'Resume HADR Sync For DB' == 'Resume HADR Sync For DB':
 
         if not df_non_health_replica_dbs.empty:
             logger.info(f"\tCreate replica server connection using connect_dba_instance..")
-            cnxn_replica = connect_dba_instance(sql_instance_ip,'master',login_name,login_password,logger=logger,verbose=False)
-            cursor_replica = cnxn_replica.cursor()
 
             for db_row in df_non_health_replica_dbs.itertuples():
                 database_name = db_row.database_name
@@ -308,6 +306,8 @@ select [is_successful] = cast(1 as bit);
                     print(f"sql_resume_data_movement => \n{sql_resume_data_movement}")
 
                 try:
+                    cnxn_replica = connect_dba_instance(sql_instance_ip,'master',login_name,login_password,logger=logger,verbose=False)
+                    cursor_replica = cnxn_replica.cursor()
                     cursor_replica.execute(sql_resume_data_movement)
                     rs_resume_data_movement = cursor_replica.fetchone()[0]
                     cnxn_replica.commit()
@@ -320,18 +320,18 @@ select [is_successful] = cast(1 as bit);
                         slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
                 except pyodbc.ProgrammingError as e:
                     exception_name = type(e).__name__
-                    thread_messages = f"[{exception_name}] Exception occurred: \n{e}\n\n"
+                    thread_messages = f":x: [{exception_name}] Exception occurred: \n{e}\n\n"
                     logger.error(thread_messages)
                     if slack_notification_required:
                         slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
-                    raise e
+                    # raise e
                 except Exception as e:
                     exception_name = type(e).__name__
-                    thread_messages = f"[{exception_name}] Exception occurred: \n{e}\n\n"
+                    thread_messages = f":x: [{exception_name}] Exception occurred: \n{e}\n\n"
                     logger.error(thread_messages)
                     if slack_notification_required:
                         slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
-                    raise e
+                    # raise e
         else:
             thread_messages = f"No suspended database on *[{replica_name}] ({sql_instance})*"
             if slack_notification_required:
