@@ -93,7 +93,7 @@ if slack_notification_required:
 
 if 'Get New Primary Connection' == 'Get New Primary Connection':
     logger.info(f"Create new primary server connection using connect_dba_instance..")
-    cnxn_srv_pri = connect_dba_instance(sql_instance,'master',login_name,login_password,logger=logger,verbose=False)
+    cnxn_srv_pri = connect_dba_instance(f"{sql_instance},{sql_instance_port}",'master',login_name,login_password,logger=logger,verbose=False)
     cursor_srv_pri = cnxn_srv_pri.cursor()
 
 if 'Get Inventory Connection' == 'Get Inventory Connection':
