@@ -109,14 +109,16 @@ def send_slack_incremental_notification(slack_token:str, slack_channel:str, thre
                 if thread_response.status_code != 200:
                     print(f"⚠️ Failed to send thread message: {thread_response.text}")
                 else:
-                    print("✅ Sent thread message.")
+                    pass
+                    # print("✅ Sent thread message.")
 
             # For slack_sdk.WebClient response
             elif isinstance(thread_response, dict) or hasattr(thread_response, "get"):
                 if not thread_response.get("ok", False):
                     print(f"⚠️ Failed to send thread message: {thread_response}")
                 else:
-                    print("✅ Sent thread message.")
+                    pass
+                    # print("✅ Sent thread message.")
 
             else:
                 print(f"⚠️ Unknown response type: {thread_response}")

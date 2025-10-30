@@ -126,7 +126,7 @@ else:
     thread_messages = f"[{sql_instance}] is already primary replica. So skipping failover.."
 logger.info(thread_messages)
 if slack_notification_required:
-    slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
+    slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
 
 if is_secondary_replica and 'Perform Failover' == 'Perform Failover':
     sql_failover_ag = f"""
@@ -148,20 +148,20 @@ select [is_successful] = cast(1 as bit);
             thread_messages = f"Failover is initiated.."
             logger.info(thread_messages)
             if slack_notification_required:
-                slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
+                slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
     except pyodbc.ProgrammingError as e:
         exception_name = type(e).__name__
         logger.error(f"[{exception_name}] Exception occurred: \n{e}\n\n")
         thread_messages = f"[{exception_name}] Exception occurred: \n{e}\n\n"
         if slack_notification_required:
-            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
+            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
         raise e
     except Exception as e:
         exception_name = type(e).__name__
         logger.error(f"[{exception_name}] Exception occurred: \n{e}\n\n")
         thread_messages = f"[{exception_name}] Exception occurred: \n{e}\n\n"
         if slack_notification_required:
-            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
+            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
         raise e
 
 
@@ -227,8 +227,8 @@ order by ag.ag_name, ag.replica_server_name, ag.database_name;
     if verbose:
         logger.info(f"pt_get_ag_databases => \n")
         print(pt_get_ag_databases)
-        logger.info(f"df_get_ag_databases => \n")
-        print(df_get_ag_databases)
+        # logger.info(f"df_get_ag_databases => \n")
+        # print(df_get_ag_databases)
 
     thread_messages=[]
     thread_messages.append(f":x: *{count_suspended_dbs}* databases are in SUSPENDED state.")
@@ -238,7 +238,7 @@ order by ag.ag_name, ag.replica_server_name, ag.database_name;
     snippet = dict(type='snippet', filename=f"{availability_group}__ag_databases.txt", content=pt_get_ag_databases.get_string(), initial_comment="> :hourglass_flowing_sand: AG DBs and details")
     thread_messages.append(snippet)
     if slack_notification_required:
-        slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
+        slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
 
 if 'Get Replica IPs From SQLMonitor' == 'Get Replica IPs From SQLMonitor':
     logger.info(f"Retrieve replicas IP from SQLMonitor by comparing @@servername..")
@@ -256,6 +256,12 @@ from [dbo].[vw_all_server_info] asi
 outer apply (select top 1 * from dbo.instance_details id where id.sql_instance = asi.srv_name and id.is_enabled = 1 and id.is_alias = 0) id
 where asi.at_server_name in ({replica_server_name__string});
 """
+    sql_get_replica_ips = f"""
+select sql_instance = id.sql_instance, sql_instance_port = coalesce(id.sql_instance_port, 1433), ss.at_server_name --, domain, host_distribution, product_version
+from dbo.sma_servers s join dbo.sma_sql_servers ss on ss.[server] = s.[server] and s.is_decommissioned = 0
+outer apply (select top 1 * from dbo.instance_details id where id.sql_instance = ss.[server] and id.is_enabled = 1 and id.is_alias = 0) id
+where ss.at_server_name in ({replica_server_name__string});
+"""
     if verbose:
         print(f"\n{sql_get_replica_ips}\n")
 
@@ -267,75 +273,128 @@ where asi.at_server_name in ({replica_server_name__string});
     if verbose:
         logger.info(f"pt_get_replica_ips => \n")
         print(pt_get_replica_ips)
-        logger.info(f"df_get_replica_ips => \n")
-        print(df_get_replica_ips)
+        # logger.info(f"df_get_replica_ips => \n")
+        # print(df_get_replica_ips)
 
     thread_messages=[]
     snippet = dict(type='snippet', filename=f"AG_Replicas_and_details.txt", content=pt_get_replica_ips.get_string(), initial_comment="> :hourglass_flowing_sand: AG Replicas IPs and details")
     thread_messages.append(snippet)
     if slack_notification_required:
-        slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
+        slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
 
 if 'Resume HADR Sync For DB' == 'Resume HADR Sync For DB':
     logger.info(f"Proceeding to resume data sync for secondary replicas..")
     cursor_replica = None
 
+    replica_server_name_online_list = df_get_replica_ips['at_server_name'].unique().tolist()
+    # replicas_offline = list(set(replica_server_name_list).difference(set(replica_server_name_online_list)))
+    replicas_offline = [repl_name for repl_name in replica_server_name_list if repl_name not in replica_server_name_online_list]
+
+    if len(replicas_offline) > 0:
+        logger.warning(f"DB Services offline on {replicas_offline} as per inventory table dbo.vw_AllServerInfo.")
+        thread_messages = ["> *──────────────────────────────*"]
+        thread_messages.append(f":x: DB Services offline on {replicas_offline} as per inventory table dbo.vw_AllServerInfo.")
+        thread_messages.append("> *──────────────────────────────*")
+        if slack_notification_required:
+            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+    else:
+        logger.info(f"DB Services online on all replicas as per inventory table dbo.vw_AllServerInfo.")
+        thread_messages = ["> *──────────────────────────────*"]
+        thread_messages.append(f":white_check_mark: DB Services online on all replicas as per inventory table dbo.vw_AllServerInfo.")
+        thread_messages.append("> *──────────────────────────────*")
+        if slack_notification_required:
+            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+
     for repl_row in df_get_replica_ips.itertuples():
-        # print(row)
+        # Initialize empty variables
+        sql_instance_ip = None
+        replica_name = None
+        sql_conn_status = False
+
         sql_instance_ip = f"{repl_row.sql_instance},{repl_row.sql_instance_port}"
         replica_name = repl_row.at_server_name
-        logger.info(f"Checking dbs on [{replica_name}] ({sql_instance})")
+        logger.info(f"Checking dbs on [{replica_name}] ({sql_instance_ip})")
 
-        df_non_health_replica_dbs = df_get_ag_databases[
+        df_suspended_replica_dbs = df_get_ag_databases[
                 (df_get_ag_databases['is_suspended'] == True) &
                 (df_get_ag_databases['replica_server_name'] == replica_name)
             ]
 
-        if not df_non_health_replica_dbs.empty:
-            logger.info(f"\tCreate replica server connection using connect_dba_instance..")
+        if not df_suspended_replica_dbs.empty:
+            logger.info(f"  Create sql connection for [{sql_instance_ip}]({replica_name})..")
 
-            for db_row in df_non_health_replica_dbs.itertuples():
-                database_name = db_row.database_name
-                logger.info(f"\tResume data movement for [{repl_row.sql_instance}].[{database_name}]..")
-                sql_resume_data_movement = f"""
-ALTER DATABASE [{database_name}] SET HADR RESUME;
+            # Create sql_instance connection
+            try:
+                cnxn_replica = connect_dba_instance(sql_instance_ip,'master',login_name,login_password,logger=logger,verbose=False)
+                cursor_replica = cnxn_replica.cursor()
+                sql_conn_status = True
 
-select [is_successful] = cast(1 as bit);
-"""
-                if verbose:
-                    print(f"sql_resume_data_movement => \n{sql_resume_data_movement}")
-
-                try:
-                    cnxn_replica = connect_dba_instance(sql_instance_ip,'master',login_name,login_password,logger=logger,verbose=False)
-                    cursor_replica = cnxn_replica.cursor()
-                    cursor_replica.execute(sql_resume_data_movement)
-                    rs_resume_data_movement = cursor_replica.fetchone()[0]
-                    cnxn_replica.commit()
-
-                    if rs_resume_data_movement:
-                        logger.info(f"\t\tData movement initiated..")
-
-                    thread_messages = f"Data movement initiated for *[{repl_row.sql_instance}].[{database_name}]* .."
-                    if slack_notification_required:
-                        slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
-                except pyodbc.ProgrammingError as e:
+                thread_messages = f"SQL Connection for *[{replica_name}] ({sql_instance})* made successfully. So proceeding to resume data movement."
+                if slack_notification_required:
+                    slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+            except Exception as e:
                     exception_name = type(e).__name__
-                    thread_messages = f":x: [{exception_name}] Exception occurred: \n{e}\n\n"
-                    logger.error(thread_messages)
+                    logger.error(f"[{exception_name}] Exception occurred while making sql connection for [{sql_instance_ip}]({replica_name}): \n{e}\n\n")
+
+                    thread_messages = ["> *──────────────────────────────*"]
+                    thread_messages.append(f":x: [{exception_name}] Exception occurred while making sql connection for [{sql_instance_ip}]({replica_name}): \n{e}\n\n")
+                    thread_messages.append("> *──────────────────────────────*")
                     if slack_notification_required:
-                        slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
-                    # raise e
-                except Exception as e:
-                    exception_name = type(e).__name__
-                    thread_messages = f":x: [{exception_name}] Exception occurred: \n{e}\n\n"
-                    logger.error(thread_messages)
-                    if slack_notification_required:
-                        slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
-                    # raise e
+                        slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+
+            # If sql_connection is present, then resume data movement
+            if sql_conn_status:
+                for db_row in df_suspended_replica_dbs.itertuples():
+                    database_name = None
+                    database_name = db_row.database_name
+                    logger.info(f"  Resume data movement for [{repl_row.sql_instance}].[{database_name}]..")
+                    sql_resume_data_movement = f"""
+    ALTER DATABASE [{database_name}] SET HADR RESUME;
+
+    select [is_successful] = cast(1 as bit);
+    """
+                    if verbose:
+                        print(f"sql_resume_data_movement => \n{sql_resume_data_movement}")
+
+                    try:
+                        cursor_replica.execute(sql_resume_data_movement)
+                        rs_resume_data_movement = cursor_replica.fetchone()[0]
+                        cnxn_replica.commit()
+
+                        if rs_resume_data_movement:
+                            logger.info(f"  Data movement initiated..")
+
+                        thread_messages = f"Data movement initiated for *[{repl_row.sql_instance}].[{database_name}]* .."
+                        if slack_notification_required:
+                            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+                    except pyodbc.ProgrammingError as e:
+                        exception_name = type(e).__name__
+                        logger.error(f"[{exception_name}] Exception occurred: \n{e}\n\n")
+
+                        thread_messages = ["> *──────────────────────────────*"]
+                        thread_messages.append(f":x: [{exception_name}] Exception occurred while resuming data movement for [{database_name}] on [{sql_instance_ip}]({replica_name}): \n{e}\n\n")
+                        thread_messages.append("> *──────────────────────────────*")
+                        if slack_notification_required:
+                            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+                        # raise e
+                    except Exception as e:
+                        exception_name = type(e).__name__
+                        logger.error(f"[{exception_name}] Exception occurred: \n{e}\n\n")
+
+                        thread_messages = ["> *──────────────────────────────*"]
+                        thread_messages.append(f":x: [{exception_name}] Exception occurred while resuming data movement for [{database_name}] on [{sql_instance_ip}]({replica_name}): \n{e}\n\n")
+                        thread_messages.append("> *──────────────────────────────*")
+                        if slack_notification_required:
+                            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+                        # raise e
+            else:
+                thread_messages = f":x: SQL Connection for *[{replica_name}] ({sql_instance_ip})* could not be made. So skipping all dbs for this replica."
+                if slack_notification_required:
+                    slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
         else:
-            thread_messages = f"No suspended database on *[{replica_name}] ({sql_instance})*"
+            thread_messages = f"No suspended database on *[{replica_name}] ({sql_instance_ip})*"
             if slack_notification_required:
-                slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
+                slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
 
 if 'Validate Ag Databases' == 'Validate Ag Databases':
     logger.info(f"Proceed to validate ag database(s) again..")
@@ -412,7 +471,7 @@ order by ag.ag_name, ag.replica_server_name, ag.database_name;
     snippet = dict(type='snippet', filename=f"{availability_group}__ag_databases.txt", content=pt_get_ag_databases.get_string(), initial_comment="> :hourglass_flowing_sand: AG DBs and details")
     thread_messages.append(snippet)
     if slack_notification_required:
-        slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=verbose)
+        slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
 
 
 # Cleanup
