@@ -258,7 +258,7 @@ where asi.at_server_name in ({replica_server_name__string});
 """
     sql_get_replica_ips = f"""
 select sql_instance = id.sql_instance, sql_instance_port = coalesce(id.sql_instance_port, 1433), ss.at_server_name --, domain, host_distribution, product_version
-from dbo.sma_servers s join dbo.sma_sql_servers ss on ss.[server] = s.[server] and s.is_decommissioned = 0
+from dbo.sma_servers s join dbo.sma_sql_server_extended_info ss on ss.[server] = s.[server] and s.is_decommissioned = 0
 outer apply (select top 1 * from dbo.instance_details id where id.sql_instance = ss.[server] and id.is_enabled = 1 and id.is_alias = 0) id
 where ss.at_server_name in ({replica_server_name__string});
 """
