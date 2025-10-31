@@ -3,6 +3,7 @@ import argparse
 from datetime import datetime
 import os
 import sys
+import time
 
 # Retrieve sma package path
 current_directory = os.getcwd()
@@ -45,11 +46,14 @@ parser.add_argument("--log_file", type=str, required=False, action="store", defa
 parser.add_argument("--slack_token", type=str, required=False, action="store", default="", help="Slack Token for Sending Slack Alert")
 parser.add_argument("--slack_channel", type=str, required=False, action="store", default="", help="Slack Channel ID for Sending Slack Alert")
 parser.add_argument("--slack_bot", type=str, required=False, action="store", default="db-alerts", help="Slack bot name for Sending Slack Alert")
+parser.add_argument("--delay_seconds", type=int, required=False, action="store", default=10, help="Time delay in seconds to introduce after failover to give enough time for databases to recover")
 
 args=parser.parse_args()
 
 today = datetime.today()
 today_str = today.strftime('%Y-%m-%d')
+failover_event_occurred = False
+data_movement_event_occurred = False
 
 if 'Retrieve Parameters' == 'Retrieve Parameters':
     inventory_server = args.inventory_server
@@ -67,6 +71,7 @@ if 'Retrieve Parameters' == 'Retrieve Parameters':
     verbose = args.verbose
     alert_job_name = args.alert_job_name
     log_file = args.log_file
+    delay_seconds = args.delay_seconds
 
 # create logger
 if log_file != "":
@@ -145,10 +150,20 @@ select [is_successful] = cast(1 as bit);
         cnxn_srv_pri.commit()
 
         if rs_failover_ag:
+            failover_event_occurred = True
             thread_messages = f"Failover is initiated.."
             logger.info(thread_messages)
             if slack_notification_required:
                 slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+
+            if delay_seconds > 0:
+                thread_messages = f"Wait for {delay_seconds} seconds so that databases can recover post failover.."
+                logger.info(thread_messages)
+                if slack_notification_required:
+                    slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+                # Pause the execution for delay_seconds
+                time.sleep(delay_seconds)
+
     except pyodbc.ProgrammingError as e:
         exception_name = type(e).__name__
         logger.error(f"[{exception_name}] Exception occurred: \n{e}\n\n")
@@ -363,6 +378,8 @@ if 'Resume HADR Sync For DB' == 'Resume HADR Sync For DB':
 
                         if rs_resume_data_movement:
                             logger.info(f"  Data movement initiated..")
+                            if not data_movement_event_occurred:
+                                data_movement_event_occurred = True
 
                         thread_messages = f"Data movement initiated for *[{repl_row.sql_instance}].[{database_name}]* .."
                         if slack_notification_required:
@@ -444,6 +461,15 @@ left join sys.availability_group_listeners agl on agl.group_id = ag.group_id
 left join sys.availability_group_listener_ip_addresses ia on ia.listener_id = agl.listener_id and ia.state_desc = 'ONLINE'
 order by ag.ag_name, ag.replica_server_name, ag.database_name;
 """
+
+    if data_movement_event_occurred and delay_seconds > 0:
+        thread_messages = f"Wait for {delay_seconds} seconds so that databases can get in sync.."
+        logger.info(thread_messages)
+        if slack_notification_required:
+            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+        # Pause the execution for delay_seconds
+        time.sleep(delay_seconds)
+
     cursor_srv_pri.execute(sql_get_ag_databases)
     rs_get_ag_databases = cursor_srv_pri.fetchall()
     pt_get_ag_databases = get_pretty_table(rs_get_ag_databases)
