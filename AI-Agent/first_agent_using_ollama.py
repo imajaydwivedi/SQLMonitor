@@ -1,11 +1,16 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # --- Ollama Configuration ---
 # Note: You do NOT need the OPENAI_API_KEY or python-dotenv for Ollama locally.
 
 # 2. Define the model name used in Ollama
-llm_model_name = "gemma3:4b"
+llm_model_name = os.getenv("OLLAMA_MODEL")
 
 # 3. Initialize the ChatOllama model
 # If Ollama is running on the default port (11434), you only need the model name.
