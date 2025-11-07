@@ -43,7 +43,7 @@ sql_agent = create_sql_agent(
     toolkit=toolkit,
     top_k=30,
     verbose=True,
-    handle_parsing_errors=True,  # Added this line
+    handle_parsing_errors=True,
 )
 
 response = sql_agent.invoke(question)
