@@ -95,7 +95,7 @@ tools below.
 
 ## Metadata/Column description for view dbo.vw_all_server_info.
 This table/view represents basic health & properties of sql server instances.
-Each line in this table/view represent one sql server instance.
+Each line in this table/view represent one sql server instance. No duplicate rows for same server in this table.
 And columns represent some attributes and health metrics of sql instance.
 
 - [srv_name] - This column is the server name or ip that is used by entire database, and can be used to connect data across tables in database.
