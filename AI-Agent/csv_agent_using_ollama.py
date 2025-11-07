@@ -5,6 +5,8 @@ from langchain_experimental.agents.agent_toolkits import (
     create_csv_agent,
     create_pandas_dataframe_agent,
 )
+import streamlit as st
+import pandas as pd
 
 # Load env vars
 load_dotenv()
@@ -48,12 +50,41 @@ to the final answer.
 """
 
 # question = "What is the average salary?"
-question = "Which grade has the highest average base salary, and compare the average female pay vs male pay?"
+# question = "Which grade has the highest average base salary, and compare the average female pay vs male pay?"
 
-print(f"\n🧾 Query: {question}\n")
+# print(f"\n🧾 Query: {question}\n")
 
 # response = agent.invoke(question)
-response = agent.invoke(CSV_PROMPT_PREFIX + question + CSV_PROMPT_SUFFIX)
+# response = agent.invoke(CSV_PROMPT_PREFIX + question + CSV_PROMPT_SUFFIX)
 
-print("💡 Response:")
-print(response["output"])
+# print("💡 Response:")
+# print(response["output"])
+
+st.title("Database AI Agent with LangChain")
+
+# read csv file
+df = pd.read_csv(csv_file).fillna(value=0)
+
+st.write("### Dataset Preview")
+st.write(df.head())
+
+# User input for the question
+st.write("### Ask a Question")
+question = st.text_input(
+    "Enter your question about the dataset:",
+    "Which grade has the highest average base salary, and compare the average female pay vs male pay?",
+)
+
+# Run the agent and display the result
+if st.button("Run Query"):
+    # QUERY = CSV_PROMPT_PREFIX + question + CSV_PROMPT_SUFFIX
+    QUERY = question
+    response = agent.invoke(QUERY)
+    st.write("### Final Answer")
+    st.markdown(response["output"])
+
+
+# which department makes the most on average and give the actual amount?
+
+# streamlit run csv_agent_using_ollama.py
+
