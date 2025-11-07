@@ -35,3 +35,18 @@ echo $OPENAI_API_KEY_NAME
 echo $OPENAI_API_KEY_SECRET
 echo $OLLAMA_API_KEY
 ```
+
+## Install ODBC Drivers
+
+```
+curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+sudo apt-get update
+sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17
+```
+
+## Reset ollama/open-webui incase it is hung on older errors/questions
+```
+sudo systemctl restart open-webui.service
+```
+
