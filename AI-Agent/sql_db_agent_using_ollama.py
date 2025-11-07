@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 from langchain_community.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
 from langchain_community.agent_toolkits.sql.base import create_sql_agent
+import streamlit as st
 
 
 # Load env vars
@@ -127,8 +128,22 @@ sql_agent = create_sql_agent(
     handle_parsing_errors=True,
 )
 
-response = sql_agent.invoke(question)
-print(response["output"])
+# response = sql_agent.invoke(question)
+# print(response["output"])
 
 
 
+st.title("SQL Query AI Agent")
+
+question = st.text_input("Enter your query:")
+
+if st.button("Run Query"):
+    if question:
+        res = sql_agent.invoke(question)
+
+        st.markdown(res["output"])
+else:
+    st.error("Please enter a query.")
+
+
+# streamlit run sql_db_agent_using_ollama.py
