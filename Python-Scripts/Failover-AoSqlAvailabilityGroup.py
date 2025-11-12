@@ -120,25 +120,25 @@ if 'Get-Ag-Replica-Role' == 'Get-Ag-Replica-Role':
     logger.info(f"Get role of sql_instance [{sql_instance}] in ag..")
 
     sql_get_replica_role = f"""
-set nocount on;
-select  [at_server_name] = @@SERVERNAME,
-        ars.replica_server_name,
-        [ag_name] = ag.name,
-        [primary_replica] = ags.primary_replica,
-        [is_primary] = case when ars.role = 1 then cast(1 as bit) else cast(0 as bit) end,
-        ars.role, ars.role_desc
-from sys.dm_hadr_availability_group_states as ags
-join sys.availability_groups as ag on ags.group_id = ag.group_id
-outer apply (
-    select ars.role_desc, ars.role, ar.replica_server_name
-    from sys.dm_hadr_availability_replica_states ars
-    join sys.availability_replicas as ar on ar.group_id = ars.group_id and ar.replica_id = ars.replica_id
-    where ars.is_local = 1 --and ars.role = 1
-    and ars.group_id = ags.group_id
-) ars
-where 1=1
-and ag.name = '{availability_group}'
-"""
+    set nocount on;
+    select  [at_server_name] = @@SERVERNAME,
+            ars.replica_server_name,
+            [ag_name] = ag.name,
+            [primary_replica] = ags.primary_replica,
+            [is_primary] = case when ars.role = 1 then cast(1 as bit) else cast(0 as bit) end,
+            ars.role, ars.role_desc
+    from sys.dm_hadr_availability_group_states as ags
+    join sys.availability_groups as ag on ags.group_id = ag.group_id
+    outer apply (
+        select ars.role_desc, ars.role, ar.replica_server_name
+        from sys.dm_hadr_availability_replica_states ars
+        join sys.availability_replicas as ar on ar.group_id = ars.group_id and ar.replica_id = ars.replica_id
+        where ars.is_local = 1 --and ars.role = 1
+        and ars.group_id = ags.group_id
+    ) ars
+    where 1=1
+    and ag.name = '{availability_group}'
+    """
     cursor_srv_pri.execute(sql_get_replica_role)
     rows = cursor_srv_pri.fetchall()
     pt_get_replica_role = get_pretty_table(rows)
@@ -170,21 +170,21 @@ if 'Get All Replicas Names' == 'Get All Replicas Names':
     rows = None
 
     sql_get_replicas = f"""
-set nocount on;
-select  [availability_group] = ag.name,
-        [replica_server_name] = ar.replica_server_name,
-        [replica_role] = ars.role_desc,
-        [sync_mode] = ar.availability_mode_desc,
-        [failover_mode] = ar.failover_mode_desc
-from sys.availability_groups as ag
-join sys.availability_replicas as ar
-    on ag.group_id = ar.group_id
-left join sys.dm_hadr_availability_replica_states as ars
-    on ar.replica_id = ars.replica_id
-where 1=1
-and ag.name = '{availability_group}'
-order by ag.name, ar.replica_server_name;
-"""
+    set nocount on;
+    select  [availability_group] = ag.name,
+            [replica_server_name] = ar.replica_server_name,
+            [replica_role] = ars.role_desc,
+            [sync_mode] = ar.availability_mode_desc,
+            [failover_mode] = ar.failover_mode_desc
+    from sys.availability_groups as ag
+    join sys.availability_replicas as ar
+        on ag.group_id = ar.group_id
+    left join sys.dm_hadr_availability_replica_states as ars
+        on ar.replica_id = ars.replica_id
+    where 1=1
+    and ag.name = '{availability_group}'
+    order by ag.name, ar.replica_server_name;
+    """
     cursor_srv_pri.execute(sql_get_replicas)
     rs_get_replicas = cursor_srv_pri.fetchall()
     pt_get_replicas = get_pretty_table(rs_get_replicas)
@@ -206,11 +206,11 @@ if 'Get Replica IPs From SQLMonitor' == 'Get Replica IPs From SQLMonitor':
         logger.info(f"replica_server_name__string => {replica_server_name__string}")
 
     sql_get_replica_ips = f"""
-select sql_instance = id.sql_instance, sql_instance_port = coalesce(id.sql_instance_port, 1433), ss.at_server_name --, domain, host_distribution, product_version
-from dbo.sma_servers s join dbo.sma_sql_server_extended_info ss on ss.[server] = s.[server] and s.is_decommissioned = 0
-outer apply (select top 1 * from dbo.instance_details id where id.sql_instance = ss.[server] and id.is_enabled = 1 and id.is_alias = 0) id
-where ss.at_server_name in ({replica_server_name__string});
-"""
+    select sql_instance = id.sql_instance, sql_instance_port = coalesce(id.sql_instance_port, 1433), ss.at_server_name --, domain, host_distribution, product_version
+    from dbo.sma_servers s join dbo.sma_sql_server_extended_info ss on ss.[server] = s.[server] and s.is_decommissioned = 0
+    outer apply (select top 1 * from dbo.instance_details id where id.sql_instance = ss.[server] and id.is_enabled = 1 and id.is_alias = 0) id
+    where ss.at_server_name in ({replica_server_name__string});
+    """
     if verbose:
         print(f"\n{sql_get_replica_ips}\n")
 
@@ -220,8 +220,7 @@ where ss.at_server_name in ({replica_server_name__string});
     df_get_replica_ips = get_pandas_dataframe(rs_get_replica_ips)
 
     if verbose:
-        logger.info(f"pt_get_replica_ips => \n")
-        print(pt_get_replica_ips)
+        logger.info(f"pt_get_replica_ips => \n{pt_get_replica_ips}\n")
         # logger.info(f"df_get_replica_ips => \n")
         # print(df_get_replica_ips)
 
@@ -289,28 +288,30 @@ if is_secondary_replica and (force is False) and 'Set Sync Mode for new Primary'
     logger.info(f"Proceeding to set sync mode for new primary {sql_instance} to synchronous from existing primary {existing_primary_ip}.")
 
     sql_set_sync_commit_mode = f"""
-set nocount on;
+    set nocount on;
 
-ALTER AVAILABILITY GROUP [{availability_group}]
-MODIFY REPLICA ON N'{new_primary_replica}'
-WITH (AVAILABILITY_MODE = SYNCHRONOUS_COMMIT);
+    ALTER AVAILABILITY GROUP [{availability_group}]
+    MODIFY REPLICA ON N'{new_primary_replica}'
+    WITH (AVAILABILITY_MODE = SYNCHRONOUS_COMMIT);
 
-select  [availability_group] = ag.name,
-        [replica_server] = ar.replica_server_name,
-        [replica_role] = ars.role_desc,
-        [sync_mode] = ar.availability_mode_desc,
-        [failover_mode] = ar.failover_mode_desc,
-        [is_successful] = case when ar.availability_mode_desc = 'SYNCHRONOUS_COMMIT' then cast(1 as bit) else cast(0 as bit) end
-from sys.availability_groups as ag
-join sys.availability_replicas as ar
-    on ag.group_id = ar.group_id
-left join sys.dm_hadr_availability_replica_states as ars
-    on ar.replica_id = ars.replica_id
-where 1=1
-and ag.name = '{availability_group}'
-and ar.replica_server_name = '{new_primary_replica}'
---order by ag.name, ar.replica_server_name;
-"""
+    WAITFOR DELAY '00:00:02';
+
+    select  [availability_group] = ag.name,
+            [replica_server] = ar.replica_server_name,
+            [replica_role] = ars.role_desc,
+            [sync_mode] = ar.availability_mode_desc,
+            [failover_mode] = ar.failover_mode_desc,
+            [is_successful] = case when ar.availability_mode_desc = 'SYNCHRONOUS_COMMIT' then cast(1 as bit) else cast(0 as bit) end
+    from sys.availability_groups as ag
+    join sys.availability_replicas as ar
+        on ag.group_id = ar.group_id
+    left join sys.dm_hadr_availability_replica_states as ars
+        on ar.replica_id = ars.replica_id
+    where 1=1
+    and ag.name = '{availability_group}'
+    and ar.replica_server_name = '{new_primary_replica}'
+    --order by ag.name, ar.replica_server_name;
+    """
     if verbose:
         print(f"sql_set_sync_commit_mode => \n{sql_set_sync_commit_mode}")
 
@@ -445,12 +446,12 @@ if is_secondary_replica and 'Perform Failover' == 'Perform Failover':
     logger.info(f"Failover AG [{availability_group}] to replica [{new_primary_replica}]..")
 
     sql_failover_ag = f"""
-ALTER AVAILABILITY GROUP [{availability_group}]
-    {'' if force else '--'}FORCE_FAILOVER_ALLOW_DATA_LOSS;
-    {'--' if force else ''}FAILOVER;
+    ALTER AVAILABILITY GROUP [{availability_group}]
+        {'' if force else '--'}FORCE_FAILOVER_ALLOW_DATA_LOSS;
+        {'--' if force else ''}FAILOVER;
 
-select [is_successful] = cast(1 as bit);
-"""
+    select [is_successful] = cast(1 as bit);
+    """
     if verbose:
         print(f"sql_failover_ag => \n{sql_failover_ag}")
 
@@ -495,50 +496,50 @@ if 'Get Ag Databases' == 'Get Ag Databases':
     logger.info(f"Proceed to get ag database(s)..")
 
     sql_get_ag_databases = f"""
-set nocount on;
+    set nocount on;
 
-if object_id('tempdb..#availability_databases') is not null
-	drop table #availability_databases;
+    if object_id('tempdb..#availability_databases') is not null
+        drop table #availability_databases;
 
-select	ar.replica_server_name,
-		drs.is_primary_replica,
-		adc.database_name,
-		ag.name AS ag_name,
-		drs.is_local,
-		drs.synchronization_state_desc,
-		drs.synchronization_health_desc,
-		last_redone_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), drs.last_redone_time),
-		drs.log_send_queue_size,
-		drs.log_send_rate,
-		drs.redo_queue_size,
-		drs.redo_rate,
-		[estimated_redo_completion_time_min] = case when drs.redo_rate <> 0 then (drs.redo_queue_size / drs.redo_rate) / 60.0 else (drs.redo_queue_size / 1) / 60.0 end,
-		last_commit_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), drs.last_commit_time),
-		drs.is_suspended,
-		drs.suspend_reason_desc,
-		ag.group_id
-into #availability_databases
-from sys.dm_hadr_database_replica_states as drs
-inner join sys.availability_databases_cluster as adc on drs.group_id = adc.group_id
-	and drs.group_database_id = adc.group_database_id
-inner join sys.availability_groups as ag on ag.group_id = drs.group_id
-inner join sys.availability_replicas as ar on drs.group_id = ar.group_id
-	and drs.replica_id = ar.replica_id;
+    select	ar.replica_server_name,
+            drs.is_primary_replica,
+            adc.database_name,
+            ag.name AS ag_name,
+            drs.is_local,
+            drs.synchronization_state_desc,
+            drs.synchronization_health_desc,
+            last_redone_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), drs.last_redone_time),
+            drs.log_send_queue_size,
+            drs.log_send_rate,
+            drs.redo_queue_size,
+            drs.redo_rate,
+            [estimated_redo_completion_time_min] = case when drs.redo_rate <> 0 then (drs.redo_queue_size / drs.redo_rate) / 60.0 else (drs.redo_queue_size / 1) / 60.0 end,
+            last_commit_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), drs.last_commit_time),
+            drs.is_suspended,
+            drs.suspend_reason_desc,
+            ag.group_id
+    into #availability_databases
+    from sys.dm_hadr_database_replica_states as drs
+    inner join sys.availability_databases_cluster as adc on drs.group_id = adc.group_id
+        and drs.group_database_id = adc.group_database_id
+    inner join sys.availability_groups as ag on ag.group_id = drs.group_id
+    inner join sys.availability_replicas as ar on drs.group_id = ar.group_id
+        and drs.replica_id = ar.replica_id;
 
-select	replica_server_name,
-		is_primary_replica,
-		database_name,
-		ag_name,
-		is_local,
-		synchronization_state_desc,
-		synchronization_health_desc,
-		is_suspended,
-		suspend_reason_desc
-from #availability_databases as ag
-left join sys.availability_group_listeners agl on agl.group_id = ag.group_id
-left join sys.availability_group_listener_ip_addresses ia on ia.listener_id = agl.listener_id and ia.state_desc = 'ONLINE'
-order by ag.ag_name, ag.replica_server_name, ag.database_name;
-"""
+    select	replica_server_name,
+            is_primary_replica,
+            database_name,
+            ag_name,
+            is_local,
+            synchronization_state_desc,
+            synchronization_health_desc,
+            is_suspended,
+            suspend_reason_desc
+    from #availability_databases as ag
+    left join sys.availability_group_listeners agl on agl.group_id = ag.group_id
+    left join sys.availability_group_listener_ip_addresses ia on ia.listener_id = agl.listener_id and ia.state_desc = 'ONLINE'
+    order by ag.ag_name, ag.replica_server_name, ag.database_name;
+    """
     cursor_srv_pri.execute(sql_get_ag_databases)
     rs_get_ag_databases = cursor_srv_pri.fetchall()
     pt_get_ag_databases = get_pretty_table(rs_get_ag_databases)
@@ -690,21 +691,21 @@ if 'Get All Replicas Sync Mode' == 'Get All Replicas Sync Mode':
     rows = None
 
     sql_get_replicas = f"""
-set nocount on;
-select  [availability_group] = ag.name,
-        [replica_server_name] = ar.replica_server_name,
-        [replica_role] = ars.role_desc,
-        [sync_mode] = ar.availability_mode_desc,
-        [failover_mode] = ar.failover_mode_desc
-from sys.availability_groups as ag
-join sys.availability_replicas as ar
-    on ag.group_id = ar.group_id
-left join sys.dm_hadr_availability_replica_states as ars
-    on ar.replica_id = ars.replica_id
-where 1=1
-and ag.name = '{availability_group}'
-order by ag.name, ar.replica_server_name;
-"""
+    set nocount on;
+    select  [availability_group] = ag.name,
+            [replica_server_name] = ar.replica_server_name,
+            [replica_role] = ars.role_desc,
+            [sync_mode] = ar.availability_mode_desc,
+            [failover_mode] = ar.failover_mode_desc
+    from sys.availability_groups as ag
+    join sys.availability_replicas as ar
+        on ag.group_id = ar.group_id
+    left join sys.dm_hadr_availability_replica_states as ars
+        on ar.replica_id = ars.replica_id
+    where 1=1
+    and ag.name = '{availability_group}'
+    order by ag.name, ar.replica_server_name;
+    """
     cursor_srv_pri.execute(sql_get_replicas)
     rs_get_replicas = cursor_srv_pri.fetchall()
     pt_get_replicas = get_pretty_table(rs_get_replicas)
@@ -751,8 +752,7 @@ if 'Set Sync Mode for All Replicas' == 'Set Sync Mode for All Replicas':
                     logger.info(f"Change sync mode of [{replica_server_name}] to {replica_sync_mode_target}..")
 
         if replica_sync_mode_target is not None:
-        #     logger.info(f"No action needed for [{replica_server_name}].")
-        # else:
+
             sql_set_replica_commit_mode = f"""
             set nocount on;
 
@@ -778,42 +778,40 @@ if 'Set Sync Mode for All Replicas' == 'Set Sync Mode for All Replicas':
             and ar.replica_server_name = '{replica_server_name}'
             --order by ag.name, ar.replica_server_name;
             """
-        # if verbose:
-        #     print(f"sql_set_replica_commit_mode => \n{sql_set_replica_commit_mode}")
 
-        try:
-            cursor_srv_pri.execute(sql_set_replica_commit_mode)
-            rs_set_replica_commit_mode = cursor_srv_pri.fetchall()
-            cnxn_srv_pri.commit()
+            try:
+                cursor_srv_pri.execute(sql_set_replica_commit_mode)
+                rs_set_replica_commit_mode = cursor_srv_pri.fetchall()
+                cnxn_srv_pri.commit()
 
-            pt_set_replica_commit_mode = get_pretty_table(rs_set_replica_commit_mode)
-            row = rs_set_replica_commit_mode[0]
-            replica_sync_mode = row.sync_mode
-            replica_failover_mode = row.failover_mode
-            replica_commit_mode_set = row.is_successful
+                pt_set_replica_commit_mode = get_pretty_table(rs_set_replica_commit_mode)
+                row = rs_set_replica_commit_mode[0]
+                replica_sync_mode = row.sync_mode
+                replica_failover_mode = row.failover_mode
+                replica_commit_mode_set = row.is_successful
 
-            if verbose:
-                logger.info(f"  pt_set_replica_commit_mode => \n{pt_set_replica_commit_mode}\n")
-                logger.info(f"  New sync mode for [{replica_server_name}]: {replica_sync_mode} is set")
-                logger.info(f"  New failover mode for [{replica_server_name}]: {replica_failover_mode} is set")
+                if verbose:
+                    logger.info(f"  pt_set_replica_commit_mode => \n{pt_set_replica_commit_mode}\n")
+                    logger.info(f"  New sync mode for [{replica_server_name}]: {replica_sync_mode} is set")
+                    logger.info(f"  New failover mode for [{replica_server_name}]: {replica_failover_mode} is set")
 
-            thread_messages = []
-            thread_messages.append(f"New sync mode for {replica_server_name}: {replica_sync_mode} is set")
-            # thread_messages.append(f"New failover mode for {replica_server_name}: {replica_failover_mode} is set")
+                thread_messages = []
+                thread_messages.append(f"New sync mode for {replica_server_name}: {replica_sync_mode} is set")
+                # thread_messages.append(f"New failover mode for {replica_server_name}: {replica_failover_mode} is set")
 
-            if slack_notification_required:
-                slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+                if slack_notification_required:
+                    slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
 
-        except Exception as e:
-            exception_name = type(e).__name__
-            logger.error(f"[{exception_name}] Exception occurred while setting commit mode on replica [{replica_server_name}]: \n{e}\n\n")
-            thread_messages = f"[{exception_name}] Exception occurred while setting commit mode on replica [{replica_server_name}]: \n{e}\n\n"
-            if slack_notification_required:
-                slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+            except Exception as e:
+                exception_name = type(e).__name__
+                logger.error(f"[{exception_name}] Exception occurred while setting commit mode on replica [{replica_server_name}]: \n{e}\n\n")
+                thread_messages = f"[{exception_name}] Exception occurred while setting commit mode on replica [{replica_server_name}]: \n{e}\n\n"
+                if slack_notification_required:
+                    slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
 
-            # If Normal Failover, then fail on connectivity error
-            if not force:
-                raise e
+                # If Normal Failover, then fail on connectivity error
+                if not force:
+                    raise e
 
 
 if 'Validate Ag Databases' == 'Validate Ag Databases':
@@ -821,50 +819,50 @@ if 'Validate Ag Databases' == 'Validate Ag Databases':
     logger.info(f"Proceed to validate ag database(s) again..")
 
     sql_get_ag_databases = f"""
-set nocount on;
+    set nocount on;
 
-if object_id('tempdb..#availability_databases') is not null
-	drop table #availability_databases;
+    if object_id('tempdb..#availability_databases') is not null
+        drop table #availability_databases;
 
-select	ar.replica_server_name,
-		drs.is_primary_replica,
-		adc.database_name,
-		ag.name AS ag_name,
-		drs.is_local,
-		drs.synchronization_state_desc,
-		drs.synchronization_health_desc,
-		last_redone_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), drs.last_redone_time),
-		drs.log_send_queue_size,
-		drs.log_send_rate,
-		drs.redo_queue_size,
-		drs.redo_rate,
-		[estimated_redo_completion_time_min] = case when drs.redo_rate <> 0 then (drs.redo_queue_size / drs.redo_rate) / 60.0 else (drs.redo_queue_size / 1) / 60.0 end,
-		last_commit_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), drs.last_commit_time),
-		drs.is_suspended,
-		drs.suspend_reason_desc,
-		ag.group_id
-into #availability_databases
-from sys.dm_hadr_database_replica_states as drs
-inner join sys.availability_databases_cluster as adc on drs.group_id = adc.group_id
-	and drs.group_database_id = adc.group_database_id
-inner join sys.availability_groups as ag on ag.group_id = drs.group_id
-inner join sys.availability_replicas as ar on drs.group_id = ar.group_id
-	and drs.replica_id = ar.replica_id;
+    select	ar.replica_server_name,
+            drs.is_primary_replica,
+            adc.database_name,
+            ag.name AS ag_name,
+            drs.is_local,
+            drs.synchronization_state_desc,
+            drs.synchronization_health_desc,
+            last_redone_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), drs.last_redone_time),
+            drs.log_send_queue_size,
+            drs.log_send_rate,
+            drs.redo_queue_size,
+            drs.redo_rate,
+            [estimated_redo_completion_time_min] = case when drs.redo_rate <> 0 then (drs.redo_queue_size / drs.redo_rate) / 60.0 else (drs.redo_queue_size / 1) / 60.0 end,
+            last_commit_time_utc = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), drs.last_commit_time),
+            drs.is_suspended,
+            drs.suspend_reason_desc,
+            ag.group_id
+    into #availability_databases
+    from sys.dm_hadr_database_replica_states as drs
+    inner join sys.availability_databases_cluster as adc on drs.group_id = adc.group_id
+        and drs.group_database_id = adc.group_database_id
+    inner join sys.availability_groups as ag on ag.group_id = drs.group_id
+    inner join sys.availability_replicas as ar on drs.group_id = ar.group_id
+        and drs.replica_id = ar.replica_id;
 
-select	replica_server_name,
-		is_primary_replica,
-		database_name,
-		ag_name,
-		is_local,
-		synchronization_state_desc,
-		synchronization_health_desc,
-		is_suspended,
-		suspend_reason_desc
-from #availability_databases as ag
-left join sys.availability_group_listeners agl on agl.group_id = ag.group_id
-left join sys.availability_group_listener_ip_addresses ia on ia.listener_id = agl.listener_id and ia.state_desc = 'ONLINE'
-order by ag.ag_name, ag.replica_server_name, ag.database_name;
-"""
+    select	replica_server_name,
+            is_primary_replica,
+            database_name,
+            ag_name,
+            is_local,
+            synchronization_state_desc,
+            synchronization_health_desc,
+            is_suspended,
+            suspend_reason_desc
+    from #availability_databases as ag
+    left join sys.availability_group_listeners agl on agl.group_id = ag.group_id
+    left join sys.availability_group_listener_ip_addresses ia on ia.listener_id = agl.listener_id and ia.state_desc = 'ONLINE'
+    order by ag.ag_name, ag.replica_server_name, ag.database_name;
+    """
 
     if data_movement_event_occurred and post_resume_delay_seconds > 0:
         thread_messages = f"Wait for {post_resume_delay_seconds} seconds so that databases can get in sync.."
