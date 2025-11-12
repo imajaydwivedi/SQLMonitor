@@ -729,31 +729,38 @@ if 'Set Sync Mode for All Replicas' == 'Set Sync Mode for All Replicas':
         replica_row = df_get_replicas[df_get_replicas.replica_server_name==replica_server_name].iloc[0]
         replica_role = replica_row.replica_role
         replica_sync_mode = replica_row.sync_mode
-        replica_sync_mode_target = None
         replica_failover_mode = replica_row.failover_mode
-
         replica_subnet = '.'.join(replica_instance.split('.')[:2])
+
+        replica_sync_mode_target = None
+
         if replica_server_name != new_primary_replica:
+            # for same subnet servers, set sync commit
             if primary_replica_subnet == replica_subnet:
                 if replica_sync_mode == 'SYNCHRONOUS_COMMIT':
                     logger.info(f"Sync mode of [{replica_server_name}] is already set to Synchronous Commit.")
                 else:
-                    logger.info(f"Change sync mode of [{replica_server_name}] to Synchronous Commit..")
-                    replica_sync_mode_target = ''
+                    replica_sync_mode_target = 'SYNCHRONOUS_COMMIT'
+                    logger.info(f"Change sync mode of [{replica_server_name}] to {replica_sync_mode_target}..")
+            # for different subnet servers, set async commit
             else:
                 if replica_sync_mode == 'ASYNCHRONOUS_COMMIT':
                     logger.info(f"Sync mode of [{replica_server_name}] is already set to Asynchronous Commit.")
                 else:
-                    logger.info(f"Change sync mode of [{replica_server_name}] to Asynchronous Commit..")
-                    replica_sync_mode_target = ''
+                    replica_sync_mode_target = 'ASYNCHRONOUS_COMMIT'
+                    logger.info(f"Change sync mode of [{replica_server_name}] to {replica_sync_mode_target}..")
 
-            sql_set_sync_commit_mode = f"""
+        if replica_sync_mode_target is not None:
+        #     logger.info(f"No action needed for [{replica_server_name}].")
+        # else:
+            sql_set_replica_commit_mode = f"""
             set nocount on;
 
             ALTER AVAILABILITY GROUP [{availability_group}]
             MODIFY REPLICA ON N'{replica_server_name}'
-            WITH (AVAILABILITY_MODE = SYNCHRONOUS_COMMIT);
-            WITH (AVAILABILITY_MODE = ASYNCHRONOUS_COMMIT);
+            WITH (AVAILABILITY_MODE = {replica_sync_mode_target});
+
+            waitfor delay '00:00:02';
 
             select  [availability_group] = ag.name,
                     [replica_server] = ar.replica_server_name,
@@ -768,55 +775,45 @@ if 'Set Sync Mode for All Replicas' == 'Set Sync Mode for All Replicas':
                 on ar.replica_id = ars.replica_id
             where 1=1
             and ag.name = '{availability_group}'
-            and ar.replica_server_name = '{new_primary_replica}'
+            and ar.replica_server_name = '{replica_server_name}'
             --order by ag.name, ar.replica_server_name;
             """
-    if verbose:
-        print(f"sql_set_sync_commit_mode => \n{sql_set_sync_commit_mode}")
+        # if verbose:
+        #     print(f"sql_set_replica_commit_mode => \n{sql_set_replica_commit_mode}")
 
-    try:
-        cursor_existing_primary.execute(sql_set_sync_commit_mode)
-        rs_set_sync_commit_mode = cursor_existing_primary.fetchall()
-        cnxn_existing_primary.commit()
+        try:
+            cursor_srv_pri.execute(sql_set_replica_commit_mode)
+            rs_set_replica_commit_mode = cursor_srv_pri.fetchall()
+            cnxn_srv_pri.commit()
 
-        pt_new_primary_sync_mode = get_pretty_table(rs_set_sync_commit_mode)
-        row = rs_set_sync_commit_mode[0]
-        new_primary_sync_mode = row.sync_mode
-        new_primary_sync_mode_set = row.is_successful
+            pt_set_replica_commit_mode = get_pretty_table(rs_set_replica_commit_mode)
+            row = rs_set_replica_commit_mode[0]
+            replica_sync_mode = row.sync_mode
+            replica_failover_mode = row.failover_mode
+            replica_commit_mode_set = row.is_successful
 
-        if verbose:
-            logger.info(f"pt_new_primary_sync_mode => \n{pt_new_primary_sync_mode}\n")
-            logger.info(f"Sync mode for {new_primary_replica}: {new_primary_sync_mode}")
+            if verbose:
+                logger.info(f"  pt_set_replica_commit_mode => \n{pt_set_replica_commit_mode}\n")
+                logger.info(f"  New sync mode for [{replica_server_name}]: {replica_sync_mode} is set")
+                logger.info(f"  New failover mode for [{replica_server_name}]: {replica_failover_mode} is set")
 
-        if new_primary_sync_mode_set:
-            thread_messages = f"Sync Mode change initiated.."
-            logger.info(thread_messages)
+            thread_messages = []
+            thread_messages.append(f"New sync mode for {replica_server_name}: {replica_sync_mode} is set")
+            # thread_messages.append(f"New failover mode for {replica_server_name}: {replica_failover_mode} is set")
+
             if slack_notification_required:
                 slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
 
-            if post_sync_mode_update_delay_seconds > 0:
-                thread_messages = f"Wait for {post_sync_mode_update_delay_seconds} seconds so that new primary replica can get in sync.."
-                logger.info(thread_messages)
-                if slack_notification_required:
-                    slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
-                # Pause the execution for post_failover_delay_seconds
-                time.sleep(post_sync_mode_update_delay_seconds)
-        else:
-            thread_messages = f"Sync Mode change did not happen correctly."
-            logger.warning(thread_messages)
+        except Exception as e:
+            exception_name = type(e).__name__
+            logger.error(f"[{exception_name}] Exception occurred while setting commit mode on replica [{replica_server_name}]: \n{e}\n\n")
+            thread_messages = f"[{exception_name}] Exception occurred while setting commit mode on replica [{replica_server_name}]: \n{e}\n\n"
             if slack_notification_required:
                 slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
 
-    except Exception as e:
-        exception_name = type(e).__name__
-        logger.error(f"[{exception_name}] Exception occurred: \n{e}\n\n")
-        thread_messages = f"[{exception_name}] Exception occurred: \n{e}\n\n"
-        if slack_notification_required:
-            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
-        raise e
-
-
-sys.exit(0)
+            # If Normal Failover, then fail on connectivity error
+            if not force:
+                raise e
 
 
 if 'Validate Ag Databases' == 'Validate Ag Databases':
