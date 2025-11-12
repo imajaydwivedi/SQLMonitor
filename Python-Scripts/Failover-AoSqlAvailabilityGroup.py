@@ -392,7 +392,7 @@ if is_secondary_replica and (force is False) and 'Validate AG Health' == 'Valida
             ar.replica_server_name AS [Replica_Server],
             drs.is_local, drs.is_primary_replica, drs.[database],
             drs.synchronization_health_desc, drs.synchronization_state_desc,
-            drs.last_commit_time, drs.commit_lag_sec
+            drs.last_commit_time, commit_lag_sec = coalesce(drs.commit_lag_sec, 0)
     FROM sys.availability_replicas AS ar
     INNER JOIN sys.availability_groups AS ag
         ON ag.group_id = ar.group_id
@@ -758,21 +758,20 @@ if 'Set Sync Mode for All Replicas' == 'Set Sync Mode for All Replicas':
 
         replica_sync_mode_target = None
 
-        if replica_server_name != new_primary_replica:
-            # for same subnet servers, set sync commit
-            if primary_replica_subnet == replica_subnet:
-                if replica_sync_mode == 'SYNCHRONOUS_COMMIT':
-                    logger.info(f"Sync mode of [{replica_server_name}] is already set to Synchronous Commit.")
-                else:
-                    replica_sync_mode_target = 'SYNCHRONOUS_COMMIT'
-                    logger.info(f"Change sync mode of [{replica_server_name}] to {replica_sync_mode_target}..")
-            # for different subnet servers, set async commit
+        # for same subnet servers, set sync commit
+        if primary_replica_subnet == replica_subnet:
+            if replica_sync_mode == 'SYNCHRONOUS_COMMIT':
+                logger.info(f"Sync mode of [{replica_server_name}] is already set to Synchronous Commit.")
             else:
-                if replica_sync_mode == 'ASYNCHRONOUS_COMMIT':
-                    logger.info(f"Sync mode of [{replica_server_name}] is already set to Asynchronous Commit.")
-                else:
-                    replica_sync_mode_target = 'ASYNCHRONOUS_COMMIT'
-                    logger.info(f"Change sync mode of [{replica_server_name}] to {replica_sync_mode_target}..")
+                replica_sync_mode_target = 'SYNCHRONOUS_COMMIT'
+                logger.info(f"Change sync mode of [{replica_server_name}] to {replica_sync_mode_target}..")
+        # for different subnet servers, set async commit
+        else:
+            if replica_sync_mode == 'ASYNCHRONOUS_COMMIT':
+                logger.info(f"Sync mode of [{replica_server_name}] is already set to Asynchronous Commit.")
+            else:
+                replica_sync_mode_target = 'ASYNCHRONOUS_COMMIT'
+                logger.info(f"Change sync mode of [{replica_server_name}] to {replica_sync_mode_target}..")
 
         if replica_sync_mode_target is not None:
 
