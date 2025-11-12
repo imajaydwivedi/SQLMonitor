@@ -233,48 +233,71 @@ if 'Get Replica IPs From SQLMonitor' == 'Get Replica IPs From SQLMonitor':
 
 if 'Get Existing Primary Connection' == 'Get Existing Primary Connection':
     logger.info(f"*────────────────────────────────────────────────────────────────────────────*")
-    logger.info(f"Get old primary sql_instance connection..")
+    logger.info(f"Get existing primary sql_instance connection..")
 
-    existing_primary_row = df_get_replica_ips.loc[
-        df_get_replica_ips['at_server_name']==existing_primary_replica,
-        ['sql_instance','sql_instance_port']
-    ]
+    # If existing primary replica is detected
+    if existing_primary_replica is None:
+        message = f"Existing primary replica could not be fetched from metadata."
 
-    sql_instance_ip = None
-    existing_primary_conn_status = False
+        if force:
+            logger.info(message)
+        else:
+            thread_messages = []
+            thread_messages.append(message)
+            thread_messages.append(f"Kindly use 'force' switch to perform Forced Failover.")
 
-    if not existing_primary_row.empty:
-        existing_primary_ip = existing_primary_row.iloc[0]['sql_instance']
-        existing_primary_port = existing_primary_row.iloc[0]['sql_instance_port']
-        existing_primary_instance = f"{existing_primary_ip},{existing_primary_port}"
+            for msg in thread_messages:
+                logger.error(msg)
 
-        logger.info(f"existing_primary_instance: {existing_primary_instance}")
+            if slack_notification_required:
+                slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+
+            raise Exception(message)
     else:
-        logger.error(f"Existing Primary replica {existing_primary_replica} ip could not be fetched.")
-        raise Exception(f"Existing Primary replica {existing_primary_replica} ip could not be fetched from Inventory.")
+        logger.info(f"Existing primary replica is [{existing_primary_replica}].")
 
-    # Create sql_instance connection for existing primary
-    try:
-        cnxn_existing_primary = connect_dba_instance(existing_primary_instance,'master',login_name,login_password,logger=logger,verbose=False)
-        cursor_existing_primary = cnxn_existing_primary.cursor()
-        existing_primary_conn_status = True
+    # If primary replica is found from metadata
+    if existing_primary_replica is not None:
+        existing_primary_row = df_get_replica_ips.loc[
+            df_get_replica_ips['at_server_name']==existing_primary_replica,
+            ['sql_instance','sql_instance_port']
+        ]
 
-        thread_messages = f"SQL Connection for *[{existing_primary_replica}] ({existing_primary_instance})* made successfully."
-        if slack_notification_required:
-            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
-    except Exception as e:
-        exception_name = type(e).__name__
-        logger.error(f"[{exception_name}] Exception occurred while making sql connection for [{existing_primary_instance}]({existing_primary_replica}): \n{e}\n\n")
+        sql_instance_ip = None
+        existing_primary_conn_status = False
 
-        thread_messages = ["> *──────────────────────────────*"]
-        thread_messages.append(f":x: [{exception_name}] Exception occurred while making sql connection for [{existing_primary_instance}]({existing_primary_replica}): \n{e}\n\n")
-        thread_messages.append("> *──────────────────────────────*")
-        if slack_notification_required:
-            slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+        if not existing_primary_row.empty:
+            existing_primary_ip = existing_primary_row.iloc[0]['sql_instance']
+            existing_primary_port = existing_primary_row.iloc[0]['sql_instance_port']
+            existing_primary_instance = f"{existing_primary_ip},{existing_primary_port}"
 
-        # If force failover is NOT allowed, then throw error on primary connection failure
-        if force is False:
-            raise e
+            logger.info(f"existing_primary_instance: {existing_primary_instance}")
+        else:
+            logger.error(f"Existing Primary replica {existing_primary_replica} ip could not be fetched.")
+            raise Exception(f"Existing Primary replica {existing_primary_replica} ip could not be fetched from Inventory.")
+
+        # Create sql_instance connection for existing primary
+        try:
+            cnxn_existing_primary = connect_dba_instance(existing_primary_instance,'master',login_name,login_password,logger=logger,verbose=False)
+            cursor_existing_primary = cnxn_existing_primary.cursor()
+            existing_primary_conn_status = True
+
+            thread_messages = f"SQL Connection for *[{existing_primary_replica}] ({existing_primary_instance})* made successfully."
+            if slack_notification_required:
+                slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+        except Exception as e:
+            exception_name = type(e).__name__
+            logger.error(f"[{exception_name}] Exception occurred while making sql connection for [{existing_primary_instance}]({existing_primary_replica}): \n{e}\n\n")
+
+            thread_messages = ["> *──────────────────────────────*"]
+            thread_messages.append(f":x: [{exception_name}] Exception occurred while making sql connection for [{existing_primary_instance}]({existing_primary_replica}): \n{e}\n\n")
+            thread_messages.append("> *──────────────────────────────*")
+            if slack_notification_required:
+                slack_result = send_slack_incremental_notification(slack_token, slack_channel, thread_header=None, thread_messages=thread_messages, slack_ts_value=slack_ts_value, logger=logger, verbose=False)
+
+            # If force failover is NOT allowed, then throw error on primary connection failure
+            if force is False:
+                raise e
 
 
 if is_secondary_replica and (force is False) and 'Set Sync Mode for new Primary' == 'Set Sync Mode for new Primary':
@@ -793,7 +816,7 @@ if 'Set Sync Mode for All Replicas' == 'Set Sync Mode for All Replicas':
                 if verbose:
                     logger.info(f"  pt_set_replica_commit_mode => \n{pt_set_replica_commit_mode}\n")
                     logger.info(f"  New sync mode for [{replica_server_name}]: {replica_sync_mode} is set")
-                    logger.info(f"  New failover mode for [{replica_server_name}]: {replica_failover_mode} is set")
+                    # logger.info(f"  New failover mode for [{replica_server_name}]: {replica_failover_mode} is set")
 
                 thread_messages = []
                 thread_messages.append(f"New sync mode for {replica_server_name}: {replica_sync_mode} is set")
