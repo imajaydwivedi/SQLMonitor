@@ -2739,6 +2739,46 @@
                   "mode": "basic",
                   "type": "color-background"
                 }
+              },
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MS Support"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "Extended Support": {
+                        "color": "orange",
+                        "index": 0
+                      },
+                      "Main Support": {
+                        "color": "green",
+                        "index": 1
+                      },
+                      "No Support": {
+                        "color": "red",
+                        "index": 2
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
               }
             ]
           }
@@ -2774,7 +2814,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @server_product_version varchar(20);\ndeclare @server_major_version_number tinyint;\ndeclare @server_minor_version_number smallint;\n\nSET @server_product_version = '$product_version';\nSET @server_major_version_number = $major_version_number;\nSET @server_minor_version_number = $minor_version_number;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@server_product_version varchar(20), @server_major_version_number tinyint, @server_minor_version_number smallint';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_current as\n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\tand [MinorVersionNumber] <= @server_minor_version_number\n\torder by [MinorVersionNumber] desc\n)\n,t_latest as \n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\torder by [MinorVersionNumber] desc\n)\nselect\t[Product Version] = @server_product_version\n\t\t,[Major Version] = @server_major_version_number\n\t\t,[Minor Version] = @server_minor_version_number\n\t\t,[Patch/Update] = c.Branch ,c.ReleaseDate ,c.MainstreamSupportEndDate --,c.ExtendedSupportEndDate\n\t\t,[Is MS Supported] = case when c.MainstreamSupportEndDate < getdate() then convert(bit,0) else convert(bit,1) end\n\t\t,[Latest_Patch] = l.Branch\n\t\t,[Patch_Gap] = datediff(day,c.ReleaseDate,l.ReleaseDate)\n\t\t,[Url-Current] = REPLACE(c.[Url],'https://support.microsoft.com/en-us/help/','')\n\t\t,[Url-Latest] = REPLACE(l.[Url],'https://support.microsoft.com/en-us/help/','')\nfrom t_current c, t_latest l;\n\"\nset quoted_identifier on;\n\nexec dbo.sp_executesql @sql, @params, @server_product_version, @server_major_version_number, @server_minor_version_number;",
+          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @server_product_version varchar(20);\ndeclare @server_major_version_number tinyint;\ndeclare @server_minor_version_number smallint;\n\nSET @server_product_version = '$product_version';\nSET @server_major_version_number = $major_version_number;\nSET @server_minor_version_number = $minor_version_number;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@server_product_version varchar(20), @server_major_version_number tinyint, @server_minor_version_number smallint';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_current as\n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\tand [MinorVersionNumber] <= @server_minor_version_number\n\torder by [MinorVersionNumber] desc\n)\n,t_latest as \n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\torder by [MinorVersionNumber] desc\n)\nselect\t[Product Version] = @server_product_version\n\t\t,[Major Version] = @server_major_version_number\n\t\t,[Minor Version] = @server_minor_version_number\n\t\t,[Patch/Update] = c.Branch ,c.ReleaseDate ,c.MainstreamSupportEndDate --,c.ExtendedSupportEndDate\n\t\t,[Is MS Supported] = case when c.MainstreamSupportEndDate < getdate() then convert(bit,0) else convert(bit,1) end\n\t\t,[MS Support] = case when c.MainstreamSupportEndDate > getdate()\n\t\t\t\t\t\tthen 'Mainstream Support'\n\t\t\t\t\t\twhen c.ExtendedSupportEndDate > getdate()\n\t\t\t\t\t\tthen 'Extended Support'\n\t\t\t\t\t\telse 'No Support'\n\t\t\t\t\t\tend\n\t\t,[Latest_Patch] = l.Branch\n\t\t,[Patch_Gap] = datediff(day,c.ReleaseDate,l.ReleaseDate)\n\t\t,[Url-Current] = REPLACE(c.[Url],'https://support.microsoft.com/en-us/help/','')\n\t\t,[Url-Latest] = REPLACE(l.[Url],'https://support.microsoft.com/en-us/help/','')\nfrom t_current c, t_latest l;\n\"\nset quoted_identifier on;\n\nexec dbo.sp_executesql @sql, @params, @server_product_version, @server_major_version_number, @server_minor_version_number;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -8755,8 +8795,8 @@
       },
       {
         "current": {
-          "text": "15.0.4410.1",
-          "value": "15.0.4410.1"
+          "text": "15.0.4455.2",
+          "value": "15.0.4455.2"
         },
         "datasource": {
           "type": "mssql",
@@ -8827,8 +8867,8 @@
       },
       {
         "current": {
-          "text": "1738399761554",
-          "value": "1738399761554"
+          "text": "1763105136058",
+          "value": "1763105136058"
         },
         "datasource": {
           "type": "mssql",
@@ -8859,8 +8899,8 @@
       },
       {
         "current": {
-          "text": "1738399923364",
-          "value": "1738399923364"
+          "text": "1763105163871",
+          "value": "1763105163871"
         },
         "datasource": {
           "type": "mssql",
@@ -8891,8 +8931,8 @@
       },
       {
         "current": {
-          "text": "1738399923677",
-          "value": "1738399923677"
+          "text": "1763105162130",
+          "value": "1763105162130"
         },
         "datasource": {
           "type": "mssql",
@@ -8950,8 +8990,8 @@
       },
       {
         "current": {
-          "text": "1738374208693",
-          "value": "1738374208693"
+          "text": "1763101975480",
+          "value": "1763101975480"
         },
         "datasource": {
           "type": "mssql",
@@ -8970,8 +9010,8 @@
       },
       {
         "current": {
-          "text": "1738399957657",
-          "value": "1738399957657"
+          "text": "1763105160003",
+          "value": "1763105160003"
         },
         "datasource": {
           "type": "mssql",
@@ -8990,8 +9030,8 @@
       },
       {
         "current": {
-          "text": "100",
-          "value": "100"
+          "text": "8",
+          "value": "8"
         },
         "datasource": {
           "type": "mssql",
@@ -9010,8 +9050,8 @@
       },
       {
         "current": {
-          "text": "83",
-          "value": "83"
+          "text": "1",
+          "value": "1"
         },
         "datasource": {
           "type": "mssql",
@@ -9030,8 +9070,8 @@
       },
       {
         "current": {
-          "text": "0",
-          "value": "0"
+          "text": "92",
+          "value": "92"
         },
         "datasource": {
           "type": "mssql",
@@ -9050,8 +9090,8 @@
       },
       {
         "current": {
-          "text": "83",
-          "value": "83"
+          "text": "94",
+          "value": "94"
         },
         "datasource": {
           "type": "mssql",
@@ -9070,8 +9110,8 @@
       },
       {
         "current": {
-          "text": "16",
-          "value": "16"
+          "text": "5",
+          "value": "5"
         },
         "datasource": {
           "type": "mssql",
@@ -9090,8 +9130,8 @@
       },
       {
         "current": {
-          "text": "6108008",
-          "value": "6108008"
+          "text": "475256",
+          "value": "475256"
         },
         "datasource": {
           "type": "mssql",
@@ -9182,8 +9222,8 @@
       },
       {
         "current": {
-          "text": "5849848",
-          "value": "5849848"
+          "text": "15328176",
+          "value": "15328176"
         },
         "datasource": {
           "type": "mssql",
@@ -9222,8 +9262,8 @@
       },
       {
         "current": {
-          "text": "12803636",
-          "value": "12803636"
+          "text": "3162040",
+          "value": "3162040"
         },
         "datasource": {
           "type": "mssql",
@@ -9302,8 +9342,8 @@
       },
       {
         "current": {
-          "text": "0",
-          "value": "0"
+          "text": "3216",
+          "value": "3216"
         },
         "datasource": {
           "type": "mssql",
@@ -9342,8 +9382,8 @@
       },
       {
         "current": {
-          "text": "4410",
-          "value": "4410"
+          "text": "4455",
+          "value": "4455"
         },
         "datasource": {
           "type": "mssql",
@@ -9362,8 +9402,8 @@
       },
       {
         "current": {
-          "text": "33",
-          "value": "33"
+          "text": "17",
+          "value": "17"
         },
         "datasource": {
           "type": "mssql",
@@ -9382,8 +9422,8 @@
       },
       {
         "current": {
-          "text": "8",
-          "value": "8"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -9402,8 +9442,8 @@
       },
       {
         "current": {
-          "text": "199",
-          "value": "199"
+          "text": "3",
+          "value": "3"
         },
         "datasource": {
           "type": "mssql",
@@ -9434,8 +9474,8 @@
       },
       {
         "current": {
-          "text": "1738398605473",
-          "value": "1738398605473"
+          "text": "1763103605525",
+          "value": "1763103605525"
         },
         "datasource": {
           "type": "mssql",
@@ -9572,8 +9612,8 @@
       },
       {
         "current": {
-          "text": "1738399807703",
-          "value": "1738399807703"
+          "text": "1763105101871",
+          "value": "1763105101871"
         },
         "datasource": {
           "type": "mssql",
@@ -9655,8 +9695,8 @@
       },
       {
         "current": {
-          "text": "1738399801690",
-          "value": "1738399801690"
+          "text": "1763105101444",
+          "value": "1763105101444"
         },
         "datasource": {
           "type": "mssql",
@@ -9675,8 +9715,8 @@
       },
       {
         "current": {
-          "text": "1738399801460",
-          "value": "1738399801460"
+          "text": "1763105101323",
+          "value": "1763105101323"
         },
         "datasource": {
           "type": "mssql",
@@ -9695,8 +9735,8 @@
       },
       {
         "current": {
-          "text": "3",
-          "value": "3"
+          "text": "8",
+          "value": "8"
         },
         "datasource": {
           "type": "mssql",
@@ -9715,8 +9755,8 @@
       },
       {
         "current": {
-          "text": "0",
-          "value": "0"
+          "text": "15",
+          "value": "15"
         },
         "datasource": {
           "type": "mssql",
@@ -9771,6 +9811,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - Distributed",
   "uid": "distributed_live_dashboard",
-  "version": 23,
+  "version": 24,
   "weekStart": ""
 }
