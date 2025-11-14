@@ -36,6 +36,7 @@ tempCodeRunnerFile.ps1
 /Alerting/AlertEngineVenv/*
 /Alerting/Venv/*
 /Venv/*
+/venv/*
 
 
 # Byte-compiled / optimized / DLL files

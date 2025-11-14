@@ -71,6 +71,12 @@
       "version": "11.3.0"
     },
     {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
       "type": "panel",
       "id": "stat",
       "name": "Stat",
@@ -2829,6 +2835,46 @@
                   "mode": "basic",
                   "type": "color-background"
                 }
+              },
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MS Support"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "Extended Support": {
+                        "color": "orange",
+                        "index": 0
+                      },
+                      "Main Support": {
+                        "color": "green",
+                        "index": 1
+                      },
+                      "No Support": {
+                        "color": "red",
+                        "index": 2
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
               }
             ]
           }
@@ -2864,7 +2910,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @server_product_version varchar(20);\ndeclare @server_major_version_number tinyint;\ndeclare @server_minor_version_number smallint;\n\nSET @server_product_version = '$product_version';\nSET @server_major_version_number = $major_version_number;\nSET @server_minor_version_number = $minor_version_number;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@server_product_version varchar(20), @server_major_version_number tinyint, @server_minor_version_number smallint';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_current as\n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\tand [MinorVersionNumber] <= @server_minor_version_number\n\torder by [MinorVersionNumber] desc\n)\n,t_latest as \n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\torder by [MinorVersionNumber] desc\n)\nselect\t[Product Version] = @server_product_version\n\t\t,[Major Version] = @server_major_version_number\n\t\t,[Minor Version] = @server_minor_version_number\n\t\t,[Patch/Update] = c.Branch ,c.ReleaseDate ,c.MainstreamSupportEndDate --,c.ExtendedSupportEndDate\n\t\t,[Is MS Supported] = case when c.MainstreamSupportEndDate < getdate() then convert(bit,0) else convert(bit,1) end\n\t\t,[Latest_Patch] = l.Branch\n\t\t,[Patch_Gap] = datediff(day,c.ReleaseDate,l.ReleaseDate)\n\t\t,[Url-Current] = REPLACE(c.[Url],'https://support.microsoft.com/en-us/help/','')\n\t\t,[Url-Latest] = REPLACE(l.[Url],'https://support.microsoft.com/en-us/help/','')\nfrom t_current c, t_latest l;\n\"\nset quoted_identifier on;\n\nexec dbo.sp_executesql @sql, @params, @server_product_version, @server_major_version_number, @server_minor_version_number;",
+          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @server_product_version varchar(20);\ndeclare @server_major_version_number tinyint;\ndeclare @server_minor_version_number smallint;\n\nSET @server_product_version = '$product_version';\nSET @server_major_version_number = $major_version_number;\nSET @server_minor_version_number = $minor_version_number;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@server_product_version varchar(20), @server_major_version_number tinyint, @server_minor_version_number smallint';\n\nset quoted_identifier off;\nset @sql = \"\n;with t_current as\n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\tand [MinorVersionNumber] <= @server_minor_version_number\n\torder by [MinorVersionNumber] desc\n)\n,t_latest as \n(\n\tselect\ttop 1 [MajorVersionNumber]\n\t\t\t--,[@server_minor_version_number] = @server_minor_version_number\n\t\t\t,[MinorVersionNumber]\n\t\t\t,[Branch]\n\t\t\t,[Url]\n\t\t\t,[ReleaseDate]\n\t\t\t,[MainstreamSupportEndDate]\n\t\t\t,[ExtendedSupportEndDate]\n\t\t\t,[MajorVersionName]\n\t\t\t,[MinorVersionName]\t  \n\tfrom [master].[dbo].[SqlServerVersions] as c\n\twhere [MajorVersionNumber] = @server_major_version_number\n\torder by [MinorVersionNumber] desc\n)\nselect\t[Product Version] = @server_product_version\n\t\t,[Major Version] = @server_major_version_number\n\t\t,[Minor Version] = @server_minor_version_number\n\t\t,[Patch/Update] = c.Branch ,c.ReleaseDate ,c.MainstreamSupportEndDate --,c.ExtendedSupportEndDate\n\t\t,[Is MS Supported] = case when c.MainstreamSupportEndDate < getdate() then convert(bit,0) else convert(bit,1) end\n\t\t,[MS Support] = case when c.MainstreamSupportEndDate > getdate()\n\t\t\t\t\t\tthen 'Mainstream Support'\n\t\t\t\t\t\twhen c.ExtendedSupportEndDate > getdate()\n\t\t\t\t\t\tthen 'Extended Support'\n\t\t\t\t\t\telse 'No Support'\n\t\t\t\t\t\tend\n\t\t,[Latest_Patch] = l.Branch\n\t\t,[Patch_Gap] = datediff(day,c.ReleaseDate,l.ReleaseDate)\n\t\t,[Url-Current] = REPLACE(c.[Url],'https://support.microsoft.com/en-us/help/','')\n\t\t,[Url-Latest] = REPLACE(l.[Url],'https://support.microsoft.com/en-us/help/','')\nfrom t_current c, t_latest l;\n\"\nset quoted_identifier on;\n\nexec dbo.sp_executesql @sql, @params, @server_product_version, @server_major_version_number, @server_minor_version_number;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -9735,6 +9781,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - Distributed",
   "uid": "distributed_live_dashboard",
-  "version": 23,
+  "version": 24,
   "weekStart": ""
 }
