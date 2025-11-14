@@ -61,8 +61,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -232,8 +231,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue",
-                          "value": null
+                          "color": "blue"
                         }
                       ]
                     }
@@ -285,8 +283,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple",
-                          "value": null
+                          "color": "super-light-purple"
                         }
                       ]
                     }
@@ -6429,8 +6426,8 @@
       },
       {
         "current": {
-          "text": "1763105161674",
-          "value": "1763105161674"
+          "text": "1763105370478",
+          "value": "1763105370478"
         },
         "datasource": {
           "type": "mssql",
@@ -7391,8 +7388,8 @@
       },
       {
         "current": {
-          "text": "1763105101481",
-          "value": "1763105101481"
+          "text": "1763105402382",
+          "value": "1763105402382"
         },
         "datasource": {
           "type": "mssql",
@@ -7411,8 +7408,8 @@
       },
       {
         "current": {
-          "text": "1763105161674",
-          "value": "1763105161674"
+          "text": "1763105408692",
+          "value": "1763105408692"
         },
         "datasource": {
           "type": "mssql",
@@ -7431,8 +7428,8 @@
       },
       {
         "current": {
-          "text": "1763104501664",
-          "value": "1763104501664"
+          "text": "1763105407949",
+          "value": "1763105407949"
         },
         "datasource": {
           "type": "mssql",
@@ -7451,8 +7448,8 @@
       },
       {
         "current": {
-          "text": "1763104801603",
-          "value": "1763104801603"
+          "text": "1763105402336",
+          "value": "1763105402336"
         },
         "datasource": {
           "type": "mssql",
@@ -7471,8 +7468,8 @@
       },
       {
         "current": {
-          "text": "1763104501530",
-          "value": "1763104501530"
+          "text": "1763105403443",
+          "value": "1763105403443"
         },
         "datasource": {
           "type": "mssql",
@@ -7491,8 +7488,8 @@
       },
       {
         "current": {
-          "text": "1763105101513",
-          "value": "1763105101513"
+          "text": "1763105406053",
+          "value": "1763105406053"
         },
         "datasource": {
           "type": "mssql",
@@ -7548,8 +7545,8 @@
       },
       {
         "current": {
-          "text": "1763105161453",
-          "value": "1763105161453"
+          "text": "1763105341333",
+          "value": "1763105341333"
         },
         "datasource": {
           "type": "mssql",
@@ -7568,8 +7565,8 @@
       },
       {
         "current": {
-          "text": "1763105161533",
-          "value": "1763105161533"
+          "text": "1763105341303",
+          "value": "1763105341303"
         },
         "datasource": {
           "type": "mssql",
