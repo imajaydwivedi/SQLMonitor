@@ -21,8 +21,9 @@ alter procedure [dbo].[usp_collect_performance_metrics]
 as
 begin
 /*	Created By:		Ajay Dwivedi (https://ajaydwivedi.com/go/sqlmonitor)
-	Version:		1.0
-	Modification:	2025-Jan-30 - Integrate in SQLMonitor
+	Version:		1.1
+	Modification:	2026-Jan-10 - Cleanup RingBuffer Code
+					2025-Jan-30 - Integrate in SQLMonitor
 
 	exec dbo.[usp_collect_performance_metrics] @verbose = 2;
 	exec dbo.[usp_collect_performance_metrics] @metrics = 'dm_os_sys_memory';
@@ -206,14 +207,11 @@ begin
 			from (
 				SELECT	top 1
 						[collection_time_utc] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), collection_time),  
-						[system_cpu_utilization] = CASE WHEN system_cpu_utilization_post_sp2 IS NOT NULL THEN system_cpu_utilization_post_sp2 ELSE system_cpu_utilization_pre_sp2 END,  
-						[sql_cpu_utilization] = CASE WHEN sql_cpu_utilization_post_sp2 IS NOT NULL THEN sql_cpu_utilization_post_sp2 ELSE sql_cpu_utilization_pre_sp2 END 
+						[system_cpu_utilization], [sql_cpu_utilization]
 				FROM  (	SELECT	record.value('(Record/@id)[1]', 'int') AS record_id,
 								DATEADD (ms, -1 * (ts_now - [timestamp]), SYSDATETIME()) AS collection_time,
-								100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu_utilization_post_sp2, 
-								record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu_utilization_post_sp2,
-								100-record.value('(Record/SchedluerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu_utilization_pre_sp2,
-								record.value('(Record/SchedluerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu_utilization_pre_sp2
+								100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu_utilization,
+								record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu_utilization
 						FROM (	SELECT	timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now
 								FROM sys.dm_os_ring_buffers cross apply sys.dm_os_sys_info
 								WHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'
