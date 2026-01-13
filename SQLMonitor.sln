@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # SQL Server Management Studio Version 22
-VisualStudioVersion = 18.0.11205.157 d18.0
+VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Alerting", "Alerting\Alerting.ssmssqlproj", "{F85AF121-8497-4D2D-9E7C-F9B04A636F99}"
 EndProject
@@ -71,6 +71,7 @@ Global
 		{F3E4D04A-F293-49FF-8A4B-2A8931F9CA7F}.Default|Default.ActiveCfg = Default
 		{E7A8BAFA-E3DE-4E05-88B0-0C993FDDE9DE}.Default|Default.ActiveCfg = Default
 		{ACC48069-6D68-4598-51C6-E0FC1800C934}.Default|Default.ActiveCfg = Default
+		{A9DEE307-D253-4EA7-BE46-0D9CCFD4BE4C}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
