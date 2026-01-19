@@ -1,5 +1,6 @@
 /*
-	Version -> 2025-01-30
+	Version -> 2026-01-19
+	2026-01-19 - #3 - Infra to Track Server and Database Configuration Changes
 	2025-01-30 - #24 - Add support for Managed Instances (PAAS)
 	2024-08-10 - #35 - Add Debugging parameter
 	2024-04-26 - #38 - Add Infra to Track AG State Change
@@ -1241,6 +1242,8 @@ begin
 				  , ('823', 0, 'Corruption', NULL, '(dba) Corruption - Error 823', NULL)
 				  , ('824', 0, 'Corruption', NULL, '(dba) Corruption - Error 824', NULL)
 				  , ('825', 0, 'Corruption', NULL, '(dba) Corruption - Error 825', NULL)
+				  , ('15457', 0, 'Config Change - Server', NULL, '(dba) Config Change - Server', 'Tracks sp_configure executions')
+				  , ('5084', 0, 'Config Change - Database', NULL, '(dba) Config Change - Database', 'Tracks ALTER DATABASE..SET.. executions')
 		) en ([error_number], [error_severity], [category], [sub_category], [alert_name], [remarks])
 	left join dbo.alert_categories ac
 		on exists (select ac.error_number, ac.[error_severity] intersect select en.error_number, en.[error_severity])

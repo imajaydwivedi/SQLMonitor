@@ -34,6 +34,8 @@ begin
 	exec dbo.[usp_collect_performance_metrics] @metrics = 'dm_os_memory_clerks';
 	exec dbo.[usp_collect_performance_metrics] @metrics = 'dm_os_performance_counters_deprecated_features';
 
+	MS Docs -> https://learn.microsoft.com/en-us/sql/relational-databases/performance-monitor/use-sql-server-objects?view=sql-server-ver17#SQLServerPOs
+
 	PERF_COUNTER_RAWCOUNT | Decimal | 65536
 	-> Raw counter value that does not require calculations, and represents one sample.
 	-> Could not find any records for this type in sys.dm_os_performance_counters
