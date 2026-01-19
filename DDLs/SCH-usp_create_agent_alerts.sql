@@ -26,8 +26,8 @@ BEGIN
 		https://learn.microsoft.com/en-us/sql/ssms/agent/use-tokens-in-job-steps?view=sql-server-ver16
 		Pre-requisites:	dbo.alert_categories, dbo.alert_history, dbo.usp_capture_alert_messages, job [(dba) Capture-AlertMessages]
 
-		Version -> 2026-01-19
-		2026-01-19 - #3 - Infra to Track Server and Database Configuration Changes
+		Version -> 2026-01-31
+		2026-01-31 - #3 - Infra to Track Server and Database Configuration Changes
 		2024-05-23 - Updated to include Sev 19-25
 
 		EXEC dbo.usp_create_agent_alerts

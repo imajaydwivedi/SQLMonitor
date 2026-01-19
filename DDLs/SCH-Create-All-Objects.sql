@@ -1,6 +1,6 @@
 /*
-	Version -> 2026-01-19
-	2026-01-19 - #3 - Infra to Track Server and Database Configuration Changes
+	Version -> 2026-01-31
+	2026-01-31 - #3 - Infra to Track Server and Database Configuration Changes
 	2025-01-30 - #24 - Add support for Managed Instances (PAAS)
 	2024-08-10 - #35 - Add Debugging parameter
 	2024-04-26 - #38 - Add Infra to Track AG State Change

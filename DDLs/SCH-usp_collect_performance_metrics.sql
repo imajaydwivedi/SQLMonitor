@@ -21,8 +21,8 @@ alter procedure [dbo].[usp_collect_performance_metrics]
 as
 begin
 /*	Created By:		Ajay Dwivedi (https://ajaydwivedi.com/go/sqlmonitor)
-	Version:		1.1
-	Modification:	2026-Jan-10 - Cleanup RingBuffer Code
+	Version:		2026-Jan-31
+	Modification:	2026-Jan-31 - Cleanup RingBuffer Code
 					2025-Jan-30 - Integrate in SQLMonitor
 
 	exec dbo.[usp_collect_performance_metrics] @verbose = 2;
