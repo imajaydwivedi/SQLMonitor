@@ -42,7 +42,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_
 		@retry_interval=0, 
 		@os_run_priority=0, 
 		@subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Send Login Expiry EMails" -d DBA -Q "exec dbo.usp_send_login_expiry_emails @warning_threshold_days = 20, @critical_threshold_days = 10, @mail_subject = ''*** IMPORTANT - Database Password Expiration Notification'', @job_name = ''(dba) Send Login Expiry EMails'', @sre_vp_threshold_days = 7, @cto_threshold_days = 3, @copy_dba_team_for_all_mails = 0, @send_mail = 1, @enable_dba_mail_while_testing = 0;"', 
+		@command=N'sqlcmd -C -E -b -S localhost -H "(dba) Send Login Expiry EMails" -d DBA -Q "exec dbo.usp_send_login_expiry_emails @warning_threshold_days = 20, @critical_threshold_days = 10, @mail_subject = ''*** IMPORTANT - Database Password Expiration Notification'', @job_name = ''(dba) Send Login Expiry EMails'', @sre_vp_threshold_days = 7, @cto_threshold_days = 3, @copy_dba_team_for_all_mails = 0, @send_mail = 1, @enable_dba_mail_while_testing = 0;"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1

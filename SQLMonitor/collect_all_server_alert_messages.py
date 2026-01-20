@@ -221,7 +221,7 @@ def pool_handler():
     #for allrows in p.map(query_server, servers):
         #for row in allrows:
           #final_result.append(row)
-    
+
     #total_servers_count = len(servers)
     #success_servers_count = len(final_result)
     success_servers_count = len(successful_servers)
@@ -239,10 +239,10 @@ def pool_handler():
       for row in successful_servers:
         pt_successful_servers.add_row([row,])
         #print(row)
-      print(f"\nServers with successful connectivity: {success_servers_count}/{total_servers_count}")    
+      print(f"\nServers with successful connectivity: {success_servers_count}/{total_servers_count}")
       print(pt_successful_servers)
     else:
-      print(f"\nNo server with successful connectivity.")    
+      print(f"\nNo server with successful connectivity.")
 
     if failed_servers_count > 0:
       #print(failed_servers)
@@ -250,10 +250,10 @@ def pool_handler():
       for row in failed_servers:
         pt_failed_servers.add_row([row,])
         #print(row)
-      print(f"\nServers with failed connectivity: {failed_servers_count}/{total_servers_count}")    
+      print(f"\nServers with failed connectivity: {failed_servers_count}/{total_servers_count}")
       print(pt_failed_servers)
     else:
-      print(f"\nNo server with failed connectivity.")    
+      print(f"\nNo server with failed connectivity.")
 
 
 def update_inventory():

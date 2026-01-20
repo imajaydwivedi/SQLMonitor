@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="DDLs">
+<SqlWorkbenchSqlProject xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="DDLs">
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
@@ -325,9 +325,15 @@
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Get-AllServerAgHealthState].sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-Job-[(dba) Get-AllServerAlertHistory].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Job-[(dba) Get-AllServerAlertHistory].sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-Job-[(dba) Get-AllServerBackups].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Get-AllServerBackups].sql</FullPath>
         </FileNode>
@@ -632,8 +638,8 @@
           <FullPath>SCH-usp_enable_page_compression.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_GetAllServerCollectedData.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-usp_GetAllServerCollectedData.sql</FullPath>
         </FileNode>

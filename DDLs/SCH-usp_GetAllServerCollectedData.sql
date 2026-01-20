@@ -32,8 +32,9 @@ AS
 BEGIN
 
 	/*
-		Version:		2024-08-20
-		Date:			2024-08-20 - #10 Add error log entry
+		Version:		2026-01-31
+		Date:			2026-01-31 - #3 Infra to Track Server and Database Configuration Changes
+						2024-08-20 - #10 Add error log entry
 						2024-02-10 - #26 Track Status of SQLAgent Service
 						2024-01-08 - Backup History on Dashboard
 						2023-10-17 - Add Latency Dashboard for AG
@@ -54,7 +55,7 @@ BEGIN
 
 	IF @result_to_table NOT IN ('dbo.sql_agent_jobs_all_servers','dbo.disk_space_all_servers','dbo.log_space_consumers_all_servers',
 								'dbo.tempdb_space_usage_all_servers','dbo.ag_health_state_all_servers','dbo.backups_all_servers',
-								'dbo.services_all_servers')
+								'dbo.services_all_servers','dbo.alert_history_all_servers')
 		THROW 50001, '''result_to_table'' Parameter value is invalid.', 1;	
 		
 	declare @_start_time datetime2 = sysdatetime();
@@ -720,6 +721,69 @@ and (dm.servicename like 'SQL Server (%)' or dm.servicename like 'SQL Server Age
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
 			end catch
 		end
+
+		
+		-- dbo.alert_history_all_servers
+		if @_linked_server_failed = 0 and @result_to_table = 'dbo.alert_history_all_servers'
+		begin
+			declare @_alert_history_collection_time_utc datetime2 = DATEADD(hour,-2,sysutcdatetime());
+
+			select @_alert_history_collection_time_utc = coalesce(max(collection_time_utc), @_alert_history_collection_time_utc)
+			from dbo.alert_history_all_servers ahas
+			where ahas.collection_time_utc > DATEADD(hour,-2,sysutcdatetime())
+			and ahas.sql_instance = @_srv_name;
+
+			set @_sql =  "
+SET QUOTED_IDENTIFIER ON;
+SET NOCOUNT ON; 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+SET LOCK_TIMEOUT 60000; -- 60 seconds
+
+declare @_alert_history_collection_time_utc datetime2 = '"+convert(varchar,@_alert_history_collection_time_utc,121)+"';
+
+select	collection_time_utc = convert(varchar,ah.collection_time_utc,121),
+		[sql_instance] = '"+@_srv_name+"',
+		ah.server_name, ah.database_name, ah.error_number, 
+		ah.error_severity, ah.error_message, ah.host_instance,
+		[updated_time_utc] = sysutcdatetime()
+from dbo.alert_history ah
+where 1=1
+and ah.collection_time_utc > @_alert_history_collection_time_utc
+"
+			-- Decorate for remote query if LinkedServer
+			if @_isLocalHost = 0
+				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
+			if @verbose >= 2 or (@verbose >= 1 and @_counter = 1)
+				print @_crlf+@_sql+@_crlf;
+		
+			begin try
+				insert [dbo].[alert_history_all_servers]
+				(	[collection_time_utc], [sql_instance], [server_name], [database_name],
+					[error_number], [error_severity], [error_message], [host_instance], [updated_time_utc])
+				exec (@_sql);
+			end try
+			begin catch
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerCollectedData', 
+						[function_call_arguments] = 'dbo.services_all_servers', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
+			end catch
+		end
+
 
 		-- All the logic should be within the Cursor Loop block
 		FETCH NEXT FROM cur_servers INTO @_srv_name;
