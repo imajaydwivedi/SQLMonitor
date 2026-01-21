@@ -373,8 +373,156 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
+                "color": "green",
                 "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "orange",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 11,
+        "y": 1
+      },
+      "id": 158,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "/.*/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "format": "table",
+          "rawSql": "SELECT $ring_buffer_os_cpu;",
+          "refId": "A"
+        }
+      ],
+      "title": "OS CPU @ ${ring_buffer_event_time:date:YYYY-MM-DD}",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 14,
+        "y": 1
+      },
+      "id": 161,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "/.*/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "format": "table",
+          "rawSql": "SELECT $ring_buffer_idle_cpu;",
+          "refId": "A"
+        }
+      ],
+      "title": "Idle CPU @ ${ring_buffer_event_time:date:HH.mm}",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 300
+              },
+              {
+                "color": "orange",
+                "value": 600
+              },
+              {
+                "color": "light-green",
+                "value": 601
+              },
+              {
+                "color": "dark-green",
+                "value": 1200
               }
             ]
           },
@@ -383,12 +531,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 2,
-        "w": 5,
-        "x": 11,
+        "h": 3,
+        "w": 2,
+        "x": 17,
         "y": 1
       },
-      "id": 83,
+      "id": 15,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -396,17 +544,11 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
+          "calcs": [],
           "fields": "/.*/",
-          "values": true
+          "values": false
         },
         "showPercentChange": false,
-        "text": {
-          "titleSize": 8,
-          "valueSize": 18
-        },
         "textMode": "auto",
         "wideLayout": true
       },
@@ -421,7 +563,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select [processor_info] = '$processor_name'",
+          "rawSql": "select $ple;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -442,74 +584,7 @@
           }
         }
       ],
-      "title": "Processor Info",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "mssql",
-        "uid": "${sqlmonitor_datasource}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "dark-blue",
-                "value": null
-              }
-            ]
-          },
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 16,
-        "y": 1
-      },
-      "id": 69,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "/.*/",
-          "values": true
-        },
-        "showPercentChange": false,
-        "text": {
-          "titleSize": 8,
-          "valueSize": 18
-        },
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "alias": "",
-          "datasource": {
-            "type": "mssql",
-            "uid": "${sqlmonitor_datasource}"
-          },
-          "format": "table",
-          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect virtual_machine_type_desc\nfrom sys.dm_os_sys_info as osi\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
-          "refId": "A"
-        }
-      ],
-      "title": "Machine Type",
+      "title": "PLE",
       "type": "stat"
     },
     {
@@ -975,156 +1050,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "dark-blue",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "orange",
-                "value": 80
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 11,
-        "y": 3
-      },
-      "id": 158,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [],
-          "fields": "/.*/",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "alias": "",
-          "datasource": {
-            "type": "mssql",
-            "uid": "${sqlmonitor_datasource}"
-          },
-          "format": "table",
-          "rawSql": "SELECT $ring_buffer_os_cpu;",
-          "refId": "A"
-        }
-      ],
-      "title": "OS CPU @ ${ring_buffer_event_time:date:YYYY-MM-DD}",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "mssql",
-        "uid": "${sqlmonitor_datasource}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 14,
-        "y": 3
-      },
-      "id": 161,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [],
-          "fields": "/.*/",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "alias": "",
-          "datasource": {
-            "type": "mssql",
-            "uid": "${sqlmonitor_datasource}"
-          },
-          "format": "table",
-          "rawSql": "SELECT $ring_buffer_idle_cpu;",
-          "refId": "A"
-        }
-      ],
-      "title": "Idle CPU @ ${ring_buffer_event_time:date:HH.mm}",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "mssql",
-        "uid": "${sqlmonitor_datasource}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "dark-red",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 300
-              },
-              {
-                "color": "orange",
-                "value": 600
-              },
-              {
-                "color": "light-green",
-                "value": 601
-              },
-              {
-                "color": "dark-green",
-                "value": 1200
               }
             ]
           },
@@ -1133,12 +1060,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 2,
-        "x": 17,
-        "y": 3
+        "h": 2,
+        "w": 5,
+        "x": 11,
+        "y": 4
       },
-      "id": 15,
+      "id": 83,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -1146,11 +1073,17 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [],
+          "calcs": [
+            "last"
+          ],
           "fields": "/.*/",
-          "values": false
+          "values": true
         },
         "showPercentChange": false,
+        "text": {
+          "titleSize": 8,
+          "valueSize": 18
+        },
         "textMode": "auto",
         "wideLayout": true
       },
@@ -1165,7 +1098,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "select $ple;",
+          "rawSql": "select [processor_info] = '$processor_name'",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1186,7 +1119,74 @@
           }
         }
       ],
-      "title": "PLE",
+      "title": "Processor Info",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 16,
+        "y": 4
+      },
+      "id": 69,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "showPercentChange": false,
+        "text": {
+          "titleSize": 8,
+          "valueSize": 18
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "format": "table",
+          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nselect virtual_machine_type_desc\nfrom sys.dm_os_sys_info as osi\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+          "refId": "A"
+        }
+      ],
+      "title": "Machine Type",
       "type": "stat"
     },
     {
@@ -1661,85 +1661,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "IsClustered"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 2,
-        "x": 14,
-        "y": 7
-      },
-      "id": 74,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "/.*/",
-          "values": true
-        },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "alias": "",
-          "datasource": {
-            "type": "mssql",
-            "uid": "${sqlmonitor_datasource}"
-          },
-          "format": "table",
-          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\n--select CONVERT(varchar,SERVERPROPERTY('IsClustered'))+' / '+CONVERT(varchar,SERVERPROPERTY('IsHadrEnabled'))\nselect CONVERT(bit,SERVERPROPERTY('IsClustered')) as IsClustered --, CONVERT(bit,SERVERPROPERTY('IsHadrEnabled')) as IsHadrEnabled\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
-          "refId": "A"
-        }
-      ],
-      "title": "IsClustered",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "mssql",
-        "uid": "${sqlmonitor_datasource}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
               "options": "IsHadrEnabled"
             },
             "properties": [
@@ -1757,7 +1678,7 @@
       "gridPos": {
         "h": 3,
         "w": 2,
-        "x": 16,
+        "x": 14,
         "y": 7
       },
       "id": 168,
@@ -1793,6 +1714,85 @@
         }
       ],
       "title": "IsHadrEnabled",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mssql",
+        "uid": "${sqlmonitor_datasource}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IsClustered"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 16,
+        "y": 7
+      },
+      "id": 74,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "showPercentChange": false,
+        "text": {},
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "format": "table",
+          "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @params = N'@perfmon_host_name varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\n--select CONVERT(varchar,SERVERPROPERTY('IsClustered'))+' / '+CONVERT(varchar,SERVERPROPERTY('IsHadrEnabled'))\nselect CONVERT(bit,SERVERPROPERTY('IsClustered')) as IsClustered --, CONVERT(bit,SERVERPROPERTY('IsHadrEnabled')) as IsHadrEnabled\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name;",
+          "refId": "A"
+        }
+      ],
+      "title": "IsClustered",
       "type": "stat"
     },
     {
@@ -3262,7 +3262,7 @@
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 419
+            "y": 632
           },
           "id": 181,
           "options": {
@@ -3390,7 +3390,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 19
+            "y": 62
           },
           "id": 16,
           "options": {
@@ -3509,7 +3509,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 27
+            "y": 240
           },
           "id": 193,
           "options": {
@@ -3642,7 +3642,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 92
+            "y": 305
           },
           "id": 194,
           "options": {
@@ -3760,7 +3760,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 102
+            "y": 315
           },
           "id": 196,
           "options": {
@@ -3827,6 +3827,272 @@
         "w": 24,
         "x": 0,
         "y": 20
+      },
+      "id": 198,
+      "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "select * from dbo.alert_history where error_number = 15457;",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "center",
+                "cellOptions": {
+                  "type": "auto",
+                  "wrapText": false
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 227
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "error_number"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 172
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 44
+          },
+          "id": 197,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "dataset": "AdventureWorks2019",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @sql_instance varchar(255);\r\ndeclare @perfmon_host_name varchar(255);\r\ndeclare @start_time_utc datetime2;\r\ndeclare @end_time_utc datetime2;\r\n\r\nset @sql_instance = '$server';\r\nset @perfmon_host_name = '$perfmon_host_name';\r\nset @start_time_utc = $__timeFrom();\r\nset @end_time_utc = $__timeTo();\r\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\nselect\t[time] = collection_time_utc, ah.error_number,\r\n\t\t--[database] = case when ah.error_number = 15457 then null else database_name end,\r\n\t\t[remarks] = ah.[error_message]\r\nfrom dbo.alert_history ah\r\nwhere collection_time_utc between @start_time_utc and @end_time_utc\r\nand ah.error_number in (15457)\r\n--and ah.error_number in (5084)\r\norder by time\r\n\"\r\nset quoted_identifier on;\r\n\r\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\r\nif ($is_local = 1)\r\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\r\nelse\r\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Server Configuration Changes",
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "select * from dbo.alert_history where error_number = 5084;",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "center",
+                "cellOptions": {
+                  "type": "auto",
+                  "wrapText": false
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 173
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "error_number"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 133
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "database"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 227
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "remarks"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "left"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 52
+          },
+          "id": 199,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "dataset": "AdventureWorks2019",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @sql_instance varchar(255);\r\ndeclare @perfmon_host_name varchar(255);\r\ndeclare @start_time_utc datetime2;\r\ndeclare @end_time_utc datetime2;\r\n\r\nset @sql_instance = '$server';\r\nset @perfmon_host_name = '$perfmon_host_name';\r\nset @start_time_utc = $__timeFrom();\r\nset @end_time_utc = $__timeTo();\r\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"\r\nselect\t[time] = collection_time_utc, ah.error_number,\r\n\t\t[database] = database_name,\r\n\t\t[remarks] = ah.[error_message]\r\nfrom dbo.alert_history ah\r\nwhere collection_time_utc between @start_time_utc and @end_time_utc\r\n--and ah.error_number in (15457)\r\nand ah.error_number in (5084)\r\norder by time\r\n\"\r\nset quoted_identifier on;\r\n\r\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\r\nif ($is_local = 1)\r\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\r\nelse\r\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Database Configuration Changes",
+          "type": "table"
+        }
+      ],
+      "title": "Server & Database Config Changes",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
       },
       "id": 113,
       "panels": [
@@ -3982,7 +4248,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 769
+            "y": 982
           },
           "id": 111,
           "options": {
@@ -4049,7 +4315,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 22
       },
       "id": 151,
       "panels": [
@@ -4118,7 +4384,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 770
+            "y": 983
           },
           "id": 149,
           "options": {
@@ -4216,7 +4482,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 928
+            "y": 1141
           },
           "id": 152,
           "options": {
@@ -4263,7 +4529,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 23
       },
       "id": 59,
       "panels": [
@@ -4337,7 +4603,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 231
+            "y": 444
           },
           "id": 57,
           "options": {
@@ -4403,7 +4669,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 24
       },
       "id": 179,
       "panels": [
@@ -4587,7 +4853,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 232
+            "y": 67
           },
           "id": 177,
           "options": {
@@ -4648,7 +4914,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 25
       },
       "id": 188,
       "panels": [
@@ -4676,7 +4942,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4708,7 +4975,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -4793,7 +5061,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -4904,7 +5173,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -4975,7 +5245,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -5010,7 +5281,7 @@
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 773
+            "y": 68
           },
           "id": 189,
           "options": {
@@ -5085,7 +5356,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5117,7 +5389,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -5202,7 +5475,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -5313,7 +5587,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -5384,7 +5659,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -5419,7 +5695,7 @@
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 909
+            "y": 72
           },
           "id": 190,
           "options": {
@@ -5480,7 +5756,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 26
       },
       "id": 191,
       "panels": [
@@ -5508,7 +5784,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5540,7 +5817,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -5625,7 +5903,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -5680,7 +5959,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -5889,7 +6169,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 959
+            "y": 77
           },
           "id": 192,
           "options": {
@@ -5905,7 +6185,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "10.1.0",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "dataset": "AdventureWorks2019",
@@ -5950,7 +6230,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 27
       },
       "id": 140,
       "panels": [
@@ -6059,7 +6339,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 775
+            "y": 988
           },
           "id": 138,
           "options": {
@@ -6125,7 +6405,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 28
       },
       "id": 117,
       "panels": [
@@ -6308,7 +6588,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 776
+            "y": 989
           },
           "id": 115,
           "options": {
@@ -6370,7 +6650,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 29
       },
       "id": 29,
       "panels": [
@@ -6439,7 +6719,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 777
+            "y": 990
           },
           "id": 8,
           "options": {
@@ -6503,7 +6783,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 29
+        "y": 30
       },
       "id": 27,
       "panels": [
@@ -6574,7 +6854,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 778
+            "y": 991
           },
           "id": 18,
           "options": {
@@ -6639,7 +6919,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 31
       },
       "id": 126,
       "panels": [
@@ -6688,7 +6968,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 779
+            "y": 992
           },
           "id": 124,
           "options": {
@@ -6780,7 +7060,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 827
+            "y": 1040
           },
           "id": 131,
           "options": {
@@ -6873,7 +7153,7 @@
             "h": 12,
             "w": 8,
             "x": 8,
-            "y": 827
+            "y": 1040
           },
           "id": 128,
           "options": {
@@ -6966,7 +7246,7 @@
             "h": 12,
             "w": 8,
             "x": 16,
-            "y": 827
+            "y": 1040
           },
           "id": 129,
           "options": {
@@ -7048,7 +7328,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 833
+            "y": 1046
           },
           "id": 130,
           "options": {
@@ -7091,7 +7371,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 32
       },
       "id": 88,
       "panels": [
@@ -7274,7 +7554,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 1468
+            "y": 1681
           },
           "id": 86,
           "options": {
@@ -7335,7 +7615,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 33
       },
       "id": 187,
       "panels": [
@@ -7929,7 +8209,7 @@
             "h": 16,
             "w": 24,
             "x": 0,
-            "y": 1469
+            "y": 1682
           },
           "id": 185,
           "options": {
@@ -7988,7 +8268,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 34
       },
       "id": 175,
       "panels": [
@@ -8163,7 +8443,7 @@
             "h": 16,
             "w": 24,
             "x": 0,
-            "y": 705
+            "y": 918
           },
           "id": 173,
           "options": {
@@ -8204,7 +8484,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 35
       },
       "id": 103,
       "panels": [
@@ -8269,7 +8549,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 706
+            "y": 919
           },
           "id": 133,
           "options": {
@@ -8334,7 +8614,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 36
       },
       "id": 121,
       "panels": [
@@ -8348,7 +8628,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 1517
+            "y": 1730
           },
           "id": 119,
           "options": {
@@ -8707,8 +8987,8 @@
       },
       {
         "current": {
-          "text": "1768972296239",
-          "value": "1768972296239"
+          "text": "1768974398217",
+          "value": "1768974398217"
         },
         "datasource": {
           "type": "mssql",
@@ -8739,8 +9019,8 @@
       },
       {
         "current": {
-          "text": "1768970893763",
-          "value": "1768970893763"
+          "text": "1768974379500",
+          "value": "1768974379500"
         },
         "datasource": {
           "type": "mssql",
@@ -8818,8 +9098,8 @@
       },
       {
         "current": {
-          "text": "1768972336440",
-          "value": "1768972336440"
+          "text": "1768974440983",
+          "value": "1768974440983"
         },
         "datasource": {
           "type": "mssql",
@@ -8838,8 +9118,8 @@
       },
       {
         "current": {
-          "text": "24",
-          "value": "24"
+          "text": "16",
+          "value": "16"
         },
         "datasource": {
           "type": "mssql",
@@ -8878,8 +9158,8 @@
       },
       {
         "current": {
-          "text": "76",
-          "value": "76"
+          "text": "84",
+          "value": "84"
         },
         "datasource": {
           "type": "mssql",
@@ -8898,8 +9178,8 @@
       },
       {
         "current": {
-          "text": "15",
-          "value": "15"
+          "text": "18",
+          "value": "18"
         },
         "datasource": {
           "type": "mssql",
@@ -8918,8 +9198,8 @@
       },
       {
         "current": {
-          "text": "84",
-          "value": "84"
+          "text": "81",
+          "value": "81"
         },
         "datasource": {
           "type": "mssql",
@@ -8938,8 +9218,8 @@
       },
       {
         "current": {
-          "text": "417728",
-          "value": "417728"
+          "text": "414816",
+          "value": "414816"
         },
         "datasource": {
           "type": "mssql",
@@ -9030,8 +9310,8 @@
       },
       {
         "current": {
-          "text": "8788188",
-          "value": "8788188"
+          "text": "9158576",
+          "value": "9158576"
         },
         "datasource": {
           "type": "mssql",
@@ -9070,8 +9350,8 @@
       },
       {
         "current": {
-          "text": "5918796",
-          "value": "5918796"
+          "text": "5997756",
+          "value": "5997756"
         },
         "datasource": {
           "type": "mssql",
@@ -9150,8 +9430,8 @@
       },
       {
         "current": {
-          "text": "106012",
-          "value": "106012"
+          "text": "108142",
+          "value": "108142"
         },
         "datasource": {
           "type": "mssql",
@@ -9230,8 +9510,8 @@
       },
       {
         "current": {
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -9250,8 +9530,8 @@
       },
       {
         "current": {
-          "text": "9",
-          "value": "9"
+          "text": "10",
+          "value": "10"
         },
         "datasource": {
           "type": "mssql",
@@ -9282,8 +9562,8 @@
       },
       {
         "current": {
-          "text": "1768972205162",
-          "value": "1768972205162"
+          "text": "1768974004419",
+          "value": "1768974004419"
         },
         "datasource": {
           "type": "mssql",
@@ -9420,8 +9700,8 @@
       },
       {
         "current": {
-          "text": "1768972208854",
-          "value": "1768972208854"
+          "text": "1768974302982",
+          "value": "1768974302982"
         },
         "datasource": {
           "type": "mssql",
@@ -9503,8 +9783,8 @@
       },
       {
         "current": {
-          "text": "1768972201587",
-          "value": "1768972201587"
+          "text": "1768974301136",
+          "value": "1768974301136"
         },
         "datasource": {
           "type": "mssql",
@@ -9523,8 +9803,8 @@
       },
       {
         "current": {
-          "text": "1768972206416",
-          "value": "1768972206416"
+          "text": "1768974301435",
+          "value": "1768974301435"
         },
         "datasource": {
           "type": "mssql",
@@ -9543,8 +9823,8 @@
       },
       {
         "current": {
-          "text": "8",
-          "value": "8"
+          "text": "9",
+          "value": "9"
         },
         "datasource": {
           "type": "mssql",
@@ -9563,8 +9843,8 @@
       },
       {
         "current": {
-          "text": "6",
-          "value": "6"
+          "text": "8",
+          "value": "8"
         },
         "datasource": {
           "type": "mssql",
@@ -9619,6 +9899,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - Distributed",
   "uid": "distributed_live_dashboard",
-  "version": 38,
+  "version": 42,
   "weekStart": ""
 }
