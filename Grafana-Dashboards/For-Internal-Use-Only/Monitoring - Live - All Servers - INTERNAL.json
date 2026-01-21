@@ -61,7 +61,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -231,7 +232,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -283,7 +285,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -504,7 +507,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -539,7 +543,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -576,7 +581,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -620,7 +626,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -676,18 +683,6 @@
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "os_task_list__latency_minutes"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "os_task_list_latency"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
                   "options": "disk_space__latency_minutes"
                 },
                 "properties": [
@@ -701,7 +696,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -806,7 +802,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 20
+            "y": 2
           },
           "id": 850,
           "options": {
@@ -823,7 +819,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "datasource": {
@@ -834,7 +830,7 @@
               "format": "table",
               "hide": false,
               "rawQuery": true,
-              "rawSql": "declare @_latency_minutes_threshold int = 20;\r\ndeclare @_latency_days_threshold int = 3;\r\ndeclare @t_servers_exception table (srv_name varchar(125));\r\n\r\ninsert @t_servers_exception -- list of servers that have permanent issues\r\nvalues ('192.168.1.21'),('192.168.1.22');\r\n\r\nselect\tcli.srv_name, id.jobs_server,\r\n\t\tcli.performance_counters__latency_minutes,\r\n\t\txevent_metrics__latency_minutes = case when (cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11) then cli.xevent_metrics__latency_minutes \r\n\t\t\t\t\t\t\t\t\t\t\t\t\twhen cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold then @_latency_minutes_threshold-1\r\n\t\t\t\t\t\t\t\t\t\t\t\t\telse cli.xevent_metrics__latency_minutes end,\r\n\t\tWhoIsActive__latency_minutes = case when cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 then cli.WhoIsActive__latency_minutes \r\n\t\t\t\t\t\t\t\t\t\t\t\t\twhen cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold then @_latency_minutes_threshold-1\r\n\t\t\t\t\t\t\t\t\t\t\t\t\telse cli.WhoIsActive__latency_minutes end,\r\n\t\tcli.os_task_list__latency_minutes,\r\n\t\tcli.disk_space__latency_minutes, \r\n\t\tcli.file_io_stats__latency_minutes,\r\n\t\tcli.sql_agent_job_stats__latency_minutes,\r\n\t\tcli.memory_clerks__latency_minutes,\r\n\t\tcli.wait_stats__latency_minutes,\r\n\t\tcli.BlitzIndex__latency_days,\r\n\t\tcli.BlitzIndex_Mode0__latency_days,\r\n\t\t--cli.BlitzIndex_Mode1__latency_days,\r\n\t\t--cli.BlitzIndex_Mode4__latency_days,\r\n\t\t--collection_time = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), cli.collection_time)\r\n\t\t[Issues] = (case when cli.performance_counters__latency_minutes > @_latency_minutes_threshold then 'performance_counters,' else '' end)+\r\n\t\t\t\t\t(case when cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11 then 'xevent_metrics' else '' end)+\r\n\t\t\t\t\t(case when cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 then 'WhoIsActive,' else '' end)+\r\n\t\t\t\t\t(case when cli.os_task_list__latency_minutes > @_latency_minutes_threshold then 'os_task_list,' else '' end)+\r\n\t\t\t\t\t(case when cli.disk_space__latency_minutes > @_latency_minutes_threshold*3 then 'disk_space,' else '' end)+\r\n\t\t\t\t\t(case when cli.file_io_stats__latency_minutes > @_latency_minutes_threshold*3 then 'file_io_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.wait_stats__latency_minutes > @_latency_minutes_threshold*2 then 'wait_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.sql_agent_job_stats__latency_minutes > @_latency_minutes_threshold*1.5 then 'sql_agent_job_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.memory_clerks__latency_minutes > @_latency_minutes_threshold then 'memory_clerks,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex__latency_days > @_latency_days_threshold then 'BlitzIndex,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode0__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode0,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode1__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode1,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode4__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode4,' else '' end)\r\n\t\t--,cli.host_name ,si.major_version_number ,si.product_version ,si.edition, vi.os_cpu, vi.sql_cpu\r\nfrom dbo.all_server_collection_latency_info cli\r\njoin dbo.all_server_stable_info si on si.srv_name = cli.srv_name\r\njoin dbo.all_server_volatile_info vi on vi.srv_name = cli.srv_name\r\nouter apply (select STUFF((select ', '+id.collector_powershell_jobs_server from (select distinct id.collector_powershell_jobs_server from dbo.instance_details id where id.sql_instance = cli.srv_name and id.host_name = cli.host_name) id for xml path('')), 1, 1, '') as jobs_server ) id\r\nwhere 1=1\r\nand (\tcli.performance_counters__latency_minutes > @_latency_minutes_threshold\r\n\t\tor (cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11)\r\n\t\tor (cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20)\r\n\t\tor cli.os_task_list__latency_minutes > @_latency_minutes_threshold\r\n\t\tor cli.disk_space__latency_minutes > @_latency_minutes_threshold*3\r\n\t\tor cli.file_io_stats__latency_minutes > @_latency_minutes_threshold*3\r\n\t\tor cli.wait_stats__latency_minutes > @_latency_minutes_threshold*2\r\n\t\tor cli.BlitzIndex__latency_days > @_latency_days_threshold\r\n\t\tor cli.BlitzIndex_Mode0__latency_days > @_latency_days_threshold*4\r\n\t\t--or cli.BlitzIndex_Mode1__latency_days > @_latency_days_threshold*4\r\n\t\t--or cli.BlitzIndex_Mode4__latency_days > @_latency_days_threshold*4\r\n\t\tor cli.sql_agent_job_stats__latency_minutes > @_latency_minutes_threshold*1.5\r\n\t\tor cli.memory_clerks__latency_minutes > @_latency_minutes_threshold\r\n\t)\r\nand cli.srv_name not in (select e.srv_name from @t_servers_exception e)\r\n\r\n",
+              "rawSql": "declare @_latency_minutes_threshold int = 20;\r\ndeclare @_latency_days_threshold int = 3;\r\ndeclare @t_servers_exception table (srv_name varchar(125));\r\n\r\ninsert @t_servers_exception -- list of servers that have permanent issues\r\nvalues ('192.168.1.21'),('192.168.1.22');\r\n\r\nselect\tcli.srv_name, id.jobs_server,\r\n\t\tcli.performance_counters__latency_minutes,\r\n\t\txevent_metrics__latency_minutes = case when (cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11) then cli.xevent_metrics__latency_minutes \r\n\t\t\t\t\t\t\t\t\t\t\t\t\twhen cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold then @_latency_minutes_threshold-1\r\n\t\t\t\t\t\t\t\t\t\t\t\t\telse cli.xevent_metrics__latency_minutes end,\r\n\t\tWhoIsActive__latency_minutes = case when cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 then cli.WhoIsActive__latency_minutes \r\n\t\t\t\t\t\t\t\t\t\t\t\t\twhen cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold then @_latency_minutes_threshold-1\r\n\t\t\t\t\t\t\t\t\t\t\t\t\telse cli.WhoIsActive__latency_minutes end,\r\n\t\tcli.disk_space__latency_minutes, \r\n\t\tcli.file_io_stats__latency_minutes,\r\n\t\tcli.sql_agent_job_stats__latency_minutes,\r\n\t\tcli.memory_clerks__latency_minutes,\r\n\t\tcli.wait_stats__latency_minutes,\r\n\t\tcli.BlitzIndex__latency_days,\r\n\t\tcli.BlitzIndex_Mode0__latency_days,\r\n\t\t--cli.BlitzIndex_Mode1__latency_days,\r\n\t\t--cli.BlitzIndex_Mode4__latency_days,\r\n\t\t--collection_time = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), cli.collection_time)\r\n\t\t[Issues] = (case when cli.performance_counters__latency_minutes > @_latency_minutes_threshold then 'performance_counters,' else '' end)+\r\n\t\t\t\t\t(case when cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11 then 'xevent_metrics' else '' end)+\r\n\t\t\t\t\t(case when cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 then 'WhoIsActive,' else '' end)+\r\n\t\t\t\t\t(case when cli.disk_space__latency_minutes > @_latency_minutes_threshold*3 then 'disk_space,' else '' end)+\r\n\t\t\t\t\t(case when cli.file_io_stats__latency_minutes > @_latency_minutes_threshold*3 then 'file_io_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.wait_stats__latency_minutes > @_latency_minutes_threshold*2 then 'wait_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.sql_agent_job_stats__latency_minutes > @_latency_minutes_threshold*1.5 then 'sql_agent_job_stats,' else '' end)+\r\n\t\t\t\t\t(case when cli.memory_clerks__latency_minutes > @_latency_minutes_threshold then 'memory_clerks,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex__latency_days > @_latency_days_threshold then 'BlitzIndex,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode0__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode0,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode1__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode1,' else '' end)+\r\n\t\t\t\t\t(case when cli.BlitzIndex_Mode4__latency_days > @_latency_days_threshold*4 then 'BlitzIndex_Mode4,' else '' end)\r\n\t\t--,cli.host_name ,si.major_version_number ,si.product_version ,si.edition, vi.os_cpu, vi.sql_cpu\r\nfrom dbo.all_server_collection_latency_info cli\r\njoin dbo.all_server_stable_info si on si.srv_name = cli.srv_name\r\njoin dbo.all_server_volatile_info vi on vi.srv_name = cli.srv_name\r\nouter apply (select STUFF((select ', '+id.collector_powershell_jobs_server from (select distinct id.collector_powershell_jobs_server from dbo.instance_details id where id.sql_instance = cli.srv_name and id.host_name = cli.host_name) id for xml path('')), 1, 1, '') as jobs_server ) id\r\nwhere 1=1\r\nand (\tcli.performance_counters__latency_minutes > @_latency_minutes_threshold\r\n\t\tor (cli.xevent_metrics__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20 and si.major_version_number >= 11)\r\n\t\tor (cli.WhoIsActive__latency_minutes > @_latency_minutes_threshold*2 and vi.sql_cpu > 20)\r\n\t\tor cli.disk_space__latency_minutes > @_latency_minutes_threshold*3\r\n\t\tor cli.file_io_stats__latency_minutes > @_latency_minutes_threshold*3\r\n\t\tor cli.wait_stats__latency_minutes > @_latency_minutes_threshold*2\r\n\t\tor cli.BlitzIndex__latency_days > @_latency_days_threshold\r\n\t\tor cli.BlitzIndex_Mode0__latency_days > @_latency_days_threshold*4\r\n\t\t--or cli.BlitzIndex_Mode1__latency_days > @_latency_days_threshold*4\r\n\t\t--or cli.BlitzIndex_Mode4__latency_days > @_latency_days_threshold*4\r\n\t\tor cli.sql_agent_job_stats__latency_minutes > @_latency_minutes_threshold*1.5\r\n\t\tor cli.memory_clerks__latency_minutes > @_latency_minutes_threshold\r\n\t)\r\nand cli.srv_name not in (select e.srv_name from @t_servers_exception e)\r\n\r\n",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -897,7 +893,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   }
                 ]
               }
@@ -939,7 +936,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -1091,7 +1089,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 21
+            "y": 3
           },
           "id": 844,
           "options": {
@@ -1108,7 +1106,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -1168,7 +1166,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   }
                 ]
               }
@@ -1210,7 +1209,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -1333,7 +1333,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -1397,7 +1398,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 26
+            "y": 8
           },
           "id": 887,
           "options": {
@@ -1414,7 +1415,7 @@
             "showHeader": true,
             "sortBy": []
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "alias": "",
@@ -1640,7 +1641,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 30
+            "y": 130
           },
           "id": 871,
           "options": {
@@ -2136,7 +2137,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 23
+            "y": 123
           },
           "id": 874,
           "options": {
@@ -2618,7 +2619,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 31
+            "y": 131
           },
           "id": 888,
           "options": {
@@ -3053,7 +3054,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 24
+            "y": 124
           },
           "id": 864,
           "options": {
@@ -3448,7 +3449,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 33
+            "y": 133
           },
           "id": 852,
           "options": {
@@ -4306,7 +4307,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 34
+            "y": 134
           },
           "id": 867,
           "options": {
@@ -4903,7 +4904,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 35
+            "y": 135
           },
           "id": 856,
           "options": {
@@ -4991,7 +4992,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5024,7 +5026,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -5124,7 +5127,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "yellow",
@@ -5236,7 +5240,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -5318,7 +5323,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -5378,7 +5384,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -5395,7 +5402,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 36
+            "y": 38
           },
           "id": 860,
           "options": {
@@ -5411,7 +5418,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "11.1.4",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "datasource": {
@@ -5482,7 +5489,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5497,7 +5505,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 29
+            "y": 39
           },
           "id": 873,
           "options": {
@@ -5512,7 +5520,7 @@
             },
             "showHeader": true
           },
-          "pluginVersion": "11.2.0",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "dataset": "AdventureWorks2019",
@@ -6329,7 +6337,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 84
+            "y": 184
           },
           "id": 119,
           "options": {
@@ -6426,8 +6434,8 @@
       },
       {
         "current": {
-          "text": "1763105370478",
-          "value": "1763105370478"
+          "text": "1768972262105",
+          "value": "1768972262105"
         },
         "datasource": {
           "type": "mssql",
@@ -7127,8 +7135,8 @@
       },
       {
         "current": {
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -7147,8 +7155,8 @@
       },
       {
         "current": {
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -7187,8 +7195,8 @@
       },
       {
         "current": {
-          "text": "10",
-          "value": "10"
+          "text": "13",
+          "value": "13"
         },
         "datasource": {
           "type": "mssql",
@@ -7267,8 +7275,8 @@
       },
       {
         "current": {
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -7367,8 +7375,8 @@
       },
       {
         "current": {
-          "text": "0",
-          "value": "0"
+          "text": "3",
+          "value": "3"
         },
         "datasource": {
           "type": "mssql",
@@ -7388,8 +7396,8 @@
       },
       {
         "current": {
-          "text": "1763105402382",
-          "value": "1763105402382"
+          "text": "1768972207881",
+          "value": "1768972207881"
         },
         "datasource": {
           "type": "mssql",
@@ -7408,8 +7416,8 @@
       },
       {
         "current": {
-          "text": "1763105408692",
-          "value": "1763105408692"
+          "text": "1768972262105",
+          "value": "1768972262105"
         },
         "datasource": {
           "type": "mssql",
@@ -7428,8 +7436,8 @@
       },
       {
         "current": {
-          "text": "1763105407949",
-          "value": "1763105407949"
+          "text": "1768971603631",
+          "value": "1768971603631"
         },
         "datasource": {
           "type": "mssql",
@@ -7448,8 +7456,8 @@
       },
       {
         "current": {
-          "text": "1763105402336",
-          "value": "1763105402336"
+          "text": "1768972204776",
+          "value": "1768972204776"
         },
         "datasource": {
           "type": "mssql",
@@ -7468,8 +7476,8 @@
       },
       {
         "current": {
-          "text": "1763105403443",
-          "value": "1763105403443"
+          "text": "1768971608966",
+          "value": "1768971608966"
         },
         "datasource": {
           "type": "mssql",
@@ -7488,8 +7496,8 @@
       },
       {
         "current": {
-          "text": "1763105406053",
-          "value": "1763105406053"
+          "text": "1768972202030",
+          "value": "1768972202030"
         },
         "datasource": {
           "type": "mssql",
@@ -7508,8 +7516,8 @@
       },
       {
         "current": {
-          "text": "1763104501666",
-          "value": "1763104501666"
+          "text": "null",
+          "value": "null"
         },
         "datasource": {
           "type": "mssql",
@@ -7545,8 +7553,8 @@
       },
       {
         "current": {
-          "text": "1763105341333",
-          "value": "1763105341333"
+          "text": "1768972261286",
+          "value": "1768972261286"
         },
         "datasource": {
           "type": "mssql",
@@ -7565,8 +7573,8 @@
       },
       {
         "current": {
-          "text": "1763105341303",
-          "value": "1763105341303"
+          "text": "1768972261163",
+          "value": "1768972261163"
         },
         "datasource": {
           "type": "mssql",
@@ -7606,7 +7614,7 @@
     ]
   },
   "time": {
-    "from": "now-2h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -7621,6 +7629,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - All Servers",
   "uid": "distributed_live_dashboard_all_servers",
-  "version": 8,
+  "version": 10,
   "weekStart": ""
 }
