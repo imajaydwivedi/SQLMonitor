@@ -23,6 +23,9 @@ go
 ALTER PROCEDURE dbo.usp_GetAllServerCollectedData
 (	@servers varchar(max) = null, /* comma separated list of servers to query */
 	@result_to_table nvarchar(125), /* table that need to be populated */
+	@paginate bit = 0, /* when true, means this proc is running in multiple sessions. So table should not be truncated */
+	@page_count int = 1, /* Divide the server count in these pages */
+	@page_no int = 1, /* Compulate info for servers of this page */
 	@verbose tinyint = 0, /* display debugging messages. 0 = No messages. 1 = Only print messages. 2 = Print & Table Results */
 	@truncate_table bit = 1, /* when enabled, table would be truncated */
 	@has_staging_table bit = 1 /* when enabled, assume there is no staging table */
@@ -109,36 +112,15 @@ BEGIN
 	IF @verbose >= 2
 	BEGIN
 		SELECT @_int_variable = COUNT(1) FROM @_tbl_servers;
-		PRINT 'No of servers to process => '+CONVERT(varchar,@_int_variable)+'';
+		PRINT 'No of servers to process => '+CONVERT(varchar(125),@_int_variable)+'';
 		SELECT [RunningQuery] = 'select * from @_tbl_servers', *
 		FROM @_tbl_servers;
 	END
 
-	IF @verbose >= 2
-	BEGIN
-		select distinct [RunningQuery] = 'Cursor-Servers', [srvname] = sql_instance
-		from dbo.instance_details
-		where is_available = 1 and is_enabled = 1
-		and	(	(	@servers is null
-				and	is_alias = 0
-				)
-			or	(	@servers is not null
-				and	(	sql_instance in (select srv_name from @_tbl_servers) 
-					--or	source_sql_instance in (select srv_name from @_tbl_servers)
-					)
-				)
-			);
-	END
-
-	IF @truncate_table = 1
-	BEGIN
-		SET @_sql = 'truncate table '+@_staging_table+';';
-		IF @verbose >= 1
-			PRINT @_sql;
-		EXEC (@_sql);
-	END
-
-	DECLARE cur_servers CURSOR LOCAL FORWARD_ONLY FOR
+	-- Populate table to get list of Servers to process
+	if object_id('tempdb..#instance_details') is not null
+		drop table #instance_details
+	;with cte_instance_details as (
 		select distinct [srvname] = sql_instance
 		from dbo.instance_details
 		where is_available = 1 and is_enabled = 1
@@ -150,7 +132,37 @@ BEGIN
 					--or	source_sql_instance in (select srv_name from @_tbl_servers)
 					)
 				)
+			)
+	)
+	,cte_instance_details_paged as (
+		select srvname, page_no = NTILE(@page_count) over (order by srvname)
+		from cte_instance_details
+	)
+	select srvname
+	into #instance_details
+	from cte_instance_details_paged
+	where 1=1
+		and (	@paginate = 0
+			or	( @paginate = 1 and page_no = @page_no )
 			);
+
+	IF @verbose >= 2
+	BEGIN
+		select [RunningQuery] = 'Cursor-Servers', srvname
+		from #instance_details
+	END
+
+	IF @truncate_table = 1
+	BEGIN
+		SET @_sql = 'truncate table '+@_staging_table+';';
+		IF @verbose >= 1
+			PRINT @_sql;
+		EXEC (@_sql);
+	END
+
+	DECLARE cur_servers CURSOR LOCAL FORWARD_ONLY FOR
+	select srvname
+	from #instance_details;
 
 	OPEN cur_servers;
 	FETCH NEXT FROM cur_servers INTO @_srv_name;
@@ -173,8 +185,6 @@ BEGIN
 		begin
 			set @_isLocalHost = 0
 			begin try
-				--set @_sql = "SELECT	@@servername as srv_name;";
-				--set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
 				exec sys.sp_testlinkedserver @_srv_name;
 			end try
 			begin catch
@@ -198,8 +208,6 @@ BEGIN
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
 				set @_linked_server_failed = 1;
-				--fetch next from cur_servers into @_srv_name;
-				--continue;
 			end catch;
 		end
 
