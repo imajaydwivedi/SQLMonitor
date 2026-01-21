@@ -37,25 +37,25 @@
 	11) Create table  [dbo].[BlitzFirst_WaitStats_Categories]
 	12) Create view  [dbo].[vw_wait_stats]
 	13) Create table [dbo].[file_io_stats]
-	12) Create required schemas
-	13) Create procedure dbo.usp_extended_results
-	14) Create table [dbo].[xevent_metrics]
-	15) Create table [dbo].[xevent_metrics_queries]
-	16) Create view  [dbo].[vw_xevent_metrics]
-	17) Create Trigger [tgr_insert_xevent_metrics]
-	18) Create table [dbo].[xevent_metrics_Processed_XEL_Files]
-	19) Create table [dbo].[disk_space] using Partition scheme
-	20) Create View [dbo].[vw_disk_space] for Multi SqlCluster on same nodes Architecture
-	21) Create view  [dbo].[vw_file_io_stats_deltas]
-	22) Create table [dbo].[memory_clerks]
-	23) Create table [dbo].[server_privileged_info]
-	24) Create table [dbo].[ag_health_state] using Partition scheme
-	25) Create table [dbo].[alert_categories]
-	26) Create table [dbo].[alert_history]
-	27) Add boundaries to partition. 1 boundary per hour
-	28) Remove boundaries with retention of 3 months
-	29) Populate [dbo].[BlitzFirst_WaitStats_Categories]
-	30) Create procedure dbo.usp_print
+	14) Create required schemas
+	15) Create procedure dbo.usp_extended_results
+	16) Create table [dbo].[xevent_metrics]
+	17) Create table [dbo].[xevent_metrics_queries]
+	18) Create view  [dbo].[vw_xevent_metrics]
+	19) Create Trigger [tgr_insert_xevent_metrics]
+	20) Create table [dbo].[xevent_metrics_Processed_XEL_Files]
+	21) Create table [dbo].[disk_space] using Partition scheme
+	22) Create View [dbo].[vw_disk_space] for Multi SqlCluster on same nodes Architecture
+	23) Create view  [dbo].[vw_file_io_stats_deltas]
+	24) Create table [dbo].[memory_clerks]
+	25) Create table [dbo].[server_privileged_info]
+	26) Create table [dbo].[ag_health_state] using Partition scheme
+	27) Create table [dbo].[alert_categories]
+	28) Create table [dbo].[alert_history]
+	29) Add boundaries to partition. 1 boundary per hour
+	30) Remove boundaries with retention of 3 months
+	31) Populate [dbo].[BlitzFirst_WaitStats_Categories]
+	32) Create procedure dbo.usp_print
 	
 */
 
