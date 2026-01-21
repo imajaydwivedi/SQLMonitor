@@ -426,7 +426,6 @@ CREATE TABLE [dbo].[all_server_collection_latency_info]
 	[performance_counters__latency_minutes] int null,
 	[xevent_metrics__latency_minutes] int null,
 	[WhoIsActive__latency_minutes] int null,
-	[os_task_list__latency_minutes] int null,
 	[disk_space__latency_minutes] int null,
 	[file_io_stats__latency_minutes] int null,
 	[sql_agent_job_stats__latency_minutes] int null,

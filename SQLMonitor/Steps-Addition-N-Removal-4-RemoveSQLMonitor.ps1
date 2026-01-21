@@ -2,10 +2,10 @@
 Param (
     [Parameter(Mandatory=$false)]
     [ValidateSet("AddStep", "RemoveStep")]
-    [String]$Action = "AddStep",
+    [String]$Action = "RemoveStep",
 
     [Parameter(Mandatory=$false)]
-    [String]$StepName = "55__DropProc_UspCollectPerformanceMetrics",
+    [String]$StepName = "92__DropTable_OsTaskList",
 
     [Parameter(Mandatory=$false)]
     [Bool]$PrintUserFriendlyFormat = $true,

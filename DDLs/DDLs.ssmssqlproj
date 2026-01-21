@@ -133,27 +133,45 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
-        <FileNode Name="DatabaseMail_Using_GMail.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>DatabaseMail_Using_GMail.sql</FullPath>
-        </FileNode>
-        <FileNode Name="FirstResponderKit-Install-All-Scripts.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>FirstResponderKit-Install-All-Scripts.sql</FullPath>
-        </FileNode>
-        <FileNode Name="grafana-login.sql">
+        <FileNode Name="DCL-[grafana-login].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>grafana-login.sql</FullPath>
+          <FullPath>DCL-[grafana-login].sql</FullPath>
         </FileNode>
-        <FileNode Name="SCH-BlitzIndex_Mode0-Partitioning.sql">
+        <FileNode Name="DDL-[DatabaseMail_Using_GMail].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DDL-[DatabaseMail_Using_GMail].sql</FullPath>
+        </FileNode>
+        <FileNode Name="DDL-[sp_WhoIsActive_v12_00(Modified)].sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>DDL-[sp_WhoIsActive_v12_00(Modified)].sql</FullPath>
+        </FileNode>
+        <FileNode Name="QRY-DDL-[FirstResponderKit-Install-All-Scripts].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QRY-DDL-[FirstResponderKit-Install-All-Scripts].sql</FullPath>
+        </FileNode>
+        <FileNode Name="QRY-SELECT-[Find-Missing-Tables-For-Purging].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QRY-SELECT-[Find-Missing-Tables-For-Purging].sql</FullPath>
+        </FileNode>
+        <FileNode Name="QRY-UPDATE-[SQLAgentJobsThreshold].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QRY-UPDATE-[SQLAgentJobsThreshold].sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-BlitzIndex_Mode0-Partitioning.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-BlitzIndex_Mode0-Partitioning.sql</FullPath>
         </FileNode>
@@ -494,8 +512,8 @@
           <FullPath>SCH-Job-[Update-SQLMonitorIPAddress].sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-Linked-Servers-Sample.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-Linked-Servers-Sample.sql</FullPath>
         </FileNode>
@@ -504,12 +522,6 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>SCH-sp_WhatIsRunning.sql</FullPath>
-        </FileNode>
-        <FileNode Name="SCH-sp_WhoIsActive_v12_00(Modified).sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>SCH-sp_WhoIsActive_v12_00(Modified).sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_active_requests_count.sql">
           <AssociatedConnectionMoniker />
@@ -578,9 +590,9 @@
           <FullPath>SCH-usp_collect_memory_clerks.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_collect_performance_metrics.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Experiment:False:sa</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>Experiment</AssociatedConnSrvName>
-          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
           <FullPath>SCH-usp_collect_performance_metrics.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-usp_collect_privileged_info.sql">
@@ -738,12 +750,6 @@
           <AssociatedConnSrvName>SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-WhoIsActive-Partitioning.sql</FullPath>
-        </FileNode>
-        <FileNode Name="Update-SQLAgentJobsThreshold.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>SQLEXPRESS</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>Update-SQLAgentJobsThreshold.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
