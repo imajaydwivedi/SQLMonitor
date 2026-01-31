@@ -92,21 +92,21 @@ BEGIN
 	declare @_title nvarchar(2000);
 	declare @_style_css nvarchar(max);
 	declare @_html_core_health nvarchar(MAX); -- 'Core Health Metrics'
-	declare @_collection_time_core_health datetime;
+	declare @_collection_time_core_health datetime = convert(date,'2000-01-01');
 	declare @_html_tempdb_health nvarchar(MAX); -- 'Tempdb Health'
-	declare @_collection_time_tempdb_health datetime;
+	declare @_collection_time_tempdb_health datetime = convert(date,'2000-01-01');
 	declare @_html_log_space_health nvarchar(MAX); -- 'Log Space'
-	declare @_collection_time_log_space_health datetime;
+	declare @_collection_time_log_space_health datetime = convert(date,'2000-01-01');
 	declare @_html_ag_health nvarchar(MAX); -- 'Ag Latency'
-	declare @_collection_time_ag_health datetime;
+	declare @_collection_time_ag_health datetime = convert(date,'2000-01-01');
 	declare @_html_disk_health nvarchar(MAX); -- 'Disk Space'
-	declare @_collection_time_disk_health datetime;
+	declare @_collection_time_disk_health datetime = convert(date,'2000-01-01');
 	declare @_html_offline_servers nvarchar(MAX); -- 'Offline Servers'
-	declare @_collection_time_offline_servers datetime;
+	declare @_collection_time_offline_servers datetime = convert(date,'2000-01-01');
 	declare @_html_sqlmonitor_jobs nvarchar(max); -- 'SQLMonitor Jobs'
-	declare @_collection_time_sqlmonitor_jobs datetime;
+	declare @_collection_time_sqlmonitor_jobs datetime = convert(date,'2000-01-01');
 	declare @_html_backup_history nvarchar(max); -- 'Backup History'
-	declare @_collection_time_backup_history datetime;
+	declare @_collection_time_backup_history datetime = convert(date,'2000-01-01');
 	declare @_table_headline nvarchar(500);
 	declare @_table_header nvarchar(max);
 	declare @_table_data nvarchar(max);	
@@ -681,100 +681,105 @@ BEGIN
 		if not exists (select * from dbo.ag_health_state_all_servers)
 			print 'Data does not exist in dbo.ag_health_state_all_servers';
 
+		-- Get temp table with alert data
+		if object_id('tempdb..#aghs') is not null
+			drop table #aghs;
+		select	sql_instance, [replica_database] = replica_server_name+' || '+database_name,
+				is_primary_replica,	ag_listener, is_local, synchronization_state_desc, synchronization_health_desc, 
+				latency_seconds, log_send_queue_size, redo_queue_size, is_suspended
+		into #aghs
+		from dbo.ag_health_state_all_servers ahs
+		where 1=1
+		and (	ahs.synchronization_health_desc <> 'HEALTHY'
+			or	ahs.synchronization_state_desc not in ('SYNCHRONIZED','SYNCHRONIZING')
+			or	(ahs.latency_seconds is not null and ahs.latency_seconds >= @ag_latency_minutes*60)
+			or	(ahs.log_send_queue_size is not null and ahs.log_send_queue_size >= @log_send_queue_size_gb*1024*1024)
+			or	(ahs.redo_queue_size is not null and ahs.redo_queue_size >= @ag_redo_queue_size_gb*1024*1024)
+			);
+
 		if @verbose > 1
 		begin
-			;with t_cte as (
-				select	sql_instance, [replica_database] = replica_server_name+' || '+database_name,
-						is_primary_replica,	ag_listener, is_local, synchronization_state_desc, synchronization_health_desc, 
-						latency_seconds, log_send_queue_size, redo_queue_size, is_suspended
-				from dbo.ag_health_state_all_servers ahs
-				where 1=1
-				and (	ahs.synchronization_health_desc <> 'HEALTHY'
-					or	ahs.synchronization_state_desc not in ('SYNCHRONIZED','SYNCHRONIZING')
-					or	(ahs.latency_seconds is not null and ahs.latency_seconds >= @ag_latency_minutes*60)
-					or	(ahs.log_send_queue_size is not null and ahs.log_send_queue_size >= @log_send_queue_size_gb*1024*1024)
-					or	(ahs.redo_queue_size is not null and ahs.redo_queue_size >= @ag_redo_queue_size_gb*1024*1024)
-					)
-			)
 			select [RunningQuery], t_cte.*
-			from t_cte
+			from #aghs t_cte
 			full outer join (select [RunningQuery] = 'Ag Latency') rq
 				on 1=1;
 		end
-
-		;with tsu as (
-			select	sql_instance, [replica_database] = replica_server_name+' || '+database_name,
-						is_primary_replica,	ag_listener, is_local, synchronization_state_desc, synchronization_health_desc, 
-						latency_seconds, log_send_queue_size, redo_queue_size, is_suspended
-				from dbo.ag_health_state_all_servers ahs
+		
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #aghs)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+replica_database+'</td>'
+						+'<td>'+convert(varchar,is_primary_replica)+'</td>'
+						+'<td>'+isnull(ag_listener,'')+'</td>'
+						+'<td>'+convert(varchar,is_local)+'</td>'
+						+'<td class="'+(case synchronization_state_desc
+										when 'SYNCHRONIZED' then 'bg_green'
+										when 'NOT SYNCHRONIZING' then 'bg_red'
+										when 'SYNCHRONIZING' then 'bg_cyan'
+										when 'REVERTING' then 'bg_yellow_dark'
+										when 'INITIALIZING' then 'bg_yellow_light'
+										else 'bg_none'
+										end)+'">'+isnull(synchronization_state_desc,'')+'</td>'
+						+'<td class="'+(case synchronization_health_desc
+										when 'HEALTHY' then 'bg_green'
+										when 'NOT_HEALTHY' then 'bg_red'
+										when 'PARTIALLY_HEALTHY' then 'bg_orange'
+										else 'bg_none'
+										end)+'">'+isnull(synchronization_health_desc,'')+'</td>'
+						+'<td class="'+(case when latency_seconds >= 1800 then 'bg_red'
+										when latency_seconds >= 600 then 'bg_orange'
+										when latency_seconds >= 300 then 'bg_yellow_dark'
+										when latency_seconds >= 240 then 'bg_yellow_medium'
+										when latency_seconds >= 120 then 'bg_yellow_light'
+										else 'bg_none'
+										end)+'">'+isnull((case when latency_seconds < 60 then convert(varchar,floor(latency_seconds))+' sec'
+								when latency_seconds < 3600 then convert(varchar,floor(latency_seconds/60))+' min'
+								when latency_seconds < 86400 then convert(varchar,floor(latency_seconds/3600))+' hrs'
+								when latency_seconds >= 86400 then convert(varchar,floor(latency_seconds/86400))+' days'
+								else '' end),' ')+'</td>'
+						+'<td class="'+(case when log_send_queue_size > 100000000 then 'bg_red'
+										when log_send_queue_size > 10000000 then 'bg_orange'
+										when log_send_queue_size > 1000000 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+
+								isnull((case when log_send_queue_size < 1024 then convert(varchar,log_send_queue_size)+' kb'
+									when log_send_queue_size < 1024*1024 then convert(varchar,log_send_queue_size/1024)+' mb'
+									when log_send_queue_size < 1024*1024*1024 then convert(varchar,floor(log_send_queue_size/(1024*1024)))+' gb'
+									when log_send_queue_size >= 1024*1024*1024 then convert(varchar,floor(log_send_queue_size/(1024*1024*1024)))+' tb'
+									else '' end),' ')+'</td>'
+						+'<td class="'+(case when redo_queue_size > 100000000 then 'bg_red'
+										when redo_queue_size > 10000000 then 'bg_orange'
+										when redo_queue_size > 1000000 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'
+								+isnull((case when redo_queue_size < 1024 then convert(varchar,redo_queue_size)+' kb'
+									when redo_queue_size < 1024*1024 then convert(varchar,redo_queue_size/1024)+' mb'
+									when redo_queue_size < 1024*1024*1024 then convert(varchar,floor(redo_queue_size/(1024*1024)))+' gb'
+									when redo_queue_size >= 1024*1024*1024 then convert(varchar,floor(redo_queue_size/(1024*1024*1024)))+' tb'
+									else '' end),' ')+'</td>'
+						+'<td>'+convert(varchar,is_suspended)+'</td>'
+						+'</tr>' as [table_row]
+				from #aghs
 				where 1=1
-				and (	ahs.synchronization_health_desc <> 'HEALTHY'
-					or	ahs.synchronization_state_desc not in ('SYNCHRONIZED','SYNCHRONIZING')
-					or	(ahs.latency_seconds is not null and ahs.latency_seconds >= @ag_latency_minutes*60)
-					or	(ahs.log_send_queue_size is not null and ahs.log_send_queue_size >= @log_send_queue_size_gb*1024*1024)
-					or	(ahs.redo_queue_size is not null and ahs.redo_queue_size >= @ag_redo_queue_size_gb*1024*1024)
-					)
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td class="bg_key">'+replica_database+'</td>'
-					+'<td>'+convert(varchar,is_primary_replica)+'</td>'
-					+'<td>'+isnull(ag_listener,'')+'</td>'
-					+'<td>'+convert(varchar,is_local)+'</td>'
-					+'<td class="'+(case synchronization_state_desc
-									when 'SYNCHRONIZED' then 'bg_green'
-									when 'NOT SYNCHRONIZING' then 'bg_red'
-									when 'SYNCHRONIZING' then 'bg_cyan'
-									when 'REVERTING' then 'bg_yellow_dark'
-									when 'INITIALIZING' then 'bg_yellow_light'
-									else 'bg_none'
-									end)+'">'+isnull(synchronization_state_desc,'')+'</td>'
-					+'<td class="'+(case synchronization_health_desc
-									when 'HEALTHY' then 'bg_green'
-									when 'NOT_HEALTHY' then 'bg_red'
-									when 'PARTIALLY_HEALTHY' then 'bg_orange'
-									else 'bg_none'
-									end)+'">'+isnull(synchronization_health_desc,'')+'</td>'
-					+'<td class="'+(case when latency_seconds >= 1800 then 'bg_red'
-									when latency_seconds >= 600 then 'bg_orange'
-									when latency_seconds >= 300 then 'bg_yellow_dark'
-									when latency_seconds >= 240 then 'bg_yellow_medium'
-									when latency_seconds >= 120 then 'bg_yellow_light'
-									else 'bg_none'
-									end)+'">'+isnull((case when latency_seconds < 60 then convert(varchar,floor(latency_seconds))+' sec'
-							when latency_seconds < 3600 then convert(varchar,floor(latency_seconds/60))+' min'
-							when latency_seconds < 86400 then convert(varchar,floor(latency_seconds/3600))+' hrs'
-							when latency_seconds >= 86400 then convert(varchar,floor(latency_seconds/86400))+' days'
-							else '' end),' ')+'</td>'
-					+'<td class="'+(case when log_send_queue_size > 100000000 then 'bg_red'
-									when log_send_queue_size > 10000000 then 'bg_orange'
-									when log_send_queue_size > 1000000 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+
-							isnull((case when log_send_queue_size < 1024 then convert(varchar,log_send_queue_size)+' kb'
-								when log_send_queue_size < 1024*1024 then convert(varchar,log_send_queue_size/1024)+' mb'
-								when log_send_queue_size < 1024*1024*1024 then convert(varchar,floor(log_send_queue_size/(1024*1024)))+' gb'
-								when log_send_queue_size >= 1024*1024*1024 then convert(varchar,floor(log_send_queue_size/(1024*1024*1024)))+' tb'
-								else '' end),' ')+'</td>'
-					+'<td class="'+(case when redo_queue_size > 100000000 then 'bg_red'
-									when redo_queue_size > 10000000 then 'bg_orange'
-									when redo_queue_size > 1000000 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'
-							+isnull((case when redo_queue_size < 1024 then convert(varchar,redo_queue_size)+' kb'
-								when redo_queue_size < 1024*1024 then convert(varchar,redo_queue_size/1024)+' mb'
-								when redo_queue_size < 1024*1024*1024 then convert(varchar,floor(redo_queue_size/(1024*1024)))+' gb'
-								when redo_queue_size >= 1024*1024*1024 then convert(varchar,floor(redo_queue_size/(1024*1024*1024)))+' tb'
-								else '' end),' ')+'</td>'
-					+'<td>'+convert(varchar,is_suspended)+'</td>'
-					+'</tr>' as [table_row]
-			from tsu
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_ag_latency = 0;
+
+			select top 1 @_collection_time_ag_health = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), updated_date_utc)
+			from dbo.ag_health_state_all_servers aghs
+			order by updated_date_utc desc;
+
+			set @_table_data = '<tr><td colspan="11">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_ag_health,120)+'</td></tr>';
+		end
 
 		set @_html_ag_health = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>@ag_latency_minutes:'+convert(varchar,@ag_latency_minutes)
