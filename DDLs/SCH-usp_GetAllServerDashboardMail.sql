@@ -816,74 +816,79 @@ BEGIN
 		if not exists (select * from dbo.disk_space_all_servers)
 			raiserror ('Data does not exist in dbo.disk_space_all_servers', 17, -1) with log;
 
+		-- Get temp table with alert data
+		if object_id('tempdb..#disk_space') is not null
+			drop table #disk_space;
+		select	top 100000
+				ds.sql_instance, ds.[host_name], ds.disk_volume, ds.capacity_mb, 
+				ds.free_mb,
+				[state] = case when (ds.free_mb*100.0/ds.capacity_mb) < (100.0-@disk_critical_pct) then 'Critical' else 'Warning' end,
+				[used_pct] = 100.0-convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb)
+		into #disk_space
+		from dbo.disk_space_all_servers ds
+		where ds.updated_date_utc >= dateadd(minute,-60,getutcdate())
+		and (	(	(ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_warning_pct)
+					and ds.free_mb < (@disk_threshold_gb)*1024
+	  			)
+				or ( (ds.free_mb*100.0/ds.capacity_mb) < (100-@large_disk_threshold_pct)) -- free %
+				)
+		order by [used_pct] desc;
+
 		if @verbose > 1
 		begin
-			;with t_cte as (
-				select	ds.sql_instance, ds.host_name, ds.disk_volume, ds.capacity_mb, 
-						ds.free_mb,
-						[state] = case when (ds.free_mb*100.0/ds.capacity_mb) < (100.0-@disk_critical_pct) then 'Critical' else 'Warning' end,
-						[used_pct] = 100.0-convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb)
-				from dbo.disk_space_all_servers ds
-				where ds.updated_date_utc >= dateadd(minute,-60,getutcdate())
-				and (	(	(ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_warning_pct)
-							and ds.free_mb < (@disk_threshold_gb)*1024
-	  					)
-						or ( (ds.free_mb*100.0/ds.capacity_mb) < (100-@large_disk_threshold_pct)) -- free %
-						)
-			)
 			select [RunningQuery], t_cte.*
-			from t_cte
+			from #disk_space t_cte
 			full outer join (select [RunningQuery] = 'Disk Space') rq
 				on 1=1
-			order by [used_pct] desc
+			order by [used_pct] desc;
 		end
 
-		;with tsu as (
-			select	top 100000
-					ds.sql_instance, ds.[host_name], ds.disk_volume, ds.capacity_mb, 
-					ds.free_mb,
-					[state] = case when (ds.free_mb*100.0/ds.capacity_mb) < (100.0-@disk_critical_pct) then 'Critical' else 'Warning' end,
-					[used_pct] = 100.0-convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb)
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #disk_space)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+[host_name]+'</td>'
+						+'<td class="bg_key">'+disk_volume+'</td>'
+						+'<td>'+(case when capacity_mb < 1024 then convert(varchar,capacity_mb)+' mb'
+								when capacity_mb < 1024*1024 then convert(varchar,floor(capacity_mb/1024))+' gb'
+								when capacity_mb >= 1024*1024 then convert(varchar,floor(capacity_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td>'+(case when free_mb < 1024 then convert(varchar,free_mb)+' mb'
+								when free_mb < 1024*1024 then convert(varchar,floor(free_mb/1024))+' gb'
+								when free_mb >= 1024*1024 then convert(varchar,floor(free_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case [state]
+										when 'Critical' then 'bg_red'
+										when 'Warning' then 'bg_orange'
+										else 'bg_none'
+										end)+'">'+[state]+'</td>'
+						+'<td class="'+(case when used_pct >= 95.0 then 'bg_red'
+										when used_pct >= 90.0 then 'bg_orange'
+										when used_pct >= 80.0 then 'bg_yellow_dark'
+										when used_pct >= 70.0 then 'bg_yellow_light'
+										else 'bg_none'
+										end)+'">'+convert(varchar,used_pct)+'</td>'
+						+'</tr>' as [table_row]
+				from #disk_space tsu
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_disk_space = 0;
+
+			select top 1 @_collection_time_disk_health = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), updated_date_utc)
 			from dbo.disk_space_all_servers ds
-			where ds.updated_date_utc >= dateadd(minute,-60,getutcdate())
-			and (	(	(ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_warning_pct)
-						and ds.free_mb < (@disk_threshold_gb)*1024
-	  				)
-					or ( (ds.free_mb*100.0/ds.capacity_mb) < (100-@large_disk_threshold_pct)) -- free %
-					)
-			order by [used_pct] desc
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td class="bg_key">'+[host_name]+'</td>'
-					+'<td class="bg_key">'+disk_volume+'</td>'
-					+'<td>'+(case when capacity_mb < 1024 then convert(varchar,capacity_mb)+' mb'
-							when capacity_mb < 1024*1024 then convert(varchar,floor(capacity_mb/1024))+' gb'
-							when capacity_mb >= 1024*1024 then convert(varchar,floor(capacity_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td>'+(case when free_mb < 1024 then convert(varchar,free_mb)+' mb'
-							when free_mb < 1024*1024 then convert(varchar,floor(free_mb/1024))+' gb'
-							when free_mb >= 1024*1024 then convert(varchar,floor(free_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case [state]
-									when 'Critical' then 'bg_red'
-									when 'Warning' then 'bg_orange'
-									else 'bg_none'
-									end)+'">'+[state]+'</td>'
-					+'<td class="'+(case when used_pct >= 95.0 then 'bg_red'
-									when used_pct >= 90.0 then 'bg_orange'
-									when used_pct >= 80.0 then 'bg_yellow_dark'
-									when used_pct >= 70.0 then 'bg_yellow_light'
-									else 'bg_none'
-									end)+'">'+convert(varchar,used_pct)+'</td>'
-					+'</tr>' as [table_row]
-			from tsu
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+			order by updated_date_utc desc;
+
+			set @_table_data = '<tr><td colspan="11">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_disk_health,120)+'</td></tr>';
+		end
 
 		set @_html_disk_health = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>@disk_warning_pct:'+convert(varchar,@disk_warning_pct)
