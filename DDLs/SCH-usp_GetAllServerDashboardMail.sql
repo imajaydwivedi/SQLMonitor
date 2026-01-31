@@ -235,62 +235,9 @@ BEGIN
 		if not exists (select * from dbo.vw_all_server_info)
 			raiserror ('Data does not exist in dbo.vw_all_server_info', 17, -1) with log;
 
-		if @verbose > 1
-		begin
-			;with asi as (
-				select	srv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, avg_disk_latency_ms,
-						available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, 
-						memory_grants_pending, connection_count, waits_per_core_per_minute
-						,issue_rank =   (case when os_cpu >= 90 then 3 when os_cpu >= @os_cpu_threshold then 1 else 0 end) +
-                            (case when os_cpu >= 80 then 3 when sql_cpu >= @sql_cpu_threshold then 1 else 0 end) +
-                            (case when blocked_counts >= 20 then 5
-                                    when blocked_counts >= 10 then 4
-                                    when blocked_counts >= 5 then 2
-                                    when blocked_counts >= @blocked_counts_threshold then 1
-                                    else 0
-                                    end) +
-                            (case when blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold then 1 else 0 end) +
-                            (case when ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) and system_high_memory_signal_state = @system_high_memory_signal_state_threshold ) then 1 else 0 end) +
-                            (case when memory_grants_pending > 10 then 5
-                                    when memory_grants_pending > 5 then 4
-                                    when memory_grants_pending > @memory_grants_pending_threshold then 2
-                                    else 0
-                                    end) +
-                            (case when connection_count >= @connection_count_threshold then 1 else 0 end) +
-                            (case when avg_disk_latency_ms >= 100 then 5
-                                    when avg_disk_latency_ms >= 80 then 4
-                                    when avg_disk_latency_ms >= 50 then 3
-                                    when avg_disk_latency_ms >= 35 then 2
-                                    when avg_disk_latency_ms >= @avg_disk_latency_ms then 1
-                                    else 0
-                                    end) +
-                            (case when waits_per_core_per_minute > @waits_per_core_per_minute_threshold then 1 else 0 end)
-				from dbo.vw_all_server_info
-			)
-			,asi_filtered as (
-				select *
-				from asi
-				where 1=1
-				and (   os_cpu >= @os_cpu_threshold
-					or  sql_cpu >= @sql_cpu_threshold 
-					or  blocked_counts >= @blocked_counts_threshold
-					or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold
-					or  ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) 
-						and system_high_memory_signal_state = @system_high_memory_signal_state_threshold 
-						)
-					or  memory_grants_pending > @memory_grants_pending_threshold
-					--or  connection_count >= @connection_count_threshold
-					or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold
-					or  avg_disk_latency_ms >= @avg_disk_latency_ms
-					)
-			)
-			select [RunningQuery], cte.*
-			from asi_filtered cte
-			full outer join (select [RunningQuery] = 'Core Health Metrics') rq
-				on 1=1
-			order by issue_rank desc, avg_disk_latency_ms desc, srv_name;
-		end
-
+		-- Get temp table with alert data
+		if object_id('tempdb..#asi_filtered') is not null
+			drop table #asi_filtered;
 		;with asi as (
 			select	srv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, avg_disk_latency_ms,
 					available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, 
@@ -321,7 +268,6 @@ BEGIN
                         (case when waits_per_core_per_minute > @waits_per_core_per_minute_threshold then 1 else 0 end)
 			from dbo.vw_all_server_info
 		)
-		--,asi_filtered as (
 		select *
 		into #asi_filtered
 		from asi
@@ -338,7 +284,15 @@ BEGIN
 			or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold
 			or  avg_disk_latency_ms >= @avg_disk_latency_ms
 			);
-		--)
+
+		if @verbose > 1
+		begin
+			select [RunningQuery], cte.*
+			from #asi_filtered cte
+			full outer join (select [RunningQuery] = 'Core Health Metrics') rq
+				on 1=1
+			order by issue_rank desc, avg_disk_latency_ms desc, srv_name;
+		end
 
 		-- Decide if alert data is present, or add empty info row
 		if exists (select * from #asi_filtered cte)
@@ -473,90 +427,95 @@ BEGIN
 		if not exists (select * from dbo.tempdb_space_usage_all_servers)
 			raiserror ('Data does not exist in dbo.tempdb_space_usage_all_servers', 17, -1) with log;
 
+		-- Get temp table with alert data
+		if object_id('tempdb..#tsu') is not null
+			drop table #tsu;
+		select	[collection_time_utc] = [updated_date_utc],
+				[sql_instance], [data_size_mb], [data_used_mb], [data_used_pct], [log_size_mb], [log_used_mb], 
+				[log_used_pct], [version_store_mb], [version_store_pct]
+		into #tsu
+		from dbo.tempdb_space_usage_all_servers su
+		where (su.data_used_pct > @data_used_pct
+			or su.data_used_mb > (@data_used_gb*1024) -- 200 gb
+			)
+		and (su.updated_date_utc >= dateadd(minute,-60,getutcdate())
+			and su.collection_time_utc >= dateadd(minute,-20,getutcdate())
+			);
+
 		if @verbose > 1
 		begin
-			;with t_cte as (
-				select	[collection_time_utc] = [updated_date_utc],
-						[sql_instance], [data_size_mb], [data_used_mb], [data_used_pct], [log_size_mb], [log_used_mb], 
-						[log_used_pct], [version_store_mb], [version_store_pct]
-				from dbo.tempdb_space_usage_all_servers su
-				where 1=1
-				and (su.data_used_pct > @data_used_pct
-					or su.data_used_mb > (@data_used_gb*1024) -- 200 gb
-					)
-				and (su.updated_date_utc >= dateadd(minute,-60,getutcdate())
-				  and su.collection_time_utc >= dateadd(minute,-20,getutcdate())
-					)
-			)
 			select [RunningQuery], t_cte.*
-			from t_cte
+			from #tsu t_cte
 			full outer join (select [RunningQuery] = 'Tempdb Health') rq
 				on 1=1
-		end
+		end		
 
-		;with tsu as (
-			select	[collection_time_utc] = [updated_date_utc],
-					[sql_instance], [data_size_mb], [data_used_mb], [data_used_pct], [log_size_mb], [log_used_mb], 
-					[log_used_pct], [version_store_mb], [version_store_pct]
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #tsu)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc),120)+'</td>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td>'+(case when data_size_mb < 1024 then convert(varchar,data_size_mb)+' mb'
+								when data_size_mb < 1024*1024 then convert(varchar,floor(data_size_mb/1024))+' gb'
+								when data_size_mb >= 1024*1024 then convert(varchar,floor(data_size_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when data_used_mb > (@data_used_gb*1024) then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+(case when data_used_mb < 1024 then convert(varchar,data_used_mb)+' mb'
+								when data_used_mb < 1024*1024 then convert(varchar,floor(data_used_mb/1024))+' gb'
+								when data_used_mb >= 1024*1024 then convert(varchar,floor(data_used_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when data_used_pct >= 95 then 'bg_red'
+										when data_used_pct >= 90 then 'bg_red_light'
+										when data_used_pct >= 80 then 'bg_orange'
+										when data_used_pct >= 70 then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+convert(varchar,data_used_pct)+'</td>'
+						+'<td>'+(case when log_size_mb < 1024 then convert(varchar,log_size_mb)+' mb'
+								when log_size_mb < 1024*1024 then convert(varchar,floor(log_size_mb/1024))+' gb'
+								when log_size_mb >= 1024*1024 then convert(varchar,floor(log_size_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td>'+(case when log_used_mb < 1024 then convert(varchar,log_used_mb)+' mb'
+								when log_used_mb < 1024*1024 then convert(varchar,floor(log_used_mb/1024))+' gb'
+								when log_used_mb >= 1024*1024 then convert(varchar,floor(log_used_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when log_used_pct >= 90.0 then 'bg_red'
+										when log_used_pct >= 80.0 then 'bg_orange'
+										when log_used_pct >= 70.0 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+convert(varchar,log_used_pct)+'</td>'
+						+'<td class="'+(case when version_store_mb > (@data_used_gb*1024) then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+(case when version_store_mb < 1024 then convert(varchar,version_store_mb)+' mb'
+								when version_store_mb < 1024*1024 then convert(varchar,floor(version_store_mb/1024))+' gb'
+								when version_store_mb >= 1024*1024 then convert(varchar,floor(version_store_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when version_store_pct >= 90.0 then 'bg_red'
+										when version_store_pct >= 80.0 then 'bg_orange'
+										when version_store_pct >= 70.0 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+convert(varchar,version_store_pct)+'</td>'
+						+'</tr>' as [table_row]
+				from #tsu tsu
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_tempdb_health = 0;
+
+			select top 1 @_collection_time_tempdb_health = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), updated_date_utc)
 			from dbo.tempdb_space_usage_all_servers su
-			where (su.data_used_pct > @data_used_pct
-				or su.data_used_mb > (@data_used_gb*1024) -- 200 gb
-				)
-			and (su.updated_date_utc >= dateadd(minute,-60,getutcdate())
-			  and su.collection_time_utc >= dateadd(minute,-20,getutcdate())
-				)
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc),120)+'</td>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td>'+(case when data_size_mb < 1024 then convert(varchar,data_size_mb)+' mb'
-							when data_size_mb < 1024*1024 then convert(varchar,floor(data_size_mb/1024))+' gb'
-							when data_size_mb >= 1024*1024 then convert(varchar,floor(data_size_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case when data_used_mb > (@data_used_gb*1024) then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+(case when data_used_mb < 1024 then convert(varchar,data_used_mb)+' mb'
-							when data_used_mb < 1024*1024 then convert(varchar,floor(data_used_mb/1024))+' gb'
-							when data_used_mb >= 1024*1024 then convert(varchar,floor(data_used_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case when data_used_pct >= 95 then 'bg_red'
-									when data_used_pct >= 90 then 'bg_red_light'
-									when data_used_pct >= 80 then 'bg_orange'
-									when data_used_pct >= 70 then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+convert(varchar,data_used_pct)+'</td>'
-					+'<td>'+(case when log_size_mb < 1024 then convert(varchar,log_size_mb)+' mb'
-							when log_size_mb < 1024*1024 then convert(varchar,floor(log_size_mb/1024))+' gb'
-							when log_size_mb >= 1024*1024 then convert(varchar,floor(log_size_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td>'+(case when log_used_mb < 1024 then convert(varchar,log_used_mb)+' mb'
-							when log_used_mb < 1024*1024 then convert(varchar,floor(log_used_mb/1024))+' gb'
-							when log_used_mb >= 1024*1024 then convert(varchar,floor(log_used_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case when log_used_pct >= 90.0 then 'bg_red'
-									when log_used_pct >= 80.0 then 'bg_orange'
-									when log_used_pct >= 70.0 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+convert(varchar,log_used_pct)+'</td>'
-					+'<td class="'+(case when version_store_mb > (@data_used_gb*1024) then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+(case when version_store_mb < 1024 then convert(varchar,version_store_mb)+' mb'
-							when version_store_mb < 1024*1024 then convert(varchar,floor(version_store_mb/1024))+' gb'
-							when version_store_mb >= 1024*1024 then convert(varchar,floor(version_store_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case when version_store_pct >= 90.0 then 'bg_red'
-									when version_store_pct >= 80.0 then 'bg_orange'
-									when version_store_pct >= 70.0 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+convert(varchar,version_store_pct)+'</td>'
-					+'</tr>' as [table_row]
-			from tsu
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+			order by updated_date_utc desc;
+
+			set @_table_data = '<tr><td colspan="10">No alert qualified data found. Latest collection @ '+convert(varchar,@_collection_time_tempdb_health,120)+'</td></tr>';
+		end
 
 		set @_html_tempdb_health = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>@data_used_pct:'+convert(varchar,@data_used_pct)+' || @data_used_gb:'+convert(varchar,@data_used_gb)+'</caption>'
