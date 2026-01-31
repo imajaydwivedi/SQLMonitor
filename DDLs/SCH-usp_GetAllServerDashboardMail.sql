@@ -53,13 +53,15 @@ ALTER PROCEDURE dbo.usp_GetAllServerDashboardMail
 	@collect_offline_servers bit = 1,
 	@collect_sqlmonitor_jobs bit = 1,
 	@collect_backup_history bit = 1,
+	@hide_row_if_no_data bit = 0,
 	@verbose tinyint = 0 /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
 )
 AS 
 BEGIN
 	/*
-		Version:		2025-Jan-28
-		Update:			2025-Jan-28 - Added Disk Latency in Core Health Metrics Table
+		Version:		2026-Jan-31
+		Update:			2026-Jan-31 - #56 - Improve Presentation of Results
+						2025-Jan-28 - Added Disk Latency in Core Health Metrics Table
 						2024-01-11 - #7 - Adding Backup Issues in mailer
 						2023-12-31 - #24 - Daily Mailer containing similar content of 'Monitoring - Live - All Servers' dashboard
 
@@ -90,13 +92,21 @@ BEGIN
 	declare @_title nvarchar(2000);
 	declare @_style_css nvarchar(max);
 	declare @_html_core_health nvarchar(MAX); -- 'Core Health Metrics'
+	declare @_collection_time_core_health datetime;
 	declare @_html_tempdb_health nvarchar(MAX); -- 'Tempdb Health'
+	declare @_collection_time_tempdb_health datetime;
 	declare @_html_log_space_health nvarchar(MAX); -- 'Log Space'
+	declare @_collection_time_log_space_health datetime;
 	declare @_html_ag_health nvarchar(MAX); -- 'Ag Latency'
+	declare @_collection_time_ag_health datetime;
 	declare @_html_disk_health nvarchar(MAX); -- 'Disk Space'
+	declare @_collection_time_disk_health datetime;
 	declare @_html_offline_servers nvarchar(MAX); -- 'Offline Servers'
+	declare @_collection_time_offline_servers datetime;
 	declare @_html_sqlmonitor_jobs nvarchar(max); -- 'SQLMonitor Jobs'
+	declare @_collection_time_sqlmonitor_jobs datetime;
 	declare @_html_backup_history nvarchar(max); -- 'Backup History'
+	declare @_collection_time_backup_history datetime;
 	declare @_table_headline nvarchar(500);
 	declare @_table_header nvarchar(max);
 	declare @_table_data nvarchar(max);	
@@ -311,97 +321,114 @@ BEGIN
                         (case when waits_per_core_per_minute > @waits_per_core_per_minute_threshold then 1 else 0 end)
 			from dbo.vw_all_server_info
 		)
-		,asi_filtered as (
-			select *
-			from asi
-			where 1=1
-			and (   os_cpu >= @os_cpu_threshold
-				or  sql_cpu >= @sql_cpu_threshold 
-				or  blocked_counts >= @blocked_counts_threshold
-				or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold
-				or  ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) 
-					and system_high_memory_signal_state = @system_high_memory_signal_state_threshold 
-					)
-				or  memory_grants_pending > @memory_grants_pending_threshold
-				--or  connection_count >= @connection_count_threshold
-				or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold
-				or  avg_disk_latency_ms >= @avg_disk_latency_ms
+		--,asi_filtered as (
+		select *
+		into #asi_filtered
+		from asi
+		where 1=1
+		and (   os_cpu >= @os_cpu_threshold
+			or  sql_cpu >= @sql_cpu_threshold 
+			or  blocked_counts >= @blocked_counts_threshold
+			or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold
+			or  ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) 
+				and system_high_memory_signal_state = @system_high_memory_signal_state_threshold 
 				)
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_key">'+srv_name+'</td>'
-					+'<td class="'+(case when os_cpu >= 90 then 'bg_red'
-									when os_cpu >= 80 then 'bg_orange'
-									when os_cpu >= 70 then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+convert(varchar,os_cpu)+'</td>'
-					+'<td class="'+(case when sql_cpu >= 90 then 'bg_red'
-									when sql_cpu >= 80 then 'bg_orange'
-									when sql_cpu >= 70 then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+convert(varchar,sql_cpu)+'</td>'
-					+'<td class="'+(case when blocked_counts >= 10 then 'bg_red'
-									when blocked_counts >= 5 then 'bg_orange'
-									when blocked_counts >= 1 then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+convert(varchar,isnull(blocked_counts,0))+'</td>'
-					+'<td class="'+(case when blocked_duration_max_seconds >= 1800 then 'bg_red'
-									when blocked_duration_max_seconds >= 600 then 'bg_orange'
-									when blocked_duration_max_seconds >= 300 then 'bg_yellow_dark'
-									when blocked_duration_max_seconds >= 120 then 'bg_yellow_medium'
-									when blocked_duration_max_seconds >= 60 then 'bg_yellow_light'
-									else 'bg_none'
-									end)+'">'+isnull((case when blocked_duration_max_seconds < 60 then convert(varchar,floor(blocked_duration_max_seconds))+' sec'
-							when blocked_duration_max_seconds < 3600 then convert(varchar,floor(blocked_duration_max_seconds/60))+' min'
-							when blocked_duration_max_seconds < 86400 then convert(varchar,floor(blocked_duration_max_seconds/3600))+' hrs'
-							when blocked_duration_max_seconds >= 86400 then convert(varchar,floor(blocked_duration_max_seconds/86400))+' days'
-							else 'xx' end),0)+'</td>'
-					+'<td class="'+(case when avg_disk_latency_ms >= 50 then 'bg_red'
-									when avg_disk_latency_ms >= 35 then 'bg_orange'
-									when avg_disk_latency_ms >= 10 then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+convert(varchar,isnull(avg_disk_latency_ms,0))+' ms</td>'
-					+'<td class="'+(case when available_physical_memory_kb > 4194304 then 'bg_none'
-									when available_physical_memory_kb > 2097152 then 'bg_yellow'
-									when available_physical_memory_kb > 512000 then 'bg_orange'
-									else 'bg_red'
-									end)+'">'+(case when available_physical_memory_kb < 1024 then convert(varchar,available_physical_memory_kb)+' kb'
-							when available_physical_memory_kb < 1024*1024 then convert(varchar,floor(available_physical_memory_kb/1024))+' mb'
-							when available_physical_memory_kb < 1024*1024*1024 then convert(varchar,floor(available_physical_memory_kb/(1024*1024)))+' gb'
-							when available_physical_memory_kb >= 1024*1024*1024 then convert(varchar,floor(available_physical_memory_kb/(1024*1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					--+'<td>'+system_high_memory_signal_state+'</td>'
-					+'<td>'+(case when physical_memory_in_use_kb < 1024 then convert(varchar,physical_memory_in_use_kb)+' kb'
-							when physical_memory_in_use_kb < 1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/1024))+' mb'
-							when physical_memory_in_use_kb < 1024*1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/(1024*1024)))+' gb'
-							when physical_memory_in_use_kb >= 1024*1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/(1024*1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case when memory_grants_pending > 0 then 'bg_red'
-									else 'bg_none'
-									end)+'">'+convert(varchar,isnull(memory_grants_pending,0))+'</td>'
-					/*
-					+'<td class="'+(case when connection_count >= 1200 then 'bg_red'
-									when connection_count >= 1000 then 'bg_orange'
-									when connection_count >= 800 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+convert(varchar,connection_count)+'</td>'
-					*/
-					+'<td class="'+(case when waits_per_core_per_minute >= 300 then 'bg_red'
-									when waits_per_core_per_minute >= 240 then 'bg_orange'
-									when waits_per_core_per_minute >= 180 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+isnull((case when waits_per_core_per_minute < 60 then convert(varchar,floor(waits_per_core_per_minute))+' sec'
-							when waits_per_core_per_minute < 3600 then convert(varchar,floor(waits_per_core_per_minute/60))+' min'
-							when waits_per_core_per_minute < 86400 then convert(varchar,floor(waits_per_core_per_minute/3600))+' hrs'
-							when waits_per_core_per_minute >= 86400 then convert(varchar,floor(waits_per_core_per_minute/86400))+' days'
-							else 'xx' end),'-1')+'</td>'
-					+'</tr>' as [table_row]
-			from asi_filtered cte
-			where 1=1
-		)
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+			or  memory_grants_pending > @memory_grants_pending_threshold
+			--or  connection_count >= @connection_count_threshold
+			or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold
+			or  avg_disk_latency_ms >= @avg_disk_latency_ms
+			);
+		--)
+
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #asi_filtered cte)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_key">'+srv_name+'</td>'
+						+'<td class="'+(case when os_cpu >= 90 then 'bg_red'
+										when os_cpu >= 80 then 'bg_orange'
+										when os_cpu >= 70 then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+convert(varchar,os_cpu)+'</td>'
+						+'<td class="'+(case when sql_cpu >= 90 then 'bg_red'
+										when sql_cpu >= 80 then 'bg_orange'
+										when sql_cpu >= 70 then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+convert(varchar,sql_cpu)+'</td>'
+						+'<td class="'+(case when blocked_counts >= 10 then 'bg_red'
+										when blocked_counts >= 5 then 'bg_orange'
+										when blocked_counts >= 1 then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+convert(varchar,isnull(blocked_counts,0))+'</td>'
+						+'<td class="'+(case when blocked_duration_max_seconds >= 1800 then 'bg_red'
+										when blocked_duration_max_seconds >= 600 then 'bg_orange'
+										when blocked_duration_max_seconds >= 300 then 'bg_yellow_dark'
+										when blocked_duration_max_seconds >= 120 then 'bg_yellow_medium'
+										when blocked_duration_max_seconds >= 60 then 'bg_yellow_light'
+										else 'bg_none'
+										end)+'">'+isnull((case when blocked_duration_max_seconds < 60 then convert(varchar,floor(blocked_duration_max_seconds))+' sec'
+								when blocked_duration_max_seconds < 3600 then convert(varchar,floor(blocked_duration_max_seconds/60))+' min'
+								when blocked_duration_max_seconds < 86400 then convert(varchar,floor(blocked_duration_max_seconds/3600))+' hrs'
+								when blocked_duration_max_seconds >= 86400 then convert(varchar,floor(blocked_duration_max_seconds/86400))+' days'
+								else 'xx' end),0)+'</td>'
+						+'<td class="'+(case when avg_disk_latency_ms >= 50 then 'bg_red'
+										when avg_disk_latency_ms >= 35 then 'bg_orange'
+										when avg_disk_latency_ms >= 10 then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+convert(varchar,isnull(avg_disk_latency_ms,0))+' ms</td>'
+						+'<td class="'+(case when available_physical_memory_kb > 4194304 then 'bg_none'
+										when available_physical_memory_kb > 2097152 then 'bg_yellow'
+										when available_physical_memory_kb > 512000 then 'bg_orange'
+										else 'bg_red'
+										end)+'">'+(case when available_physical_memory_kb < 1024 then convert(varchar,available_physical_memory_kb)+' kb'
+								when available_physical_memory_kb < 1024*1024 then convert(varchar,floor(available_physical_memory_kb/1024))+' mb'
+								when available_physical_memory_kb < 1024*1024*1024 then convert(varchar,floor(available_physical_memory_kb/(1024*1024)))+' gb'
+								when available_physical_memory_kb >= 1024*1024*1024 then convert(varchar,floor(available_physical_memory_kb/(1024*1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						--+'<td>'+system_high_memory_signal_state+'</td>'
+						+'<td>'+(case when physical_memory_in_use_kb < 1024 then convert(varchar,physical_memory_in_use_kb)+' kb'
+								when physical_memory_in_use_kb < 1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/1024))+' mb'
+								when physical_memory_in_use_kb < 1024*1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/(1024*1024)))+' gb'
+								when physical_memory_in_use_kb >= 1024*1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/(1024*1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when memory_grants_pending > 0 then 'bg_red'
+										else 'bg_none'
+										end)+'">'+convert(varchar,isnull(memory_grants_pending,0))+'</td>'
+						/*
+						+'<td class="'+(case when connection_count >= 1200 then 'bg_red'
+										when connection_count >= 1000 then 'bg_orange'
+										when connection_count >= 800 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+convert(varchar,connection_count)+'</td>'
+						*/
+						+'<td class="'+(case when waits_per_core_per_minute >= 300 then 'bg_red'
+										when waits_per_core_per_minute >= 240 then 'bg_orange'
+										when waits_per_core_per_minute >= 180 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+isnull((case when waits_per_core_per_minute < 60 then convert(varchar,floor(waits_per_core_per_minute))+' sec'
+								when waits_per_core_per_minute < 3600 then convert(varchar,floor(waits_per_core_per_minute/60))+' min'
+								when waits_per_core_per_minute < 86400 then convert(varchar,floor(waits_per_core_per_minute/3600))+' hrs'
+								when waits_per_core_per_minute >= 86400 then convert(varchar,floor(waits_per_core_per_minute/86400))+' days'
+								else 'xx' end),'-1')+'</td>'
+						+'</tr>' as [table_row]
+				from #asi_filtered cte
+				where 1=1
+			)
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_core_health_metrics = 0;
+
+			select top 1 @_collection_time_core_health = collection_time
+			from dbo.all_server_volatile_info
+			order by collection_time desc;
+
+			set @_table_data = '<tr><td colspan="10">No alert qualified data found. Latest collection @ '+convert(varchar,@_collection_time_core_health,120)+'</td></tr>';
+		end
 
 		set @_html_core_health = @_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>@os_cpu_threshold:'+convert(varchar,@os_cpu_threshold)
