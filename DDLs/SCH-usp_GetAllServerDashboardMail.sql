@@ -381,7 +381,7 @@ BEGIN
 			from dbo.all_server_volatile_info
 			order by collection_time desc;
 
-			set @_table_data = '<tr><td colspan="10">No alert qualified data found. Latest collection @ '+convert(varchar,@_collection_time_core_health,120)+'</td></tr>';
+			set @_table_data = '<tr><td colspan="10">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_core_health,120)+'</td></tr>';
 		end
 
 		set @_html_core_health = @_table_headline+'<div class="tableContainerDiv"><table border="1">'
@@ -514,7 +514,7 @@ BEGIN
 			from dbo.tempdb_space_usage_all_servers su
 			order by updated_date_utc desc;
 
-			set @_table_data = '<tr><td colspan="10">No alert qualified data found. Latest collection @ '+convert(varchar,@_collection_time_tempdb_health,120)+'</td></tr>';
+			set @_table_data = '<tr><td colspan="10">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_tempdb_health,120)+'</td></tr>';
 		end
 
 		set @_html_tempdb_health = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
@@ -551,84 +551,101 @@ BEGIN
 		if not exists (select * from dbo.log_space_consumers_all_servers)
 			raiserror ('Data does not exist in dbo.log_space_consumers_all_servers', 17, -1) with log;
 
-		if @verbose > 1
-		begin
-			set @_params = '@only_threshold_validated bit, @log_used_pct float, @log_used_gb float';
-			set @_sql = '
-			;with t_cte as (
-				select	[collection_time_utc] = [updated_date_utc],
-						[sql_instance], [database_name], [recovery_model], [log_reuse_wait_desc], [log_size_mb], [exists_valid_autogrowing_file],
-						[log_used_mb], [log_used_pct], [login_name], [program_name]
-						--,[log_used_pct_threshold], [log_used_gb_threshold], [spid]
-						--,[transaction_start_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), [transaction_start_time])
-						--,[host_name], [host_process_id], [command], [additional_info]
-						--,[action_taken], [sql_text]		
-				from dbo.log_space_consumers_all_servers ls
-				where 1=1
-				'+(case when @only_threshold_validated = 1 then '' else '--' end)+'and ls.thresholds_validated = @only_threshold_validated
-				'+(case when @only_threshold_validated = 1 then '--' else '' end)+'and ( (ls.log_used_pct > @log_used_pct)	or (ls.log_used_mb > (@log_used_gb*1024)) )
-				and (ls.updated_date_utc >= dateadd(minute,-60,getutcdate())
-				  and ls.collection_time_utc >= dateadd(minute,-20,getutcdate())
-						)
-			)
-			select [RunningQuery], t_cte.*
-			from t_cte
-			full outer join (select [RunningQuery] = ''Log Space'') rq
-				on 1=1
-			';
+		-- Get temp table with alert data
+		if object_id('tempdb..#lsc') is not null
+			drop table #lsc;
+		create table #lsc (
+			[collection_time_utc] datetime2 not null,
+			[sql_instance] varchar(255) not null,
+			[database_name] varchar(256) not null,
+			[recovery_model] varchar(20) not null,
+			[log_reuse_wait_desc] varchar(125) null,
+			[log_size_mb] decimal(20,2) not null,
+			[exists_valid_autogrowing_file] bit default 0 not null,
+			[log_used_mb] decimal(20,2) not null,
+			[log_used_pct] decimal(20,2) not null,
+			[login_name] varchar(256) null,
+			[program_name] varchar(256) null
+		);
 
-			exec sp_executesql @_sql, @_params, @only_threshold_validated, @log_used_pct, @log_used_gb;
-		end
-
-		set @_params = '@only_threshold_validated bit, @log_used_pct float, @log_used_gb float, @table_data nvarchar(max) output';
+		set @_params = '@only_threshold_validated bit, @log_used_pct float, @log_used_gb float';
 		set @_sql = '
-		;with lsc as 
-		(
-			select	[collection_time_utc] = [updated_date_utc],
-					[sql_instance], [database_name], [recovery_model], [log_reuse_wait_desc], [log_size_mb], [exists_valid_autogrowing_file],
-					[log_used_mb], [log_used_pct], [login_name], [program_name]
-			from dbo.log_space_consumers_all_servers ls
-			where 1=1
-			'+(case when @only_threshold_validated = 1 then '' else '--' end)+'and ls.thresholds_validated = @only_threshold_validated
-			'+(case when @only_threshold_validated = 1 then '--' else '' end)+'and ( (ls.log_used_pct > @log_used_pct)	or (ls.log_used_mb > (@log_used_gb*1024)) )
-			and (ls.updated_date_utc >= dateadd(minute,-60,getutcdate())
-				and ls.collection_time_utc >= dateadd(minute,-20,getutcdate())
-					)
-		)
-		,t_cte as (
-			select	''<tr>''
-					+''<td class="bg_metric_neutral">''+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc),120)+''</td>''
-					+''<td class="bg_key">''+sql_instance+''</td>''
-					+''<td class="bg_key">''+[database_name]+''</td>''
-					+''<td>''+recovery_model+''</td>''
-					+''<td>''+log_reuse_wait_desc+''</td>''
-					+''<td>''+(case when log_size_mb < 1024 then convert(varchar,log_size_mb)+'' mb''
-							when log_size_mb < 1024*1024 then convert(varchar,floor(log_size_mb/1024))+'' gb''
-							when log_size_mb >= 1024*1024 then convert(varchar,floor(log_size_mb/(1024*1024)))+'' tb''
-							else ''xx'' end)+''</td>''
-					+''<td>''+convert(varchar,exists_valid_autogrowing_file)+''</td>''
-					+''<td class="''+(case when log_used_mb > (@log_used_gb*1024) then ''bg_yellow_medium''
-									else ''bg_none''
-									end)+''">''+(case when log_used_mb < 1024 then convert(varchar,log_used_mb)+'' mb''
-							when log_used_mb < 1024*1024 then convert(varchar,floor(log_used_mb/1024))+'' gb''
-							when log_used_mb >= 1024*1024 then convert(varchar,floor(log_used_mb/(1024*1024)))+'' tb''
-							else ''xx'' end)+''</td>''
-					+''<td class="''+(case when log_used_pct >= 90.0 then ''bg_red''
-									when log_used_pct >= 80.0 then ''bg_orange''
-									when log_used_pct >= 70.0 then ''bg_yellow''
-									else ''bg_none''
-									end)+''">''+convert(varchar,log_used_pct)+''</td>''
-					+''<td>''+coalesce([login_name],'''')+''</td>''
-					+''<td>''+coalesce([program_name],'''')+''</td>''
-					+''</tr>'' as [table_row]
-			from lsc
-		)
-		--select * from t_cte
-		select @table_data = coalesce(@table_data+'' ''+[table_row],[table_row])
-		from t_cte;
+		select	[collection_time_utc] = [updated_date_utc],
+				[sql_instance], [database_name], [recovery_model], [log_reuse_wait_desc], [log_size_mb], [exists_valid_autogrowing_file],
+				[log_used_mb], [log_used_pct], [login_name], [program_name]
+				--,[log_used_pct_threshold], [log_used_gb_threshold], [spid]
+				--,[transaction_start_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), [transaction_start_time])
+				--,[host_name], [host_process_id], [command], [additional_info]
+				--,[action_taken], [sql_text]		
+		from dbo.log_space_consumers_all_servers ls
+		where 1=1
+		'+(case when @only_threshold_validated = 1 then '' else '--' end)+'and ls.thresholds_validated = @only_threshold_validated
+		'+(case when @only_threshold_validated = 1 then '--' else '' end)+'and ( (ls.log_used_pct > @log_used_pct)	or (ls.log_used_mb > (@log_used_gb*1024)) )
+		and (ls.updated_date_utc >= dateadd(minute,-60,getutcdate())
+			and ls.collection_time_utc >= dateadd(minute,-20,getutcdate())
+			)
 		';
 
-		exec sp_executesql @_sql, @_params, @only_threshold_validated, @log_used_pct, @log_used_gb, @table_data = @_table_data output;
+		insert #lsc 
+		(	[collection_time_utc], [sql_instance], [database_name], [recovery_model], [log_reuse_wait_desc], [log_size_mb],
+			[exists_valid_autogrowing_file], [log_used_mb], [log_used_pct], [login_name], [program_name]
+		)
+		exec sp_executesql @_sql, @_params, @only_threshold_validated, @log_used_pct, @log_used_gb;
+
+		if @verbose > 1
+		begin
+			select [RunningQuery], t_cte.*
+			from #lsc t_cte
+			full outer join (select [RunningQuery] = 'Log Space') rq
+				on 1=1;
+		end
+
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #lsc)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc),120)+'</td>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+[database_name]+'</td>'
+						+'<td>'+recovery_model+'</td>'
+						+'<td>'+log_reuse_wait_desc+'</td>'
+						+'<td>'+(case when log_size_mb < 1024 then convert(varchar,log_size_mb)+' mb'
+								when log_size_mb < 1024*1024 then convert(varchar,floor(log_size_mb/1024))+' gb'
+								when log_size_mb >= 1024*1024 then convert(varchar,floor(log_size_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td>'+convert(varchar,exists_valid_autogrowing_file)+'</td>'
+						+'<td class="'+(case when log_used_mb > (@log_used_gb*1024) then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+(case when log_used_mb < 1024 then convert(varchar,log_used_mb)+' mb'
+								when log_used_mb < 1024*1024 then convert(varchar,floor(log_used_mb/1024))+' gb'
+								when log_used_mb >= 1024*1024 then convert(varchar,floor(log_used_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when log_used_pct >= 90.0 then 'bg_red'
+										when log_used_pct >= 80.0 then 'bg_orange'
+										when log_used_pct >= 70.0 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+convert(varchar,log_used_pct)+'</td>'
+						+'<td>'+coalesce([login_name],'')+'</td>'
+						+'<td>'+coalesce([program_name],'')+'</td>'
+						+'</tr>' as [table_row]
+				from #lsc
+			)
+			--select * from t_cte
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_log_space = 0;
+
+			select top 1 @_collection_time_log_space_health = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), updated_date_utc)
+			from dbo.log_space_consumers_all_servers ls
+			order by updated_date_utc desc;
+
+			set @_table_data = '<tr><td colspan="11">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_log_space_health,120)+'</td></tr>';
+		end
 
 		set @_html_log_space_health = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>@only_threshold_validated:'+convert(varchar,@only_threshold_validated)+' || @log_used_pct:'+convert(varchar,@log_used_pct)+' || @log_used_gb:'+convert(varchar,@log_used_gb)+'</caption>'
