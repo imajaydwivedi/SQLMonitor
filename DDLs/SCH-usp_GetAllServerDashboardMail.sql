@@ -53,7 +53,7 @@ ALTER PROCEDURE dbo.usp_GetAllServerDashboardMail
 	@collect_offline_servers bit = 1,
 	@collect_sqlmonitor_jobs bit = 1,
 	@collect_backup_history bit = 1,
-	@hide_row_if_no_data bit = 0,
+	@hide_row_if_no_data bit = 0, /* Hide all details in Mailer for all categories that have no alert issue */
 	@verbose tinyint = 0 /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
 )
 AS 
@@ -66,7 +66,8 @@ BEGIN
 						2023-12-31 - #24 - Daily Mailer containing similar content of 'Monitoring - Live - All Servers' dashboard
 
 		EXEC dbo.usp_GetAllServerDashboardMail @recipients = 'sqlagentservice@gmail.com', 
-							@only_threshold_validated = 1, @send_mail = 1, @verbose = 2;
+							@only_threshold_validated = 1, @hide_row_if_no_data = 0,
+							@send_mail = 1, @verbose = 2;
 	*/
 	SET NOCOUNT ON; 
 	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
@@ -925,59 +926,63 @@ BEGIN
 						+N'<th>Report Time</th>'
 		set @_table_data = NULL;
 
+		-- Get temp table with alert data
+		if object_id('tempdb..#offline_servers') is not null
+			drop table #offline_servers;
+		select	sql_instance, [host_name], 
+				is_available, 
+				is_linked_server_working = case when is_available = 0 then null else is_linked_server_working end,
+				[tsql jobs server] = collector_tsql_jobs_server, 
+				[powershell jobs server] = collector_powershell_jobs_server,
+				[perfmon data server] = data_destination_sql_instance, 
+				last_unavailability_time_utc
+		into #offline_servers
+		from dbo.instance_details id
+		where is_enabled = 1
+		and (is_available = 0 or is_linked_server_working = 0);
+
 		if @verbose > 1
 		begin
-			;with t_cte as (
-				select	sql_instance, [host_name], 
-						is_available, 
-						is_linked_server_working = case when is_available = 0 then null else is_linked_server_working end,
-						[tsql jobs server] = collector_tsql_jobs_server, 
-						[powershell jobs server] = collector_powershell_jobs_server,
-						[perfmon data server] = data_destination_sql_instance, 
-						last_unavailability_time_utc
-				from dbo.instance_details id
-				where is_enabled = 1
-				and (is_available = 0 or is_linked_server_working = 0)
-			)
 			select [RunningQuery], t_cte.*
-			from t_cte
+			from #offline_servers t_cte
 			full outer join (select [RunningQuery] = 'Offline Servers') rq
 				on 1=1;
 		end
 
-		;with tsu as (
-			select	sql_instance, [host_name], 
-					is_available, 
-					is_linked_server_working = case when is_available = 0 then null else is_linked_server_working end,
-					[tsql jobs server] = collector_tsql_jobs_server, 
-					[powershell jobs server] = collector_powershell_jobs_server,
-					[perfmon data server] = data_destination_sql_instance, 
-					last_unavailability_time_utc
-			from dbo.instance_details id
-			where is_enabled = 1
-			and (is_available = 0 or is_linked_server_working = 0)
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td class="bg_key">'+[host_name]+'</td>'
-					+'<td class="'+(case when is_available = 0 then 'bg_red'
-									else 'bg_none'
-									end)+'">'+convert(varchar,is_available)+'</td>'
-					+'<td class="'+(case when is_linked_server_working = 0 then 'bg_red'
-									else 'bg_none'
-									end)+'">'+isnull(convert(varchar,is_linked_server_working),'')+'</td>'
-					+'<td>'+[tsql jobs server]+'</td>'
-					+'<td>'+[powershell jobs server]+'</td>'
-					+'<td>'+[perfmon data server]+'</td>'
-					+'<td>'+isnull(convert(varchar,last_unavailability_time_utc,120),'')+'</td>'
-					+'</tr>' as [table_row]
-			from tsu
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #offline_servers)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+[host_name]+'</td>'
+						+'<td class="'+(case when is_available = 0 then 'bg_red'
+										else 'bg_none'
+										end)+'">'+convert(varchar,is_available)+'</td>'
+						+'<td class="'+(case when is_linked_server_working = 0 then 'bg_red'
+										else 'bg_none'
+										end)+'">'+isnull(convert(varchar,is_linked_server_working),'')+'</td>'
+						+'<td>'+[tsql jobs server]+'</td>'
+						+'<td>'+[powershell jobs server]+'</td>'
+						+'<td>'+[perfmon data server]+'</td>'
+						+'<td>'+isnull(convert(varchar,last_unavailability_time_utc,120),'')+'</td>'
+						+'</tr>' as [table_row]
+				from #offline_servers
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_offline_servers = 0;
+
+			set @_collection_time_offline_servers = DATEADD(mi, -2, GETDATE());
+
+			set @_table_data = '<tr><td colspan="8">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_offline_servers,120)+'</td></tr>';
+		end
 
 		set @_html_offline_servers = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>select * from dbo.instance_details where is_enabled = 1 and is_available = 0</caption>'
@@ -1013,90 +1018,89 @@ BEGIN
 		if not exists (select * from dbo.sql_agent_jobs_all_servers)
 			print 'Data does not exist in dbo.sql_agent_jobs_all_servers';
 
+		-- Get temp table with alert data
+		if object_id('tempdb..#saj') is not null
+			drop table #saj;
+		select	top 1000000
+				[CollectionTimeUTC] = [UpdatedDateUTC],
+				[sql_instance], [JobName],
+				[Job-Delay-Minutes] = case when sj.Last_Successful_ExecutionTime is null then 10080 else datediff(minute, sj.Last_Successful_ExecutionTime, dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate())) end,
+				[Last_RunTime], [Last_Run_Duration_Seconds], [Last_Run_Outcome], 
+				[Successfull_Execution_ClockTime_Threshold_Minutes], 
+				[Last_Successful_ExecutionTime]
+		into #saj
+		from dbo.sql_agent_jobs_all_servers sj
+		where 1=1
+		and exists (select 1/0 from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1)
+		and sj.JobCategory = '(dba) SQLMonitor'
+		and sj.JobName like '(dba) %'
+		and sj.IsDisabled = 0
+		and (	dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate()) > sj.Last_Successful_ExecutionTime
+					or sj.Last_Successful_ExecutionTime is null
+				)
+		order by [Last_Successful_ExecutionTime];
+
 		if @verbose > 1
 		begin
-			;with t_cte as (
-				select	top 10000000
-						[CollectionTimeUTC] = [UpdatedDateUTC],
-						[sql_instance], [JobName],
-						[Job-Delay-Minutes] = case when sj.Last_Successful_ExecutionTime is null then 10080 else datediff(minute, sj.Last_Successful_ExecutionTime, dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate())) end,
-						 [Last_RunTime], [Last_Run_Duration_Seconds], [Last_Run_Outcome], 
-						 [Successfull_Execution_ClockTime_Threshold_Minutes], 
-						 [Last_Successful_ExecutionTime]
-				from dbo.sql_agent_jobs_all_servers sj
-				where 1=1
-				and exists (select 1/0 from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1)
-				and sj.JobCategory = '(dba) SQLMonitor'
-				and sj.JobName like '(dba) %'
-				and sj.IsDisabled = 0
-				and (	dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate()) > sj.Last_Successful_ExecutionTime
-							or sj.Last_Successful_ExecutionTime is null
-						)
-				order by [Last_Successful_ExecutionTime]
-			)
 			select [RunningQuery], t_cte.*
-			from t_cte
+			from #saj t_cte
 			full outer join (select [RunningQuery] = 'SQLMonitor Jobs') rq
 				on 1=1;
 		end
 
-		;with tsu as (
-			select	top 1000000
-					[CollectionTimeUTC] = [UpdatedDateUTC],
-					[sql_instance], [JobName],
-					[Job-Delay-Minutes] = case when sj.Last_Successful_ExecutionTime is null then 10080 else datediff(minute, sj.Last_Successful_ExecutionTime, dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate())) end,
-					[Last_RunTime], [Last_Run_Duration_Seconds], [Last_Run_Outcome], 
-					[Successfull_Execution_ClockTime_Threshold_Minutes], 
-					[Last_Successful_ExecutionTime]
-			from dbo.sql_agent_jobs_all_servers sj
-			where 1=1
-			and exists (select 1/0 from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1)
-			and sj.JobCategory = '(dba) SQLMonitor'
-			and sj.JobName like '(dba) %'
-			and sj.IsDisabled = 0
-			and (	dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate()) > sj.Last_Successful_ExecutionTime
-						or sj.Last_Successful_ExecutionTime is null
-					)
-			order by [Last_Successful_ExecutionTime]
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), CollectionTimeUTC),120)+'</td>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td class="bg_key">'+JobName+'</td>'
-					+'<td class="'+(case when [Job-Delay-Minutes] >= 120 then 'bg_red'
-									when [Job-Delay-Minutes] >= 60 then 'bg_orange'
-									when [Job-Delay-Minutes] >= 30 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'
-						+isnull((case when [Job-Delay-Minutes] < 60 then convert(varchar,floor([Job-Delay-Minutes]))+' min'
-									when [Job-Delay-Minutes] < 60*24 then convert(varchar,floor([Job-Delay-Minutes]/60))+' hrs'
-									when [Job-Delay-Minutes] >= 60*24 then convert(varchar,floor([Job-Delay-Minutes]/(60*24)))+' days'
-									else convert(varchar,[Job-Delay-Minutes]) end),'')+'</td>'
-					+'<td>'+convert(varchar,Last_RunTime,120)+'</td>'
-					+'<td>'+isnull((case when Last_Run_Duration_Seconds < 60 then convert(varchar,floor(Last_Run_Duration_Seconds))+' sec'
-							when Last_Run_Duration_Seconds < 3600 then convert(varchar,floor(Last_Run_Duration_Seconds/60))+' min'
-							when Last_Run_Duration_Seconds < 86400 then convert(varchar,floor(Last_Run_Duration_Seconds/3600))+' hrs'
-							when Last_Run_Duration_Seconds >= 86400 then convert(varchar,floor(Last_Run_Duration_Seconds/86400))+' days'
-							else convert(varchar,Last_Run_Duration_Seconds) end),'')+'</td>'
-					+'<td class="'+(case Last_Run_Outcome
-									when 'Failed' then 'bg_red'
-									when 'Canceled' then 'bg_orange'
-									when 'Success' then 'bg_green'
-									else 'bg_none'
-									end)+'">'+Last_Run_Outcome+'</td>'
-					+'<td>'+isnull((case when Successfull_Execution_ClockTime_Threshold_Minutes < 60 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes))+' min'
-									when Successfull_Execution_ClockTime_Threshold_Minutes < 1440 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes/60))+' hrs'
-									when Successfull_Execution_ClockTime_Threshold_Minutes >= 86400 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes/1440))+' days'
-									else '' end),0)+'</td>'
-					+'<td>'+convert(varchar,Last_Successful_ExecutionTime,120)+'</td>'
-					+'</tr>' as [table_row]
-			from tsu
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #saj)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), CollectionTimeUTC),120)+'</td>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+JobName+'</td>'
+						+'<td class="'+(case when [Job-Delay-Minutes] >= 120 then 'bg_red'
+										when [Job-Delay-Minutes] >= 60 then 'bg_orange'
+										when [Job-Delay-Minutes] >= 30 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'
+							+isnull((case when [Job-Delay-Minutes] < 60 then convert(varchar,floor([Job-Delay-Minutes]))+' min'
+										when [Job-Delay-Minutes] < 60*24 then convert(varchar,floor([Job-Delay-Minutes]/60))+' hrs'
+										when [Job-Delay-Minutes] >= 60*24 then convert(varchar,floor([Job-Delay-Minutes]/(60*24)))+' days'
+										else convert(varchar,[Job-Delay-Minutes]) end),'')+'</td>'
+						+'<td>'+convert(varchar,Last_RunTime,120)+'</td>'
+						+'<td>'+isnull((case when Last_Run_Duration_Seconds < 60 then convert(varchar,floor(Last_Run_Duration_Seconds))+' sec'
+								when Last_Run_Duration_Seconds < 3600 then convert(varchar,floor(Last_Run_Duration_Seconds/60))+' min'
+								when Last_Run_Duration_Seconds < 86400 then convert(varchar,floor(Last_Run_Duration_Seconds/3600))+' hrs'
+								when Last_Run_Duration_Seconds >= 86400 then convert(varchar,floor(Last_Run_Duration_Seconds/86400))+' days'
+								else convert(varchar,Last_Run_Duration_Seconds) end),'')+'</td>'
+						+'<td class="'+(case Last_Run_Outcome
+										when 'Failed' then 'bg_red'
+										when 'Canceled' then 'bg_orange'
+										when 'Success' then 'bg_green'
+										else 'bg_none'
+										end)+'">'+Last_Run_Outcome+'</td>'
+						+'<td>'+isnull((case when Successfull_Execution_ClockTime_Threshold_Minutes < 60 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes))+' min'
+										when Successfull_Execution_ClockTime_Threshold_Minutes < 1440 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes/60))+' hrs'
+										when Successfull_Execution_ClockTime_Threshold_Minutes >= 86400 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes/1440))+' days'
+										else '' end),0)+'</td>'
+						+'<td>'+convert(varchar,Last_Successful_ExecutionTime,120)+'</td>'
+						+'</tr>' as [table_row]
+				from #saj
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_sqlmonitor_jobs = 0;
+
+			select top 1 @_collection_time_sqlmonitor_jobs = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), UpdatedDateUTC)
+			from dbo.sql_agent_jobs_all_servers saj
+			order by UpdatedDateUTC desc;
+
+			set @_table_data = '<tr><td colspan="9">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_sqlmonitor_jobs,120)+'</td></tr>';
+		end
 
 		set @_html_sqlmonitor_jobs = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>dbo.sql_agent_jobs_all_servers || @buffer_time_minutes:'+convert(varchar,@buffer_time_minutes)
@@ -1133,83 +1137,9 @@ BEGIN
 		if not exists (select * from dbo.backups_all_servers)
 			raiserror ('Data does not exist in dbo.backups_all_servers', 17, -1) with log;
 
-		if @verbose > 1
-		begin
-			;with t_backups as (
-				select [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]
-				from dbo.backups_all_servers bas
-			)
-			,t_pivot as (
-				select	[sql_instance], [database_name]
-						,[recovery_model] = max([recovery_model])
-						,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)
-						,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)
-						,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)
-						,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)
-						,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)
-						,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)
-						,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)
-						,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)
-						,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)
-						,[log_backups_count] = max([log_backups_count])
-						,[database_creation_date_utc] = max([database_creation_date_utc])
-						,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)
-						,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)
-						,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)
-				from t_backups bkp
-				where 1=1
-				group by [sql_instance], [database_name]
-			)
-			,t_latency as (
-				select 	[sql_instance], [database_name], [recovery_model], 				
-						[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10
-																			else datediff(day,[full_backup_time_utc],getutcdate())
-																			end,						
-						[diff_latency_hours] = case when [diff_backup_time_utc] is null 
-																				then	case when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)
-																										then @full_threshold_days * 24
-																										when (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours
-																										then ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )
-																										else null
-																										end
-																			else datediff(hour,[diff_backup_time_utc],getutcdate())
-																			end,
-						[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null
-																			when recovery_model <> 'SIMPLE'
-																			then	case when [tlog_backup_time_utc] is null then @full_threshold_days * 1440
-																									when [tlog_backup_time_utc] is not null
-																									then datediff(minute,[tlog_backup_time_utc],getutcdate())
-																									else null
-																									end
-																			else null
-																			end,
-						[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], 
-						[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],
-						[tlog_compressed_size_mb], [log_backups_count],
-						[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]
-				from t_pivot as bkp
-				where 1=1
-			)
-			,t_cte as (
-				select [sql_instance], [database_name], [recovery_model], 				
-						[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],
-						[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], 
-						[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], 
-						[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], 
-						[full_backup_file], [diff_backup_file], [tlog_backup_file]
-				from t_latency as l
-				where 1=1
-				AND (		(full_latency_days is null or full_latency_days >= @full_threshold_days)
-						OR 	(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)
-						OR	(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)
-						)
-			)
-			select [RunningQuery], t_cte.*
-			from t_cte
-			full outer join (select [RunningQuery] = 'Backup History') rq
-				on 1=1;
-		end
-
+		-- Get temp table with alert data
+		if object_id('tempdb..#backups') is not null
+			drop table #backups;
 		;with t_backups as (
 			select [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]
 			from dbo.backups_all_servers bas
@@ -1238,26 +1168,26 @@ BEGIN
 		,t_latency as (
 			select 	[sql_instance], [database_name], [recovery_model], 				
 					[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10
-																		else datediff(day,[full_backup_time_utc],getutcdate())
-																		end,						
+											else datediff(day,[full_backup_time_utc],getutcdate())
+											end,						
 					[diff_latency_hours] = case when [diff_backup_time_utc] is null 
-																			then	case when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)
-																									then @full_threshold_days * 24
-																									when (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours
-																									then ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )
-																									else null
-																									end
-																		else datediff(hour,[diff_backup_time_utc],getutcdate())
-																		end,
+												then case when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)
+														then @full_threshold_days * 24
+														when (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours
+														then ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )
+														else null
+														end
+														else datediff(hour,[diff_backup_time_utc],getutcdate())
+														end,
 					[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null
-																		when recovery_model <> 'SIMPLE'
-																		then	case when [tlog_backup_time_utc] is null then @full_threshold_days * 1440
-																								when [tlog_backup_time_utc] is not null
-																								then datediff(minute,[tlog_backup_time_utc],getutcdate())
-																								else null
-																								end
-																		else null
-																		end,
+												when recovery_model <> 'SIMPLE'
+												then case when [tlog_backup_time_utc] is null then @full_threshold_days * 1440
+														when [tlog_backup_time_utc] is not null
+														then datediff(minute,[tlog_backup_time_utc],getutcdate())
+														else null
+														end
+												else null
+												end,
 					[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], 
 					[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],
 					[tlog_compressed_size_mb], [log_backups_count],
@@ -1265,59 +1195,82 @@ BEGIN
 			from t_pivot as bkp
 			where 1=1
 		)
-		,t_issues as (
-			select [sql_instance], [database_name], [recovery_model], 				
-					[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],
-					[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], 
-					[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], 
-					[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], 
-					[full_backup_file], [diff_backup_file], [tlog_backup_file]
-			from t_latency as l
-			where 1=1
-			AND (		(full_latency_days is null or full_latency_days >= @full_threshold_days)
-					OR 	(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)
-					OR	(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)
-					)
-		)
-		,t_cte as (
-			select	'<tr>'
-					--+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), CollectionTimeUTC),120)+'</td>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td class="bg_key">'+[database_name]+'</td>'
-					+'<td class="bg_key">'+isnull(recovery_model,'')+'</td>'
-					+'<td class="'+(case when full_latency_days >= (@full_threshold_days*2) then 'bg_red'
-									when full_latency_days >= (@full_threshold_days+2) then 'bg_orange'
-									when full_latency_days >= (@full_threshold_days) then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+isnull(convert(varchar,full_latency_days),'')+' days'+'</td>'
-					+'<td class="'+(case when diff_latency_hours >= (@diff_threshold_hours*2) then 'bg_red'
-									when diff_latency_hours >= (@diff_threshold_hours+2) then 'bg_orange'
-									when diff_latency_hours >= (@diff_threshold_hours) then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'
-						+isnull((case when diff_latency_hours < 24 then convert(varchar,floor(diff_latency_hours))+' hrs'
-									when diff_latency_hours >= 24 then convert(varchar,convert(numeric(20,2),diff_latency_hours/24))+' days'
-									else convert(varchar,diff_latency_hours) end),'')+'</td>'
-					+'<td class="'+(case when tlog_latency_minutes >= (@tlog_threshold_minutes*2) then 'bg_red'
-									when tlog_latency_minutes >= (@tlog_threshold_minutes+2) then 'bg_orange'
-									when tlog_latency_minutes >= (@tlog_threshold_minutes) then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'
-						+isnull((case when tlog_latency_minutes < 60 then convert(varchar,floor(tlog_latency_minutes))+' min'
-									when tlog_latency_minutes < 60*24 then convert(varchar,convert(numeric(20,2),tlog_latency_minutes/60))+' hrs'
-									when tlog_latency_minutes >= 60*24 then convert(varchar,convert(numeric(20,2),tlog_latency_minutes/(60*24)))+' days'
-									else convert(varchar,tlog_latency_minutes) end),'')+'</td>'
-					+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), full_backup_time_utc),120),'')+'</td>'
-					+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), diff_backup_time_utc),120),'')+'</td>'
-					+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), tlog_backup_time_utc),120),'')+'</td>'
-					+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), database_creation_date_utc),120),'')+'</td>'
-					+'</tr>' as [table_row]
-			from t_issues bi
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+		select [sql_instance], [database_name], [recovery_model], 				
+				[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],
+				[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], 
+				[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], 
+				[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], 
+				[full_backup_file], [diff_backup_file], [tlog_backup_file]
+		into #backups
+		from t_latency as l
+		where 1=1
+		AND (		(full_latency_days is null or full_latency_days >= @full_threshold_days)
+				OR 	(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)
+				OR	(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)
+			);
+
+		if @verbose > 1
+		begin
+			select [RunningQuery], t_cte.*
+			from #backups t_cte
+			full outer join (select [RunningQuery] = 'Backup History') rq
+				on 1=1;
+		end
+
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #backups)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						--+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), CollectionTimeUTC),120)+'</td>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+[database_name]+'</td>'
+						+'<td class="bg_key">'+isnull(recovery_model,'')+'</td>'
+						+'<td class="'+(case when full_latency_days >= (@full_threshold_days*2) then 'bg_red'
+										when full_latency_days >= (@full_threshold_days+2) then 'bg_orange'
+										when full_latency_days >= (@full_threshold_days) then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+isnull(convert(varchar,full_latency_days),'')+' days'+'</td>'
+						+'<td class="'+(case when diff_latency_hours >= (@diff_threshold_hours*2) then 'bg_red'
+										when diff_latency_hours >= (@diff_threshold_hours+2) then 'bg_orange'
+										when diff_latency_hours >= (@diff_threshold_hours) then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'
+							+isnull((case when diff_latency_hours < 24 then convert(varchar,floor(diff_latency_hours))+' hrs'
+										when diff_latency_hours >= 24 then convert(varchar,convert(numeric(20,2),diff_latency_hours/24))+' days'
+										else convert(varchar,diff_latency_hours) end),'')+'</td>'
+						+'<td class="'+(case when tlog_latency_minutes >= (@tlog_threshold_minutes*2) then 'bg_red'
+										when tlog_latency_minutes >= (@tlog_threshold_minutes+2) then 'bg_orange'
+										when tlog_latency_minutes >= (@tlog_threshold_minutes) then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'
+							+isnull((case when tlog_latency_minutes < 60 then convert(varchar,floor(tlog_latency_minutes))+' min'
+										when tlog_latency_minutes < 60*24 then convert(varchar,convert(numeric(20,2),tlog_latency_minutes/60))+' hrs'
+										when tlog_latency_minutes >= 60*24 then convert(varchar,convert(numeric(20,2),tlog_latency_minutes/(60*24)))+' days'
+										else convert(varchar,tlog_latency_minutes) end),'')+'</td>'
+						+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), full_backup_time_utc),120),'')+'</td>'
+						+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), diff_backup_time_utc),120),'')+'</td>'
+						+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), tlog_backup_time_utc),120),'')+'</td>'
+						+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), database_creation_date_utc),120),'')+'</td>'
+						+'</tr>' as [table_row]
+				from #backups bi
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_backup_history = 0;
+
+			select top 1 @_collection_time_backup_history = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc)
+			from dbo.backups_all_servers bas
+			order by collection_time_utc desc;
+
+			set @_table_data = '<tr><td colspan="10">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_backup_history,120)+'</td></tr>';
+		end
 
 		set @_html_backup_history = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>dbo.backups_all_servers || @full_threshold_days:'+convert(varchar,@full_threshold_days)
