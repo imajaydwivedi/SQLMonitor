@@ -1628,7 +1628,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 178
+            "y": 240
           },
           "id": 871,
           "options": {
@@ -2124,7 +2124,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 171
+            "y": 233
           },
           "id": 874,
           "options": {
@@ -2606,7 +2606,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 179
+            "y": 241
           },
           "id": 888,
           "options": {
@@ -3041,7 +3041,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 172
+            "y": 234
           },
           "id": 864,
           "options": {
@@ -3436,7 +3436,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 181
+            "y": 243
           },
           "id": 852,
           "options": {
@@ -4294,7 +4294,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 182
+            "y": 244
           },
           "id": 867,
           "options": {
@@ -4891,7 +4891,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 183
+            "y": 245
           },
           "id": 856,
           "options": {
@@ -4979,7 +4979,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5012,7 +5013,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "blue"
+                          "color": "blue",
+                          "value": null
                         }
                       ]
                     }
@@ -5112,7 +5114,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "yellow",
@@ -5224,7 +5227,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -5306,7 +5310,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green"
+                          "color": "green",
+                          "value": null
                         },
                         {
                           "color": "#EAB839",
@@ -5366,7 +5371,8 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "super-light-purple"
+                          "color": "super-light-purple",
+                          "value": null
                         }
                       ]
                     }
@@ -5383,7 +5389,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 86
+            "y": 10
           },
           "id": 860,
           "options": {
@@ -5447,6 +5453,231 @@
       },
       "id": 889,
       "panels": [
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto",
+                  "wrapText": true
+                },
+                "filterable": true,
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "error_number"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 120
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Error KB",
+                        "url": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-${__data.fields.error_number}-database-engine-error"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "red",
+                          "value": null
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "error_severity"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 128
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "orange",
+                          "value": null
+                        },
+                        {
+                          "color": "red",
+                          "value": 20
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "error_message"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "left"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "sql_instance | occurrences | last_occurred"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "left"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "super-light-blue",
+                          "value": null
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 11
+          },
+          "id": 890,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "dataset": "AdventureWorks2019",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "expr": "",
+              "format": "table",
+              "legendFormat": "__auto",
+              "range": true,
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\r\ndeclare @params nvarchar(max);\r\ndeclare @sql_instance varchar(max);\r\ndeclare @start_time_utc datetime2;\r\ndeclare @end_time_utc datetime2;\r\ndeclare @_has_inventory bit = 0;\r\nset @_has_inventory = convert(bit,'${has_inventory}');\r\n\r\n--set @sql_instance = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\r\n\r\nset @start_time_utc = $__timeFrom();\r\nset @end_time_utc = $__timeTo();\r\n\r\nset @params = N'@start_time_utc datetime2, @end_time_utc datetime2';\r\n\r\nset quoted_identifier off;\r\nset @sql = \"/* SQLMonitor - All Server Alert History */\r\nset nocount on;\r\n;with t_aggregated_messages as (\r\nselect a.sql_instance, a.error_number, a.error_severity, occurrences = count(*), last_occurred = max(a.collection_time_utc), error_message = coalesce(max(m.text), max(a.error_message))\r\n        --a.collection_time_utc, a.sql_instance, a.server_name, a.database_name, a.error_number, \r\n        --a.error_severity, a.error_message, a.host_instance, a.updated_time_utc\r\nfrom dbo.alert_history_all_servers a\r\nleft join sys.messages m \r\n    on m.language_id = 1033 and m.message_id = a.error_number\r\nwhere 1 = 1\r\nand a.collection_time_utc between @start_time_utc and @end_time_utc\r\nand (case when a.error_number = 50000 and error_severity = 20 and a.error_message like '%application intent is set to read only%'\r\n         then 0\r\n         when a.error_number = 1204 then 0\r\n         when a.error_number = 50000 and error_severity = 20 and a.error_message like 'Error: 50000 Severity: 20 State: 1 Could not create constraint or index. See previous errors. '\r\n         then 0\r\n         when a.error_number = 50000 and error_severity = 20 and a.error_message like 'Error: 50000 Severity: 20 State: 1 The instance of the SQL Server Database Engine cannot obtain a LOCK resource at this time%'\r\n         then 0\r\n         when a.error_number = 17806 and error_severity = 20 and a.error_message like 'SSPI handshake failed with error code 0x8009030c%'\r\n         then 0\r\n         when a.error_number = 50000 and error_severity = 20 and a.error_message like 'Error: 50000 Severity: 20 State: 1 Lock request time out period exceeded. '\r\n         then 0\r\n         when a.error_number = 976 and error_severity = 14 and a.error_message like '%Either data movement is suspended or the availability replica is not enabled for read access%'\r\n         then 0\r\n         when a.error_number = 5084 and error_severity = 10 and a.error_message like 'Setting database option MULTI_USER to ON%'\r\n         then 0\r\n         when a.error_number = 5084 and error_severity = 10 and a.error_message like 'Setting database option SINGLE_USER to ON%'\r\n         then 0\r\n         when a.error_number = 14151 and error_severity = 18 and a.error_message like '%Named Pipes Provider: Could not open a connection to SQL Server%'\r\n         then 0\r\n         when a.error_number = 17828 and error_severity = 20\r\n         then 0\r\n         when a.error_number in (17832, 17836)\r\n         then 0\r\n         else 1\r\n         end\r\n     ) = 1\r\n\"+(case when @_has_inventory = 0 then '--' else '' end)+\"and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = a.sql_instance)\r\ngroup by a.sql_instance, a.error_number, a.error_severity\r\n--order by error_severity desc, occurrences desc, sql_instance\r\n)\r\n,t_unique_errors as (\r\nselect  error_number, error_severity, error_message\r\n        --,sql_instance, occurrences, last_occurred\r\nfrom t_aggregated_messages\r\ngroup by error_number, error_severity, error_message\r\n)\r\nselect  error_number, error_severity, error_message,\r\n        [sql_instance | occurrences | last_occurred] = \r\n                stuff(( SELECT ', ' + cc.[sql_instance | occurrences | last_occurred]\r\n                        FROM t_aggregated_messages am\r\n                        outer apply (select [sql_instance | occurrences | last_occurred] = '('+sql_instance+' | '+convert(varchar(10),occurrences)+' | '+convert(varchar,last_occurred,120)+')') cc\r\n                        where am.error_number = ue.error_number and am.error_severity = ue.error_severity\r\n                        order by occurrences desc\r\n                        FOR XML PATH('')\r\n                       ), 1, 2, '')\r\nfrom t_unique_errors ue\r\n\"\r\nset quoted_identifier on;\r\n\r\nexec dbo.sp_executesql @sql, @params, @start_time_utc, @end_time_utc;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Alerts Aggregated by Type - \"${alert_history_aggregated_row_count}\" Total - Between ____${__from:date:YYYY-MM-DD HH.mm}___to___${__to:date:YYYY-MM-DD HH.mm}____",
+          "type": "table"
+        },
         {
           "datasource": {
             "type": "mssql",
@@ -5653,9 +5884,9 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 11
+            "y": 21
           },
-          "id": 890,
+          "id": 891,
           "options": {
             "cellHeight": "sm",
             "footer": {
@@ -5990,7 +6221,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 21
+            "y": 31
           },
           "id": 873,
           "options": {
@@ -6824,7 +7055,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 232
+            "y": 294
           },
           "id": 119,
           "options": {
@@ -6921,8 +7152,8 @@
       },
       {
         "current": {
-          "text": "1769066293275",
-          "value": "1769066293275"
+          "text": "1770005251022",
+          "value": "1770005251022"
         },
         "datasource": {
           "type": "mssql",
@@ -7682,8 +7913,8 @@
       },
       {
         "current": {
-          "text": "13",
-          "value": "13"
+          "text": "11",
+          "value": "11"
         },
         "datasource": {
           "type": "mssql",
@@ -7722,8 +7953,8 @@
       },
       {
         "current": {
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -7742,8 +7973,8 @@
       },
       {
         "current": {
-          "text": "0",
-          "value": "0"
+          "text": "1",
+          "value": "1"
         },
         "datasource": {
           "type": "mssql",
@@ -7822,8 +8053,8 @@
       },
       {
         "current": {
-          "text": "1",
-          "value": "1"
+          "text": "0",
+          "value": "0"
         },
         "datasource": {
           "type": "mssql",
@@ -7862,8 +8093,8 @@
       },
       {
         "current": {
-          "text": "23",
-          "value": "23"
+          "text": "70",
+          "value": "70"
         },
         "datasource": {
           "type": "mssql",
@@ -7883,8 +8114,8 @@
       },
       {
         "current": {
-          "text": "1769066101762",
-          "value": "1769066101762"
+          "text": "1770005101341",
+          "value": "1770005101341"
         },
         "datasource": {
           "type": "mssql",
@@ -7903,8 +8134,8 @@
       },
       {
         "current": {
-          "text": "1769066293275",
-          "value": "1769066293275"
+          "text": "1770005251022",
+          "value": "1770005251022"
         },
         "datasource": {
           "type": "mssql",
@@ -7923,8 +8154,8 @@
       },
       {
         "current": {
-          "text": "1769066101948",
-          "value": "1769066101948"
+          "text": "1770004807837",
+          "value": "1770004807837"
         },
         "datasource": {
           "type": "mssql",
@@ -7943,8 +8174,8 @@
       },
       {
         "current": {
-          "text": "1769065805160",
-          "value": "1769065805160"
+          "text": "1770004804913",
+          "value": "1770004804913"
         },
         "datasource": {
           "type": "mssql",
@@ -7963,8 +8194,8 @@
       },
       {
         "current": {
-          "text": "1769066102010",
-          "value": "1769066102010"
+          "text": "1770004805310",
+          "value": "1770004805310"
         },
         "datasource": {
           "type": "mssql",
@@ -7983,8 +8214,8 @@
       },
       {
         "current": {
-          "text": "1769066102356",
-          "value": "1769066102356"
+          "text": "1770005101210",
+          "value": "1770005101210"
         },
         "datasource": {
           "type": "mssql",
@@ -8003,8 +8234,8 @@
       },
       {
         "current": {
-          "text": "1769063700910",
-          "value": "1769063700910"
+          "text": "1770003010230",
+          "value": "1770003010230"
         },
         "datasource": {
           "type": "mssql",
@@ -8040,8 +8271,8 @@
       },
       {
         "current": {
-          "text": "1769066282150",
-          "value": "1769066282150"
+          "text": "1770005220793",
+          "value": "1770005220793"
         },
         "datasource": {
           "type": "mssql",
@@ -8060,8 +8291,8 @@
       },
       {
         "current": {
-          "text": "1769066282610",
-          "value": "1769066282610"
+          "text": "1770005220770",
+          "value": "1770005220770"
         },
         "datasource": {
           "type": "mssql",
@@ -8100,8 +8331,8 @@
       },
       {
         "current": {
-          "text": "2",
-          "value": "2"
+          "text": "1",
+          "value": "1"
         },
         "datasource": {
           "type": "mssql",
@@ -8136,6 +8367,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - All Servers",
   "uid": "distributed_live_dashboard_all_servers",
-  "version": 22,
+  "version": 24,
   "weekStart": ""
 }
