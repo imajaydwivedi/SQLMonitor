@@ -17,6 +17,8 @@ $ErrorActionPreference = 'Stop'
 $currentTime = Get-Date
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Fetch file from Internet.."
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::SystemDefault
+#[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $SqlServerVersionsQuery = (Invoke-WebRequest $GitHubURL -UseBasicParsing).Content
 
 "$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Execute query against [$SqlInstance].[$Database].$TableName.."

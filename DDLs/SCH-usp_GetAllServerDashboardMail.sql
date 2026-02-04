@@ -45,6 +45,7 @@ ALTER PROCEDURE dbo.usp_GetAllServerDashboardMail
 	@full_threshold_days int = 8,
 	@diff_threshold_hours int = 26,
 	@tlog_threshold_minutes int = 240,
+	@alert_history_hours int = 4,
 	@collect_core_health_metrics bit = 1,
 	@collect_tempdb_health bit = 1,
 	@collect_log_space bit = 1,
@@ -53,14 +54,16 @@ ALTER PROCEDURE dbo.usp_GetAllServerDashboardMail
 	@collect_offline_servers bit = 1,
 	@collect_sqlmonitor_jobs bit = 1,
 	@collect_backup_history bit = 1,
+	@collect_alert_history bit = 1,
 	@hide_row_if_no_data bit = 0, /* Hide all details in Mailer for all categories that have no alert issue */
 	@verbose tinyint = 0 /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
 )
 AS 
 BEGIN
 	/*
-		Version:		2026-Jan-31
-		Update:			2026-Jan-31 - #56 - Improve Presentation of Results
+		Version:		2026-Feb-27
+		Update:			2026-Feb-27 - #56 - Add alert_history into mailer
+						2026-Jan-31 - #56 - Improve Presentation of Results
 						2025-Jan-28 - Added Disk Latency in Core Health Metrics Table
 						2024-01-11 - #7 - Adding Backup Issues in mailer
 						2023-12-31 - #24 - Daily Mailer containing similar content of 'Monitoring - Live - All Servers' dashboard
@@ -108,6 +111,8 @@ BEGIN
 	declare @_collection_time_sqlmonitor_jobs datetime = convert(date,'2000-01-01');
 	declare @_html_backup_history nvarchar(max); -- 'Backup History'
 	declare @_collection_time_backup_history datetime = convert(date,'2000-01-01');
+	declare @_html_alert_history nvarchar(max); -- 'Backup History'
+	declare @_collection_time_alert_history datetime = convert(date,'2000-01-01');
 	declare @_table_headline nvarchar(500);
 	declare @_table_header nvarchar(max);
 	declare @_table_data nvarchar(max);	
@@ -121,6 +126,7 @@ BEGIN
 	declare @_url_offline_servers_panel varchar(4000) = @_url_all_servers_dashboard+'?viewPanel=844';
 	declare @_url_sqlmonitor_jobs_panel varchar(4000) = @_url_all_servers_dashboard+'?viewPanel=864';
 	declare @_url_backup_history_panel varchar(4000) = @_url_all_servers_dashboard+'?viewPanel=869';
+	declare @_url_alert_history_panel varchar(4000) = @_url_all_servers_dashboard+'?viewPanel=890';
 
 	declare @_line nvarchar(500);
 	declare @_tab nchar(2) = nchar(9);
@@ -1289,6 +1295,134 @@ BEGIN
 		end
 	end -- 'Backup History'
 
+
+	if(@collect_alert_history = 1) -- 'Alert History'
+	begin
+		if @verbose > 0
+		begin
+			print @_line;
+			print @_line;
+			print 'Set @_html_alert_history variable..';
+			print @_tab+@_line;
+		end
+		--error_number, error_severity, error_message, [sql_instance | occurrences | last_occurred]
+		set @_table_headline = N'<h3><a href="'+@_url_alert_history_panel+'" target="_blank">All Servers - Alert History - Require ATTENTION</a></h3>';
+		set @_table_header = N'<tr><th>Error Number</th> <th>Severity</th> <th>Error Message (Generic)</th> <th>[sql_instance | occurrences | last_occurred]</th> </tr>';
+		set @_table_data = NULL;
+
+		if not exists (select * from dbo.alert_history_all_servers)
+			raiserror ('Data does not exist in dbo.alert_history_all_servers', 17, -1) with log;
+
+		-- Get temp table with alert data
+		if object_id('tempdb..#alert_history') is not null
+			drop table #alert_history;
+		;with t_aggregated_messages as 
+		(
+			select a.sql_instance, a.error_number, a.error_severity, occurrences = count(*), last_occurred = max(a.collection_time_utc), error_message = coalesce(max(m.text), max(a.error_message))
+			from dbo.alert_history_all_servers a
+			left join sys.messages m 
+				on m.language_id = 1033 and m.message_id = a.error_number
+			where 1 = 1
+			and a.collection_time_utc >= dateadd(hour,-@alert_history_hours,GETUTCDATE())
+			and (case when a.error_number = 50000 and error_severity = 20 and a.error_message like '%application intent is set to read only%'
+					 then 0
+					 when a.error_number = 1204 then 0
+					 when a.error_number = 50000 and error_severity = 20 and a.error_message like 'Error: 50000 Severity: 20 State: 1 Could not create constraint or index. See previous errors. '
+					 then 0
+					 when a.error_number = 50000 and error_severity = 20 and a.error_message like 'Error: 50000 Severity: 20 State: 1 The instance of the SQL Server Database Engine cannot obtain a LOCK resource at this time%'
+					 then 0
+					 when a.error_number = 17806 and error_severity = 20 and a.error_message like 'SSPI handshake failed with error code 0x8009030c%'
+					 then 0
+					 when a.error_number = 50000 and error_severity = 20 and a.error_message like 'Error: 50000 Severity: 20 State: 1 Lock request time out period exceeded. '
+					 then 0
+					 when a.error_number = 976 and error_severity = 14 and a.error_message like '%Either data movement is suspended or the availability replica is not enabled for read access%'
+					 then 0
+					 when a.error_number = 5084 and error_severity = 10 and a.error_message like 'Setting database option MULTI_USER to ON%'
+					 then 0
+					 when a.error_number = 5084 and error_severity = 10 and a.error_message like 'Setting database option SINGLE_USER to ON%'
+					 then 0
+					 when a.error_number = 14151 and error_severity = 18 and a.error_message like '%Named Pipes Provider: Could not open a connection to SQL Server%'
+					 then 0
+					 when a.error_number = 17828 and error_severity = 20
+					 then 0
+					 when a.error_number in (17832, 17836)
+					 then 0
+					 else 1
+					 end
+				 ) = 1
+			and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = a.sql_instance)
+			group by a.sql_instance, a.error_number, a.error_severity
+		)
+		,t_unique_errors as (
+			select  error_number, error_severity, error_message
+			from t_aggregated_messages
+			group by error_number, error_severity, error_message
+		)
+		select  error_number, error_severity, error_message,
+				[sql_instance | occurrences | last_occurred] = 
+						stuff(( SELECT ', ' + cc.[sql_instance | occurrences | last_occurred]
+								FROM t_aggregated_messages am
+								outer apply (select [last_occurred_localtime] = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), last_occurred) ) lt
+								outer apply (select [sql_instance | occurrences | last_occurred] = '('+sql_instance+' | '+convert(varchar(10),occurrences)+' | '+convert(varchar,lt.last_occurred_localtime,120)+')') cc
+								where am.error_number = ue.error_number and am.error_severity = ue.error_severity
+								order by occurrences desc
+								FOR XML PATH('')
+							   ), 1, 2, '')
+		into #alert_history
+		from t_unique_errors ue;
+
+		if @verbose > 1
+		begin
+			select [RunningQuery], t_cte.*
+			from #alert_history t_cte
+			full outer join (select [RunningQuery] = 'Alert History') rq
+				on 1=1
+			where 1=1;
+		end
+
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #alert_history)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_key">'+convert(varchar(20),ah.[error_number])+'</td>'
+						+'<td class="bg_key">'+convert(varchar(20),ah.[error_severity])+'</td>'
+						+'<td class="bg_key">'+ah.[error_message]+'</td>'
+						+'<td class="bg_key">'+ah.[sql_instance | occurrences | last_occurred]+'</td>'
+						+'</tr>' as [table_row]
+				from #alert_history ah
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_alert_history = 0;
+
+			select top 1 @_collection_time_alert_history = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc)
+			from dbo.alert_history_all_servers ds
+			order by collection_time_utc desc;
+
+			set @_table_data = '<tr><td colspan="11">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_alert_history,120)+'</td></tr>';
+		end
+
+		set @_html_alert_history = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
+						+'<caption>@alert_history_hours:'+convert(varchar,@alert_history_hours)+'</caption>'
+						+'<thead>'+@_table_header+'</thead><tbody>'+isnull(@_table_data,'')+'</tbody></table></div>';
+
+		if @verbose > 0
+		begin
+			print @_tab+'@_table_header => '+@_crlf+@_table_header;
+			print @_tab+@_line;
+			print @_tab+'@_table_data => '+@_crlf+ISNULL(@_table_data,'');
+			print @_tab+@_line;
+			print @_tab+'@_html_alert_history => '+@_crlf+ISNULL(@_html_alert_history,'');
+		end
+	end -- 'Alert History'
+
 	set @mail_subject = @mail_subject+' - '+convert(varchar,@_collection_time,120);
 
 	set @_mail_body_html = '<html>'
@@ -1303,6 +1437,7 @@ BEGIN
 						+(case when @collect_log_space = 1 then N'<p>'+@_html_log_space_health+'</p>' else '' end)
 						+(case when @collect_ag_latency = 1 then N'<p>'+@_html_ag_health+'</p>' else '' end)
 						+(case when @collect_disk_space = 1 then N'<p>'+@_html_disk_health+'</p>' else '' end)
+						+(case when @collect_alert_history = 1 then N'<p>'+@_html_alert_history+'</p>' else '' end)
 						+(case when @collect_offline_servers = 1 then N'<p>'+@_html_offline_servers+'</p>' else '' end)
 						+(case when @collect_sqlmonitor_jobs = 1 then N'<p>'+@_html_sqlmonitor_jobs+'</p>' else '' end)
 						+(case when @collect_backup_history = 1 then N'<p>'+@_html_backup_history+'</p>' else '' end)
