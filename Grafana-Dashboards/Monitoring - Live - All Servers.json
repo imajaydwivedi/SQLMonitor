@@ -1671,7 +1671,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 232
+            "y": 408
           },
           "id": 871,
           "options": {
@@ -2167,7 +2167,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 225
+            "y": 401
           },
           "id": 874,
           "options": {
@@ -2649,7 +2649,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 233
+            "y": 409
           },
           "id": 888,
           "options": {
@@ -3084,7 +3084,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 226
+            "y": 402
           },
           "id": 864,
           "options": {
@@ -3479,7 +3479,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 235
+            "y": 411
           },
           "id": 852,
           "options": {
@@ -4337,7 +4337,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 236
+            "y": 412
           },
           "id": 867,
           "options": {
@@ -4934,7 +4934,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 237
+            "y": 413
           },
           "id": 856,
           "options": {
@@ -5426,7 +5426,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 140
+            "y": 316
           },
           "id": 860,
           "options": {
@@ -6062,7 +6062,7 @@
           "type": "table"
         }
       ],
-      "title": "All Servers - Alert History - \"${alert_history_row_count}\" Total - Between ____${__from:date:YYYY-MM-DD HH.mm}___to___${__to:date:YYYY-MM-DD HH.mm}____",
+      "title": "All Servers - Alert History - \"${alert_history_aggregated_row_count}/${alert_history_row_count}\" Total - Between ____${__from:date:YYYY-MM-DD HH.mm}___to___${__to:date:YYYY-MM-DD HH.mm}____",
       "type": "row"
     },
     {
@@ -6844,7 +6844,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 286
+            "y": 462
           },
           "id": 119,
           "options": {
@@ -8043,7 +8043,7 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-4h",
     "to": "now"
   },
   "timepicker": {
@@ -8058,6 +8058,6 @@
   "timezone": "browser",
   "title": "Monitoring - Live - All Servers",
   "uid": "distributed_live_dashboard_all_servers",
-  "version": 26,
+  "version": 28,
   "weekStart": ""
 }
