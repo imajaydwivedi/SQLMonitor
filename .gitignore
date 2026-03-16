@@ -32,6 +32,7 @@ tempCodeRunnerFile.ps1
 /FlaskRestAPI/
 sql_exporter.exe
 sql_exporter/LICENSE
+mssql-metrics-collector.collector.yml
 
 # Ignore Virtual Env Folder
 /SQLMonitorVenv/*
