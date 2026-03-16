@@ -19,6 +19,9 @@ Get-Service sql_exporter
 Stop-Service sql_exporter
 sc.exe delete sql_exporter
 
+# Add firewall rule
+New-NetFirewallRule -DisplayName "SQL Exporter (TCP/9399)" -Direction Inbound -Protocol TCP -LocalPort 9399 -Action Allow
+
 # Validate at http://localhost:9399/metrics
 ```
 
