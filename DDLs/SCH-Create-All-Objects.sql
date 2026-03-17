@@ -1937,21 +1937,21 @@ IF OBJECT_ID('dbo.usp_print') IS NULL
 GO
 ALTER PROCEDURE [dbo].[usp_print]
 (
-	@string nvarchar(max),
-	@verbose tinyint = 0 /* 1 => messages, 2 => messages + table results */
+	@String nvarchar(max),
+	@Verbose tinyint = 0 /* 1 => messages, 2 => messages + table results */
 )
 AS
 BEGIN
 /*	Purpose:		
 	Modifications:	2025-Feb-27 - Initial Draft
 
-	exec usp_print @string;
+	exec usp_print @String;
 */
 	SET NOCOUNT ON
 
 	DECLARE @CurrentEnd BIGINT; /* track the length of the next substring */
 	DECLARE @offset tinyint; /*tracks the amount of offset needed */
-	set @string = replace(  replace(@string, char(13) + char(10), char(10))   , char(13), char(10))
+	set @String = replace(  replace(@String, char(13) + char(10), char(10))   , char(13), char(10))
 
 	WHILE LEN(@String) > 1
 	BEGIN
@@ -1966,7 +1966,7 @@ BEGIN
 				set @offset = 1
 		END   
 		PRINT SUBSTRING(@String, 1, @CurrentEnd) 
-		set @string = SUBSTRING(@String, @CurrentEnd+@offset, LEN(@String))   
+		set @String = SUBSTRING(@String, @CurrentEnd+@offset, LEN(@String))   
 	END /*End While loop*/
 END
 GO

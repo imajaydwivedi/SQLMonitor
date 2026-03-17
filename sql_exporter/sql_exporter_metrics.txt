@@ -1,0 +1,501 @@
+# HELP mssql_access_methods_total Access methods counters since SQL Server startup.
+# TYPE mssql_access_methods_total counter
+mssql_access_methods_total{operation="forwarded_records"} 0
+mssql_access_methods_total{operation="full_scans"} 2.028728e+06
+mssql_access_methods_total{operation="index_searches"} 1.2449935e+07
+mssql_access_methods_total{operation="page_splits"} 94338
+mssql_access_methods_total{operation="table_lock_escalations"} 2
+mssql_access_methods_total{operation="workfiles_created"} 84648
+mssql_access_methods_total{operation="worktables_created"} 135467
+# HELP mssql_active_cursors Current active cursors by cursor type.
+# TYPE mssql_active_cursors gauge
+mssql_active_cursors{cursor_type="API Cursor"} 0
+mssql_active_cursors{cursor_type="TSQL Global Cursor"} 0
+mssql_active_cursors{cursor_type="TSQL Local Cursor"} 0
+# HELP mssql_active_transactions_count Count of active transactions from sys.dm_tran_active_transactions.
+# TYPE mssql_active_transactions_count gauge
+mssql_active_transactions_count 10
+# HELP mssql_average_latch_wait_time_ms Average latch wait time metric from SQL Server performance counters.
+# TYPE mssql_average_latch_wait_time_ms gauge
+mssql_average_latch_wait_time_ms 190984
+# HELP mssql_batch_requests Number of command batches received.
+# TYPE mssql_batch_requests counter
+mssql_batch_requests 339500
+# HELP mssql_buffer_cache_hit_ratio Ratio of requests that hit the buffer cache
+# TYPE mssql_buffer_cache_hit_ratio gauge
+mssql_buffer_cache_hit_ratio 2123
+# HELP mssql_buffer_database_pages Database pages in the SQL Server buffer pool.
+# TYPE mssql_buffer_database_pages gauge
+mssql_buffer_database_pages 252295
+# HELP mssql_buffer_manager_operations_total Buffer manager operation counters since SQL Server startup.
+# TYPE mssql_buffer_manager_operations_total counter
+mssql_buffer_manager_operations_total{operation="free_list_stalls"} 0
+mssql_buffer_manager_operations_total{operation="lazy_writes"} 0
+mssql_buffer_manager_operations_total{operation="readahead_pages"} 119513
+# HELP mssql_buffer_target_pages Target pages in the SQL Server buffer pool.
+# TYPE mssql_buffer_target_pages gauge
+mssql_buffer_target_pages 1.316486e+06
+# HELP mssql_checkpoint_pages_sec Checkpoint Pages Per Second
+# TYPE mssql_checkpoint_pages_sec gauge
+mssql_checkpoint_pages_sec 7
+# HELP mssql_connection_reset Connection resets since SQL Server startup.
+# TYPE mssql_connection_reset counter
+mssql_connection_reset 63947
+# HELP mssql_connections Number of active connections.
+# TYPE mssql_connections gauge
+mssql_connections{db="AdventureWorksDW2025"} 1
+mssql_connections{db="DBA"} 14
+mssql_connections{db="master"} 60
+mssql_connections{db="msdb"} 5
+# HELP mssql_cpu_utilization_percentage CPU utilization percentages from the SQL Server scheduler monitor ring buffer.
+# TYPE mssql_cpu_utilization_percentage gauge
+mssql_cpu_utilization_percentage{scope="sqlserver"} 3
+mssql_cpu_utilization_percentage{scope="system"} 49
+# HELP mssql_database_active_transactions Current active transactions per database.
+# TYPE mssql_database_active_transactions gauge
+mssql_database_active_transactions{db="AdventureWorks2025"} 0
+mssql_database_active_transactions{db="AdventureWorksDW2025"} 0
+mssql_database_active_transactions{db="CDCDemo"} 0
+mssql_database_active_transactions{db="DBA"} 0
+mssql_database_active_transactions{db="ScratchPad"} 0
+mssql_database_active_transactions{db="StackOverflow2013"} 0
+mssql_database_active_transactions{db="TutorialDB"} 0
+mssql_database_active_transactions{db="master"} 0
+mssql_database_active_transactions{db="model"} 0
+mssql_database_active_transactions{db="model_msdb"} 0
+mssql_database_active_transactions{db="model_replicatedmaster"} 0
+mssql_database_active_transactions{db="msdb"} 0
+mssql_database_active_transactions{db="sqlnexus"} 0
+mssql_database_active_transactions{db="tempdb"} 0
+# HELP mssql_database_file_size_bytes Database file sizes in bytes.
+# TYPE mssql_database_file_size_bytes gauge
+mssql_database_file_size_bytes{db="AdventureWorks2025",state="data"} 1.5711862784e+10
+mssql_database_file_size_bytes{db="AdventureWorks2025",state="log"} 1.015013376e+09
+mssql_database_file_size_bytes{db="AdventureWorks2025",state="log_used"} 5.4612992e+07
+mssql_database_file_size_bytes{db="AdventureWorksDW2025",state="data"} 1.42606336e+08
+mssql_database_file_size_bytes{db="AdventureWorksDW2025",state="log"} 7.548928e+07
+mssql_database_file_size_bytes{db="AdventureWorksDW2025",state="log_used"} 8.55552e+06
+mssql_database_file_size_bytes{db="CDCDemo",state="data"} 1.048576e+09
+mssql_database_file_size_bytes{db="CDCDemo",state="log"} 5.24279808e+08
+mssql_database_file_size_bytes{db="CDCDemo",state="log_used"} 3.7189632e+07
+mssql_database_file_size_bytes{db="DBA",state="data"} 1.0510925824e+10
+mssql_database_file_size_bytes{db="DBA",state="log"} 1.4680055808e+10
+mssql_database_file_size_bytes{db="DBA",state="log_used"} 1.0084373504e+10
+mssql_database_file_size_bytes{db="ScratchPad",state="data"} 1.048576e+09
+mssql_database_file_size_bytes{db="ScratchPad",state="log"} 5.24279808e+08
+mssql_database_file_size_bytes{db="ScratchPad",state="log_used"} 3.2425984e+07
+mssql_database_file_size_bytes{db="StackOverflow2013",state="data"} 5.4525952e+10
+mssql_database_file_size_bytes{db="StackOverflow2013",state="log"} 7.98941184e+08
+mssql_database_file_size_bytes{db="StackOverflow2013",state="log_used"} 6.7529728e+07
+mssql_database_file_size_bytes{db="TutorialDB",state="data"} 1.048576e+09
+mssql_database_file_size_bytes{db="TutorialDB",state="log"} 5.24279808e+08
+mssql_database_file_size_bytes{db="TutorialDB",state="log_used"} 3.7508096e+07
+mssql_database_file_size_bytes{db="master",state="data"} 1.015808e+07
+mssql_database_file_size_bytes{db="master",state="log"} 2.351104e+06
+mssql_database_file_size_bytes{db="master",state="log_used"} 1.440768e+06
+mssql_database_file_size_bytes{db="model",state="data"} 1.048576e+09
+mssql_database_file_size_bytes{db="model",state="log"} 5.24279808e+08
+mssql_database_file_size_bytes{db="model",state="log_used"} 1.711104e+06
+mssql_database_file_size_bytes{db="model_msdb",state="data"} 1.4811136e+07
+mssql_database_file_size_bytes{db="model_msdb",state="log"} 778240
+mssql_database_file_size_bytes{db="model_msdb",state="log_used"} 388096
+mssql_database_file_size_bytes{db="model_replicatedmaster",state="data"} 4.9152e+06
+mssql_database_file_size_bytes{db="model_replicatedmaster",state="log"} 2.351104e+06
+mssql_database_file_size_bytes{db="model_replicatedmaster",state="log_used"} 820224
+mssql_database_file_size_bytes{db="msdb",state="data"} 9.44439296e+08
+mssql_database_file_size_bytes{db="msdb",state="log"} 3.61684992e+08
+mssql_database_file_size_bytes{db="msdb",state="log_used"} 1.8625536e+07
+mssql_database_file_size_bytes{db="sqlnexus",state="data"} 1.048576e+09
+mssql_database_file_size_bytes{db="sqlnexus",state="log"} 5.24279808e+08
+mssql_database_file_size_bytes{db="sqlnexus",state="log_used"} 4.6773248e+07
+mssql_database_file_size_bytes{db="tempdb",state="data"} 1.3631488e+09
+mssql_database_file_size_bytes{db="tempdb",state="log"} 2.28917248e+08
+mssql_database_file_size_bytes{db="tempdb",state="log_used"} 1.7480704e+07
+# HELP mssql_database_info Info metric with database state and AG status. Value is always 1.
+# TYPE mssql_database_info gauge
+mssql_database_info{database_name="AdventureWorks2025",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+mssql_database_info{database_name="AdventureWorksDW2025",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+mssql_database_info{database_name="CDCDemo",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+mssql_database_info{database_name="DBA",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+mssql_database_info{database_name="ScratchPad",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+mssql_database_info{database_name="StackOverflow2013",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+mssql_database_info{database_name="TutorialDB",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+mssql_database_info{database_name="master",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+mssql_database_info{database_name="model",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+mssql_database_info{database_name="msdb",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+mssql_database_info{database_name="sqlnexus",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+mssql_database_info{database_name="tempdb",is_ha_instance="false",is_in_ag="0",state="0",state_desc="ONLINE"} 1
+# HELP mssql_database_log_bytes_flushed_total Database log bytes flushed since SQL Server startup.
+# TYPE mssql_database_log_bytes_flushed_total counter
+mssql_database_log_bytes_flushed_total{db="AdventureWorks2025"} 1.362432e+06
+mssql_database_log_bytes_flushed_total{db="AdventureWorksDW2025"} 77824
+mssql_database_log_bytes_flushed_total{db="CDCDemo"} 3.032576e+06
+mssql_database_log_bytes_flushed_total{db="DBA"} 2.18336256e+08
+mssql_database_log_bytes_flushed_total{db="ScratchPad"} 4608
+mssql_database_log_bytes_flushed_total{db="StackOverflow2013"} 73728
+mssql_database_log_bytes_flushed_total{db="TutorialDB"} 64512
+mssql_database_log_bytes_flushed_total{db="master"} 924672
+mssql_database_log_bytes_flushed_total{db="model"} 1536
+mssql_database_log_bytes_flushed_total{db="model_msdb"} 0
+mssql_database_log_bytes_flushed_total{db="model_replicatedmaster"} 0
+mssql_database_log_bytes_flushed_total{db="msdb"} 4.44975104e+08
+mssql_database_log_bytes_flushed_total{db="sqlnexus"} 76800
+mssql_database_log_bytes_flushed_total{db="tempdb"} 2.74044416e+08
+# HELP mssql_database_log_events_total Database log event counts since SQL Server startup.
+# TYPE mssql_database_log_events_total counter
+mssql_database_log_events_total{db="AdventureWorks2025",event="growths"} 0
+mssql_database_log_events_total{db="AdventureWorks2025",event="shrinks"} 0
+mssql_database_log_events_total{db="AdventureWorks2025",event="truncations"} 0
+mssql_database_log_events_total{db="AdventureWorksDW2025",event="growths"} 0
+mssql_database_log_events_total{db="AdventureWorksDW2025",event="shrinks"} 0
+mssql_database_log_events_total{db="AdventureWorksDW2025",event="truncations"} 0
+mssql_database_log_events_total{db="CDCDemo",event="growths"} 0
+mssql_database_log_events_total{db="CDCDemo",event="shrinks"} 0
+mssql_database_log_events_total{db="CDCDemo",event="truncations"} 0
+mssql_database_log_events_total{db="DBA",event="growths"} 0
+mssql_database_log_events_total{db="DBA",event="shrinks"} 0
+mssql_database_log_events_total{db="DBA",event="truncations"} 0
+mssql_database_log_events_total{db="ScratchPad",event="growths"} 0
+mssql_database_log_events_total{db="ScratchPad",event="shrinks"} 0
+mssql_database_log_events_total{db="ScratchPad",event="truncations"} 0
+mssql_database_log_events_total{db="StackOverflow2013",event="growths"} 0
+mssql_database_log_events_total{db="StackOverflow2013",event="shrinks"} 0
+mssql_database_log_events_total{db="StackOverflow2013",event="truncations"} 0
+mssql_database_log_events_total{db="TutorialDB",event="growths"} 0
+mssql_database_log_events_total{db="TutorialDB",event="shrinks"} 0
+mssql_database_log_events_total{db="TutorialDB",event="truncations"} 0
+mssql_database_log_events_total{db="master",event="growths"} 0
+mssql_database_log_events_total{db="master",event="shrinks"} 0
+mssql_database_log_events_total{db="master",event="truncations"} 0
+mssql_database_log_events_total{db="model",event="growths"} 0
+mssql_database_log_events_total{db="model",event="shrinks"} 0
+mssql_database_log_events_total{db="model",event="truncations"} 0
+mssql_database_log_events_total{db="model_msdb",event="growths"} 0
+mssql_database_log_events_total{db="model_msdb",event="shrinks"} 0
+mssql_database_log_events_total{db="model_msdb",event="truncations"} 0
+mssql_database_log_events_total{db="model_replicatedmaster",event="growths"} 0
+mssql_database_log_events_total{db="model_replicatedmaster",event="shrinks"} 0
+mssql_database_log_events_total{db="model_replicatedmaster",event="truncations"} 0
+mssql_database_log_events_total{db="msdb",event="growths"} 2
+mssql_database_log_events_total{db="msdb",event="shrinks"} 0
+mssql_database_log_events_total{db="msdb",event="truncations"} 1
+mssql_database_log_events_total{db="sqlnexus",event="growths"} 0
+mssql_database_log_events_total{db="sqlnexus",event="shrinks"} 0
+mssql_database_log_events_total{db="sqlnexus",event="truncations"} 0
+mssql_database_log_events_total{db="tempdb",event="growths"} 0
+mssql_database_log_events_total{db="tempdb",event="shrinks"} 0
+mssql_database_log_events_total{db="tempdb",event="truncations"} 10
+# HELP mssql_database_log_flush_wait_time_ms_total Accumulated database log flush wait time in milliseconds since SQL Server startup.
+# TYPE mssql_database_log_flush_wait_time_ms_total counter
+mssql_database_log_flush_wait_time_ms_total{db="AdventureWorks2025"} 4356
+mssql_database_log_flush_wait_time_ms_total{db="AdventureWorksDW2025"} 1525
+mssql_database_log_flush_wait_time_ms_total{db="CDCDemo"} 10702
+mssql_database_log_flush_wait_time_ms_total{db="DBA"} 243249
+mssql_database_log_flush_wait_time_ms_total{db="ScratchPad"} 209
+mssql_database_log_flush_wait_time_ms_total{db="StackOverflow2013"} 1432
+mssql_database_log_flush_wait_time_ms_total{db="TutorialDB"} 1362
+mssql_database_log_flush_wait_time_ms_total{db="master"} 7526
+mssql_database_log_flush_wait_time_ms_total{db="model"} 447
+mssql_database_log_flush_wait_time_ms_total{db="model_msdb"} 0
+mssql_database_log_flush_wait_time_ms_total{db="model_replicatedmaster"} 0
+mssql_database_log_flush_wait_time_ms_total{db="msdb"} 1.050659e+06
+mssql_database_log_flush_wait_time_ms_total{db="sqlnexus"} 1353
+mssql_database_log_flush_wait_time_ms_total{db="tempdb"} 64
+# HELP mssql_database_log_flushes_total Database log flushes since SQL Server startup.
+# TYPE mssql_database_log_flushes_total counter
+mssql_database_log_flushes_total{db="AdventureWorks2025"} 413
+mssql_database_log_flushes_total{db="AdventureWorksDW2025"} 84
+mssql_database_log_flushes_total{db="CDCDemo"} 1408
+mssql_database_log_flushes_total{db="DBA"} 35575
+mssql_database_log_flushes_total{db="ScratchPad"} 8
+mssql_database_log_flushes_total{db="StackOverflow2013"} 83
+mssql_database_log_flushes_total{db="TutorialDB"} 73
+mssql_database_log_flushes_total{db="master"} 716
+mssql_database_log_flushes_total{db="model"} 3
+mssql_database_log_flushes_total{db="model_msdb"} 0
+mssql_database_log_flushes_total{db="model_replicatedmaster"} 0
+mssql_database_log_flushes_total{db="msdb"} 88608
+mssql_database_log_flushes_total{db="sqlnexus"} 83
+mssql_database_log_flushes_total{db="tempdb"} 4477
+# HELP mssql_database_log_waits_total Database log flush waits since SQL Server startup.
+# TYPE mssql_database_log_waits_total counter
+mssql_database_log_waits_total{db="AdventureWorks2025"} 404
+mssql_database_log_waits_total{db="AdventureWorksDW2025"} 85
+mssql_database_log_waits_total{db="CDCDemo"} 1379
+mssql_database_log_waits_total{db="DBA"} 34758
+mssql_database_log_waits_total{db="ScratchPad"} 8
+mssql_database_log_waits_total{db="StackOverflow2013"} 84
+mssql_database_log_waits_total{db="TutorialDB"} 73
+mssql_database_log_waits_total{db="master"} 715
+mssql_database_log_waits_total{db="model"} 3
+mssql_database_log_waits_total{db="model_msdb"} 0
+mssql_database_log_waits_total{db="model_replicatedmaster"} 0
+mssql_database_log_waits_total{db="msdb"} 86942
+mssql_database_log_waits_total{db="sqlnexus"} 83
+mssql_database_log_waits_total{db="tempdb"} 19
+# HELP mssql_database_percent_log_used Transaction log space used as a percentage per database.
+# TYPE mssql_database_percent_log_used gauge
+mssql_database_percent_log_used{db="AdventureWorks2025"} 5
+mssql_database_percent_log_used{db="AdventureWorksDW2025"} 11
+mssql_database_percent_log_used{db="CDCDemo"} 7
+mssql_database_percent_log_used{db="DBA"} 68
+mssql_database_percent_log_used{db="ScratchPad"} 6
+mssql_database_percent_log_used{db="StackOverflow2013"} 8
+mssql_database_percent_log_used{db="TutorialDB"} 7
+mssql_database_percent_log_used{db="master"} 61
+mssql_database_percent_log_used{db="model"} 0
+mssql_database_percent_log_used{db="model_msdb"} 49
+mssql_database_percent_log_used{db="model_replicatedmaster"} 34
+mssql_database_percent_log_used{db="msdb"} 5
+mssql_database_percent_log_used{db="sqlnexus"} 8
+mssql_database_percent_log_used{db="tempdb"} 7
+# HELP mssql_database_xtp_memory_used_bytes XTP memory usage in bytes per database.
+# TYPE mssql_database_xtp_memory_used_bytes gauge
+mssql_database_xtp_memory_used_bytes{db="AdventureWorks2025"} 0
+mssql_database_xtp_memory_used_bytes{db="AdventureWorksDW2025"} 0
+mssql_database_xtp_memory_used_bytes{db="CDCDemo"} 0
+mssql_database_xtp_memory_used_bytes{db="DBA"} 9.0447872e+07
+mssql_database_xtp_memory_used_bytes{db="ScratchPad"} 0
+mssql_database_xtp_memory_used_bytes{db="StackOverflow2013"} 0
+mssql_database_xtp_memory_used_bytes{db="TutorialDB"} 0
+mssql_database_xtp_memory_used_bytes{db="master"} 0
+mssql_database_xtp_memory_used_bytes{db="model"} 0
+mssql_database_xtp_memory_used_bytes{db="model_msdb"} 0
+mssql_database_xtp_memory_used_bytes{db="model_replicatedmaster"} 0
+mssql_database_xtp_memory_used_bytes{db="msdb"} 0
+mssql_database_xtp_memory_used_bytes{db="sqlnexus"} 0
+mssql_database_xtp_memory_used_bytes{db="tempdb"} 0
+# HELP mssql_deadlocks Number of lock requests that resulted in a deadlock.
+# TYPE mssql_deadlocks counter
+mssql_deadlocks 0
+# HELP mssql_host_physical_memory_bytes Host physical memory in bytes.
+# TYPE mssql_host_physical_memory_bytes gauge
+mssql_host_physical_memory_bytes{state="available"} 9.957736448e+09
+mssql_host_physical_memory_bytes{state="total"} 2.576924672e+10
+# HELP mssql_io_stall_seconds Stall time in seconds per database and I/O operation.
+# TYPE mssql_io_stall_seconds counter
+mssql_io_stall_seconds{db="AdventureWorks2025",operation="read"} 4.928
+mssql_io_stall_seconds{db="AdventureWorks2025",operation="write"} 40.852
+mssql_io_stall_seconds{db="AdventureWorksDW2025",operation="read"} 0.491
+mssql_io_stall_seconds{db="AdventureWorksDW2025",operation="write"} 1.527
+mssql_io_stall_seconds{db="CDCDemo",operation="read"} 1.46
+mssql_io_stall_seconds{db="CDCDemo",operation="write"} 9.624
+mssql_io_stall_seconds{db="DBA",operation="read"} 136.765
+mssql_io_stall_seconds{db="DBA",operation="write"} 1559.325
+mssql_io_stall_seconds{db="ScratchPad",operation="read"} 0.609
+mssql_io_stall_seconds{db="ScratchPad",operation="write"} 0.158
+mssql_io_stall_seconds{db="StackOverflow2013",operation="read"} 10.664
+mssql_io_stall_seconds{db="StackOverflow2013",operation="write"} 1.428
+mssql_io_stall_seconds{db="TutorialDB",operation="read"} 0.588
+mssql_io_stall_seconds{db="TutorialDB",operation="write"} 1.364
+mssql_io_stall_seconds{db="master",operation="read"} 0.33
+mssql_io_stall_seconds{db="master",operation="write"} 6.433
+mssql_io_stall_seconds{db="model",operation="read"} 5.088
+mssql_io_stall_seconds{db="model",operation="write"} 0.478
+mssql_io_stall_seconds{db="msdb",operation="read"} 2390.77
+mssql_io_stall_seconds{db="msdb",operation="write"} 124379.533
+mssql_io_stall_seconds{db="sqlnexus",operation="read"} 0.651
+mssql_io_stall_seconds{db="sqlnexus",operation="write"} 1.341
+mssql_io_stall_seconds{db="tempdb",operation="read"} 1.052
+mssql_io_stall_seconds{db="tempdb",operation="write"} 19.646
+# HELP mssql_io_stall_total_seconds Total stall time in seconds per database.
+# TYPE mssql_io_stall_total_seconds counter
+mssql_io_stall_total_seconds{db="AdventureWorks2025"} 45.78
+mssql_io_stall_total_seconds{db="AdventureWorksDW2025"} 2.018
+mssql_io_stall_total_seconds{db="CDCDemo"} 11.084
+mssql_io_stall_total_seconds{db="DBA"} 1696.09
+mssql_io_stall_total_seconds{db="ScratchPad"} 0.767
+mssql_io_stall_total_seconds{db="StackOverflow2013"} 12.092
+mssql_io_stall_total_seconds{db="TutorialDB"} 1.952
+mssql_io_stall_total_seconds{db="master"} 6.763
+mssql_io_stall_total_seconds{db="model"} 5.566
+mssql_io_stall_total_seconds{db="msdb"} 126770.303
+mssql_io_stall_total_seconds{db="sqlnexus"} 1.992
+mssql_io_stall_total_seconds{db="tempdb"} 20.698
+# HELP mssql_kill_connection_errors Number of severe errors that caused SQL Server to kill the connection.
+# TYPE mssql_kill_connection_errors counter
+mssql_kill_connection_errors 0
+# HELP mssql_local_time_seconds Local time in seconds since epoch (Unix time).
+# TYPE mssql_local_time_seconds gauge
+mssql_local_time_seconds 1.773726702e+09
+# HELP mssql_lock_wait_time_ms_total Accumulated lock wait time in milliseconds since SQL Server startup.
+# TYPE mssql_lock_wait_time_ms_total counter
+mssql_lock_wait_time_ms_total 1.086032e+06
+# HELP mssql_lock_waits_total Lock waits since SQL Server startup.
+# TYPE mssql_lock_waits_total counter
+mssql_lock_waits_total 6091
+# HELP mssql_log_apply_pending_queue Log apply pending queue.
+# TYPE mssql_log_apply_pending_queue gauge
+mssql_log_apply_pending_queue 0
+# HELP mssql_log_growths Number of times the transaction log has been expanded, per database.
+# TYPE mssql_log_growths counter
+mssql_log_growths{db="AdventureWorks2025"} 0
+mssql_log_growths{db="AdventureWorksDW2025"} 0
+mssql_log_growths{db="CDCDemo"} 0
+mssql_log_growths{db="DBA"} 0
+mssql_log_growths{db="ScratchPad"} 0
+mssql_log_growths{db="StackOverflow2013"} 0
+mssql_log_growths{db="TutorialDB"} 0
+mssql_log_growths{db="master"} 0
+mssql_log_growths{db="model"} 0
+mssql_log_growths{db="model_msdb"} 0
+mssql_log_growths{db="model_replicatedmaster"} 0
+mssql_log_growths{db="msdb"} 2
+mssql_log_growths{db="mssqlsystemresource"} 0
+mssql_log_growths{db="sqlnexus"} 0
+mssql_log_growths{db="tempdb"} 0
+# HELP mssql_log_remaining_for_undo Log remaining for undo.
+# TYPE mssql_log_remaining_for_undo gauge
+mssql_log_remaining_for_undo 0
+# HELP mssql_log_send_queue Log send queue.
+# TYPE mssql_log_send_queue gauge
+mssql_log_send_queue 0
+# HELP mssql_logins Logins since SQL Server startup.
+# TYPE mssql_logins counter
+mssql_logins 30646
+# HELP mssql_logouts Logouts since SQL Server startup.
+# TYPE mssql_logouts counter
+mssql_logouts 30627
+# HELP mssql_longest_transaction_running_time_seconds Longest transaction running time in seconds.
+# TYPE mssql_longest_transaction_running_time_seconds gauge
+mssql_longest_transaction_running_time_seconds 0
+# HELP mssql_memory_grants_outstanding Outstanding workspace memory grants.
+# TYPE mssql_memory_grants_outstanding gauge
+mssql_memory_grants_outstanding 0
+# HELP mssql_memory_grants_pending Pending workspace memory grants.
+# TYPE mssql_memory_grants_pending gauge
+mssql_memory_grants_pending 0
+# HELP mssql_memory_manager_bytes SQL Server memory manager allocations in bytes.
+# TYPE mssql_memory_manager_bytes gauge
+mssql_memory_manager_bytes{state="free"} 1.16535296e+09
+mssql_memory_manager_bytes{state="granted_workspace"} 0
+mssql_memory_manager_bytes{state="maximum_workspace"} 9.50697984e+09
+mssql_memory_manager_bytes{state="sql_cache"} 6.283264e+06
+mssql_memory_manager_bytes{state="stolen_server"} 2.099838976e+09
+mssql_memory_manager_bytes{state="target_server"} 1.2884901888e+10
+mssql_memory_manager_bytes{state="total_server"} 5.331992576e+09
+# HELP mssql_memory_utilization_percentage The percentage of committed memory that is in the working set.
+# TYPE mssql_memory_utilization_percentage gauge
+mssql_memory_utilization_percentage 100
+# HELP mssql_mirrored_write_transactions Mirrored write transactions since SQL Server startup.
+# TYPE mssql_mirrored_write_transactions counter
+mssql_mirrored_write_transactions 0
+# HELP mssql_network_io_waits_ms Network IO wait time metric from SQL Server wait statistics.
+# TYPE mssql_network_io_waits_ms gauge
+mssql_network_io_waits_ms 0
+# HELP mssql_os_memory OS physical memory, used and available.
+# TYPE mssql_os_memory gauge
+mssql_os_memory{state="available"} 9.957707776e+09
+mssql_os_memory{state="used"} 1.5811538944e+10
+# HELP mssql_os_page_file OS page file, used and available.
+# TYPE mssql_os_page_file gauge
+mssql_os_page_file{state="available"} 1.2976869376e+10
+mssql_os_page_file{state="used"} 1.6550473728e+10
+# HELP mssql_page_fault_count The number of page faults that were incurred by the SQL Server process.
+# TYPE mssql_page_fault_count counter
+mssql_page_fault_count 1.4616734e+07
+# HELP mssql_page_io_latch_waits_ms Page IO latch wait time metric from SQL Server wait statistics.
+# TYPE mssql_page_io_latch_waits_ms gauge
+mssql_page_io_latch_waits_ms 0
+# HELP mssql_page_life_expectancy_seconds The minimum number of seconds a page will stay in the buffer pool on this node without references.
+# TYPE mssql_page_life_expectancy_seconds gauge
+mssql_page_life_expectancy_seconds 15018
+# HELP mssql_page_lookups Buffer manager page lookups since SQL Server startup.
+# TYPE mssql_page_lookups counter
+mssql_page_lookups 4.0462453e+07
+# HELP mssql_page_reads Buffer manager page reads since SQL Server startup.
+# TYPE mssql_page_reads counter
+mssql_page_reads 167634
+# HELP mssql_page_writes Buffer manager page writes since SQL Server startup.
+# TYPE mssql_page_writes counter
+mssql_page_writes 232850
+# HELP mssql_processes_blocked Currently blocked processes.
+# TYPE mssql_processes_blocked gauge
+mssql_processes_blocked 0
+# HELP mssql_redo_blocked Redo blocked events since SQL Server startup.
+# TYPE mssql_redo_blocked counter
+mssql_redo_blocked 0
+# HELP mssql_resident_memory_bytes SQL Server resident memory size (AKA working set).
+# TYPE mssql_resident_memory_bytes gauge
+mssql_resident_memory_bytes 5.521215488e+09
+# HELP mssql_resource_pool_cpu_usage_percentage CPU usage percentage by resource pool.
+# TYPE mssql_resource_pool_cpu_usage_percentage gauge
+mssql_resource_pool_cpu_usage_percentage{resource_pool="default"} 0
+mssql_resource_pool_cpu_usage_percentage{resource_pool="internal"} 0.049850448654037
+# HELP mssql_sql_attentions_total SQL attentions since SQL Server startup.
+# TYPE mssql_sql_attentions_total counter
+mssql_sql_attentions_total 11438
+# HELP mssql_sql_auto_params_total Automatic parameterization activity counters since SQL Server startup.
+# TYPE mssql_sql_auto_params_total counter
+mssql_sql_auto_params_total{mode="attempts"} 2458
+mssql_sql_auto_params_total{mode="failed"} 1853
+mssql_sql_auto_params_total{mode="safe"} 398
+mssql_sql_auto_params_total{mode="unsafe"} 207
+# HELP mssql_sql_compilations SQL compilations since SQL Server startup.
+# TYPE mssql_sql_compilations counter
+mssql_sql_compilations 142382
+# HELP mssql_sql_errors_total SQL error counters since SQL Server startup.
+# TYPE mssql_sql_errors_total counter
+mssql_sql_errors_total{error_type="DB Offline Errors"} 0
+mssql_sql_errors_total{error_type="Info Errors"} 83402
+mssql_sql_errors_total{error_type="Kill Connection Errors"} 0
+mssql_sql_errors_total{error_type="User Errors"} 9018
+mssql_sql_errors_total{error_type="_Total"} 92420
+# HELP mssql_sql_process_memory_bytes SQL Server process memory allocations in bytes.
+# TYPE mssql_sql_process_memory_bytes gauge
+mssql_sql_process_memory_bytes{state="in_use"} 5.521215488e+09
+mssql_sql_process_memory_bytes{state="large_pages"} 0
+mssql_sql_process_memory_bytes{state="locked_pages"} 0
+# HELP mssql_sql_recompilations SQL recompilations since SQL Server startup.
+# TYPE mssql_sql_recompilations counter
+mssql_sql_recompilations 22183
+# HELP mssql_temp_tables_for_destruction Temp tables waiting to be destroyed.
+# TYPE mssql_temp_tables_for_destruction gauge
+mssql_temp_tables_for_destruction 0
+# HELP mssql_tempdb_active_temp_tables Active temp tables from SQL Server general statistics.
+# TYPE mssql_tempdb_active_temp_tables gauge
+mssql_tempdb_active_temp_tables 183
+# HELP mssql_tempdb_space_bytes tempdb free space and version store size in bytes.
+# TYPE mssql_tempdb_space_bytes gauge
+mssql_tempdb_space_bytes{state="free_space"} 1.334378496e+09
+mssql_tempdb_space_bytes{state="version_store"} 901120
+# HELP mssql_transaction_delay Transaction delay for database replicas.
+# TYPE mssql_transaction_delay gauge
+mssql_transaction_delay 0
+# HELP mssql_up SQL Server instance/service availability and metadata.
+# TYPE mssql_up gauge
+mssql_up{at_server_name="SQLMonitor",domain="LAB",domain_reg="Lab.com",edition="Enterprise Developer Edition (64-bit)",host_name="SQLMONITOR",instance_name="MSSQLSERVER",ip="127.0.0.1",machine_name="SQLMonitor",ports="1433, 1433",product_level="RC1",product_version="17.0.925.4",server_name="SQLMonitor",service_account="LAB\\SQLService",service_name="MSSQLSERVER",service_name_str="SQL Server (MSSQLSERVER)",sql_version="Microsoft SQL Server 2025 (RC1) - 17.0.925.4 (X64) \n	Sep  9 2025 17:31:28 \n	Copyright (C) 2025 Microsoft Corporation\n	Enterprise Developer Edition (64-bit) on Windows Server 2019 Datacenter 10.0 <X64> (Build 17763: ) (Hypervisor)\n"} 1
+mssql_up{at_server_name="SQLMonitor",domain="LAB",domain_reg="Lab.com",edition="Enterprise Developer Edition (64-bit)",host_name="SQLMONITOR",instance_name="MSSQLSERVER",ip="127.0.0.1",machine_name="SQLMonitor",ports="1433, 1433",product_level="RC1",product_version="17.0.925.4",server_name="SQLMonitor",service_account="LAB\\SQLService",service_name="SQLSERVERAGENT",service_name_str="SQL Server Agent (MSSQLSERVER)",sql_version="Microsoft SQL Server 2025 (RC1) - 17.0.925.4 (X64) \n	Sep  9 2025 17:31:28 \n	Copyright (C) 2025 Microsoft Corporation\n	Enterprise Developer Edition (64-bit) on Windows Server 2019 Datacenter 10.0 <X64> (Build 17763: ) (Hypervisor)\n"} 1
+# HELP mssql_user_connections Current user connections from SQL Server general statistics.
+# TYPE mssql_user_connections gauge
+mssql_user_connections 19
+# HELP mssql_user_errors Number of user errors.
+# TYPE mssql_user_errors counter
+mssql_user_errors 9018
+# HELP mssql_virtual_memory_bytes SQL Server committed virtual memory size.
+# TYPE mssql_virtual_memory_bytes gauge
+mssql_virtual_memory_bytes 5.691715584e+09
+# HELP mssql_waits_in_progress Current waits in progress by wait category.
+# TYPE mssql_waits_in_progress gauge
+mssql_waits_in_progress{wait_type="Lock waits"} 0
+mssql_waits_in_progress{wait_type="Log buffer waits"} 0
+mssql_waits_in_progress{wait_type="Log write waits"} 0
+mssql_waits_in_progress{wait_type="Memory grant queue waits"} 0
+mssql_waits_in_progress{wait_type="Network IO waits"} 0
+mssql_waits_in_progress{wait_type="Non-Page latch waits"} 0
+mssql_waits_in_progress{wait_type="Page IO latch waits"} 0
+mssql_waits_in_progress{wait_type="Page latch waits"} 0
+mssql_waits_in_progress{wait_type="Thread-safe memory objects waits"} 0
+mssql_waits_in_progress{wait_type="Transaction ownership waits"} 0
+mssql_waits_in_progress{wait_type="Wait for the worker"} 0
+mssql_waits_in_progress{wait_type="Workspace synchronization waits"} 0
+# HELP mssql_workload_group_cpu_usage_percentage CPU usage percentage by workload group.
+# TYPE mssql_workload_group_cpu_usage_percentage gauge
+mssql_workload_group_cpu_usage_percentage{workload_group="default"} 0
+mssql_workload_group_cpu_usage_percentage{workload_group="internal"} 0.049850448654037
+# HELP mssqlbuffer_pool_committed SQL Server buffer pool committed bytes.
+# TYPE mssqlbuffer_pool_committed gauge
+mssqlbuffer_pool_committed 5.331992576e+09
+# HELP mssqlbuffer_pool_committed_target SQL Server buffer pool committed target bytes.
+# TYPE mssqlbuffer_pool_committed_target gauge
+mssqlbuffer_pool_committed_target 1.2884901888e+10
