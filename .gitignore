@@ -33,6 +33,7 @@ tempCodeRunnerFile.ps1
 sql_exporter.exe
 sql_exporter/LICENSE
 mssql-metrics-collector.collector.yml
+*tessell*
 
 # Ignore Virtual Env Folder
 /SQLMonitorVenv/*

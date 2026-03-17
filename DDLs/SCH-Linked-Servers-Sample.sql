@@ -6,6 +6,9 @@ EXEC master.dbo.sp_addlinkedserver @server = N'YourSqlInstanceNameHere', @srvpro
 EXEC master.dbo.sp_addlinkedsrvlogin @rmtsrvname=N'YourSqlInstanceNameHere',@useself=N'False',@locallogin=NULL,@rmtuser=N'grafana',@rmtpassword='grafana'
 GO
 
+EXEC master.dbo.sp_serveroption @server=N'YourSqlInstanceNameHere', @optname = 'provider string', @optvalue = 'Encrypt=yes;TrustServerCertificate=yes';
+GO
+
 EXEC master.dbo.sp_serveroption @server=N'YourSqlInstanceNameHere', @optname=N'collation compatible', @optvalue=N'false'
 GO
 

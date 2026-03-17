@@ -88,3 +88,839 @@ metrics:
       FULL OUTER JOIN server_services ss
         ON 1 = 1;
 
+  - metric_name: mssql_host_physical_memory_bytes
+    type: gauge
+    help: 'Host physical memory in bytes.'
+    value_label: state
+    values: [total, available]
+    query_ref: mssql_sys_memory
+
+  - metric_name: mssql_sql_process_memory_bytes
+    type: gauge
+    help: 'SQL Server process memory allocations in bytes.'
+    value_label: state
+    values: [in_use, locked_pages, large_pages]
+    query_ref: mssql_process_memory
+
+  - metric_name: mssql_cpu_utilization_percentage
+    type: gauge
+    help: 'CPU utilization percentages from the SQL Server scheduler monitor ring buffer.'
+    value_label: scope
+    values: [system, sqlserver]
+    query_ref: mssql_cpu_utilization
+
+  - metric_name: mssql_memory_manager_bytes
+    type: gauge
+    help: 'SQL Server memory manager allocations in bytes.'
+    value_label: state
+    values: [granted_workspace, maximum_workspace, stolen_server, total_server, target_server, sql_cache, free]
+    query_ref: mssql_memory_manager
+
+  - metric_name: mssql_memory_grants_outstanding
+    type: gauge
+    help: 'Outstanding workspace memory grants.'
+    values: [memory_grants_outstanding]
+    query_ref: mssql_memory_manager
+
+  - metric_name: mssql_database_file_size_bytes
+    type: gauge
+    help: 'Database file sizes in bytes.'
+    key_labels:
+      - db
+    value_label: state
+    values: [data, log, log_used]
+    query_ref: mssql_database_space
+
+  - metric_name: mssql_database_percent_log_used
+    type: gauge
+    help: 'Transaction log space used as a percentage per database.'
+    key_labels:
+      - db
+    values: [percent_log_used]
+    query_ref: mssql_database_space
+
+  - metric_name: mssql_database_active_transactions
+    type: gauge
+    help: 'Current active transactions per database.'
+    key_labels:
+      - db
+    values: [active_transactions]
+    query_ref: mssql_database_space
+
+  - metric_name: mssql_database_xtp_memory_used_bytes
+    type: gauge
+    help: 'XTP memory usage in bytes per database.'
+    key_labels:
+      - db
+    values: [xtp_memory_used]
+    query_ref: mssql_database_space
+
+  - metric_name: mssql_database_log_events_total
+    type: counter
+    help: 'Database log event counts since SQL Server startup.'
+    key_labels:
+      - db
+    value_label: event
+    values: [growths, shrinks, truncations]
+    query_ref: mssql_database_space
+
+  - metric_name: mssql_active_cursors
+    type: gauge
+    help: 'Current active cursors by cursor type.'
+    key_labels:
+      - cursor_type
+    values: [active_cursors]
+    query_ref: mssql_active_cursors
+
+  - metric_name: mssql_user_connections
+    type: gauge
+    help: 'Current user connections from SQL Server general statistics.'
+    values: [user_connections]
+    query_ref: mssql_general_statistics_snapshot
+
+  - metric_name: mssql_temp_tables_for_destruction
+    type: gauge
+    help: 'Temp tables waiting to be destroyed.'
+    values: [temp_tables_for_destruction]
+    query_ref: mssql_general_statistics_snapshot
+
+  - metric_name: mssql_waits_in_progress
+    type: gauge
+    help: 'Current waits in progress by wait category.'
+    key_labels:
+      - wait_type
+    values: [waits_in_progress]
+    query_ref: mssql_wait_stats
+
+  - metric_name: mssql_transactions
+    type: gauge
+    help: 'Current transaction count per database from the Transactions object.'
+    key_labels:
+      - db
+    values: [transactions]
+    query_ref: mssql_transactions
+
+  - metric_name: mssql_tempdb_space_bytes
+    type: gauge
+    help: 'tempdb free space and version store size in bytes.'
+    value_label: state
+    values: [free_space, version_store]
+    query_ref: mssql_tempdb_transactions
+
+  - metric_name: mssql_longest_transaction_running_time_seconds
+    type: gauge
+    help: 'Longest transaction running time in seconds.'
+    values: [longest_transaction_running_time]
+    query_ref: mssql_tempdb_transactions
+
+  - metric_name: mssql_worktables_from_cache_ratio
+    type: gauge
+    help: 'Worktables-from-cache ratio as a percentage.'
+    values: [worktables_from_cache_ratio]
+    query_ref: mssql_access_methods_ratio
+
+  - metric_name: mssql_resource_pool_cpu_usage_percentage
+    type: gauge
+    help: 'CPU usage percentage by resource pool.'
+    key_labels:
+      - resource_pool
+    values: [cpu_usage_percentage]
+    query_ref: mssql_resource_pool_cpu
+
+  - metric_name: mssql_workload_group_cpu_usage_percentage
+    type: gauge
+    help: 'CPU usage percentage by workload group.'
+    key_labels:
+      - workload_group
+    values: [cpu_usage_percentage]
+    query_ref: mssql_workload_group_cpu
+
+  - metric_name: mssql_sql_auto_params_total
+    type: counter
+    help: 'Automatic parameterization activity counters since SQL Server startup.'
+    value_label: mode
+    values: [attempts, failed, safe, unsafe]
+    query_ref: mssql_sql_statistics
+
+  - metric_name: mssql_sql_attentions_total
+    type: counter
+    help: 'SQL attentions since SQL Server startup.'
+    values: [sql_attentions]
+    query_ref: mssql_sql_statistics
+
+  - metric_name: mssql_buffer_manager_operations_total
+    type: counter
+    help: 'Buffer manager operation counters since SQL Server startup.'
+    value_label: operation
+    values: [lazy_writes, free_list_stalls, readahead_pages]
+    query_ref: mssql_buffer_manager_counters
+
+  - metric_name: mssql_lock_waits_total
+    type: counter
+    help: 'Lock waits since SQL Server startup.'
+    values: [lock_waits]
+    query_ref: mssql_lock_counters
+
+  - metric_name: mssql_lock_wait_time_ms_total
+    type: counter
+    help: 'Accumulated lock wait time in milliseconds since SQL Server startup.'
+    values: [lock_wait_time_ms]
+    query_ref: mssql_lock_counters
+
+  - metric_name: mssql_access_methods_total
+    type: counter
+    help: 'Access methods counters since SQL Server startup.'
+    value_label: operation
+    values: [full_scans, forwarded_records, index_searches, page_splits, workfiles_created, worktables_created, table_lock_escalations]
+    query_ref: mssql_access_methods_counters
+
+  - metric_name: mssql_database_log_bytes_flushed_total
+    type: counter
+    help: 'Database log bytes flushed since SQL Server startup.'
+    key_labels:
+      - db
+    values: [log_bytes_flushed]
+    query_ref: mssql_database_log_counters
+
+  - metric_name: mssql_database_log_flush_wait_time_ms_total
+    type: counter
+    help: 'Accumulated database log flush wait time in milliseconds since SQL Server startup.'
+    key_labels:
+      - db
+    values: [log_flush_wait_time_ms]
+    query_ref: mssql_database_log_counters
+
+  - metric_name: mssql_database_log_waits_total
+    type: counter
+    help: 'Database log flush waits since SQL Server startup.'
+    key_labels:
+      - db
+    values: [log_flush_waits]
+    query_ref: mssql_database_log_counters
+
+  - metric_name: mssql_database_log_flushes_total
+    type: counter
+    help: 'Database log flushes since SQL Server startup.'
+    key_labels:
+      - db
+    values: [log_flushes]
+    query_ref: mssql_database_log_counters
+
+  - metric_name: mssql_sql_errors_total
+    type: counter
+    help: 'SQL error counters since SQL Server startup.'
+    key_labels:
+      - error_type
+    values: [errors]
+    query_ref: mssql_sql_errors
+
+  - metric_name: mssqlbuffer_pool_committed
+    type: gauge
+    help: 'SQL Server buffer pool committed bytes.'
+    values: [buffer_pool_committed]
+    query_ref: mssql_sys_info_memory
+
+  - metric_name: mssqlbuffer_pool_committed_target
+    type: gauge
+    help: 'SQL Server buffer pool committed target bytes.'
+    values: [buffer_pool_committed_target]
+    query_ref: mssql_sys_info_memory
+
+  - metric_name: mssql_active_transactions_count
+    type: gauge
+    help: 'Count of active transactions from sys.dm_tran_active_transactions.'
+    values: [active_transactions_count]
+    query_ref: mssql_active_transactions_count
+
+  - metric_name: mssql_write_transactions
+    type: counter
+    help: 'Write transactions since SQL Server startup.'
+    values: [write_transactions]
+    query_ref: mssql_replica_counters
+
+  - metric_name: mssql_processes_blocked
+    type: gauge
+    help: 'Currently blocked processes.'
+    values: [processes_blocked]
+    query_ref: mssql_general_statistics_snapshot
+
+  - metric_name: mssql_average_latch_wait_time_ms
+    type: gauge
+    help: 'Average latch wait time metric from SQL Server performance counters.'
+    values: [average_latch_wait_time_ms]
+    query_ref: mssql_latch_wait_stats
+
+  - metric_name: mssql_memory_grants_pending
+    type: gauge
+    help: 'Pending workspace memory grants.'
+    values: [memory_grants_pending]
+    query_ref: mssql_memory_manager
+
+  - metric_name: mssql_sql_compilations
+    type: counter
+    help: 'SQL compilations since SQL Server startup.'
+    values: [sql_compilations]
+    query_ref: mssql_sql_statistics
+
+  - metric_name: mssql_sql_recompilations
+    type: counter
+    help: 'SQL recompilations since SQL Server startup.'
+    values: [sql_recompilations]
+    query_ref: mssql_sql_statistics
+
+  - metric_name: mssql_page_reads
+    type: counter
+    help: 'Buffer manager page reads since SQL Server startup.'
+    values: [page_reads]
+    query_ref: mssql_buffer_manager_counters
+
+  - metric_name: mssql_page_lookups
+    type: counter
+    help: 'Buffer manager page lookups since SQL Server startup.'
+    values: [page_lookups]
+    query_ref: mssql_buffer_manager_counters
+
+  - metric_name: mssql_page_writes
+    type: counter
+    help: 'Buffer manager page writes since SQL Server startup.'
+    values: [page_writes]
+    query_ref: mssql_buffer_manager_counters
+
+  - metric_name: mssql_connection_reset
+    type: counter
+    help: 'Connection resets since SQL Server startup.'
+    values: [connection_reset]
+    query_ref: mssql_general_statistics_counters
+
+  - metric_name: mssql_logins
+    type: counter
+    help: 'Logins since SQL Server startup.'
+    values: [logins]
+    query_ref: mssql_general_statistics_counters
+
+  - metric_name: mssql_logouts
+    type: counter
+    help: 'Logouts since SQL Server startup.'
+    values: [logouts]
+    query_ref: mssql_general_statistics_counters
+
+  - metric_name: mssql_buffer_database_pages
+    type: gauge
+    help: 'Database pages in the SQL Server buffer pool.'
+    values: [buffer_database_pages]
+    query_ref: mssql_buffer_manager_counters
+
+  - metric_name: mssql_buffer_target_pages
+    type: gauge
+    help: 'Target pages in the SQL Server buffer pool.'
+    values: [buffer_target_pages]
+    query_ref: mssql_buffer_manager_counters
+
+  - metric_name: mssql_tempdb_active_temp_tables
+    type: gauge
+    help: 'Active temp tables from SQL Server general statistics.'
+    values: [tempdb_active_temp_tables]
+    query_ref: mssql_general_statistics_snapshot
+
+  - metric_name: mssql_log_apply_pending_queue
+    type: gauge
+    help: 'Log apply pending queue.'
+    values: [log_apply_pending_queue]
+    query_ref: mssql_replica_counters
+
+  - metric_name: mssql_log_remaining_for_undo
+    type: gauge
+    help: 'Log remaining for undo.'
+    values: [log_remaining_for_undo]
+    query_ref: mssql_replica_counters
+
+  - metric_name: mssql_log_send_queue
+    type: gauge
+    help: 'Log send queue.'
+    values: [log_send_queue]
+    query_ref: mssql_replica_counters
+
+  - metric_name: mssql_redo_blocked
+    type: counter
+    help: 'Redo blocked events since SQL Server startup.'
+    values: [redo_blocked]
+    query_ref: mssql_replica_counters
+
+  - metric_name: mssql_transaction_delay
+    type: gauge
+    help: 'Transaction delay for database replicas.'
+    values: [transaction_delay]
+    query_ref: mssql_replica_counters
+
+  - metric_name: mssql_page_io_latch_waits_ms
+    type: gauge
+    help: 'Page IO latch wait time metric from SQL Server wait statistics.'
+    values: [page_io_latch_waits_ms]
+    query_ref: mssql_wait_stats_averages
+
+  - metric_name: mssql_network_io_waits_ms
+    type: gauge
+    help: 'Network IO wait time metric from SQL Server wait statistics.'
+    values: [network_io_waits_ms]
+    query_ref: mssql_wait_stats_averages
+
+  - metric_name: mssql_mirrored_write_transactions
+    type: counter
+    help: 'Mirrored write transactions since SQL Server startup.'
+    values: [mirrored_write_transactions]
+    query_ref: mssql_replica_counters
+
+  - metric_name: mssql_bytes_sent_to_replica
+    type: counter
+    help: 'Bytes sent to replica since SQL Server startup.'
+    values: [bytes_sent_to_replica]
+    query_ref: mssql_replica_counters
+
+  - metric_name: mssql_database_info
+    type: gauge
+    help: 'Info metric with database state and AG status. Value is always 1.'
+    key_labels:
+      - database_name
+      - state
+      - state_desc
+      - is_ha_instance
+      - is_in_ag
+    values: [value]
+    query_ref: mssql_database_info_query
+
+  - metric_name: mssql_ag_database_out_of_sync
+    type: gauge
+    help: 'Indicates if an AG database is out of sync. Metric only appears if a problem exists.'
+    values: [value]
+    key_labels:
+      - AR_REPLICA_SERVER_NAME
+      - DATABASE_NAME
+      - SYNC_STATE_DESC
+      - DB_STATE_DESC
+    query_ref: mssql_ag_database_out_of_sync_query
+
+  - metric_name: mssql_last_logsweep
+    type: gauge
+    help: 'Shows databases with log backup overdue by more than 4 hours.'
+    key_labels:
+      - OVERDUE_DATABASES
+      - LAST_LOGSWEEP_DATES
+    values: [max_minutes_overdue]
+    query_ref: mssql_last_logsweep_query
+
+queries:
+  - query_name: mssql_sys_memory
+    query: |
+      SELECT
+        total_physical_memory_kb * 1024 AS total,
+        available_physical_memory_kb * 1024 AS available
+      FROM sys.dm_os_sys_memory
+
+  - query_name: mssql_process_memory
+    query: |
+      SELECT
+        physical_memory_in_use_kb * 1024 AS in_use,
+        locked_page_allocations_kb * 1024 AS locked_pages,
+        large_page_allocations_kb * 1024 AS large_pages
+      FROM sys.dm_os_process_memory
+
+  - query_name: mssql_cpu_utilization
+    query: |
+      WITH rb AS (
+        SELECT TOP (1)
+          100 - record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system,
+          record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sqlserver,
+          DATEADD(ms, -1 * (ts_now - [timestamp]), SYSDATETIME()) AS sample_time
+        FROM (
+          SELECT
+            CAST(record AS xml) AS record,
+            [timestamp],
+            cpu_ticks / (cpu_ticks / ms_ticks) AS ts_now
+          FROM sys.dm_os_ring_buffers
+          CROSS APPLY sys.dm_os_sys_info
+          WHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'
+            AND record LIKE '%<SystemHealth>%'
+        ) s
+        ORDER BY sample_time DESC
+      )
+      SELECT system, sqlserver
+      FROM rb
+
+  - query_name: mssql_memory_manager
+    query: |
+      SELECT
+        MAX(CASE WHEN counter_name = 'Granted Workspace Memory (KB)' THEN cntr_value * 1024 END) AS granted_workspace,
+        MAX(CASE WHEN counter_name = 'Maximum Workspace Memory (KB)' THEN cntr_value * 1024 END) AS maximum_workspace,
+        MAX(CASE WHEN counter_name = 'Memory Grants Pending' THEN cntr_value END) AS memory_grants_pending,
+        MAX(CASE WHEN counter_name = 'Memory Grants Outstanding' THEN cntr_value END) AS memory_grants_outstanding,
+        MAX(CASE WHEN counter_name = 'Stolen Server Memory (KB)' THEN cntr_value * 1024 END) AS stolen_server,
+        MAX(CASE WHEN counter_name = 'Total Server Memory (KB)' THEN cntr_value * 1024 END) AS total_server,
+        MAX(CASE WHEN counter_name = 'Target Server Memory (KB)' THEN cntr_value * 1024 END) AS target_server,
+        MAX(CASE WHEN counter_name = 'SQL Cache Memory (KB)' THEN cntr_value * 1024 END) AS sql_cache,
+        MAX(CASE WHEN counter_name = 'Free Memory (KB)' THEN cntr_value * 1024 END) AS free
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Memory Manager%'
+        AND counter_name IN (
+          'Granted Workspace Memory (KB)',
+          'Maximum Workspace Memory (KB)',
+          'Memory Grants Pending',
+          'Memory Grants Outstanding',
+          'Stolen Server Memory (KB)',
+          'Total Server Memory (KB)',
+          'Target Server Memory (KB)',
+          'SQL Cache Memory (KB)',
+          'Free Memory (KB)'
+        )
+
+  - query_name: mssql_database_space
+    query: |
+      SELECT
+        RTRIM(instance_name) AS db,
+        MAX(CASE WHEN counter_name = 'Data File(s) Size (KB)' THEN cntr_value * 1024 END) AS data,
+        MAX(CASE WHEN counter_name = 'Log File(s) Size (KB)' THEN cntr_value * 1024 END) AS log,
+        MAX(CASE WHEN counter_name = 'Log File(s) Used Size (KB)' THEN cntr_value * 1024 END) AS log_used,
+        MAX(CASE WHEN counter_name = 'Percent Log Used' THEN cntr_value END) AS percent_log_used,
+        MAX(CASE WHEN counter_name = 'Active Transactions' THEN cntr_value END) AS active_transactions,
+        MAX(CASE WHEN counter_name = 'XTP Memory Used (KB)' THEN cntr_value * 1024 END) AS xtp_memory_used,
+        MAX(CASE WHEN counter_name = 'Log Growths' THEN cntr_value END) AS growths,
+        MAX(CASE WHEN counter_name = 'Log Shrinks' THEN cntr_value END) AS shrinks,
+        MAX(CASE WHEN counter_name = 'Log Truncations' THEN cntr_value END) AS truncations
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Databases%'
+        AND instance_name NOT IN ('_Total', 'mssqlsystemresource')
+        AND counter_name IN (
+          'Data File(s) Size (KB)',
+          'Log File(s) Size (KB)',
+          'Log File(s) Used Size (KB)',
+          'Percent Log Used',
+          'Active Transactions',
+          'XTP Memory Used (KB)',
+          'Log Growths',
+          'Log Shrinks',
+          'Log Truncations'
+        )
+      GROUP BY RTRIM(instance_name)
+
+  - query_name: mssql_active_cursors
+    query: |
+      SELECT
+        RTRIM(instance_name) AS cursor_type,
+        cntr_value AS active_cursors
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Cursor Manager by Type%'
+        AND counter_name = 'Active cursors'
+        AND instance_name <> '_Total'
+
+  - query_name: mssql_general_statistics_snapshot
+    query: |
+      SELECT
+        MAX(CASE WHEN counter_name = 'User Connections' THEN cntr_value END) AS user_connections,
+        MAX(CASE WHEN counter_name = 'Temp Tables For Destruction' THEN cntr_value END) AS temp_tables_for_destruction,
+        MAX(CASE WHEN counter_name = 'Processes blocked' THEN cntr_value END) AS processes_blocked,
+        MAX(CASE WHEN counter_name = 'Active Temp Tables' THEN cntr_value END) AS tempdb_active_temp_tables
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:General Statistics%'
+        AND counter_name IN ('User Connections', 'Temp Tables For Destruction', 'Processes blocked', 'Active Temp Tables')
+
+  - query_name: mssql_wait_stats
+    query: |
+      SELECT
+        RTRIM(counter_name) AS wait_type,
+        cntr_value AS waits_in_progress
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Wait Statistics%'
+        AND instance_name = 'Waits in progress'
+
+  - query_name: mssql_transactions
+    query: |
+      SELECT
+        RTRIM(instance_name) AS db,
+        cntr_value AS transactions
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Transactions%'
+        AND counter_name = 'Transactions'
+        AND instance_name NOT IN ('', '_Total')
+
+  - query_name: mssql_tempdb_transactions
+    query: |
+      SELECT
+        MAX(CASE WHEN counter_name = 'Free Space in tempdb (KB)' THEN cntr_value * 1024 END) AS free_space,
+        MAX(CASE WHEN counter_name = 'Version Store Size (KB)' THEN cntr_value * 1024 END) AS version_store,
+        MAX(CASE WHEN counter_name = 'Longest Transaction Running Time' THEN cntr_value END) AS longest_transaction_running_time
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Transactions%'
+        AND counter_name IN (
+          'Free Space in tempdb (KB)',
+          'Version Store Size (KB)',
+          'Longest Transaction Running Time'
+        )
+
+  - query_name: mssql_access_methods_ratio
+    query: |
+      WITH ratio AS (
+        SELECT TOP (1) CAST(cntr_value AS float) AS numerator
+        FROM sys.dm_os_performance_counters WITH (NOLOCK)
+        WHERE object_name LIKE '%:Access Methods%'
+          AND counter_name = 'Worktables From Cache Ratio'
+      ),
+      base AS (
+        SELECT TOP (1) CAST(cntr_value AS float) AS denominator
+        FROM sys.dm_os_performance_counters WITH (NOLOCK)
+        WHERE object_name LIKE '%:Access Methods%'
+          AND counter_name = 'Worktables From Cache Ratio Base'
+      )
+      SELECT
+        CASE WHEN base.denominator = 0 THEN NULL ELSE 100.0 * ratio.numerator / base.denominator END AS worktables_from_cache_ratio
+      FROM ratio
+      CROSS JOIN base
+
+  - query_name: mssql_resource_pool_cpu
+    query: |
+      SELECT
+        RTRIM(fr.instance_name) AS resource_pool,
+        CASE WHEN bs.cntr_value = 0 THEN NULL ELSE 100.0 * fr.cntr_value / bs.cntr_value END AS cpu_usage_percentage
+      FROM sys.dm_os_performance_counters fr WITH (NOLOCK)
+      JOIN sys.dm_os_performance_counters bs WITH (NOLOCK)
+        ON bs.object_name = fr.object_name
+       AND ISNULL(bs.instance_name, '') = ISNULL(fr.instance_name, '')
+       AND bs.counter_name = 'CPU usage % base'
+      WHERE fr.object_name LIKE '%:Resource Pool Stats%'
+        AND fr.counter_name = 'CPU usage %'
+
+  - query_name: mssql_workload_group_cpu
+    query: |
+      SELECT
+        RTRIM(fr.instance_name) AS workload_group,
+        CASE WHEN bs.cntr_value = 0 THEN NULL ELSE 100.0 * fr.cntr_value / bs.cntr_value END AS cpu_usage_percentage
+      FROM sys.dm_os_performance_counters fr WITH (NOLOCK)
+      JOIN sys.dm_os_performance_counters bs WITH (NOLOCK)
+        ON bs.object_name = fr.object_name
+       AND ISNULL(bs.instance_name, '') = ISNULL(fr.instance_name, '')
+       AND bs.counter_name = 'CPU usage % base'
+      WHERE fr.object_name LIKE '%:Workload Group Stats%'
+        AND fr.counter_name = 'CPU usage %'
+
+  - query_name: mssql_sql_statistics
+    query: |
+      SELECT
+        MAX(CASE WHEN counter_name = 'SQL Attention rate' THEN cntr_value END) AS sql_attentions,
+        MAX(CASE WHEN counter_name = 'Auto-Param Attempts/sec' THEN cntr_value END) AS attempts,
+        MAX(CASE WHEN counter_name = 'Failed Auto-Params/sec' THEN cntr_value END) AS failed,
+        MAX(CASE WHEN counter_name = 'Safe Auto-Params/sec' THEN cntr_value END) AS safe,
+        MAX(CASE WHEN counter_name = 'Unsafe Auto-Params/sec' THEN cntr_value END) AS unsafe,
+        MAX(CASE WHEN counter_name = 'SQL Compilations/sec' THEN cntr_value END) AS sql_compilations,
+        MAX(CASE WHEN counter_name = 'SQL Re-Compilations/sec' THEN cntr_value END) AS sql_recompilations
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:SQL Statistics%'
+        AND counter_name IN (
+          'SQL Attention rate',
+          'Auto-Param Attempts/sec',
+          'Failed Auto-Params/sec',
+          'Safe Auto-Params/sec',
+          'Unsafe Auto-Params/sec',
+          'SQL Compilations/sec',
+          'SQL Re-Compilations/sec'
+        )
+
+  - query_name: mssql_buffer_manager_counters
+    query: |
+      SELECT
+        MAX(CASE WHEN counter_name = 'Lazy writes/sec' THEN cntr_value END) AS lazy_writes,
+        MAX(CASE WHEN counter_name = 'Free list stalls/sec' THEN cntr_value END) AS free_list_stalls,
+        MAX(CASE WHEN counter_name = 'Readahead pages/sec' THEN cntr_value END) AS readahead_pages,
+        MAX(CASE WHEN counter_name = 'Page reads/sec' THEN cntr_value END) AS page_reads,
+        MAX(CASE WHEN counter_name = 'Page lookups/sec' THEN cntr_value END) AS page_lookups,
+        MAX(CASE WHEN counter_name = 'Page writes/sec' THEN cntr_value END) AS page_writes,
+        MAX(CASE WHEN counter_name = 'Database pages' THEN cntr_value END) AS buffer_database_pages,
+        MAX(CASE WHEN counter_name = 'Target pages' THEN cntr_value END) AS buffer_target_pages
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Buffer Manager%'
+        AND counter_name IN (
+          'Lazy writes/sec',
+          'Free list stalls/sec',
+          'Readahead pages/sec',
+          'Page reads/sec',
+          'Page lookups/sec',
+          'Page writes/sec',
+          'Database pages',
+          'Target pages'
+        )
+
+  - query_name: mssql_sys_info_memory
+    query: |
+      SELECT
+        committed_kb * 1024.0 AS buffer_pool_committed,
+        committed_target_kb * 1024.0 AS buffer_pool_committed_target
+      FROM sys.dm_os_sys_info
+
+  - query_name: mssql_active_transactions_count
+    query: |
+      SELECT COUNT(*) AS active_transactions_count
+      FROM sys.dm_tran_active_transactions
+
+  - query_name: mssql_latch_wait_stats
+    query: |
+      SELECT TOP (1)
+        cntr_value AS average_latch_wait_time_ms
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Latches%'
+        AND counter_name = 'Average Latch Wait Time (ms)'
+
+  - query_name: mssql_general_statistics_counters
+    query: |
+      SELECT
+        MAX(CASE WHEN counter_name = 'Connection Reset/sec' THEN cntr_value END) AS connection_reset,
+        MAX(CASE WHEN counter_name = 'Logins/sec' THEN cntr_value END) AS logins,
+        MAX(CASE WHEN counter_name = 'Logouts/sec' THEN cntr_value END) AS logouts
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:General Statistics%'
+        AND counter_name IN ('Connection Reset/sec', 'Logins/sec', 'Logouts/sec')
+
+  - query_name: mssql_replica_counters
+    query: |
+      SELECT
+        MAX(CASE WHEN counter_name = 'Write Transactions/sec' THEN cntr_value END) AS write_transactions,
+        MAX(CASE WHEN counter_name = 'Log Apply Pending Queue' THEN cntr_value END) AS log_apply_pending_queue,
+        MAX(CASE WHEN counter_name = 'Log remaining for undo' THEN cntr_value END) AS log_remaining_for_undo,
+        MAX(CASE WHEN counter_name = 'Log Send Queue' THEN cntr_value END) AS log_send_queue,
+        MAX(CASE WHEN counter_name = 'Redo blocked/sec' THEN cntr_value END) AS redo_blocked,
+        MAX(CASE WHEN counter_name = 'Transaction Delay' THEN cntr_value END) AS transaction_delay,
+        MAX(CASE WHEN counter_name = 'Mirrored Write Transactions/sec' THEN cntr_value END) AS mirrored_write_transactions,
+        MAX(CASE WHEN counter_name = 'Bytes Sent to Replica/sec' THEN cntr_value END) AS bytes_sent_to_replica
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Database Replica%'
+        AND instance_name = '_Total'
+        AND counter_name IN (
+          'Write Transactions/sec',
+          'Log Apply Pending Queue',
+          'Log remaining for undo',
+          'Log Send Queue',
+          'Redo blocked/sec',
+          'Transaction Delay',
+          'Mirrored Write Transactions/sec',
+          'Bytes Sent to Replica/sec'
+        )
+
+  - query_name: mssql_wait_stats_averages
+    query: |
+      SELECT
+        MAX(CASE WHEN counter_name = 'Page IO latch waits' THEN cntr_value END) AS page_io_latch_waits_ms,
+        MAX(CASE WHEN counter_name = 'Network IO waits' THEN cntr_value END) AS network_io_waits_ms
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Wait Statistics%'
+        AND instance_name = 'Average wait time (ms)'
+        AND counter_name IN ('Page IO latch waits', 'Network IO waits')
+
+  - query_name: mssql_database_info_query
+    query: |
+      DECLARE @is_ha_instance BIT = CASE WHEN EXISTS (SELECT 1 FROM sys.availability_groups) THEN 1 ELSE 0 END;
+      SELECT
+          d.name AS database_name,
+          d.state,
+          d.state_desc,
+          @is_ha_instance AS is_ha_instance,
+          CASE WHEN ag_db.replica_id IS NOT NULL THEN 1 ELSE 0 END AS is_in_ag,
+          1 AS value
+      FROM sys.databases d
+      LEFT JOIN sys.dm_hadr_database_replica_states ag_db
+        ON is_local = 1 AND d.database_id = ag_db.database_id
+      WHERE d.is_distributor <> 1;
+
+  - query_name: mssql_ag_database_out_of_sync_query
+    query: |
+      SELECT DISTINCT
+          ar.replica_server_name AS AR_REPLICA_SERVER_NAME,
+          drcs.database_name AS DATABASE_NAME,
+          drs.synchronization_state_desc AS SYNC_STATE_DESC,
+          COALESCE(drs.database_state_desc, '') AS DB_STATE_DESC,
+          1 AS value
+      FROM sys.availability_replicas ar
+      JOIN sys.dm_hadr_database_replica_states drs
+        ON ar.replica_id = drs.replica_id
+      JOIN sys.dm_hadr_database_replica_cluster_states drcs
+        ON drs.group_database_id = drcs.group_database_id
+      WHERE drs.synchronization_state_desc <> 'SYNCHRONIZED';
+
+  - query_name: mssql_last_logsweep_query
+    query: |
+      SELECT
+          COALESCE(STRING_AGG(sub.DATABASE_NAME, ', ') WITHIN GROUP (ORDER BY sub.DATABASE_NAME), '') AS OVERDUE_DATABASES,
+          COALESCE(STRING_AGG(sub.LAST_LOGSWEEP_DATE, ', ') WITHIN GROUP (ORDER BY sub.DATABASE_NAME), '') AS LAST_LOGSWEEP_DATES,
+          COALESCE(MAX(sub.minutes_since_last_logbackup), 0) AS max_minutes_overdue
+      FROM (
+          SELECT
+              d.name AS DATABASE_NAME,
+              COALESCE(FORMAT(MAX(bs.backup_finish_date), 'yyyy-MM-dd HH:mm:ss'), 'Never Backed Up') AS LAST_LOGSWEEP_DATE,
+              COALESCE(DATEDIFF(MINUTE, MAX(bs.backup_finish_date), GETDATE()), -1) AS minutes_since_last_logbackup
+          FROM sys.databases d
+          LEFT JOIN msdb.dbo.backupset bs
+               ON d.name = bs.database_name
+               AND bs.type = 'L'
+               AND bs.backup_finish_date IS NOT NULL
+          WHERE d.database_id > 4
+            AND d.state_desc = 'ONLINE'
+          GROUP BY d.name
+      ) AS sub
+      WHERE sub.minutes_since_last_logbackup > 240
+      HAVING STRING_AGG(sub.DATABASE_NAME, ', ') IS NOT NULL
+
+  - query_name: mssql_lock_counters
+    query: |
+      SELECT
+        MAX(CASE WHEN counter_name = 'Lock Wait Time (ms)' THEN cntr_value END) AS lock_wait_time_ms,
+        MAX(CASE WHEN counter_name = 'Lock Waits/sec' THEN cntr_value END) AS lock_waits
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Locks%'
+        AND instance_name = '_Total'
+        AND counter_name IN ('Lock Wait Time (ms)', 'Lock Waits/sec')
+
+  - query_name: mssql_access_methods_counters
+    query: |
+      SELECT
+        MAX(CASE WHEN counter_name = 'Full Scans/sec' THEN cntr_value END) AS full_scans,
+        MAX(CASE WHEN counter_name = 'Forwarded Records/sec' THEN cntr_value END) AS forwarded_records,
+        MAX(CASE WHEN counter_name = 'Index Searches/sec' THEN cntr_value END) AS index_searches,
+        MAX(CASE WHEN counter_name = 'Page Splits/sec' THEN cntr_value END) AS page_splits,
+        MAX(CASE WHEN counter_name = 'Workfiles Created/sec' THEN cntr_value END) AS workfiles_created,
+        MAX(CASE WHEN counter_name = 'Worktables Created/sec' THEN cntr_value END) AS worktables_created,
+        MAX(CASE WHEN counter_name = 'Table Lock Escalations/sec' THEN cntr_value END) AS table_lock_escalations
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Access Methods%'
+        AND counter_name IN (
+          'Full Scans/sec',
+          'Forwarded Records/sec',
+          'Index Searches/sec',
+          'Page Splits/sec',
+          'Workfiles Created/sec',
+          'Worktables Created/sec',
+          'Table Lock Escalations/sec'
+        )
+
+  - query_name: mssql_database_log_counters
+    query: |
+      SELECT
+        RTRIM(instance_name) AS db,
+        MAX(CASE WHEN counter_name = 'Log Bytes Flushed/sec' THEN cntr_value END) AS log_bytes_flushed,
+        MAX(CASE WHEN counter_name = 'Log Flush Wait Time' THEN cntr_value END) AS log_flush_wait_time_ms,
+        MAX(CASE WHEN counter_name = 'Log Flush Waits/sec' THEN cntr_value END) AS log_flush_waits,
+        MAX(CASE WHEN counter_name = 'Log Flushes/sec' THEN cntr_value END) AS log_flushes
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:Databases%'
+        AND instance_name NOT IN ('_Total', 'mssqlsystemresource')
+        AND counter_name IN (
+          'Log Bytes Flushed/sec',
+          'Log Flush Wait Time',
+          'Log Flush Waits/sec',
+          'Log Flushes/sec'
+        )
+      GROUP BY RTRIM(instance_name)
+
+  - query_name: mssql_sql_errors
+    query: |
+      SELECT
+        RTRIM(instance_name) AS error_type,
+        cntr_value AS errors
+      FROM sys.dm_os_performance_counters WITH (NOLOCK)
+      WHERE object_name LIKE '%:SQL Errors%'
+        AND counter_name = 'Errors/sec'
+
