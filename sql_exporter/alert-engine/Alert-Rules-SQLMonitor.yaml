@@ -1,0 +1,264 @@
+apiVersion: 1
+# Note: Grafana does not interpolate environment variables inside groups[].rules[].data.model.
+# Replace __SQLMONITOR_PROMETHEUS_DATASOURCE_UID__ during deployment scripting.
+groups:
+  - orgId: 1
+    name: SQLMonitor
+    folder: $SQLMONITOR_GRAFANA_ALERT_FOLDER
+    interval: 1m
+    rules:
+      - uid: sqlmCpu5m80
+        title: CPU > 80% for 5m
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: $SQLMONITOR_PROMETHEUS_DATASOURCE_UID
+            model:
+              datasource:
+                type: prometheus
+                uid: __SQLMONITOR_PROMETHEUS_DATASOURCE_UID__
+              editorMode: code
+              expr: |
+                label_replace(
+                  100 - avg by (instance) (
+                    rate(windows_cpu_time_total{mode="idle"}[1m])
+                  ) * 100,
+                  "server", "$1", "instance", "([^:]+)(?::.*)?"
+                )
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              settings:
+                mode: dropNN
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 80
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: '{{ $labels.server }} CPU is above 80% for 5 minutes'
+        labels:
+          name: CpuHigh-SQLMonitor
+          target: sqlmonitor-default
+        isPaused: false
+
+      - uid: sqlmMem5mLow
+        title: Available memory below min(4 GB, 10%) for 5m
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: $SQLMONITOR_PROMETHEUS_DATASOURCE_UID
+            model:
+              datasource:
+                type: prometheus
+                uid: __SQLMONITOR_PROMETHEUS_DATASOURCE_UID__
+              editorMode: code
+              expr: |
+                clamp_max(
+                  label_replace(
+                    mssql_host_physical_memory_bytes{state="total"},
+                    "server", "$1", "instance", "([^:]+)(?::.*)?"
+                  ) * 0.10,
+                  4 * 1024 * 1024 * 1024
+                )
+                - on(server)
+                label_replace(
+                  windows_memory_available_bytes,
+                  "server", "$1", "instance", "([^:]+)(?::.*)?"
+                )
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              settings:
+                mode: dropNN
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: '{{ $labels.server }} available memory is below min(4 GB, 10%) for 5 minutes'
+        labels:
+          name: MemoryLow-SQLMonitor
+          target: sqlmonitor-default
+        isPaused: false
+
+      - uid: sqlmDisk70
+        title: Disk utilization > 70% (latest scrape)
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: $SQLMONITOR_PROMETHEUS_DATASOURCE_UID
+            model:
+              datasource:
+                type: prometheus
+                uid: __SQLMONITOR_PROMETHEUS_DATASOURCE_UID__
+              editorMode: code
+              expr: |
+                label_replace(
+                  100 * (
+                    1 - (
+                      windows_logical_disk_free_bytes{volume!~"HarddiskVolume.*"}
+                      /
+                      clamp_min(windows_logical_disk_size_bytes{volume!~"HarddiskVolume.*"}, 1)
+                    )
+                  ),
+                  "server", "$1", "instance", "([^:]+)(?::.*)?"
+                )
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              settings:
+                mode: dropNN
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 70
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 0s
+        annotations:
+          summary: '{{ $labels.server }} volume {{ $labels.volume }} is above 70% utilized'
+        labels:
+          name: DiskHigh-SQLMonitor
+          target: sqlmonitor-default
+        isPaused: false

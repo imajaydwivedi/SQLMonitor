@@ -1,0 +1,10 @@
+collectors:
+  enabled: cpu,net,service,diskdrive,logical_disk,memory,mssql,os,physical_disk,service,system,process
+  #mssql,os,physical_disk,service,system
+collector:
+  service:
+    include: windows_exporter
+log:
+  level: warn
+web:
+  listen-address: ":9182"

@@ -1,0 +1,46 @@
+apiVersion: 1
+policies:
+  - orgId: 1
+    receiver: sqlmonitor-email
+    group_by:
+      - alertname
+    routes:
+      - receiver: sqlmonitor-slack
+        group_by:
+          - server
+          - volume
+          - alertname
+        object_matchers:
+          - - target
+            - "="
+            - sqlmonitor-slack
+
+      - receiver: sqlmonitor-email
+        group_by:
+          - server
+          - volume
+          - alertname
+        object_matchers:
+          - - target
+            - "="
+            - sqlmonitor-email
+
+      - receiver: sqlmonitor-teams
+        group_by:
+          - server
+          - volume
+          - alertname
+        object_matchers:
+          - - target
+            - "="
+            - sqlmonitor-teams
+
+      - receiver: sqlmonitor-default
+        group_by:
+          - server
+          - volume
+          - alertname
+        object_matchers:
+          - - target
+            - "="
+            - sqlmonitor-default
