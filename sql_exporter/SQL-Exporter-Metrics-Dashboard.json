@@ -1449,7 +1449,8 @@
             "cellOptions": {
               "type": "auto"
             },
-            "inspect": false
+            "filterable": true,
+            "inspect": true
           },
           "mappings": [],
           "thresholds": {
@@ -1517,7 +1518,8 @@
             "cellOptions": {
               "type": "auto"
             },
-            "inspect": false
+            "filterable": true,
+            "inspect": true
           },
           "mappings": [],
           "thresholds": {
