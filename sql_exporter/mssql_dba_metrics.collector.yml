@@ -16,7 +16,6 @@ metrics:
     help: 'SQL Server instance/service availability and metadata.'
     key_labels:
       - domain
-      - domain_reg
       - ip
       - at_server_name
       - machine_name
@@ -33,35 +32,25 @@ metrics:
       - product_level
     values: [up]
     query: |
-      DECLARE @Domain NVARCHAR(255);
-      BEGIN TRY
-        EXEC master.dbo.xp_regread
-          'HKEY_LOCAL_MACHINE',
-          'SYSTEM\CurrentControlSet\services\Tcpip\Parameters',
-          N'Domain',
-          @Domain OUTPUT;
-      END TRY
-      BEGIN CATCH
-        PRINT 'some erorr accessing registry';
-      END CATCH
-
-      DECLARE @ports VARCHAR(2000);
-      SELECT @ports = COALESCE(@ports + ', ' + CONVERT(VARCHAR, p.local_tcp_port), CONVERT(VARCHAR, p.local_tcp_port))
-      FROM (
-        SELECT DISTINCT local_net_address, local_tcp_port
-        FROM sys.dm_exec_connections
-        WHERE local_net_address IS NOT NULL
-      ) p;
-
-      ;WITH server_services AS (
+      ;WITH cte_ports as (
+          SELECT [ports] =
+                    STUFF((
+                        SELECT ', ' + CONVERT(varchar(20), p.local_tcp_port)
+                        FROM (
+                        SELECT DISTINCT local_net_address, local_tcp_port
+                        FROM sys.dm_exec_connections
+                        WHERE local_net_address IS NOT NULL
+                ) p
+          FOR XML PATH(''), TYPE).value('.', 'varchar(2000)'), 1, 2, '')
+      )
+      ,server_services AS (
         SELECT *
         FROM sys.dm_server_services
         WHERE servicename LIKE 'SQL Server (%)'
-           OR servicename LIKE 'SQL Server Agent (%)'
+          OR servicename LIKE 'SQL Server Agent (%)'
       )
       SELECT
         [domain] = DEFAULT_DOMAIN(),
-        [domain_reg] = @Domain,
         [ip] = CONNECTIONPROPERTY('local_net_address'),
         [at_server_name] = @@SERVERNAME,
         [machine_name] = SERVERPROPERTY('MachineName'),
@@ -79,14 +68,14 @@ metrics:
         END,
         [instance_name] = COALESCE(@@SERVICENAME, 'MSSQLSERVER'),
         [service_account] = service_account,
-        [ports] = @ports,
+        [ports],
         [edition] = SERVERPROPERTY('Edition'),
         [product_version] = SERVERPROPERTY('ProductVersion'),
         [product_level] = SERVERPROPERTY('ProductLevel'),
         [up] = CAST(1 AS bigint)
       FROM (VALUES ('Basic-Details')) d (RunningQuery)
-      FULL OUTER JOIN server_services ss
-        ON 1 = 1;
+      FULL OUTER JOIN server_services ss ON 1 = 1
+      FULL OUTER JOIN cte_ports p ON 1=1;
 
   - metric_name: mssql_host_physical_memory_bytes
     type: gauge

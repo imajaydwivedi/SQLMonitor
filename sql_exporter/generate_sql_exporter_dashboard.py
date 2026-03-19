@@ -176,7 +176,7 @@ def q(ref_id, expr, legend=None):
 def build_dashboard(meta):
     b = DashboardBuilder(meta)
     b.row("Overview")
-    b.stat("SQL Server Up", "mssql_up", 'max(mssql_up{instance="$Server",service_name="MSSQLSERVER"})', 0, thresholds={"mode": "absolute", "steps": [{"color": "red", "value": None}, {"color": "green", "value": 1}]}, mappings=[{"type": "value", "options": {"0": {"text": "Down", "color": "red"}, "1": {"text": "Up", "color": "green"}}}])
+    b.stat("SQL Server Up", "mssql_service_info", 'max(mssql_service_info{instance="$Server",service_name="MSSQLSERVER"})', 0, thresholds={"mode": "absolute", "steps": [{"color": "red", "value": None}, {"color": "green", "value": 1}]}, mappings=[{"type": "value", "options": {"0": {"text": "Down", "color": "red"}, "1": {"text": "Up", "color": "green"}}}])
     b.stat("User Connections", "mssql_user_connections", 'mssql_user_connections{instance="$Server"}', 3)
     b.stat("Batch Req/sec", "mssql_batch_requests", 'sum(rate(mssql_batch_requests{instance="$Server"}[$__rate_interval]))', 6)
     b.stat("SQL CPU %", "mssql_cpu_utilization_percentage", 'mssql_cpu_utilization_percentage{instance="$Server",scope="sqlserver"}', 9, unit="percent", thresholds={"mode": "absolute", "steps": [{"color": "green", "value": None}, {"color": "yellow", "value": 70}, {"color": "red", "value": 90}]})
@@ -187,7 +187,7 @@ def build_dashboard(meta):
     b.gap(4)
 
     b.row("Availability & Instance")
-    b.timeseries("Service Availability Trend", ["mssql_up"], [q("A", 'mssql_up{instance="$Server"}', "{{service_name_str}}")], 0)
+    b.timeseries("Service Availability Trend", ["mssql_service_info"], [q("A", 'mssql_service_info{instance="$Server"}', "{{service_name_str}}")], 0)
     b.stat("Exporter Local Time", "mssql_local_time_seconds", 'mssql_local_time_seconds{instance="$Server"}', 8, w=4, h=8, unit="s")
     b.timeseries("Replication / AG Queue Gauges", ["mssql_log_apply_pending_queue", "mssql_log_remaining_for_undo", "mssql_log_send_queue", "mssql_transaction_delay"], [q("A", 'mssql_log_apply_pending_queue{instance="$Server"}', "Log apply pending"), q("B", 'mssql_log_remaining_for_undo{instance="$Server"}', "Remaining for undo"), q("C", 'mssql_log_send_queue{instance="$Server"}', "Log send queue"), q("D", 'mssql_transaction_delay{instance="$Server"}', "Transaction delay")], 12)
     b.gap(8)
