@@ -11,7 +11,7 @@ collector_name: mssql_dba_metrics
 #min_interval: 0s
 
 metrics:
-  - metric_name: mssql_up
+  - metric_name: mssql_service_info
     type: gauge
     help: 'SQL Server instance/service availability and metadata.'
     key_labels:
