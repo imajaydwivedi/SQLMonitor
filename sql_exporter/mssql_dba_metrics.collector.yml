@@ -515,6 +515,8 @@ metrics:
     help: 'Total wait time in seconds by wait type since SQL Server startup.'
     key_labels:
       - wait_type
+      - wait_percentage
+      - wait_rank_no
     values: [wait_time_seconds]
     query_ref: mssql_os_wait_stats
 
@@ -523,6 +525,8 @@ metrics:
     help: 'Total resource wait time in seconds by wait type since SQL Server startup.'
     key_labels:
       - wait_type
+      - wait_percentage
+      - wait_rank_no
     values: [resource_time_seconds]
     query_ref: mssql_os_wait_stats
 
@@ -531,6 +535,8 @@ metrics:
     help: 'Total signal wait time in seconds by wait type since SQL Server startup.'
     key_labels:
       - wait_type
+      - wait_percentage
+      - wait_rank_no
     values: [signal_time_seconds]
     query_ref: mssql_os_wait_stats
 
@@ -539,23 +545,9 @@ metrics:
     help: 'Total waiting tasks by wait type since SQL Server startup.'
     key_labels:
       - wait_type
+      - wait_percentage
+      - wait_rank_no
     values: [waiting_tasks_count]
-    query_ref: mssql_os_wait_stats
-
-  - metric_name: mssql_waits__wait_percentage
-    type: counter
-    help: 'Wait percentage out of total wait time since SQL Server startup.'
-    key_labels:
-      - wait_type
-    values: [wait_percentage]
-    query_ref: mssql_os_wait_stats
-
-  - metric_name: mssql_waits__wait_rank_no
-    type: counter
-    help: 'Wait rank number out of total wait time since SQL Server startup.'
-    key_labels:
-      - wait_type
-    values: [wait_rank_no]
     query_ref: mssql_os_wait_stats
 
 queries:
