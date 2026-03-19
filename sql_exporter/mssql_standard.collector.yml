@@ -25,6 +25,22 @@ metrics:
     query: |
       SELECT DATEDIFF(second, '19700101', GETUTCDATE()) AS unix_time
 
+  - metric_name: mssql_sqlserver_uptime_seconds
+    type: gauge
+    help: 'SQL Server uptime in seconds since the SQL Server service started.'
+    values: [uptime_seconds]
+    query: |
+      SELECT CAST(DATEDIFF(second, sqlserver_start_time, SYSDATETIME()) AS bigint) AS uptime_seconds
+      FROM sys.dm_os_sys_info
+
+  - metric_name: mssql_os_uptime_seconds
+    type: gauge
+    help: 'Operating system uptime in seconds since the host booted.'
+    values: [uptime_seconds]
+    query: |
+      SELECT CAST(ms_ticks / 1000 AS bigint) AS uptime_seconds
+      FROM sys.dm_os_sys_info
+
   - metric_name: mssql_connections
     type: gauge
     help: 'Number of active connections.'
