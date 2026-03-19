@@ -82,7 +82,7 @@
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
-      "description": "- mssql_service_info: SQL Server instance/service availability and metadata.",
+      "description": "- mssql_up: SQL Server instance availability.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -151,11 +151,11 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "max(mssql_service_info{instance=\"$Server\",service_name=\"MSSQLSERVER\"})",
+          "expr": "max(mssql_up{instance=\"$Server\"})",
           "refId": "A"
         }
       ],
-      "title": "SQL Service",
+      "title": "SQL Instance Up",
       "type": "stat"
     },
     {
@@ -236,7 +236,7 @@
           "refId": "A"
         }
       ],
-      "title": "Agent Service",
+      "title": "SQL Agent Service",
       "type": "stat"
     },
     {
@@ -1015,7 +1015,7 @@
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
-      "description": "- mssql_service_info: SQL Server instance/service availability and metadata.",
+      "description": "- mssql_up: SQL Server instance availability.\n- mssql_service_info: SQL Server service availability and metadata.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1101,12 +1101,21 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
+          "expr": "mssql_up{instance=\"$Server\"}",
+          "legendFormat": "SQL Instance",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "expr": "mssql_service_info{instance=\"$Server\"}",
           "legendFormat": "{{service_name_str}}",
           "refId": "A"
         }
       ],
-      "title": "Service Availability",
+      "title": "Instance & Service Availability",
       "type": "timeseries"
     },
     {
@@ -4632,6 +4641,6 @@
   "timezone": "browser",
   "title": "SQL Exporter Metrics",
   "uid": "sql-exporter-metrics",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }

@@ -32,8 +32,8 @@ Every panel includes a description so the dashboard remains self-documenting ins
 
 Top-row KPIs for fast triage:
 
-- **SQL Service**: `mssql_up` filtered to the SQL Server service
-- **Agent Service**: `mssql_up` filtered to SQL Server Agent
+- **SQL Instance Up**: `mssql_up`
+- **SQL Agent Service**: `mssql_service_info` filtered to SQL Server Agent
 - **User Connections**: `mssql_user_connections`
 - **Batch Req/sec**: rate of `mssql_batch_requests`
 - **SQL CPU %**: `mssql_cpu_utilization_percentage`
@@ -45,13 +45,13 @@ This row is intended to answer: **Is the instance up, busy, pressured, or approa
 
 ### 2. Availability & Inventory
 
-- Service availability trend
+- Instance & service availability trend
 - HA / replica queue gauges
 - Exporter local time
 - Service & instance metadata snapshot table
 - Database inventory snapshot table
 
-Use this row to confirm exporter coverage, service state, and discovered database metadata.
+Use this row to confirm exporter coverage, instance availability, service state, and discovered database metadata.
 
 ### 3. Workload, Sessions & Connections
 
@@ -131,6 +131,8 @@ Both dashboards intentionally allow **one server at a time**.
 - **Multi-select:** `false`
 - **Include All:** `false`
 
+The `Server` selector still comes from `mssql_up` because it is now the clean instance-level availability metric and always carries the Prometheus `instance` target label.
+
 ### How it works
 
 1. Select one target from the `Server` dropdown.
@@ -171,7 +173,8 @@ Key domains represented include:
 
 ### Healthy signals
 
-- `mssql_up = 1` for expected services
+- `mssql_up = 1` for the selected SQL instance
+- `mssql_service_info = 1` for expected services such as SQL Server Agent
 - CPU generally below sustained saturation
 - memory utilization stable relative to your baseline
 - page life expectancy stable or improving
@@ -191,7 +194,8 @@ Key domains represented include:
 
 ### Critical signals
 
-- SQL service down
+- SQL instance down (`mssql_up = 0` or absent)
+- expected SQL services not reporting through `mssql_service_info`
 - sustained high CPU or memory pressure
 - log space nearing full
 - sharp spike in waits / deadlocks / blocking

@@ -32,8 +32,8 @@ This is the cleaner operational dashboard.
 
 | Row | Purpose | Example Panels |
 |-----|---------|----------------|
-| Overview | Fast health check | SQL Service, User Connections, SQL CPU %, PLE, Max Log Used % |
-| Availability & Inventory | Service state and discovered objects | Service Availability, Metadata Snapshot, Database Inventory Snapshot |
+| Overview | Fast health check | SQL Instance Up, SQL Agent Service, User Connections, SQL CPU %, PLE |
+| Availability & Inventory | Instance/service state and discovered objects | Instance & Service Availability, Metadata Snapshot, Database Inventory Snapshot |
 | Workload, Sessions & Connections | Connection churn and session pressure | Connections by Database, Login/Logout/Reset Rates |
 | CPU, Compilation & Execution Patterns | CPU pressure and plan churn | CPU by Scope, Batch/Compilation Trends, Access Methods |
 | Memory & Buffer Pool | Memory pressure and cache behavior | Host/OS Memory, Memory Grants, Buffer Cache Health |
@@ -49,8 +49,8 @@ This is the cleaner operational dashboard.
 
 | KPI | Metric Basis | Healthy Direction |
 |-----|--------------|------------------|
-| SQL Service | `mssql_up` | should be `1` |
-| Agent Service | `mssql_up` | should be `1` when expected |
+| SQL Instance Up | `mssql_up` | should be `1` |
+| SQL Agent Service | `mssql_service_info{service_name="SQLSERVERAGENT"}` | should be `1` when expected |
 | User Connections | `mssql_user_connections` | stable around baseline |
 | Batch Req/sec | `rate(mssql_batch_requests)` | workload-dependent baseline |
 | SQL CPU % | `mssql_cpu_utilization_percentage` | avoid sustained high values |
@@ -68,6 +68,8 @@ The dashboard intentionally restricts analysis to **one server at a time**.
 - **Query:** `label_values(mssql_up, instance)`
 - **Multi-select:** disabled
 - **Include All:** disabled
+
+The selector uses `mssql_up` because it is now the instance-level metric, while `mssql_service_info` holds service-specific state and metadata.
 
 All Prometheus queries filter on:
 
