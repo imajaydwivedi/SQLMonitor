@@ -181,15 +181,6 @@ metrics:
     values: [waits_in_progress]
     query_ref: mssql_wait_stats
 
-  - metric_name: mssql_os_wait_stats
-    type: counter
-    help: 'OS wait statistics since SQL Server startup.'
-    key_labels:
-      - wait_type
-    value_label: state
-    values: [wait_time_seconds, resource_time_seconds, signal_time_seconds, waiting_tasks_count, wait_percentage, wait_rank_no]
-    query_ref: mssql_os_wait_stats
-
   - metric_name: mssql_transactions
     type: gauge
     help: 'Current transaction count per database from the Transactions object.'
