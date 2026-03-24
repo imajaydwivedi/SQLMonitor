@@ -29,11 +29,18 @@ New-NetFirewallRule -DisplayName "SQL Exporter (TCP/9399)" -Direction Inbound -P
 ```
 # E:\Github\SQLMonitor\sql_exporter\sql_exporter.exe --config.file E:\Github\SQLMonitor\sql_exporter\sql_exporter.yml
 
-Get-ChildItem -Path "E:\Github\SQLMonitor\sql_exporter\mssql_*.collector.yml" |
-    Copy-Item -Destination "\\aghost-1a\d$\sql_exporter\"
-Get-ChildItem -Path "E:\Github\SQLMonitor\sql_exporter\mssql_*.collector.yml" |
-    Copy-Item -Destination "\\aghost-1b\d$\sql_exporter\"
+# Get local data collectors in Github Repo
+$collectors = Get-ChildItem -Path "E:\Github\SQLMonitor\sql_exporter\mssql_*.collector.yml"
 
+# Remove old collectors from remote machines
+Get-ChildItem "\\aghost-1a\d$\sql_exporter\mssql_*.collector.yml" | ForEach-Object {if($_.Name -notin $collectors.Name){$_}} | Remove-Item
+Get-ChildItem "\\aghost-1b\d$\sql_exporter\mssql_*.collector.yml" | ForEach-Object {if($_.Name -notin $collectors.Name){$_}} | Remove-Item
+
+# Add new collectors to remote machines
+$collectors | Copy-Item -Destination "\\aghost-1a\d$\sql_exporter\" -Verbose
+$collectors | Copy-Item -Destination "\\aghost-1b\d$\sql_exporter\" -Verbose
+
+# Restart sql_exporter service
 get-service sql_exporter | Restart-Service
 Invoke-Command -ComputerName aghost-1a -ScriptBlock {get-service sql_exporter | Restart-Service}
 Invoke-Command -ComputerName aghost-1b -ScriptBlock {get-service sql_exporter | Restart-Service}
