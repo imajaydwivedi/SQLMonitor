@@ -41,10 +41,9 @@ $collectors | Copy-Item -Destination "\\aghost-1a\d$\sql_exporter\" -Verbose -Fo
 $collectors | Copy-Item -Destination "\\aghost-1b\d$\sql_exporter\" -Verbose -Force
 
 # Restart sql_exporter service
-get-service sql_exporter | Restart-Service
-Invoke-Command -ComputerName aghost-1a -ScriptBlock {get-service sql_exporter | Restart-Service}
-Invoke-Command -ComputerName aghost-1b -ScriptBlock {get-service sql_exporter | Restart-Service}
-
+get-service sql_exporter | Restart-Service -PassThru
+Invoke-Command -ComputerName aghost-1a -ScriptBlock {get-service sql_exporter | Restart-Service -PassThru}
+Invoke-Command -ComputerName aghost-1b -ScriptBlock {get-service sql_exporter | Restart-Service -PassThru}
 
 ```
 
