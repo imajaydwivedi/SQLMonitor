@@ -18,6 +18,11 @@
 # Returns the rate of increase of http_requests_total over the last 5 minutes for the last 30 minutes with a 1 minute resolution.
 rate(http_requests_total[5m])[30m:1m]
 
+# Get top 15 wait types by resource time increase in last 5 minutes
+topk(15, (increase(mssql_waits__resource_time_seconds{instance="AgHost-1A:9399"}[1m])) > 0 )
+
+topk(15, (increase(mssql_waits__resource_time_seconds{instance="$exporter_instance"}[$__interval])) > 0 )
+
 ```
 
 ### [Using functions, operators, etc](https://prometheus.io/docs/prometheus/latest/querying/examples/#using-functions-operators-etc)

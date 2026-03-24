@@ -33,6 +33,14 @@ metrics:
       SELECT CAST(DATEDIFF(second, sqlserver_start_time, SYSDATETIME()) AS bigint) AS uptime_seconds
       FROM sys.dm_os_sys_info
 
+  - metric_name: mssql_sqlserver_cpu_count
+    type: gauge
+    help: 'Number of logical CPUs visible to SQL Server from sys.dm_os_sys_info.'
+    values: [cpu_count]
+    query: |
+      SELECT CAST(cpu_count AS bigint) AS cpu_count
+      FROM sys.dm_os_sys_info
+
   - metric_name: mssql_os_uptime_seconds
     type: gauge
     help: 'Operating system uptime in seconds since the host booted.'
