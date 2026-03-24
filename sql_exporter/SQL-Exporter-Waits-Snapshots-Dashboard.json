@@ -270,7 +270,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "(0 * (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12))) + ignoring(wait_type) group_left max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"})",
+          "expr": "(0 * (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12))) + scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"}))",
           "format": "table",
           "instant": true,
           "refId": "G"
@@ -280,7 +280,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)) / ignoring(wait_type) group_left max(mssql_sqlserver_cpu_count{instance=\"$Server\"}) / ignoring(wait_type) group_left max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"})) * 60",
+          "expr": "((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)) / scalar(max((label_replace(mssql_sqlserver_cpu_count{instance=\"$Server\"}, \"server\", \"$1\", \"instance\", \"([^:]+)(?::.*)?\")) or on(server) ((label_replace(windows_cpu_logical_processor, \"server\", \"$1\", \"instance\", \"([^:]+)(?::.*)?\")) and on(server) (label_replace(mssql_up{instance=\"$Server\"}, \"server\", \"$1\", \"instance\", \"([^:]+)(?::.*)?\"))))) / scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"}))) * 60",
           "format": "table",
           "instant": true,
           "refId": "H"
@@ -581,7 +581,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "(0 * (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12))) + ignoring(wait_type) group_left max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds})",
+          "expr": "(0 * (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12))) + scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))",
           "format": "table",
           "instant": true,
           "refId": "G"
@@ -591,7 +591,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)) / ignoring(wait_type) group_left max(mssql_sqlserver_cpu_count{instance=\"$Server\"} @ ${__from:date:seconds}) / ignoring(wait_type) group_left max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds})) * 60",
+          "expr": "((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)) / scalar(max((label_replace(mssql_sqlserver_cpu_count{instance=\"$Server\"} @ ${__from:date:seconds}, \"server\", \"$1\", \"instance\", \"([^:]+)(?::.*)?\")) or on(server) ((label_replace(windows_cpu_logical_processor @ ${__from:date:seconds}, \"server\", \"$1\", \"instance\", \"([^:]+)(?::.*)?\")) and on(server) (label_replace(mssql_up{instance=\"$Server\"} @ ${__from:date:seconds}, \"server\", \"$1\", \"instance\", \"([^:]+)(?::.*)?\"))))) / scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) * 60",
           "format": "table",
           "instant": true,
           "refId": "H"
@@ -891,7 +891,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "(((((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))) / scalar(max(mssql_sqlserver_cpu_count{instance=\"$Server\"} @ ${__to:date:seconds}))) / scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__to:date:seconds}) - max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) * 60",
+          "expr": "(((((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))) / scalar(max((label_replace(mssql_sqlserver_cpu_count{instance=\"$Server\"} @ ${__to:date:seconds}, \"server\", \"$1\", \"instance\", \"([^:]+)(?::.*)?\")) or on(server) ((label_replace(windows_cpu_logical_processor @ ${__to:date:seconds}, \"server\", \"$1\", \"instance\", \"([^:]+)(?::.*)?\")) and on(server) (label_replace(mssql_up{instance=\"$Server\"} @ ${__to:date:seconds}, \"server\", \"$1\", \"instance\", \"([^:]+)(?::.*)?\")))))) / scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__to:date:seconds}) - max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) * 60",
           "format": "table",
           "instant": true,
           "refId": "G"
