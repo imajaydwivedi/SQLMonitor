@@ -77,43 +77,37 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "${prometheus_datasource}"
           },
-          "description": "- mssql_up: SQL Server instance availability.",
+          "description": "mssql_sqlserver_uptime_seconds => SQL Server uptime in seconds since the SQL Server service started.",
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "thresholds"
               },
-              "mappings": [
-                {
-                  "options": {
-                    "0": {
-                      "color": "red",
-                      "text": "Down"
-                    },
-                    "1": {
-                      "color": "green",
-                      "text": "Up"
-                    }
-                  },
-                  "type": "value"
-                }
-              ],
+              "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "red",
+                    "color": "green",
                     "value": null
                   },
                   {
-                    "color": "green",
-                    "value": 1
+                    "color": "#6ED0E0",
+                    "value": 5184000
+                  },
+                  {
+                    "color": "#EAB839",
+                    "value": 7776000
+                  },
+                  {
+                    "color": "red",
+                    "value": 10368000
                   }
                 ]
               },
-              "unit": "short"
+              "unit": "s"
             },
             "overrides": []
           },
@@ -123,10 +117,10 @@
             "x": 0,
             "y": 1
           },
-          "id": 2,
+          "id": 66,
           "options": {
             "colorMode": "value",
-            "graphMode": "area",
+            "graphMode": "none",
             "justifyMode": "center",
             "orientation": "auto",
             "percentChangeColorMode": "standard",
@@ -148,53 +142,50 @@
                 "type": "prometheus",
                 "uid": "${DS_PROMETHEUS}"
               },
-              "expr": "max(mssql_up{instance=\"$Server\"})",
+              "editorMode": "code",
+              "expr": "mssql_sqlserver_uptime_seconds{instance=\"$Server\"}",
+              "legendFormat": "__auto",
+              "range": true,
               "refId": "A"
             }
           ],
-          "title": "SQL Instance Up",
+          "title": "SQL Uptime",
           "type": "stat"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "${prometheus_datasource}"
           },
-          "description": "- mssql_service_info: SQL Server instance/service availability and metadata.",
+          "description": "mssql_os_uptime_seconds => Operating system uptime in seconds since the host booted.",
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "thresholds"
               },
-              "mappings": [
-                {
-                  "options": {
-                    "0": {
-                      "color": "red",
-                      "text": "Down"
-                    },
-                    "1": {
-                      "color": "green",
-                      "text": "Up"
-                    }
-                  },
-                  "type": "value"
-                }
-              ],
+              "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "red",
+                    "color": "green",
                     "value": null
                   },
                   {
-                    "color": "green",
-                    "value": 1
+                    "color": "#6ED0E0",
+                    "value": 5184000
+                  },
+                  {
+                    "color": "#EAB839",
+                    "value": 7776000
+                  },
+                  {
+                    "color": "red",
+                    "value": 10368000
                   }
                 ]
               },
-              "unit": "short"
+              "unit": "s"
             },
             "overrides": []
           },
@@ -204,10 +195,10 @@
             "x": 3,
             "y": 1
           },
-          "id": 3,
+          "id": 67,
           "options": {
             "colorMode": "value",
-            "graphMode": "area",
+            "graphMode": "none",
             "justifyMode": "center",
             "orientation": "auto",
             "percentChangeColorMode": "standard",
@@ -229,11 +220,14 @@
                 "type": "prometheus",
                 "uid": "${DS_PROMETHEUS}"
               },
-              "expr": "max(mssql_service_info{instance=\"$Server\",service_name=\"SQLSERVERAGENT\"})",
+              "editorMode": "code",
+              "expr": "mssql_os_uptime_seconds{instance=\"$Server\"}",
+              "legendFormat": "__auto",
+              "range": true,
               "refId": "A"
             }
           ],
-          "title": "SQL Agent Service",
+          "title": "OS Uptime",
           "type": "stat"
         },
         {
@@ -715,7 +709,7 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 6,
+            "h": 7,
             "w": 8,
             "x": 0,
             "y": 5
@@ -832,7 +826,7 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 6,
+            "h": 7,
             "w": 8,
             "x": 8,
             "y": 5
@@ -940,7 +934,7 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 6,
+            "h": 7,
             "w": 8,
             "x": 16,
             "y": 5
@@ -1074,7 +1068,7 @@
             "h": 7,
             "w": 6,
             "x": 0,
-            "y": 149
+            "y": 329
           },
           "id": 14,
           "options": {
@@ -1182,7 +1176,7 @@
             "h": 7,
             "w": 6,
             "x": 6,
-            "y": 149
+            "y": 329
           },
           "id": 15,
           "options": {
@@ -1271,7 +1265,7 @@
             "h": 7,
             "w": 4,
             "x": 12,
-            "y": 149
+            "y": 329
           },
           "id": 16,
           "options": {
@@ -1335,7 +1329,7 @@
             "h": 7,
             "w": 4,
             "x": 16,
-            "y": 149
+            "y": 329
           },
           "id": 54,
           "options": {
@@ -1399,7 +1393,7 @@
             "h": 7,
             "w": 4,
             "x": 20,
-            "y": 149
+            "y": 329
           },
           "id": 55,
           "options": {
@@ -1471,7 +1465,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 156
+            "y": 336
           },
           "id": 17,
           "options": {
@@ -1540,7 +1534,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 252
+            "y": 432
           },
           "id": 18,
           "options": {
@@ -1652,7 +1646,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1066
+            "y": 1246
           },
           "id": 20,
           "options": {
@@ -1751,7 +1745,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1066
+            "y": 1246
           },
           "id": 21,
           "options": {
@@ -1868,7 +1862,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1066
+            "y": 1246
           },
           "id": 22,
           "options": {
@@ -1990,7 +1984,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1074
+            "y": 1254
           },
           "id": 24,
           "options": {
@@ -2107,7 +2101,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1074
+            "y": 1254
           },
           "id": 25,
           "options": {
@@ -2233,7 +2227,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1074
+            "y": 1254
           },
           "id": 26,
           "options": {
@@ -2346,7 +2340,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1082
+            "y": 1262
           },
           "id": 28,
           "options": {
@@ -2463,7 +2457,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1082
+            "y": 1262
           },
           "id": 29,
           "options": {
@@ -2598,7 +2592,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1082
+            "y": 1262
           },
           "id": 30,
           "options": {
@@ -2706,7 +2700,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1089
+            "y": 1269
           },
           "id": 31,
           "options": {
@@ -2832,7 +2826,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1089
+            "y": 1269
           },
           "id": 32,
           "options": {
@@ -2949,7 +2943,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1089
+            "y": 1269
           },
           "id": 33,
           "options": {
@@ -3071,7 +3065,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1097
+            "y": 1277
           },
           "id": 35,
           "options": {
@@ -3188,7 +3182,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1097
+            "y": 1277
           },
           "id": 36,
           "options": {
@@ -3296,7 +3290,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1097
+            "y": 1277
           },
           "id": 37,
           "options": {
@@ -3426,7 +3420,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1982
+            "y": 2162
           },
           "id": 39,
           "options": {
@@ -3542,7 +3536,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1982
+            "y": 2162
           },
           "id": 40,
           "options": {
@@ -3667,7 +3661,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1982
+            "y": 2162
           },
           "id": 41,
           "options": {
@@ -3779,7 +3773,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1976
+            "y": 2156
           },
           "id": 43,
           "options": {
@@ -3877,7 +3871,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1976
+            "y": 2156
           },
           "id": 44,
           "options": {
@@ -3975,7 +3969,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1976
+            "y": 2156
           },
           "id": 45,
           "options": {
@@ -4087,7 +4081,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1977
+            "y": 2157
           },
           "id": 47,
           "options": {
@@ -4203,7 +4197,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1977
+            "y": 2157
           },
           "id": 48,
           "options": {
@@ -4319,7 +4313,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1977
+            "y": 2157
           },
           "id": 49,
           "options": {
@@ -4441,7 +4435,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 10
+            "y": 125
           },
           "id": 51,
           "options": {
@@ -4558,7 +4552,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 10
+            "y": 125
           },
           "id": 52,
           "options": {
@@ -4675,7 +4669,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 10
+            "y": 125
           },
           "id": 53,
           "options": {
@@ -4999,7 +4993,7 @@
             "h": 11,
             "w": 19,
             "x": 0,
-            "y": 11
+            "y": 31
           },
           "hideTimeOverride": true,
           "id": 61,
@@ -5441,7 +5435,7 @@
             "h": 10,
             "w": 19,
             "x": 0,
-            "y": 12
+            "y": 32
           },
           "id": 62,
           "options": {
@@ -5859,7 +5853,7 @@
             "h": 9,
             "w": 19,
             "x": 0,
-            "y": 34
+            "y": 42
           },
           "id": 63,
           "options": {
@@ -6161,7 +6155,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 13
+            "y": 64
           },
           "id": 64,
           "interval": "5m",
@@ -6280,13 +6274,13 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "SQL Exporter Metrics",
   "uid": "sql-exporter-metrics-v2",
-  "version": 41,
+  "version": 43,
   "weekStart": ""
 }
