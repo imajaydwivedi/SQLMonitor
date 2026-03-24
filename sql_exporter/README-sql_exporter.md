@@ -25,6 +25,22 @@ New-NetFirewallRule -DisplayName "SQL Exporter (TCP/9399)" -Direction Inbound -P
 # Validate at http://localhost:9399/metrics
 ```
 
+# Refresh Collectors
+```
+# E:\Github\SQLMonitor\sql_exporter\sql_exporter.exe --config.file E:\Github\SQLMonitor\sql_exporter\sql_exporter.yml
+
+Get-ChildItem -Path "E:\Github\SQLMonitor\sql_exporter\mssql_*.collector.yml" |
+    Copy-Item -Destination "\\aghost-1a\d$\sql_exporter\"
+Get-ChildItem -Path "E:\Github\SQLMonitor\sql_exporter\mssql_*.collector.yml" |
+    Copy-Item -Destination "\\aghost-1b\d$\sql_exporter\"
+
+get-service sql_exporter | Restart-Service
+Invoke-Command -ComputerName aghost-1a -ScriptBlock {get-service sql_exporter | Restart-Service}
+Invoke-Command -ComputerName aghost-1b -ScriptBlock {get-service sql_exporter | Restart-Service}
+
+
+```
+
 
 # Grafana Dashboard Specifications for AI Tool
 
@@ -41,4 +57,27 @@ Modify queries of this new perfmon dashboard to use sql_exporter collected metri
 Just change datasource and queries.
 
 Do this activity with Resumable Retry Plan. That means, break the work into multiple steps. keep saving intermediate result and progress so that you can resume the timed out work from last step.
+
+
+
+
+I want to build histogram panel in grafana based on mssql_waits__* metrics.
+
+I want to have maximum 12 vertical sticks. Say $wait_sticks = 12.
+
+Assume user want wait treand/histrogram for 2 hours. So internal time should be 120 minutes divide $wait_sticks = 10.
+
+So take value of mssql_waits__wait_time_seconds for every 10 minutes, subtract its previous value and plot it in histogram.
+
+Give me grafana promQL for same.
+
+Wait Histogram Query
+-----------------------
+clamp_min(max by (wait_type) (mssql_waits__wait_time_seconds{instance=~"$Server"}) - max by (wait_type) (mssql_waits__wait_time_seconds{instance=~"$Server"} offset $wait_bucket), 0) > 0
+
+clamp_min(max by (wait_type) (mssql_waits__wait_time_seconds{instance=~"sqlmonitor:9399"}) - max by (wait_type) (mssql_waits__wait_time_seconds{instance=~"sqlmonitor:9399"} offset $wait_bucket), 0) > 0
+
+rate(mssql_log_growths{instance=\"$Server\"}[$__rate_interval])
 ```
+
+

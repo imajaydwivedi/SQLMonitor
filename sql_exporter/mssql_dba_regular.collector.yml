@@ -5,7 +5,7 @@
 #   GRANT VIEW ANY DEFINITION TO
 #   GRANT VIEW SERVER STATE TO
 #
-collector_name: mssql_dba_metrics
+collector_name: mssql_dba_regular
 
 # Similar to global.min_interval, but applies to the queries defined by this collector only.
 #min_interval: 0s
@@ -497,50 +497,6 @@ metrics:
     values: [max_minutes_overdue]
     query_ref: mssql_last_logsweep_query
 
-
-  #
-  # Collected from sys.dm_os_wait_stats
-  #
-  - metric_name: mssql_waits__wait_time_seconds
-    type: counter
-    help: 'Total wait time in seconds by wait type since SQL Server startup.'
-    key_labels:
-      - wait_type
-      - wait_percentage
-      - wait_rank_no
-    values: [wait_time_seconds]
-    query_ref: mssql_os_wait_stats
-
-  - metric_name: mssql_waits__resource_time_seconds
-    type: counter
-    help: 'Total resource wait time in seconds by wait type since SQL Server startup.'
-    key_labels:
-      - wait_type
-      - wait_percentage
-      - wait_rank_no
-    values: [resource_time_seconds]
-    query_ref: mssql_os_wait_stats
-
-  - metric_name: mssql_waits__signal_time_seconds
-    type: counter
-    help: 'Total signal wait time in seconds by wait type since SQL Server startup.'
-    key_labels:
-      - wait_type
-      - wait_percentage
-      - wait_rank_no
-    values: [signal_time_seconds]
-    query_ref: mssql_os_wait_stats
-
-  - metric_name: mssql_waits__waiting_tasks_count
-    type: counter
-    help: 'Total waiting tasks by wait type since SQL Server startup.'
-    key_labels:
-      - wait_type
-      - wait_percentage
-      - wait_rank_no
-    values: [waiting_tasks_count]
-    query_ref: mssql_os_wait_stats
-
 queries:
   - query_name: mssql_sys_memory
     query: |
@@ -985,3 +941,4 @@ queries:
         N'WAIT_XTP_OFFLINE_CKPT_NEW_LOG', N'WAIT_XTP_CKPT_CLOSE', N'XE_DISPATCHER_JOIN', N'XE_DISPATCHER_WAIT', N'XE_TIMER_EVENT'
       )
         AND [waiting_tasks_count] > 0;
+
