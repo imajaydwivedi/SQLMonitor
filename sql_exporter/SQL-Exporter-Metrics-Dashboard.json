@@ -1,47 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "11.3.1"
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -61,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": null,
+  "id": 65,
   "links": [],
   "panels": [
     {
@@ -140,7 +97,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
               "editorMode": "code",
               "expr": "mssql_sqlserver_uptime_seconds{instance=\"$Server\"}",
@@ -218,7 +175,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
               "editorMode": "code",
               "expr": "mssql_os_uptime_seconds{instance=\"$Server\"}",
@@ -233,7 +190,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_user_connections: Current user connections from SQL Server general statistics.",
           "fieldConfig": {
@@ -284,7 +241,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_user_connections{instance=\"$Server\"}",
               "refId": "A"
@@ -296,7 +253,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_batch_requests: Number of command batches received.",
           "fieldConfig": {
@@ -347,7 +304,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "sum(rate(mssql_batch_requests{instance=\"$Server\"}[$__rate_interval]))",
               "refId": "A"
@@ -359,7 +316,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_cpu_utilization_percentage: CPU utilization percentages from the SQL Server scheduler monitor ring buffer.",
           "fieldConfig": {
@@ -420,7 +377,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_cpu_utilization_percentage{instance=\"$Server\",scope=\"sqlserver\"}",
               "refId": "A"
@@ -432,7 +389,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_memory_utilization_percentage: The percentage of committed memory that is in the working set.",
           "fieldConfig": {
@@ -493,7 +450,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_memory_utilization_percentage{instance=\"$Server\"}",
               "refId": "A"
@@ -505,7 +462,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_page_life_expectancy_seconds: The minimum number of seconds a page will stay in the buffer pool on this node without references.",
           "fieldConfig": {
@@ -564,7 +521,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_page_life_expectancy_seconds{instance=\"$Server\"}",
               "refId": "A"
@@ -576,7 +533,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_database_percent_log_used: Transaction log space used as a percentage per database.",
           "fieldConfig": {
@@ -637,7 +594,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "max(mssql_database_percent_log_used{instance=\"$Server\"})",
               "refId": "A"
@@ -649,7 +606,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_batch_requests: Number of command batches received.\n- mssql_user_connections: Current user connections from SQL Server general statistics.\n- mssql_sql_attentions_total: SQL attentions since SQL Server startup.",
           "fieldConfig": {
@@ -735,7 +692,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_batch_requests{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Batch req/sec",
@@ -744,7 +701,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_user_connections{instance=\"$Server\"}",
               "legendFormat": "User connections",
@@ -753,7 +710,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_sql_attentions_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "SQL attentions/sec",
@@ -766,7 +723,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_cpu_utilization_percentage: CPU utilization percentages from the SQL Server scheduler monitor ring buffer.\n- mssql_memory_utilization_percentage: The percentage of committed memory that is in the working set.",
           "fieldConfig": {
@@ -852,7 +809,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_cpu_utilization_percentage{instance=\"$Server\"}",
               "legendFormat": "{{scope}} CPU %",
@@ -861,7 +818,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_memory_utilization_percentage{instance=\"$Server\"}",
               "legendFormat": "Memory util %",
@@ -874,7 +831,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_processes_blocked: Currently blocked processes.\n- mssql_deadlocks: Number of lock requests that resulted in a deadlock.\n- mssql_database_percent_log_used: Transaction log space used as a percentage per database.",
           "fieldConfig": {
@@ -960,7 +917,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_processes_blocked{instance=\"$Server\"}",
               "legendFormat": "Blocked processes",
@@ -969,7 +926,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_deadlocks{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Deadlocks/sec",
@@ -978,7 +935,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "max(mssql_database_percent_log_used{instance=\"$Server\"})",
               "legendFormat": "Max DB log used %",
@@ -1005,7 +962,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_up: SQL Server instance availability.\n- mssql_service_info: SQL Server service availability and metadata.",
           "fieldConfig": {
@@ -1068,7 +1025,7 @@
             "h": 7,
             "w": 6,
             "x": 0,
-            "y": 329
+            "y": 434
           },
           "id": 14,
           "options": {
@@ -1091,7 +1048,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_up{instance=\"$Server\"}",
               "legendFormat": "SQL Instance",
@@ -1100,7 +1057,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_service_info{instance=\"$Server\"}",
               "legendFormat": "{{service_name_str}}",
@@ -1113,7 +1070,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_log_apply_pending_queue: Log apply pending queue.\n- mssql_log_remaining_for_undo: Log remaining for undo.\n- mssql_log_send_queue: Log send queue.\n- mssql_transaction_delay: Transaction delay for database replicas.",
           "fieldConfig": {
@@ -1176,7 +1133,7 @@
             "h": 7,
             "w": 6,
             "x": 6,
-            "y": 329
+            "y": 434
           },
           "id": 15,
           "options": {
@@ -1199,7 +1156,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_log_apply_pending_queue{instance=\"$Server\"}",
               "legendFormat": "Apply pending queue",
@@ -1208,7 +1165,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_log_remaining_for_undo{instance=\"$Server\"}",
               "legendFormat": "Remaining for undo",
@@ -1217,7 +1174,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_log_send_queue{instance=\"$Server\"}",
               "legendFormat": "Log send queue",
@@ -1226,7 +1183,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_transaction_delay{instance=\"$Server\"}",
               "legendFormat": "Transaction delay",
@@ -1239,7 +1196,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_local_time_seconds: Local time in seconds since epoch (Unix time).",
           "fieldConfig": {
@@ -1265,7 +1222,7 @@
             "h": 7,
             "w": 4,
             "x": 12,
-            "y": 329
+            "y": 434
           },
           "id": 16,
           "options": {
@@ -1290,7 +1247,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_local_time_seconds{instance=\"$Server\"} * 1000",
               "instant": true,
@@ -1303,7 +1260,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_sqlserver_uptime_seconds: SQL Server uptime in seconds since the SQL Server service started.",
           "fieldConfig": {
@@ -1329,7 +1286,7 @@
             "h": 7,
             "w": 4,
             "x": 16,
-            "y": 329
+            "y": 434
           },
           "id": 54,
           "options": {
@@ -1354,7 +1311,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_sqlserver_uptime_seconds{instance=\"$Server\"}",
               "instant": true,
@@ -1367,7 +1324,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_os_uptime_seconds: Operating system uptime in seconds since the host booted.",
           "fieldConfig": {
@@ -1393,7 +1350,7 @@
             "h": 7,
             "w": 4,
             "x": 20,
-            "y": 329
+            "y": 434
           },
           "id": 55,
           "options": {
@@ -1418,7 +1375,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_os_uptime_seconds{instance=\"$Server\"}",
               "instant": true,
@@ -1431,7 +1388,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_service_info: SQL Server instance/service availability and metadata.",
           "fieldConfig": {
@@ -1465,7 +1422,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 336
+            "y": 441
           },
           "id": 17,
           "options": {
@@ -1486,7 +1443,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_service_info{instance=\"$Server\"}",
               "format": "table",
@@ -1500,7 +1457,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_database_info: Info metric with database state and AG status. Value is always 1.",
           "fieldConfig": {
@@ -1534,7 +1491,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 432
+            "y": 537
           },
           "id": 18,
           "options": {
@@ -1555,7 +1512,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_database_info{instance=\"$Server\"}",
               "format": "table",
@@ -1583,7 +1540,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_connections: Number of active connections.",
           "fieldConfig": {
@@ -1646,7 +1603,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1246
+            "y": 1351
           },
           "id": 20,
           "options": {
@@ -1669,7 +1626,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_connections{instance=\"$Server\"}",
               "legendFormat": "{{db}}",
@@ -1682,7 +1639,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_logins: Logins since SQL Server startup.\n- mssql_logouts: Logouts since SQL Server startup.\n- mssql_connection_reset: Connection resets since SQL Server startup.",
           "fieldConfig": {
@@ -1745,7 +1702,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1246
+            "y": 1351
           },
           "id": 21,
           "options": {
@@ -1768,7 +1725,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_logins{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Logins/sec",
@@ -1777,7 +1734,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_logouts{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Logouts/sec",
@@ -1786,7 +1743,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_connection_reset{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Connection resets/sec",
@@ -1799,7 +1756,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_active_cursors: Current active cursors by cursor type.\n- mssql_sql_attentions_total: SQL attentions since SQL Server startup.",
           "fieldConfig": {
@@ -1862,7 +1819,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1246
+            "y": 1351
           },
           "id": 22,
           "options": {
@@ -1885,7 +1842,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_active_cursors{instance=\"$Server\"}",
               "legendFormat": "{{cursor_type}}",
@@ -1894,7 +1851,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_sql_attentions_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "SQL attentions/sec",
@@ -1921,7 +1878,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_cpu_utilization_percentage: CPU utilization percentages from the SQL Server scheduler monitor ring buffer.\n- mssql_resource_pool_cpu_usage_percentage: CPU usage percentage by resource pool.\n- mssql_workload_group_cpu_usage_percentage: CPU usage percentage by workload group.",
           "fieldConfig": {
@@ -1984,7 +1941,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1254
+            "y": 1359
           },
           "id": 24,
           "options": {
@@ -2007,7 +1964,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_cpu_utilization_percentage{instance=\"$Server\"}",
               "legendFormat": "{{scope}} CPU %",
@@ -2016,7 +1973,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_resource_pool_cpu_usage_percentage{instance=\"$Server\"}",
               "legendFormat": "Pool {{resource_pool}}",
@@ -2025,7 +1982,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_workload_group_cpu_usage_percentage{instance=\"$Server\"}",
               "legendFormat": "Group {{workload_group}}",
@@ -2038,7 +1995,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_batch_requests: Number of command batches received.\n- mssql_sql_compilations: SQL compilations since SQL Server startup.\n- mssql_sql_recompilations: SQL recompilations since SQL Server startup.\n- mssql_sql_auto_params_total: Automatic parameterization activity counters since SQL Server startup.",
           "fieldConfig": {
@@ -2101,7 +2058,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1254
+            "y": 1359
           },
           "id": 25,
           "options": {
@@ -2124,7 +2081,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_batch_requests{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Batch req/sec",
@@ -2133,7 +2090,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_sql_compilations{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Compilations/sec",
@@ -2142,7 +2099,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_sql_recompilations{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Recompilations/sec",
@@ -2151,7 +2108,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_sql_auto_params_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Auto params {{mode}}/sec",
@@ -2164,7 +2121,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_access_methods_total: Access methods counters since SQL Server startup.",
           "fieldConfig": {
@@ -2227,7 +2184,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1254
+            "y": 1359
           },
           "id": 26,
           "options": {
@@ -2250,7 +2207,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_access_methods_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "{{operation}}",
@@ -2277,7 +2234,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_host_physical_memory_bytes: Host physical memory in bytes.\n- mssql_os_memory: OS physical memory, used and available.\n- mssql_os_page_file: OS page file, used and available.",
           "fieldConfig": {
@@ -2340,7 +2297,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1262
+            "y": 1367
           },
           "id": 28,
           "options": {
@@ -2363,7 +2320,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_host_physical_memory_bytes{instance=\"$Server\"}",
               "legendFormat": "Host {{state}}",
@@ -2372,7 +2329,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_os_memory{instance=\"$Server\"}",
               "legendFormat": "OS {{state}}",
@@ -2381,7 +2338,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_os_page_file{instance=\"$Server\"}",
               "legendFormat": "Page file {{state}}",
@@ -2394,7 +2351,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_resident_memory_bytes: SQL Server resident memory size (AKA working set).\n- mssql_virtual_memory_bytes: SQL Server committed virtual memory size.\n- mssql_memory_grants_outstanding: Outstanding workspace memory grants.\n- mssql_memory_grants_pending: Pending workspace memory grants.\n- mssql_sql_process_memory_bytes: SQL Server process memory allocations in bytes.",
           "fieldConfig": {
@@ -2457,7 +2414,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1262
+            "y": 1367
           },
           "id": 29,
           "options": {
@@ -2480,7 +2437,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_resident_memory_bytes{instance=\"$Server\"}",
               "legendFormat": "Resident bytes",
@@ -2489,7 +2446,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_virtual_memory_bytes{instance=\"$Server\"}",
               "legendFormat": "Virtual bytes",
@@ -2498,7 +2455,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_memory_grants_outstanding{instance=\"$Server\"}",
               "legendFormat": "Grants outstanding",
@@ -2507,7 +2464,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_memory_grants_pending{instance=\"$Server\"}",
               "legendFormat": "Grants pending",
@@ -2516,7 +2473,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_sql_process_memory_bytes{instance=\"$Server\"}",
               "legendFormat": "SQL proc {{state}}",
@@ -2529,7 +2486,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_memory_manager_bytes: SQL Server memory manager allocations in bytes.\n- mssql_memory_utilization_percentage: The percentage of committed memory that is in the working set.",
           "fieldConfig": {
@@ -2592,7 +2549,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1262
+            "y": 1367
           },
           "id": 30,
           "options": {
@@ -2615,7 +2572,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_memory_manager_bytes{instance=\"$Server\"}",
               "legendFormat": "{{state}}",
@@ -2624,7 +2581,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_memory_utilization_percentage{instance=\"$Server\"}",
               "legendFormat": "Memory util %",
@@ -2637,7 +2594,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_buffer_database_pages: Database pages in the SQL Server buffer pool.\n- mssql_buffer_target_pages: Target pages in the SQL Server buffer pool.\n- mssqlbuffer_pool_committed: SQL Server buffer pool committed bytes.\n- mssqlbuffer_pool_committed_target: SQL Server buffer pool committed target bytes.",
           "fieldConfig": {
@@ -2700,7 +2657,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1269
+            "y": 1374
           },
           "id": 31,
           "options": {
@@ -2723,7 +2680,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_buffer_database_pages{instance=\"$Server\"}",
               "legendFormat": "Database pages",
@@ -2732,7 +2689,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_buffer_target_pages{instance=\"$Server\"}",
               "legendFormat": "Target pages",
@@ -2741,7 +2698,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssqlbuffer_pool_committed{instance=\"$Server\"}",
               "legendFormat": "Committed bytes",
@@ -2750,7 +2707,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssqlbuffer_pool_committed_target{instance=\"$Server\"}",
               "legendFormat": "Committed target bytes",
@@ -2763,7 +2720,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_buffer_cache_hit_ratio: Ratio of requests that hit the buffer cache\n- mssql_page_life_expectancy_seconds: The minimum number of seconds a page will stay in the buffer pool on this node without references.\n- mssql_page_fault_count: The number of page faults that were incurred by the SQL Server process.",
           "fieldConfig": {
@@ -2826,7 +2783,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1269
+            "y": 1374
           },
           "id": 32,
           "options": {
@@ -2849,7 +2806,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_buffer_cache_hit_ratio{instance=\"$Server\"}",
               "legendFormat": "Cache hit ratio",
@@ -2858,7 +2815,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_page_life_expectancy_seconds{instance=\"$Server\"}",
               "legendFormat": "PLE",
@@ -2867,7 +2824,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_page_fault_count{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Page faults/sec",
@@ -2880,7 +2837,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_buffer_manager_operations_total: Buffer manager operation counters since SQL Server startup.\n- mssql_checkpoint_pages_sec: Checkpoint Pages Per Second",
           "fieldConfig": {
@@ -2943,7 +2900,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1269
+            "y": 1374
           },
           "id": 33,
           "options": {
@@ -2966,7 +2923,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_buffer_manager_operations_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "{{operation}}/sec",
@@ -2975,7 +2932,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_checkpoint_pages_sec{instance=\"$Server\"}",
               "legendFormat": "Checkpoint pages/sec",
@@ -3002,7 +2959,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_page_lookups: Buffer manager page lookups since SQL Server startup.\n- mssql_page_reads: Buffer manager page reads since SQL Server startup.\n- mssql_page_writes: Buffer manager page writes since SQL Server startup.",
           "fieldConfig": {
@@ -3065,7 +3022,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1277
+            "y": 1382
           },
           "id": 35,
           "options": {
@@ -3088,7 +3045,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_page_lookups{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Lookups/sec",
@@ -3097,7 +3054,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_page_reads{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Reads/sec",
@@ -3106,7 +3063,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_page_writes{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Writes/sec",
@@ -3119,7 +3076,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_io_stall_seconds: Stall time in seconds per database and I/O operation.\n- mssql_io_stall_total_seconds: Total stall time in seconds per database.",
           "fieldConfig": {
@@ -3182,7 +3139,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1277
+            "y": 1382
           },
           "id": 36,
           "options": {
@@ -3205,7 +3162,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_io_stall_seconds{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "{{db}} {{operation}} stall/sec",
@@ -3214,7 +3171,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_io_stall_total_seconds{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "{{db}} total stall/sec",
@@ -3227,7 +3184,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_average_latch_wait_time_ms: Average latch wait time metric from SQL Server performance counters.\n- mssql_network_io_waits_ms: Network IO wait time metric from SQL Server wait statistics.\n- mssql_page_io_latch_waits_ms: Page IO latch wait time metric from SQL Server wait statistics.",
           "fieldConfig": {
@@ -3290,7 +3247,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1277
+            "y": 1382
           },
           "id": 37,
           "options": {
@@ -3313,7 +3270,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_average_latch_wait_time_ms{instance=\"$Server\"}",
               "legendFormat": "Avg latch wait ms",
@@ -3322,7 +3279,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_network_io_waits_ms{instance=\"$Server\"}",
               "legendFormat": "Network IO waits ms",
@@ -3331,7 +3288,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_page_io_latch_waits_ms{instance=\"$Server\"}",
               "legendFormat": "Page IO latch waits ms",
@@ -3358,7 +3315,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_active_transactions_count: Count of active transactions from sys.dm_tran_active_transactions.\n- mssql_database_active_transactions: Current active transactions per database.\n- mssql_longest_transaction_running_time_seconds: Longest transaction running time in seconds.",
           "fieldConfig": {
@@ -3420,7 +3377,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 2162
+            "y": 2267
           },
           "id": 39,
           "options": {
@@ -3443,7 +3400,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_active_transactions_count{instance=\"$Server\"}",
               "legendFormat": "Active tx count",
@@ -3452,7 +3409,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_database_active_transactions{instance=\"$Server\"}",
               "legendFormat": "{{db}} active tx",
@@ -3461,7 +3418,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_longest_transaction_running_time_seconds{instance=\"$Server\"}",
               "legendFormat": "Longest tx sec",
@@ -3474,7 +3431,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_processes_blocked: Currently blocked processes.\n- mssql_lock_waits_total: Lock waits since SQL Server startup.\n- mssql_lock_wait_time_ms_total: Accumulated lock wait time in milliseconds since SQL Server startup.\n- mssql_deadlocks: Number of lock requests that resulted in a deadlock.",
           "fieldConfig": {
@@ -3536,7 +3493,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 2162
+            "y": 2267
           },
           "id": 40,
           "options": {
@@ -3559,7 +3516,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_processes_blocked{instance=\"$Server\"}",
               "legendFormat": "Blocked processes",
@@ -3568,7 +3525,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_lock_waits_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Lock waits/sec",
@@ -3577,7 +3534,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_lock_wait_time_ms_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Lock wait ms/sec",
@@ -3586,7 +3543,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_deadlocks{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Deadlocks/sec",
@@ -3599,7 +3556,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_waits_in_progress: Current waits in progress by wait category.",
           "fieldConfig": {
@@ -3661,7 +3618,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 2162
+            "y": 2267
           },
           "id": 41,
           "options": {
@@ -3684,7 +3641,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_waits_in_progress{instance=\"$Server\"}",
               "legendFormat": "{{wait_type}}",
@@ -3711,7 +3668,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_database_file_size_bytes: Database file sizes in bytes.",
           "fieldConfig": {
@@ -3773,7 +3730,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 2156
+            "y": 2261
           },
           "id": 43,
           "options": {
@@ -3796,7 +3753,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_database_file_size_bytes{instance=\"$Server\"}",
               "legendFormat": "{{db}} {{state}}",
@@ -3809,7 +3766,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_database_percent_log_used: Transaction log space used as a percentage per database.",
           "fieldConfig": {
@@ -3871,7 +3828,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 2156
+            "y": 2261
           },
           "id": 44,
           "options": {
@@ -3894,7 +3851,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_database_percent_log_used{instance=\"$Server\"}",
               "legendFormat": "{{db}}",
@@ -3907,7 +3864,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_database_xtp_memory_used_bytes: XTP memory usage in bytes per database.",
           "fieldConfig": {
@@ -3969,7 +3926,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 2156
+            "y": 2261
           },
           "id": 45,
           "options": {
@@ -3992,7 +3949,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_database_xtp_memory_used_bytes{instance=\"$Server\"}",
               "legendFormat": "{{db}}",
@@ -4019,7 +3976,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_database_log_flushes_total: Database log flushes since SQL Server startup.\n- mssql_database_log_bytes_flushed_total: Database log bytes flushed since SQL Server startup.\n- mssql_database_log_waits_total: Database log flush waits since SQL Server startup.",
           "fieldConfig": {
@@ -4081,7 +4038,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 2157
+            "y": 2262
           },
           "id": 47,
           "options": {
@@ -4104,7 +4061,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_database_log_flushes_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "{{db}} flushes/sec",
@@ -4113,7 +4070,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_database_log_bytes_flushed_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "{{db}} bytes/sec",
@@ -4122,7 +4079,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_database_log_waits_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "{{db}} waits/sec",
@@ -4135,7 +4092,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_database_log_flush_wait_time_ms_total: Accumulated database log flush wait time in milliseconds since SQL Server startup.\n- mssql_database_log_events_total: Database log event counts since SQL Server startup.\n- mssql_log_growths: Number of times the transaction log has been expanded, per database.",
           "fieldConfig": {
@@ -4197,7 +4154,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 2157
+            "y": 2262
           },
           "id": 48,
           "options": {
@@ -4220,7 +4177,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_database_log_flush_wait_time_ms_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "{{db}} flush wait ms/sec",
@@ -4229,7 +4186,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_database_log_events_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "{{db}} {{event}}/sec",
@@ -4238,7 +4195,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_log_growths{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "{{db}} growths/sec",
@@ -4251,7 +4208,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_mirrored_write_transactions: Mirrored write transactions since SQL Server startup.\n- mssql_redo_blocked: Redo blocked events since SQL Server startup.",
           "fieldConfig": {
@@ -4313,7 +4270,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 2157
+            "y": 2262
           },
           "id": 49,
           "options": {
@@ -4336,7 +4293,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_mirrored_write_transactions{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Mirrored write tx/sec",
@@ -4345,7 +4302,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_redo_blocked{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Redo blocked/sec",
@@ -4372,7 +4329,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_sql_errors_total: SQL error counters since SQL Server startup.\n- mssql_user_errors: Number of user errors.\n- mssql_kill_connection_errors: Number of severe errors that caused SQL Server to kill the connection.",
           "fieldConfig": {
@@ -4435,7 +4392,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 125
+            "y": 230
           },
           "id": 51,
           "options": {
@@ -4458,7 +4415,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_sql_errors_total{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "{{error_type}}/sec",
@@ -4467,7 +4424,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_user_errors{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "User errors/sec",
@@ -4476,7 +4433,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_kill_connection_errors{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Kill connection errors/sec",
@@ -4489,7 +4446,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_tempdb_active_temp_tables: Active temp tables from SQL Server general statistics.\n- mssql_tempdb_space_bytes: tempdb free space and version store size in bytes.\n- mssql_temp_tables_for_destruction: Temp tables waiting to be destroyed.",
           "fieldConfig": {
@@ -4552,7 +4509,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 125
+            "y": 230
           },
           "id": 52,
           "options": {
@@ -4575,7 +4532,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_tempdb_active_temp_tables{instance=\"$Server\"}",
               "legendFormat": "Active temp tables",
@@ -4584,7 +4541,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_tempdb_space_bytes{instance=\"$Server\"}",
               "legendFormat": "tempdb {{state}}",
@@ -4593,7 +4550,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_temp_tables_for_destruction{instance=\"$Server\"}",
               "legendFormat": "Temp tables for destruction",
@@ -4606,7 +4563,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "- mssql_user_connections: Current user connections from SQL Server general statistics.\n- mssql_page_fault_count: The number of page faults that were incurred by the SQL Server process.",
           "fieldConfig": {
@@ -4669,7 +4626,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 125
+            "y": 230
           },
           "id": 53,
           "options": {
@@ -4692,7 +4649,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "rate(mssql_page_fault_count{instance=\"$Server\"}[$__rate_interval])",
               "legendFormat": "Page faults/sec",
@@ -4701,7 +4658,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
               "expr": "mssql_user_connections{instance=\"$Server\"}",
               "legendFormat": "User connections",
@@ -4728,7 +4685,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "Latest waits snapshot using panel time override so it stays on current data instead of the dashboard time range.",
           "fieldConfig": {
@@ -4993,7 +4950,7 @@
             "h": 11,
             "w": 19,
             "x": 0,
-            "y": 31
+            "y": 11
           },
           "hideTimeOverride": true,
           "id": 61,
@@ -5017,7 +4974,8 @@
                 "type": "prometheus",
                 "uid": "${prometheus_datasource}"
               },
-              "expr": "sort((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)",
+              "editorMode": "code",
+              "expr": "sort((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "A"
@@ -5025,9 +4983,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)",
+              "editorMode": "code",
+              "expr": "max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "B"
@@ -5037,7 +4996,8 @@
                 "type": "prometheus",
                 "uid": "${prometheus_datasource}"
               },
-              "expr": "max by (wait_type) (mssql_waits__resource_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)",
+              "editorMode": "code",
+              "expr": "max by (wait_type) (mssql_waits__resource_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "C"
@@ -5045,9 +5005,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)",
+              "editorMode": "code",
+              "expr": "max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "D"
@@ -5057,7 +5018,8 @@
                 "type": "prometheus",
                 "uid": "${prometheus_datasource}"
               },
-              "expr": "max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)",
+              "editorMode": "code",
+              "expr": "max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "E"
@@ -5065,9 +5027,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "max by (wait_type) (mssql_waits__wait_percentage{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)",
+              "editorMode": "code",
+              "expr": "max by (wait_type) (mssql_waits__wait_percentage{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "F"
@@ -5077,7 +5040,8 @@
                 "type": "prometheus",
                 "uid": "${prometheus_datasource}"
               },
-              "expr": "(0 * (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12))) + scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"}))",
+              "editorMode": "code",
+              "expr": "(0 * (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS))) + scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"}))",
               "format": "table",
               "instant": true,
               "refId": "G"
@@ -5085,9 +5049,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)) / ${SQLCPUCount:raw} / scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"}))) * 60",
+              "editorMode": "code",
+              "expr": "((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS)) / ${SQLCPUCount:raw} / scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"}))) * 60",
               "format": "table",
               "instant": true,
               "refId": "H"
@@ -5097,7 +5062,8 @@
                 "type": "prometheus",
                 "uid": "${prometheus_datasource}"
               },
-              "expr": "100 * ((max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)) / (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)))",
+              "editorMode": "code",
+              "expr": "100 * ((max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS)) / (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS)))",
               "format": "table",
               "instant": true,
               "refId": "I"
@@ -5105,9 +5071,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "(max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12)) / (max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= 12))",
+              "editorMode": "code",
+              "expr": "(max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS)) / (max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"})) <= $TOP_K_WAITS))",
               "format": "table",
               "instant": true,
               "refId": "J"
@@ -5206,7 +5173,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "${prometheus_datasource}"
           },
           "description": "Waits snapshot evaluated at the dashboard start timestamp. Prometheus will use the nearest sample at or before the requested second within lookback delta.",
           "fieldConfig": {
@@ -5435,7 +5402,7 @@
             "h": 10,
             "w": 19,
             "x": 0,
-            "y": 32
+            "y": 34
           },
           "id": 62,
           "options": {
@@ -5456,9 +5423,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "sort((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)",
+              "editorMode": "code",
+              "expr": "sort((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "A"
@@ -5466,9 +5434,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)",
+              "editorMode": "code",
+              "expr": "max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "B"
@@ -5476,9 +5445,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "max by (wait_type) (mssql_waits__resource_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)",
+              "editorMode": "code",
+              "expr": "max by (wait_type) (mssql_waits__resource_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "C"
@@ -5486,9 +5456,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)",
+              "editorMode": "code",
+              "expr": "max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "D"
@@ -5496,9 +5467,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)",
+              "editorMode": "code",
+              "expr": "max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "E"
@@ -5506,9 +5478,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "max by (wait_type) (mssql_waits__wait_percentage{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)",
+              "editorMode": "code",
+              "expr": "max by (wait_type) (mssql_waits__wait_percentage{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS)",
               "format": "table",
               "instant": true,
               "refId": "F"
@@ -5516,9 +5489,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "(0 * (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12))) + scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))",
+              "editorMode": "code",
+              "expr": "(0 * (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS))) + scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))",
               "format": "table",
               "instant": true,
               "refId": "G"
@@ -5526,9 +5500,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)) / ${SQLCPUCount:raw} / scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) * 60",
+              "editorMode": "code",
+              "expr": "((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS)) / ${SQLCPUCount:raw} / scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) * 60",
               "format": "table",
               "instant": true,
               "refId": "H"
@@ -5536,9 +5511,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "100 * ((max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)) / (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)))",
+              "editorMode": "code",
+              "expr": "100 * ((max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS)) / (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS)))",
               "format": "table",
               "instant": true,
               "refId": "I"
@@ -5546,9 +5522,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
-              "expr": "(max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12)) / (max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= 12))",
+              "editorMode": "code",
+              "expr": "(max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS)) / (max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__from:date:seconds}) and on(wait_type) ((max by (wait_type) (mssql_waits__wait_rank_no{instance=\"$Server\"} @ ${__from:date:seconds})) <= $TOP_K_WAITS))",
               "format": "table",
               "instant": true,
               "refId": "J"
@@ -5632,7 +5609,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "cesajnfr22wowf"
           },
           "description": "Delta waits for the selected dashboard time range, calculated as end snapshot minus start snapshot.",
           "fieldConfig": {
@@ -5853,7 +5830,7 @@
             "h": 9,
             "w": 19,
             "x": 0,
-            "y": 42
+            "y": 44
           },
           "id": 63,
           "options": {
@@ -5874,9 +5851,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
-              "expr": "sort_desc(topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))",
+              "editorMode": "code",
+              "expr": "sort_desc(topk($TOP_K_WAITS, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))",
               "format": "table",
               "instant": true,
               "refId": "A"
@@ -5884,9 +5862,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
-              "expr": "(max by (wait_type) (mssql_waits__resource_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__resource_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds})) and on(wait_type) (topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))",
+              "editorMode": "code",
+              "expr": "(max by (wait_type) (mssql_waits__resource_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__resource_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds})) and on(wait_type) (topk($TOP_K_WAITS, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))",
               "format": "table",
               "instant": true,
               "refId": "B"
@@ -5894,9 +5873,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
-              "expr": "(max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds})) and on(wait_type) (topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))",
+              "editorMode": "code",
+              "expr": "(max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds})) and on(wait_type) (topk($TOP_K_WAITS, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))",
               "format": "table",
               "instant": true,
               "refId": "C"
@@ -5904,9 +5884,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
-              "expr": "(max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__from:date:seconds})) and on(wait_type) (topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))",
+              "editorMode": "code",
+              "expr": "(max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__from:date:seconds})) and on(wait_type) (topk($TOP_K_WAITS, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))",
               "format": "table",
               "instant": true,
               "refId": "D"
@@ -5914,9 +5895,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
-              "expr": "100 * (((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))) / scalar(sum((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))",
+              "editorMode": "code",
+              "expr": "100 * (((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk($TOP_K_WAITS, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))) / scalar(sum((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))",
               "format": "table",
               "instant": true,
               "refId": "E"
@@ -5924,9 +5906,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
-              "expr": "(0 * (sort_desc(topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds})))))) + scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__to:date:seconds}) - max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))",
+              "editorMode": "code",
+              "expr": "(0 * (sort_desc(topk($TOP_K_WAITS, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds})))))) + scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__to:date:seconds}) - max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))",
               "format": "table",
               "instant": true,
               "refId": "F"
@@ -5934,9 +5917,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
-              "expr": "(((((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))) / ${SQLCPUCount:raw}) / scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__to:date:seconds}) - max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) * 60",
+              "editorMode": "code",
+              "expr": "(((((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk($TOP_K_WAITS, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))) / ${SQLCPUCount:raw}) / scalar(max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__to:date:seconds}) - max(mssql_sqlserver_uptime_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) * 60",
               "format": "table",
               "instant": true,
               "refId": "G"
@@ -5944,9 +5928,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
-              "expr": "100 * ((((max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))) / ((((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds})))))))",
+              "editorMode": "code",
+              "expr": "100 * ((((max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__signal_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk($TOP_K_WAITS, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))) / ((((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk($TOP_K_WAITS, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds})))))))",
               "format": "table",
               "instant": true,
               "refId": "H"
@@ -5954,9 +5939,10 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "cesajnfr22wowf"
               },
-              "expr": "((((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))) / ((((max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk(12, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds})))))))",
+              "editorMode": "code",
+              "expr": "((((max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk($TOP_K_WAITS, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds}))))) / ((((max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__waiting_tasks_count{instance=\"$Server\"} @ ${__from:date:seconds}))) and on(wait_type) (topk($TOP_K_WAITS, (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__to:date:seconds})) - (max by (wait_type) (mssql_waits__wait_time_seconds{instance=\"$Server\"} @ ${__from:date:seconds})))))))",
               "format": "table",
               "instant": true,
               "refId": "I"
@@ -6155,7 +6141,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 64
+            "y": 95
           },
           "id": 64,
           "interval": "5m",
@@ -6178,7 +6164,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${prometheus_datasource}"
               },
               "editorMode": "code",
               "expr": "topk(15, (increase(mssql_waits__resource_time_seconds{instance=\"$Server\", wait_type!=\"CXCONSUMER\"}[$__interval])) > 0 )",
@@ -6195,6 +6181,7 @@
       "type": "row"
     }
   ],
+  "preload": false,
   "refresh": "30s",
   "schemaVersion": 40,
   "tags": [
@@ -6206,7 +6193,10 @@
   "templating": {
     "list": [
       {
-        "current": {},
+        "current": {
+          "text": "prometheus",
+          "value": "cesajnfr22wowf"
+        },
         "description": "Prometheus data source for SQL Exporter metrics",
         "hide": 2,
         "includeAll": false,
@@ -6219,10 +6209,13 @@
         "type": "datasource"
       },
       {
-        "current": {},
+        "current": {
+          "text": "AgHost-1A:9399",
+          "value": "AgHost-1A:9399"
+        },
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "cesajnfr22wowf"
         },
         "definition": "label_values(mssql_up, instance)",
         "description": "Select exactly one Prometheus target/server at a time. Multi-select is disabled by design.",
@@ -6237,7 +6230,10 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "text": "1774366993000",
+          "value": "1774366993000"
+        },
         "datasource": {
           "type": "prometheus",
           "uid": "${prometheus_datasource}"
@@ -6256,7 +6252,10 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "text": "4",
+          "value": "4"
+        },
         "definition": "query_result(max(mssql_sqlserver_cpu_count{instance=\"$Server\"}))",
         "hide": 2,
         "label": "SQL CPU Count",
@@ -6270,6 +6269,19 @@
         "refresh": 1,
         "regex": "/.*} ([0-9]+(\\.[0-9]+)?)( .*)?/",
         "type": "query"
+      },
+      {
+        "current": {
+          "text": "12",
+          "value": "12"
+        },
+        "description": "",
+        "hide": 2,
+        "label": "TOP_K_WAITS",
+        "name": "TOP_K_WAITS",
+        "query": "12",
+        "skipUrlSync": true,
+        "type": "constant"
       }
     ]
   },
@@ -6281,6 +6293,6 @@
   "timezone": "browser",
   "title": "SQL Exporter Metrics",
   "uid": "sql-exporter-metrics-v2",
-  "version": 43,
+  "version": 47,
   "weekStart": ""
 }
