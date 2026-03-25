@@ -1063,7 +1063,7 @@
             "h": 7,
             "w": 6,
             "x": 0,
-            "y": 445
+            "y": 488
           },
           "id": 14,
           "options": {
@@ -1170,7 +1170,7 @@
             "h": 7,
             "w": 6,
             "x": 6,
-            "y": 445
+            "y": 488
           },
           "id": 15,
           "options": {
@@ -1258,7 +1258,7 @@
             "h": 7,
             "w": 4,
             "x": 12,
-            "y": 445
+            "y": 488
           },
           "id": 16,
           "options": {
@@ -1321,7 +1321,7 @@
             "h": 7,
             "w": 4,
             "x": 16,
-            "y": 445
+            "y": 488
           },
           "id": 54,
           "options": {
@@ -1384,7 +1384,7 @@
             "h": 7,
             "w": 4,
             "x": 20,
-            "y": 445
+            "y": 488
           },
           "id": 55,
           "options": {
@@ -1455,7 +1455,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 452
+            "y": 495
           },
           "id": 17,
           "options": {
@@ -1523,7 +1523,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 548
+            "y": 591
           },
           "id": 18,
           "options": {
@@ -1634,7 +1634,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1362
+            "y": 1405
           },
           "id": 20,
           "options": {
@@ -1732,7 +1732,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1362
+            "y": 1405
           },
           "id": 21,
           "options": {
@@ -1848,7 +1848,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1362
+            "y": 1405
           },
           "id": 22,
           "options": {
@@ -1969,7 +1969,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1370
+            "y": 1413
           },
           "id": 24,
           "options": {
@@ -2085,7 +2085,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1370
+            "y": 1413
           },
           "id": 25,
           "options": {
@@ -2210,7 +2210,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1370
+            "y": 1413
           },
           "id": 26,
           "options": {
@@ -2322,7 +2322,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1378
+            "y": 1421
           },
           "id": 28,
           "options": {
@@ -2438,7 +2438,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1378
+            "y": 1421
           },
           "id": 29,
           "options": {
@@ -2572,7 +2572,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1378
+            "y": 1421
           },
           "id": 30,
           "options": {
@@ -2679,7 +2679,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1385
+            "y": 1428
           },
           "id": 31,
           "options": {
@@ -2804,7 +2804,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1385
+            "y": 1428
           },
           "id": 32,
           "options": {
@@ -2920,7 +2920,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1385
+            "y": 1428
           },
           "id": 33,
           "options": {
@@ -3041,7 +3041,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1393
+            "y": 1436
           },
           "id": 35,
           "options": {
@@ -3157,7 +3157,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1393
+            "y": 1436
           },
           "id": 36,
           "options": {
@@ -3264,7 +3264,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1393
+            "y": 1436
           },
           "id": 37,
           "options": {
@@ -3394,7 +3394,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 2278
+            "y": 2321
           },
           "id": 39,
           "options": {
@@ -3510,7 +3510,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 2278
+            "y": 2321
           },
           "id": 40,
           "options": {
@@ -3635,7 +3635,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 2278
+            "y": 2321
           },
           "id": 41,
           "options": {
@@ -3747,7 +3747,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 2272
+            "y": 2315
           },
           "id": 43,
           "options": {
@@ -3845,7 +3845,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 2272
+            "y": 2315
           },
           "id": 44,
           "options": {
@@ -3943,7 +3943,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 2272
+            "y": 2315
           },
           "id": 45,
           "options": {
@@ -4055,7 +4055,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 2273
+            "y": 2316
           },
           "id": 47,
           "options": {
@@ -4171,7 +4171,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 2273
+            "y": 2316
           },
           "id": 48,
           "options": {
@@ -4287,7 +4287,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 2273
+            "y": 2316
           },
           "id": 49,
           "options": {
@@ -4408,7 +4408,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 241
+            "y": 284
           },
           "id": 51,
           "options": {
@@ -4524,7 +4524,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 241
+            "y": 284
           },
           "id": 52,
           "options": {
@@ -4640,7 +4640,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 241
+            "y": 284
           },
           "id": 53,
           "options": {
@@ -4717,8 +4717,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -5269,7 +5268,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5479,7 +5479,7 @@
             "h": 10,
             "w": 19,
             "x": 0,
-            "y": 45
+            "y": 12
           },
           "id": 62,
           "options": {
@@ -5704,7 +5704,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -5906,7 +5907,7 @@
             "h": 9,
             "w": 19,
             "x": 0,
-            "y": 55
+            "y": 46
           },
           "id": 63,
           "options": {
@@ -6174,8 +6175,8 @@
                 "axisPlacement": "auto",
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
+                "drawStyle": "bars",
+                "fillOpacity": 100,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -6204,7 +6205,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -6216,9 +6218,9 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 106
+            "y": 13
           },
-          "id": 64,
+          "id": 68,
           "interval": "5m",
           "options": {
             "legend": {
@@ -6227,7 +6229,9 @@
               ],
               "displayMode": "table",
               "placement": "right",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "Max",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "multi",
@@ -6243,6 +6247,8 @@
               },
               "editorMode": "code",
               "expr": "topk(15, (increase(mssql_waits__resource_time_seconds{instance=\"$Server\", wait_type!=\"CXCONSUMER\"}[$__interval])) > 0 )",
+              "format": "time_series",
+              "instant": false,
               "legendFormat": "{{wait_type}}",
               "range": true,
               "refId": "A"
@@ -6356,13 +6362,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "SQL Exporter Metrics",
   "uid": "sql-exporter-metrics-v2",
-  "version": 52,
+  "version": 54,
   "weekStart": ""
 }
