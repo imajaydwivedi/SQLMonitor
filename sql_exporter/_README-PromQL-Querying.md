@@ -60,5 +60,39 @@ Standard Options
   Unit -> dateTimeAsIso
 ```
 
+## Wait Stats
+```
+$TOP_K_WAITS = 12
+
+# Top 12 wait_types by [wait_percentage]
+topk($TOP_K_WAITS, mssql_waits__wait_percentage{instance="$Server"})
+
+# Top 12 wait_types by [wait_time_seconds]
+topk($TOP_K_WAITS, mssql_waits__wait_time_seconds{instance="$Server"})
+
+# [resource_time_seconds] for Top 12 wait_types by [wait_time_seconds]
+mssql_waits__resource_time_seconds{instance="$Server"} and on(wait_type) topk($TOP_K_WAITS, mssql_waits__wait_time_seconds{instance="$Server"})
+
+# [signal_time_seconds] for Top 12 wait_types by [wait_time_seconds]
+mssql_waits__signal_time_seconds{instance="$Server"} and on(wait_type) topk($TOP_K_WAITS, mssql_waits__wait_time_seconds{instance="$Server"})
+
+# [waiting_tasks_count] for Top 12 wait_types by [wait_time_seconds]
+mssql_waits__waiting_tasks_count{instance="$Server"} and on(wait_type) topk($TOP_K_WAITS, mssql_waits__wait_time_seconds{instance="$Server"})
+
+# [wait_percentage] for Top 12 wait_types by [wait_time_seconds]
+mssql_waits__wait_percentage{instance="$Server"} and on(wait_type) topk($TOP_K_WAITS, mssql_waits__wait_time_seconds{instance="$Server"})
+
+# [time_sampled_seconds] for Top 12 wait_types by [wait_time_seconds]
+0*topk($TOP_K_WAITS,mssql_waits__wait_time_seconds{instance="$Server"})  + scalar(mssql_sqlserver_uptime_seconds{instance="$Server"})
+
+# [waits_per_core_per_minute] for Top 12 wait_types by [wait_time_seconds]
+topk($TOP_K_WAITS, mssql_waits__wait_time_seconds{instance="$Server"}) / ${SQLCPUCount:raw} / (scalar(mssql_sqlserver_uptime_seconds{instance="$Server"}) / 60)
+
+# [percent_signal_wait] for Top 12 wait_types by [wait_time_seconds]
+100 * (mssql_waits__signal_time_seconds{instance="$Server"} and on(wait_type) topk($TOP_K_WAITS, mssql_waits__wait_time_seconds{instance="$Server"})) / (topk($TOP_K_WAITS, mssql_waits__wait_time_seconds{instance="$Server"}))
+
+# [avg_time_per_wait_seconds] for Top 12 wait_types by [wait_time_seconds]
+(topk($TOP_K_WAITS, mssql_waits__wait_time_seconds{instance="$Server"})) / (mssql_waits__waiting_tasks_count{instance="$Server"} and on(wait_type) topk($TOP_K_WAITS, mssql_waits__wait_time_seconds{instance="$Server"}))
+```
 
 
