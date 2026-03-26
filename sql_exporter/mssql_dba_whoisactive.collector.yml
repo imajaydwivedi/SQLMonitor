@@ -1,0 +1,124 @@
+# A collector defining standard metrics for Microsoft SQL Server.
+#
+# It is required that the SQL Server user has the following permissions:
+#
+#   GRANT VIEW ANY DEFINITION TO
+#   GRANT VIEW SERVER STATE TO
+#
+collector_name: mssql_dba_whoisactive
+
+# Similar to global.min_interval, but applies to the queries defined by this collector only.
+min_interval: 2m
+
+metrics:
+
+  #
+  # Collected using sp_WhoIsActive
+  #
+  - metric_name: mssql_whoisactive__start_time
+    type: gauge
+    help: 'Start time of the session along with other session details.'
+    key_labels:
+      - session_id
+      - program_name
+      - login_name
+      - database_name
+      - status
+      - wait_info
+      - sql_command
+      - blocked_session_count
+      - blocking_session_id
+      - sql_text
+      - avg_elapsed_time
+      - physical_io
+      - physical_reads
+      - tempdb_current
+      - context_switches
+      - max_used_memory
+      - requested_memory
+      - granted_memory
+      - tasks
+      - tran_start_time
+      - tran_log_writes
+      - implicit_tran
+      - query_plan
+      - host_name
+      - additional_info
+      - memory_info
+      - login_time
+      - request_id
+    values: [start_time]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__reads
+    type: gauge
+    help: 'Number of reads for the session.'
+    key_labels:
+      - session_id
+    values: [reads]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__used_memory
+    type: gauge
+    help: 'Used memory for the session.'
+    key_labels:
+      - session_id
+    values: [used_memory]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__cpu
+    type: gauge
+    help: 'CPU used by the session.'
+    key_labels:
+      - session_id
+    values: [CPU]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__open_tran_count
+    type: gauge
+    help: 'Open transaction count for the session.'
+    key_labels:
+      - session_id
+    values: [open_tran_count]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__writes
+    type: gauge
+    help: 'Number of writes for the session.'
+    key_labels:
+      - session_id
+    values: [writes]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__tempdb_allocations
+    type: gauge
+    help: 'Tempdb allocations for the session.'
+    key_labels:
+      - session_id
+    values: [tempdb_allocations]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__percent_complete
+    type: gauge
+    help: 'Percent complete for the session.'
+    key_labels:
+      - session_id
+    values: [percent_complete]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__collection_time
+    type: gauge
+    help: 'Collection time for the session snapshot.'
+    key_labels:
+      - session_id
+    values: [collection_time]
+    query_ref: mssql_sp_whoisactive
+
+queries:
+  - query_name: mssql_sp_whoisactive
+    query: |
+      EXEC dbo.sp_WhoIsActive
+            @get_outer_command=1, @get_task_info=2, @find_block_leaders=1, @get_plans=1, @get_avg_time=1,
+            @get_additional_info=1, @get_transaction_info=1, @get_memory_info = 1, @format_output = 0,
+            @output_column_list = '[collection_time][dd hh:mm:ss.mss][session_id][program_name][login_name][database_name][CPU][used_memory][open_tran_count][status][wait_info][sql_command][blocked_session_count][blocking_session_id][sql_text][%]';
+
