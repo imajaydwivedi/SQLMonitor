@@ -1,0 +1,465 @@
+# A collector defining DBA repository and proc-derived metrics not covered elsewhere.
+#
+# This collector assumes the exporter connects to master and the repository database is DBA.
+
+collector_name: mssql_dba_missing
+
+# Similar to global.min_interval, but applies to the queries defined by this collector only.
+#min_interval: 0s
+
+metrics:
+  - metric_name: mssql_scheduler_count
+    type: gauge
+    help: 'Number of schedulers reported by sys.dm_os_sys_info.'
+    values: [scheduler_count]
+    query: |
+      SELECT CAST(scheduler_count AS bigint) AS scheduler_count
+      FROM sys.dm_os_sys_info
+
+  - metric_name: mssql_max_server_memory_mb
+    type: gauge
+    help: 'Configured max server memory in MB.'
+    values: [max_server_memory_mb]
+    query: |
+      SELECT CAST(value_in_use AS bigint) AS max_server_memory_mb
+      FROM sys.configurations
+      WHERE name = 'max server memory (MB)'
+
+  - metric_name: mssql_memory_consumers
+    type: gauge
+    help: 'Requests currently consuming more than 500 MB of granted query memory.'
+    values: [memory_consumers]
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      DECLARE @granted_memory_threshold_mb int = 500;
+      SELECT COUNT(*) AS memory_consumers
+      FROM sys.dm_exec_requests
+      WHERE (granted_query_memory * 8) > (@granted_memory_threshold_mb * 1024);
+
+  - metric_name: mssql_active_requests_count
+    type: gauge
+    help: 'Count of active, blocking, or open-transaction sessions based on DBA usp_active_requests_count logic.'
+    values: [active_requests_count]
+    query_ref: mssql_active_requests_count
+
+  - metric_name: mssql_waits_per_core_per_minute
+    type: gauge
+    help: 'Delta wait seconds per visible online scheduler per minute from DBA wait_stats snapshots.'
+    values: [waits_seconds__per_core_per_minute]
+    query_ref: mssql_waits_per_core_per_minute
+
+  - metric_name: mssql_avg_disk_wait_ms
+    type: gauge
+    help: 'Average disk-related wait time in milliseconds from DBA wait_stats snapshots.'
+    values: [avg_disk_wait_ms]
+    query_ref: mssql_avg_disk_wait_ms
+
+  - metric_name: mssql_avg_disk_latency_ms
+    type: gauge
+    help: 'Average disk latency in milliseconds from DBA file_io_stats snapshots.'
+    values: [avg_disk_latency_ms]
+    query_ref: mssql_avg_disk_latency_ms
+
+  - metric_name: mssql_temp_tables_creation_rate
+    type: gauge
+    help: 'Latest temp tables creation rate persisted by DBA performance counter sampling.'
+    values: [temp_tables_creation_rate]
+    query_ref: mssql_temp_tables_creation_rate
+
+  - metric_name: mssql_latch_waits_per_sec
+    type: gauge
+    help: 'Latest total latch waits per second persisted by DBA performance counter sampling.'
+    values: [latch_waits_per_sec]
+    query_ref: mssql_latch_wait_totals
+
+  - metric_name: mssql_total_latch_wait_time_ms_per_sec
+    type: gauge
+    help: 'Latest total latch wait time in milliseconds per second persisted by DBA performance counter sampling.'
+    values: [latch_wait_time_ms_per_sec]
+    query_ref: mssql_latch_wait_totals
+
+  - metric_name: mssql_deprecated_feature_usage_total
+    type: counter
+    help: 'Deprecated feature usage counts since SQL Server startup from DBA performance counter snapshots.'
+    key_labels:
+      - feature
+      - instance
+    values: [usage_total]
+    query_ref: mssql_deprecated_features
+
+  - metric_name: mssql_disk_read_latency_seconds
+    type: gauge
+    help: 'Per-volume average disk read latency in seconds from DBA performance counter sampling.'
+    key_labels:
+      - disk_volume
+    values: [read_latency_seconds]
+    query_ref: mssql_logicaldisk_latency
+
+  - metric_name: mssql_disk_write_latency_seconds
+    type: gauge
+    help: 'Per-volume average disk write latency in seconds from DBA performance counter sampling.'
+    key_labels:
+      - disk_volume
+    values: [write_latency_seconds]
+    query_ref: mssql_logicaldisk_latency
+
+  - metric_name: mssql_disk_read_bytes_per_sec
+    type: gauge
+    help: 'Per-volume disk read throughput in bytes per second from DBA performance counter sampling.'
+    key_labels:
+      - disk_volume
+    values: [read_bytes_per_sec]
+    query_ref: mssql_logicaldisk_throughput
+
+  - metric_name: mssql_disk_write_bytes_per_sec
+    type: gauge
+    help: 'Per-volume disk write throughput in bytes per second from DBA performance counter sampling.'
+    key_labels:
+      - disk_volume
+    values: [write_bytes_per_sec]
+    query_ref: mssql_logicaldisk_throughput
+
+  - metric_name: mssql_resource_pool_avg_disk_read_io
+    type: gauge
+    help: 'Average disk read IO value by resource pool from DBA performance counter sampling.'
+    key_labels:
+      - resource_pool
+    values: [avg_disk_read_io]
+    query_ref: mssql_resource_pool_avg_disk_io
+
+  - metric_name: mssql_resource_pool_avg_disk_write_io
+    type: gauge
+    help: 'Average disk write IO value by resource pool from DBA performance counter sampling.'
+    key_labels:
+      - resource_pool
+    values: [avg_disk_write_io]
+    query_ref: mssql_resource_pool_avg_disk_io
+
+  - metric_name: mssql_collection_latency_minutes
+    type: gauge
+    help: 'Age in minutes of the latest DBA repository collection by source.'
+    key_labels:
+      - source
+    values: [latency_minutes]
+    query_ref: mssql_collection_latency_minutes
+
+  - metric_name: mssql_collection_latency_days
+    type: gauge
+    help: 'Age in days of the latest BlitzIndex repository collection by source.'
+    key_labels:
+      - source
+    values: [latency_days]
+    query_ref: mssql_collection_latency_days
+
+queries:
+  - query_name: mssql_active_requests_count
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      SELECT COUNT(*) AS active_requests_count
+      FROM sys.dm_exec_sessions AS s
+      LEFT JOIN sys.dm_exec_requests AS r
+        ON r.session_id = s.session_id
+      WHERE s.session_id <> @@SPID
+        AND (
+          s.session_id IN (
+            SELECT ri.blocking_session_id
+            FROM sys.dm_exec_requests AS ri
+            WHERE ri.blocking_session_id IS NOT NULL
+              AND ri.blocking_session_id <> 0
+          )
+          OR (r.blocking_session_id IS NOT NULL AND r.blocking_session_id <> 0)
+          OR (s.session_id > 50 AND r.session_id IS NOT NULL AND s.status <> 'sleeping')
+          OR (s.session_id > 50 AND s.open_transaction_count <> 0)
+        )
+
+  - query_name: mssql_waits_per_core_per_minute
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      WITH schedulers AS (
+        SELECT COUNT(*) AS scheduler_count
+        FROM sys.dm_os_schedulers
+        WHERE status = 'VISIBLE ONLINE' AND is_online = 1
+      ),
+      snap2 AS (
+        SELECT TOP (1) collection_time_utc
+        FROM DBA.dbo.wait_stats
+        ORDER BY collection_time_utc DESC
+      ),
+      snap1 AS (
+        SELECT TOP (1) ws.collection_time_utc
+        FROM DBA.dbo.wait_stats AS ws
+        CROSS JOIN snap2
+        WHERE ws.collection_time_utc < DATEADD(minute, -5, snap2.collection_time_utc)
+        ORDER BY ws.collection_time_utc DESC
+      ),
+      wait_snap1 AS (
+        SELECT SUM(ws.wait_time_ms) / 1000.0 AS wait_time_s
+        FROM DBA.dbo.wait_stats AS ws
+        CROSS JOIN snap1
+        WHERE ws.collection_time_utc = snap1.collection_time_utc
+          AND ws.waiting_tasks_count > 0
+          AND ws.wait_type NOT IN (
+            SELECT wc.WaitType
+            FROM DBA.dbo.BlitzFirst_WaitStats_Categories AS wc
+            WHERE COALESCE(wc.IgnorableOnPerCoreMetric, wc.Ignorable, 0) = 1
+          )
+      ),
+      wait_snap2 AS (
+        SELECT SUM(ws.wait_time_ms) / 1000.0 AS wait_time_s
+        FROM DBA.dbo.wait_stats AS ws
+        CROSS JOIN snap2
+        WHERE ws.collection_time_utc = snap2.collection_time_utc
+          AND ws.waiting_tasks_count > 0
+          AND ws.wait_type NOT IN (
+            SELECT wc.WaitType
+            FROM DBA.dbo.BlitzFirst_WaitStats_Categories AS wc
+            WHERE COALESCE(wc.IgnorableOnPerCoreMetric, wc.Ignorable, 0) = 1
+          )
+      )
+      SELECT CAST(CEILING(CASE
+        WHEN snap1.collection_time_utc IS NULL OR schedulers.scheduler_count = 0 OR DATEDIFF(minute, snap1.collection_time_utc, snap2.collection_time_utc) = 0 THEN 0
+        ELSE (wait_snap2.wait_time_s - wait_snap1.wait_time_s) * 1.0 / schedulers.scheduler_count / DATEDIFF(minute, snap1.collection_time_utc, snap2.collection_time_utc)
+      END) AS decimal(20,2)) AS waits_seconds__per_core_per_minute
+      FROM schedulers
+      CROSS JOIN snap2
+      LEFT JOIN snap1 ON 1 = 1
+      CROSS JOIN wait_snap2
+      LEFT JOIN wait_snap1 ON 1 = 1
+
+  - query_name: mssql_avg_disk_wait_ms
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      WITH snap2 AS (
+        SELECT TOP (1) collection_time_utc
+        FROM DBA.dbo.wait_stats
+        ORDER BY collection_time_utc DESC
+      ),
+      snap1 AS (
+        SELECT TOP (1) ws.collection_time_utc
+        FROM DBA.dbo.wait_stats AS ws
+        CROSS JOIN snap2
+        WHERE ws.collection_time_utc < DATEADD(minute, -10, snap2.collection_time_utc)
+        ORDER BY ws.collection_time_utc DESC
+      ),
+      wait_snap1 AS (
+        SELECT SUM(CONVERT(bigint, ws.wait_time_ms)) AS wait_time_ms,
+               SUM(CONVERT(bigint, ws.waiting_tasks_count)) AS waiting_tasks_count
+        FROM DBA.dbo.wait_stats AS ws
+        CROSS JOIN snap1
+        WHERE ws.collection_time_utc = snap1.collection_time_utc
+          AND ws.waiting_tasks_count > 0
+          AND ws.wait_type IN (
+            SELECT wc.WaitType
+            FROM DBA.dbo.BlitzFirst_WaitStats_Categories AS wc
+            WHERE wc.Ignorable = 0
+              AND wc.WaitCategory IN ('Buffer IO', 'Other Disk IO', 'Tran Log IO')
+          )
+      ),
+      wait_snap2 AS (
+        SELECT SUM(CONVERT(bigint, ws.wait_time_ms)) AS wait_time_ms,
+               SUM(CONVERT(bigint, ws.waiting_tasks_count)) AS waiting_tasks_count
+        FROM DBA.dbo.wait_stats AS ws
+        CROSS JOIN snap2
+        WHERE ws.collection_time_utc = snap2.collection_time_utc
+          AND ws.waiting_tasks_count > 0
+          AND ws.wait_type IN (
+            SELECT wc.WaitType
+            FROM DBA.dbo.BlitzFirst_WaitStats_Categories AS wc
+            WHERE wc.Ignorable = 0
+              AND wc.WaitCategory IN ('Buffer IO', 'Other Disk IO', 'Tran Log IO')
+          )
+      )
+      SELECT CAST(CASE
+        WHEN snap1.collection_time_utc IS NULL OR wait_snap2.waiting_tasks_count <= wait_snap1.waiting_tasks_count THEN 0
+        ELSE (wait_snap2.wait_time_ms - wait_snap1.wait_time_ms) / NULLIF(wait_snap2.waiting_tasks_count - wait_snap1.waiting_tasks_count, 0)
+      END AS decimal(20,2)) AS avg_disk_wait_ms
+      FROM snap2
+      LEFT JOIN snap1 ON 1 = 1
+      CROSS JOIN wait_snap2
+      LEFT JOIN wait_snap1 ON 1 = 1
+
+  - query_name: mssql_avg_disk_latency_ms
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      WITH snap2 AS (
+        SELECT TOP (1) collection_time_utc
+        FROM DBA.dbo.file_io_stats
+        ORDER BY collection_time_utc DESC
+      ),
+      snap1 AS (
+        SELECT TOP (1) fio.collection_time_utc
+        FROM DBA.dbo.file_io_stats AS fio
+        CROSS JOIN snap2
+        WHERE fio.collection_time_utc <= DATEADD(minute, -15, snap2.collection_time_utc)
+        ORDER BY fio.collection_time_utc DESC
+      ),
+      io1 AS (
+        SELECT SUM(io_stall) AS io_stall,
+               SUM(num_of_reads) AS num_of_reads,
+               SUM(num_of_writes) AS num_of_writes
+        FROM DBA.dbo.file_io_stats AS fio
+        CROSS JOIN snap1
+        WHERE fio.collection_time_utc = snap1.collection_time_utc
+          AND (fio.num_of_reads > 0 OR fio.num_of_writes > 0)
+      ),
+      io2 AS (
+        SELECT SUM(io_stall) AS io_stall,
+               SUM(num_of_reads) AS num_of_reads,
+               SUM(num_of_writes) AS num_of_writes
+        FROM DBA.dbo.file_io_stats AS fio
+        CROSS JOIN snap2
+        WHERE fio.collection_time_utc = snap2.collection_time_utc
+          AND (fio.num_of_reads > 0 OR fio.num_of_writes > 0)
+      )
+      SELECT CAST(ISNULL(CASE
+        WHEN snap1.collection_time_utc IS NULL OR (io2.num_of_reads + io2.num_of_writes) <= (io1.num_of_reads + io1.num_of_writes) THEN 0
+        ELSE (io2.io_stall - io1.io_stall) / NULLIF((io2.num_of_reads + io2.num_of_writes) - (io1.num_of_reads + io1.num_of_writes), 0)
+      END, 0) AS bigint) AS avg_disk_latency_ms
+      FROM snap2
+      LEFT JOIN snap1 ON 1 = 1
+      CROSS JOIN io2
+      LEFT JOIN io1 ON 1 = 1
+
+  - query_name: mssql_temp_tables_creation_rate
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      SELECT TOP (1)
+        CAST(value AS decimal(20,2)) AS temp_tables_creation_rate
+      FROM DBA.dbo.vw_performance_counters
+      WHERE object LIKE '%:general statistics%'
+        AND counter = 'temp tables creation rate'
+      ORDER BY collection_time_utc DESC
+
+  - query_name: mssql_latch_wait_totals
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      WITH latest AS (
+        SELECT MAX(collection_time_utc) AS collection_time_utc
+        FROM DBA.dbo.vw_performance_counters
+        WHERE object LIKE '%:latches%'
+          AND counter IN ('latch waits/sec', 'total latch wait time (ms)')
+          AND instance = '_total'
+      )
+      SELECT
+        CAST(MAX(CASE WHEN counter = 'latch waits/sec' THEN value END) AS decimal(20,2)) AS latch_waits_per_sec,
+        CAST(MAX(CASE WHEN counter = 'total latch wait time (ms)' THEN value END) AS decimal(20,2)) AS latch_wait_time_ms_per_sec
+      FROM DBA.dbo.vw_performance_counters AS pc
+      CROSS JOIN latest
+      WHERE pc.collection_time_utc = latest.collection_time_utc
+        AND pc.object LIKE '%:latches%'
+        AND pc.counter IN ('latch waits/sec', 'total latch wait time (ms)')
+        AND pc.instance = '_total'
+
+  - query_name: mssql_deprecated_features
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      WITH latest AS (
+        SELECT MAX(collection_time_utc) AS collection_time_utc
+        FROM DBA.dbo.vw_performance_counters
+        WHERE object LIKE '%:deprecated features%'
+      )
+      SELECT
+        counter AS feature,
+        COALESCE(NULLIF(instance, ''), '_total') AS instance,
+        CAST(value AS bigint) AS usage_total
+      FROM DBA.dbo.vw_performance_counters AS pc
+      CROSS JOIN latest
+      WHERE pc.collection_time_utc = latest.collection_time_utc
+        AND pc.object LIKE '%:deprecated features%'
+        AND pc.value > 0
+
+  - query_name: mssql_logicaldisk_latency
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      WITH latest AS (
+        SELECT MAX(collection_time_utc) AS collection_time_utc
+        FROM DBA.dbo.vw_performance_counters
+        WHERE object = 'logicaldisk'
+          AND counter IN ('avg. disk sec/read', 'avg. disk sec/write')
+      )
+      SELECT
+        instance AS disk_volume,
+        CAST(MAX(CASE WHEN counter = 'avg. disk sec/read' THEN value END) AS decimal(20,6)) AS read_latency_seconds,
+        CAST(MAX(CASE WHEN counter = 'avg. disk sec/write' THEN value END) AS decimal(20,6)) AS write_latency_seconds
+      FROM DBA.dbo.vw_performance_counters AS pc
+      CROSS JOIN latest
+      WHERE pc.collection_time_utc = latest.collection_time_utc
+        AND pc.object = 'logicaldisk'
+        AND pc.counter IN ('avg. disk sec/read', 'avg. disk sec/write')
+      GROUP BY instance
+
+  - query_name: mssql_logicaldisk_throughput
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      WITH latest AS (
+        SELECT MAX(collection_time_utc) AS collection_time_utc
+        FROM DBA.dbo.vw_performance_counters
+        WHERE object = 'logicaldisk'
+          AND counter IN ('disk read bytes/sec', 'disk write bytes/sec')
+      )
+      SELECT
+        instance AS disk_volume,
+        CAST(MAX(CASE WHEN counter = 'disk read bytes/sec' THEN value END) AS decimal(20,2)) AS read_bytes_per_sec,
+        CAST(MAX(CASE WHEN counter = 'disk write bytes/sec' THEN value END) AS decimal(20,2)) AS write_bytes_per_sec
+      FROM DBA.dbo.vw_performance_counters AS pc
+      CROSS JOIN latest
+      WHERE pc.collection_time_utc = latest.collection_time_utc
+        AND pc.object = 'logicaldisk'
+        AND pc.counter IN ('disk read bytes/sec', 'disk write bytes/sec')
+      GROUP BY instance
+
+  - query_name: mssql_resource_pool_avg_disk_io
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      WITH latest AS (
+        SELECT MAX(collection_time_utc) AS collection_time_utc
+        FROM DBA.dbo.vw_performance_counters
+        WHERE object LIKE '%:resource pool stats%'
+          AND (counter LIKE 'avg disk read io%' OR counter LIKE 'avg disk write io%')
+      )
+      SELECT
+        instance AS resource_pool,
+        CAST(MAX(CASE WHEN counter LIKE 'avg disk read io%' THEN value END) AS decimal(20,2)) AS avg_disk_read_io,
+        CAST(MAX(CASE WHEN counter LIKE 'avg disk write io%' THEN value END) AS decimal(20,2)) AS avg_disk_write_io
+      FROM DBA.dbo.vw_performance_counters AS pc
+      CROSS JOIN latest
+      WHERE pc.collection_time_utc = latest.collection_time_utc
+        AND pc.object LIKE '%:resource pool stats%'
+        AND (pc.counter LIKE 'avg disk read io%' OR pc.counter LIKE 'avg disk write io%')
+      GROUP BY instance
+
+  - query_name: mssql_collection_latency_minutes
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      SELECT source, latency_minutes
+      FROM (
+        SELECT 'performance_counters' AS source, COALESCE((SELECT TOP (1) DATEDIFF(minute, collection_time_utc, GETUTCDATE()) FROM DBA.dbo.vw_performance_counters WHERE collection_time_utc >= DATEADD(minute, -120, GETUTCDATE()) ORDER BY collection_time_utc DESC), 10080) AS latency_minutes
+        UNION ALL
+        SELECT 'xevent_metrics', COALESCE((SELECT TOP (1) DATEDIFF(minute, event_time, GETDATE()) FROM DBA.dbo.xevent_metrics WHERE event_time >= DATEADD(minute, -120, GETDATE()) ORDER BY event_time DESC), 10080)
+        UNION ALL
+        SELECT 'whoisactive', COALESCE((SELECT TOP (1) DATEDIFF(minute, collection_time, GETDATE()) FROM DBA.dbo.WhoIsActive WHERE collection_time >= DATEADD(minute, -60, GETDATE()) ORDER BY collection_time DESC), 10080)
+        UNION ALL
+        SELECT 'disk_space', COALESCE((SELECT TOP (1) DATEDIFF(minute, collection_time_utc, GETUTCDATE()) FROM DBA.dbo.vw_disk_space WHERE collection_time_utc >= DATEADD(minute, -120, GETUTCDATE()) ORDER BY collection_time_utc DESC), 10080)
+        UNION ALL
+        SELECT 'file_io_stats', COALESCE((SELECT TOP (1) DATEDIFF(minute, collection_time_utc, GETUTCDATE()) FROM DBA.dbo.file_io_stats WHERE collection_time_utc >= DATEADD(minute, -120, GETUTCDATE()) ORDER BY collection_time_utc DESC), 10080)
+        UNION ALL
+        SELECT 'sql_agent_job_stats', COALESCE((SELECT DATEDIFF(minute, MAX(UpdatedDateUTC), GETUTCDATE()) FROM DBA.dbo.sql_agent_job_stats), 10080)
+        UNION ALL
+        SELECT 'memory_clerks', COALESCE((SELECT TOP (1) DATEDIFF(minute, collection_time_utc, GETUTCDATE()) FROM DBA.dbo.memory_clerks WHERE collection_time_utc >= DATEADD(minute, -120, GETUTCDATE()) ORDER BY collection_time_utc DESC), 10080)
+        UNION ALL
+        SELECT 'wait_stats', COALESCE((SELECT TOP (1) DATEDIFF(minute, collection_time_utc, GETUTCDATE()) FROM DBA.dbo.wait_stats WHERE collection_time_utc >= DATEADD(minute, -120, GETUTCDATE()) ORDER BY collection_time_utc DESC), 10080)
+      ) AS src
+
+  - query_name: mssql_collection_latency_days
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      SELECT source, latency_days
+      FROM (
+        SELECT 'blitzindex' AS source, COALESCE((SELECT TOP (1) DATEDIFF(day, run_datetime, GETDATE()) FROM DBA.dbo.BlitzIndex WHERE run_datetime >= DATEADD(day, -3, GETDATE()) ORDER BY run_datetime DESC), 365) AS latency_days
+        UNION ALL
+        SELECT 'blitzindex_mode0', COALESCE((SELECT TOP (1) DATEDIFF(day, run_datetime, GETDATE()) FROM DBA.dbo.BlitzIndex_Mode0 WHERE run_datetime >= DATEADD(day, -15, GETDATE()) ORDER BY run_datetime DESC), 365)
+        UNION ALL
+        SELECT 'blitzindex_mode1', COALESCE((SELECT TOP (1) DATEDIFF(day, run_datetime, GETDATE()) FROM DBA.dbo.BlitzIndex_Mode1 WHERE run_datetime >= DATEADD(day, -15, GETDATE()) ORDER BY run_datetime DESC), 365)
+        UNION ALL
+        SELECT 'blitzindex_mode4', COALESCE((SELECT TOP (1) DATEDIFF(day, run_datetime, GETDATE()) FROM DBA.dbo.BlitzIndex_Mode4 WHERE run_datetime >= DATEADD(day, -15, GETDATE()) ORDER BY run_datetime DESC), 365)
+      ) AS src
