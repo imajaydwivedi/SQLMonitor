@@ -1,7 +1,7 @@
 # Global defaults.
 global:
   # If scrape_timeout <= 0, no timeout is set unless Prometheus provides one. The default is 10s.
-  scrape_timeout: 60s
+  scrape_timeout: 30s
   # Subtracted from Prometheus' scrape_timeout to give us some headroom and prevent Prometheus from timing out first.
   scrape_timeout_offset: 500ms
   # Minimum interval between collector runs: by default (0s) collectors are executed on every scrape.
@@ -36,6 +36,7 @@ jobs:
           localhost: 'sqlserver://localhost:1433/master?trusted_connection=yes&encrypt=true&TrustServerCertificate=true'
 
   - job_name: mssql_long_running
+    scrape_timeout: 2m
     collectors:
       - mssql_dba_whoisactive
     static_configs:
