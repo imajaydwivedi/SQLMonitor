@@ -86,4 +86,20 @@ clamp_min(max by (wait_type) (mssql_waits__wait_time_seconds{instance=~"sqlmonit
 rate(mssql_log_growths{instance=\"$Server\"}[$__rate_interval])
 ```
 
+# Prompt for Augment to build data collector based on query result
+
+```
+Use below query to create metrics for ag health into aghealth collector.
+Just like earlier, each numeric value should become a metric. 
+Name should be like mssql_aghealth__<column_name>
+Query result is unique for a combination of (replica_server_name, ag_name, database_name). So using these 3 columns, I have created a unique key column named [unique_key]. Use this as key label in all metrics.
+Columns having numeric value as we as another column with description should be clubbed as one where description columnd should be used as label.
+All the remaining string columns should go as label for metric mssql_aghealth__synchronization_health. 
+
+
+
+
+```
+
+
 
