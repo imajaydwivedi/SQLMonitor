@@ -1,0 +1,200 @@
+# Similar to global.min_interval, but applies to the queries defined by this collector only.
+# min_interval: 2m
+
+collector_name: mssql_dba_aghealth
+
+metrics:
+  - metric_name: mssql_aghealth__collection_time_utc
+    type: gauge
+    help: 'UTC collection time for the AG health snapshot as Unix epoch seconds.'
+    key_labels: [unique_key]
+    values: [collection_time_utc]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__is_primary_replica
+    type: gauge
+    help: 'Whether the replica is primary for the AG database.'
+    key_labels: [unique_key]
+    values: [is_primary_replica]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__is_local
+    type: gauge
+    help: 'Whether the AG replica row is local to the monitored SQL instance.'
+    key_labels: [unique_key]
+    values: [is_local]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__is_distributed
+    type: gauge
+    help: 'Whether the availability group is distributed.'
+    key_labels: [unique_key]
+    values: [is_distributed]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__synchronization_state
+    type: gauge
+    help: 'Synchronization state code for the AG database replica.'
+    key_labels: [unique_key, synchronization_state_desc]
+    values: [synchronization_state]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__synchronization_health
+    type: gauge
+    help: 'Synchronization health code for the AG database replica with AG metadata labels.'
+    key_labels: [unique_key, replica_server_name, database_name, ag_name, ag_listener, synchronization_state_desc, synchronization_health_desc, suspend_reason_desc]
+    values: [synchronization_health]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__latency_seconds
+    type: gauge
+    help: 'Commit latency in seconds versus the primary replica for the AG database.'
+    key_labels: [unique_key]
+    values: [latency_seconds]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__redo_queue_size
+    type: gauge
+    help: 'Redo queue size for the AG database replica.'
+    key_labels: [unique_key]
+    values: [redo_queue_size]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__log_send_queue_size
+    type: gauge
+    help: 'Log send queue size for the AG database replica.'
+    key_labels: [unique_key]
+    values: [log_send_queue_size]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__last_redone_time
+    type: gauge
+    help: 'Last redone time for the AG database replica as Unix epoch seconds.'
+    key_labels: [unique_key]
+    values: [last_redone_time]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__log_send_rate
+    type: gauge
+    help: 'Log send rate for the AG database replica.'
+    key_labels: [unique_key]
+    values: [log_send_rate]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__redo_rate
+    type: gauge
+    help: 'Redo rate for the AG database replica.'
+    key_labels: [unique_key]
+    values: [redo_rate]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__estimated_redo_completion_time_min
+    type: gauge
+    help: 'Estimated redo completion time in minutes for the AG database replica.'
+    key_labels: [unique_key]
+    values: [estimated_redo_completion_time_min]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__last_commit_time
+    type: gauge
+    help: 'Last commit time for the AG database replica as Unix epoch seconds.'
+    key_labels: [unique_key]
+    values: [last_commit_time]
+    query_ref: mssql_aghealth
+
+  - metric_name: mssql_aghealth__is_suspended
+    type: gauge
+    help: 'Whether data movement is suspended for the AG database replica.'
+    key_labels: [unique_key, suspend_reason_desc]
+    values: [is_suspended]
+    query_ref: mssql_aghealth
+
+queries:
+  - query_name: mssql_aghealth
+    query: |
+      SET NOCOUNT ON;
+
+      IF OBJECT_ID('tempdb..#availability_databases') IS NOT NULL
+        DROP TABLE #availability_databases;
+
+      SELECT
+        ar.replica_server_name,
+        drs.is_primary_replica,
+        adc.database_name,
+        ag.name AS ag_name,
+        drs.is_local,
+        ag.is_distributed,
+        drs.synchronization_state,
+        drs.synchronization_state_desc,
+        drs.synchronization_health,
+        drs.synchronization_health_desc,
+        drs.last_redone_time,
+        drs.log_send_queue_size,
+        drs.log_send_rate,
+        drs.redo_queue_size,
+        drs.redo_rate,
+        estimated_redo_completion_time_min = CASE
+          WHEN drs.redo_rate <> 0 THEN (drs.redo_queue_size / drs.redo_rate) / 60.0
+          ELSE (drs.redo_queue_size / 1.0) / 60.0
+        END,
+        drs.last_commit_time,
+        drs.is_suspended,
+        drs.suspend_reason_desc,
+        ag.group_id
+      INTO #availability_databases
+      FROM sys.dm_hadr_database_replica_states AS drs
+      INNER JOIN sys.availability_databases_cluster AS adc
+        ON drs.group_id = adc.group_id
+       AND drs.group_database_id = adc.group_database_id
+      INNER JOIN sys.availability_groups AS ag
+        ON ag.group_id = drs.group_id
+      INNER JOIN sys.availability_replicas AS ar
+        ON drs.group_id = ar.group_id
+       AND drs.replica_id = ar.replica_id;
+
+      SELECT
+        collection_time_utc = CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), SYSUTCDATETIME()) AS bigint),
+        unique_key = CONCAT(ag.replica_server_name, N' | ', ag.ag_name, N' | ', ag.database_name),
+        replica_server_name = COALESCE(ag.replica_server_name, N''),
+        is_primary_replica = CAST(COALESCE(ag.is_primary_replica, 0) AS tinyint),
+        database_name = COALESCE(ag.database_name, N''),
+        ag_name = COALESCE(ag.ag_name, N''),
+        ag_listener = COALESCE(agl.dns_name + N' (' + ia.ip_address + N')', agl.dns_name, ia.ip_address, N''),
+        is_local = CAST(COALESCE(ag.is_local, 0) AS tinyint),
+        is_distributed = CAST(COALESCE(ag.is_distributed, 0) AS tinyint),
+        synchronization_state = CAST(COALESCE(ag.synchronization_state, 0) AS bigint),
+        synchronization_state_desc = COALESCE(ag.synchronization_state_desc, N''),
+        synchronization_health = CAST(COALESCE(ag.synchronization_health, 0) AS bigint),
+        synchronization_health_desc = COALESCE(ag.synchronization_health_desc, N''),
+        latency_seconds = CAST(COALESCE(CASE
+          WHEN ag.is_primary_replica = 1 THEN 0
+          ELSE (
+            SELECT DATEDIFF(second, ag.last_commit_time, p.last_commit_time)
+            FROM #availability_databases AS p
+            WHERE p.is_primary_replica = 1
+              AND p.ag_name = ag.ag_name
+              AND p.database_name = ag.database_name
+          )
+        END, 0) AS bigint),
+        redo_queue_size = CAST(COALESCE(ag.redo_queue_size, 0) AS bigint),
+        log_send_queue_size = CAST(COALESCE(ag.log_send_queue_size, 0) AS bigint),
+        last_redone_time = CAST(CASE
+          WHEN ag.last_redone_time IS NULL THEN 0
+          ELSE DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), ag.last_redone_time)
+        END AS bigint),
+        log_send_rate = CAST(COALESCE(ag.log_send_rate, 0) AS bigint),
+        redo_rate = CAST(COALESCE(ag.redo_rate, 0) AS bigint),
+        estimated_redo_completion_time_min = CAST(COALESCE(ag.estimated_redo_completion_time_min, 0) AS float),
+        last_commit_time = CAST(CASE
+          WHEN ag.last_commit_time IS NULL THEN 0
+          ELSE DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), ag.last_commit_time)
+        END AS bigint),
+        is_suspended = CAST(COALESCE(ag.is_suspended, 0) AS tinyint),
+        suspend_reason_desc = COALESCE(ag.suspend_reason_desc, N'')
+      FROM #availability_databases AS ag
+      LEFT JOIN sys.availability_group_listeners AS agl
+        ON agl.group_id = ag.group_id
+      LEFT JOIN sys.availability_group_listener_ip_addresses AS ia
+        ON ia.listener_id = agl.listener_id
+       AND ia.state_desc = 'ONLINE'
+      ORDER BY ag.ag_name, ag.replica_server_name, ag.database_name;
