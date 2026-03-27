@@ -25,6 +25,87 @@ New-NetFirewallRule -DisplayName "SQL Exporter (TCP/9399)" -Direction Inbound -P
 # Validate at http://localhost:9399/metrics
 ```
 
+# How to add in Prometheus
+
+```
+|------------$ sudo cat /etc/prometheus/prometheus.yml
+
+
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "prometheus.rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9091"]
+       # The label name is added as a label `label_name=<label_value>` to any timeseries scraped from this config.
+        labels:
+          app: "prometheus"
+
+  - job_name: "node_exporter"
+    static_configs:
+      - targets:
+        - "localhost:9100"
+
+  - job_name: 'win-exporter'
+    static_configs:
+      - targets:
+        - 'sqlmonitor:9182'
+
+  - job_name: mssql_exporter_common
+    scrape_interval: 30s
+    params:
+      'jobs[]': [mssql_common]
+    static_configs:
+      - targets:
+        - "sqlmonitor:9399"
+        - "AgHost-1A:9399"
+        - "AgHost-1B:9399"
+
+  - job_name: mssql_exporter_longrunning
+    scrape_interval: 2m
+    params:
+      'jobs[]': [mssql_long_running]
+    static_configs:
+      - targets:
+        - "sqlmonitor:9399"
+        - "AgHost-1A:9399"
+        - "AgHost-1B:9399"
+
+  - job_name: mssql_exporter_ag
+    scrape_interval: 30s
+    params:
+      'jobs[]': [mssql_ag]
+    static_configs:
+      - targets:
+        - "AgHost-1A:9399"
+        - "AgHost-1B:9399"
+
+```
+
+
 # Refresh Collectors
 ```
 # E:\Github\SQLMonitor\sql_exporter\sql_exporter.exe --config.file E:\Github\SQLMonitor\sql_exporter\sql_exporter.yml
