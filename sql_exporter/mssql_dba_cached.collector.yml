@@ -15,6 +15,14 @@ metrics:
   #
   # Collected from sys.dm_os_wait_stats
   #
+  - metric_name: mssql_waits__collection_time_utc
+    type: gauge
+    help: 'Collection time as Unix epoch seconds for sys.dm_os_wait_stats rows.'
+    key_labels:
+      - wait_type
+    values: [collection_time_utc]
+    query_ref: mssql_os_wait_stats
+
   - metric_name: mssql_waits__wait_time_seconds
     type: counter
     help: 'Total wait time in seconds by wait type since SQL Server startup.'
@@ -107,6 +115,13 @@ metrics:
   #     - filesystem
   #   values: [used_mb]
   #   query_ref: mssql_diskspace
+
+  - metric_name: mssql_virtualfilestats__collection_time_utc
+    type: gauge
+    help: 'Collection time as Unix epoch seconds for the SQL Server file virtual stats row.'
+    key_labels: [file_location, database_name, file_logical_name, disk_volume, disk_filesystem]
+    values: [collection_time_utc]
+    query_ref: mssql_virtualfilestats
 
   - metric_name: mssql_virtualfilestats__sample_ms
     type: counter
@@ -210,6 +225,7 @@ queries:
   - query_name: mssql_os_wait_stats
     query: |
       SELECT
+        [collection_time_utc] = CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint),
         [wait_type],
         [wait_time_ms] / 1000.0 AS [wait_time_seconds],
         ([wait_time_ms] - [signal_wait_time_ms]) / 1000.0 AS [resource_time_seconds],
@@ -241,7 +257,7 @@ queries:
   # - query_name: mssql_diskspace
   #   query: |
   #     select	distinct
-  #         --[collection_time_utc] = SYSUTCDATETIME(),
+  #         --[collection_time_utc] = CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint),
   #         [host_name] = convert(varchar(225),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))),
   #         [disk_volume] = vs.volume_mount_point,
   #         --[label] = null,
@@ -256,7 +272,7 @@ queries:
 
   - query_name: mssql_virtualfilestats
     query: |
-      select  --[collection_time_utc] = sysutcdatetime(),
+      select  [collection_time_utc] = CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint),
               d.name as [database_name], mf.name as file_logical_name,
               --mf.file_id, d.database_id,
               [disk_volume] = coalesce(vs.volume_mount_point, N''), mf.physical_name as file_location,

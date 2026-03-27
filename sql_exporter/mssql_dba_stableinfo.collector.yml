@@ -14,6 +14,14 @@ metrics:
   #
   # Collected using sys.databases
   #
+  - metric_name: mssql_db__collection_time_utc
+    type: gauge
+    help: 'Collection time as Unix epoch seconds for sys.databases rows.'
+    key_labels:
+      - db_name
+    values: [collection_time_utc]
+    query_ref: mssql_sys_databases
+
   - metric_name: mssql_db__create_date
     type: gauge
     help: 'Database create date from sys.databases.'
@@ -657,6 +665,14 @@ metrics:
     values: [config_value]
     query_ref: mssql_sys_configurations
 
+  - metric_name: mssql_config__collection_time_utc
+    type: gauge
+    help: 'Collection time as Unix epoch seconds for sys.configurations rows.'
+    key_labels:
+      - config_name
+    values: [collection_time_utc]
+    query_ref: mssql_sys_configurations
+
   - metric_name: mssql_config__value_in_use
     type: gauge
     help: 'sys.configurations.value_in_use value.'
@@ -669,6 +685,7 @@ queries:
   - query_name: mssql_sys_databases
     query: |
       SELECT
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint) as collection_time_utc,
         d.name AS db_name,
         COALESCE(sys.fn_varbintohexstr(d.owner_sid), N'') AS owner_sid,
         CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), d.create_date) AS bigint) AS create_date,
@@ -771,6 +788,7 @@ queries:
   - query_name: mssql_sys_configurations
     query: |
       SELECT
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint) as collection_time_utc,
         name AS config_name,
         CAST(value AS int) AS config_value,
         CAST(value_in_use AS int) AS config_value_in_use,

@@ -106,12 +106,12 @@ metrics:
     values: [percent_complete]
     query_ref: mssql_sp_whoisactive
 
-  - metric_name: mssql_whoisactive__collection_time
+  - metric_name: mssql_whoisactive__collection_time_utc
     type: gauge
     help: 'Collection time for the session snapshot.'
     key_labels:
       - session_id
-    values: [collection_time]
+    values: [collection_time_utc]
     query_ref: mssql_sp_whoisactive
 
 queries:
@@ -202,7 +202,7 @@ queries:
         [writes],
         [tempdb_allocations],
         [percent_complete],
-        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), [collection_time]) AS bigint) AS [collection_time]
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), getutcdate()) AS bigint) AS [collection_time_utc]
       FROM #whoisactive;
       ');
 
