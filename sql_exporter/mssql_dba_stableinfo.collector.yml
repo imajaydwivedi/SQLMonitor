@@ -671,7 +671,7 @@ queries:
       SELECT
         d.name AS db_name,
         COALESCE(sys.fn_varbintohexstr(d.owner_sid), N'') AS owner_sid,
-        d.create_date AS create_date,
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), d.create_date) AS bigint) AS create_date,
         COALESCE(d.collation_name, N'') AS collation_name,
         COALESCE(CONVERT(nvarchar(36), d.service_broker_guid), N'') AS service_broker_guid,
         COALESCE(CONVERT(nvarchar(36), d.replica_id), N'') AS replica_id,

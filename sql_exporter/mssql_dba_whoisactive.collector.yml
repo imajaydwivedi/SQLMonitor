@@ -120,5 +120,6 @@ queries:
       EXEC dbo.sp_WhoIsActive
             @get_outer_command=1, @get_task_info=2, @find_block_leaders=1, @get_plans=1, @get_avg_time=1,
             @get_additional_info=1, @get_transaction_info=1, @get_memory_info = 1, @format_output = 0,
-            @output_column_list = '[collection_time][dd hh:mm:ss.mss][session_id][program_name][login_name][database_name][CPU][used_memory][open_tran_count][status][wait_info][sql_command][blocked_session_count][blocking_session_id][sql_text][%]';
+            --@output_column_list = '[collection_time][dd hh:mm:ss.mss][session_id][program_name][login_name][database_name][CPU][used_memory][open_tran_count][status][wait_info][sql_command][blocked_session_count][blocking_session_id][sql_text][%]';
+            @output_column_list = '[session_id][program_name][login_name][database_name][CPU][used_memory][open_tran_count][status][wait_info][sql_command][blocked_session_count][blocking_session_id][sql_text][avg_elapsed_time][physical_io][reads][physical_reads][writes][tempdb_allocations][tempdb_current][context_switches][max_used_memory][requested_memory][granted_memory][tasks][tran_start_time][tran_log_writes][implicit_tran][query_plan][percent_complete][host_name][additional_info][memory_info][start_time][login_time][request_id]';
 
