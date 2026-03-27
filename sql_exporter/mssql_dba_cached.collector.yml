@@ -97,6 +97,17 @@ metrics:
     values: [free_mb]
     query_ref: mssql_diskspace
 
+  - metric_name: mssql_diskspace__used_mb
+    type: gauge
+    help: 'Disk used space in megabytes.'
+    key_labels:
+      - host_name
+      - disk_volume
+      # - label
+      - filesystem
+    values: [used_mb]
+    query_ref: mssql_diskspace
+
 queries:
   - query_name: mssql_os_wait_stats
     query: |
@@ -138,6 +149,7 @@ queries:
           --[label] = null,
           [capacity_mb] = vs.total_bytes / 1048576,
           [free_mb] = vs.available_bytes / 1048576,
+          [used_mb] = (vs.total_bytes - vs.available_bytes) / 1048576,
           --[block_size] = null,
           [filesystem] = file_system_type
       from sys.master_files as mf
