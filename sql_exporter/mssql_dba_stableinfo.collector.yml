@@ -772,8 +772,8 @@ queries:
     query: |
       SELECT
         name AS config_name,
-        value AS config_value,
-        value_in_use AS config_value_in_use,
+        CAST(value AS int) AS config_value,
+        CAST(value_in_use AS int) AS config_value_in_use,
         description AS config_description
       FROM sys.configurations
       ORDER BY name
