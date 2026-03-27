@@ -117,9 +117,92 @@ metrics:
 queries:
   - query_name: mssql_sp_whoisactive
     query: |
+      SET NOCOUNT ON;
+      EXEC(N'
+      CREATE TABLE #whoisactive (
+        [collection_time] datetime NOT NULL,
+        [session_id] smallint NOT NULL,
+        [program_name] nvarchar(128) NULL,
+        [login_name] nvarchar(128) NOT NULL,
+        [database_name] nvarchar(128) NULL,
+        [CPU] bigint NULL,
+        [used_memory] bigint NOT NULL,
+        [open_tran_count] smallint NULL,
+        [status] varchar(30) NOT NULL,
+        [wait_info] nvarchar(4000) NULL,
+        [sql_command] nvarchar(max) NULL,
+        [blocked_session_count] smallint NULL,
+        [blocking_session_id] smallint NULL,
+        [sql_text] nvarchar(max) NULL,
+        [avg_elapsed_time] int NULL,
+        [physical_io] bigint NULL,
+        [reads] bigint NULL,
+        [physical_reads] bigint NULL,
+        [writes] bigint NULL,
+        [tempdb_allocations] bigint NULL,
+        [tempdb_current] bigint NULL,
+        [context_switches] bigint NULL,
+        [max_used_memory] bigint NULL,
+        [requested_memory] bigint NULL,
+        [granted_memory] bigint NULL,
+        [tasks] smallint NULL,
+        [tran_start_time] datetime NULL,
+        [tran_log_writes] nvarchar(4000) NULL,
+        [implicit_tran] nvarchar(3) NULL,
+        [query_plan] xml NULL,
+        [percent_complete] real NULL,
+        [host_name] nvarchar(128) NULL,
+        [additional_info] xml NULL,
+        [memory_info] xml NULL,
+        [start_time] datetime NOT NULL,
+        [login_time] datetime NULL,
+        [request_id] int NULL
+      );
+
       EXEC dbo.sp_WhoIsActive
             @get_outer_command=1, @get_task_info=2, @find_block_leaders=1, @get_plans=1, @get_avg_time=1,
             @get_additional_info=1, @get_transaction_info=1, @get_memory_info = 1, @format_output = 0,
-            --@output_column_list = '[collection_time][dd hh:mm:ss.mss][session_id][program_name][login_name][database_name][CPU][used_memory][open_tran_count][status][wait_info][sql_command][blocked_session_count][blocking_session_id][sql_text][%]';
-            @output_column_list = '[session_id][program_name][login_name][database_name][CPU][used_memory][open_tran_count][status][wait_info][sql_command][blocked_session_count][blocking_session_id][sql_text][avg_elapsed_time][physical_io][reads][physical_reads][writes][tempdb_allocations][tempdb_current][context_switches][max_used_memory][requested_memory][granted_memory][tasks][tran_start_time][tran_log_writes][implicit_tran][query_plan][percent_complete][host_name][additional_info][memory_info][start_time][login_time][request_id]';
+            @output_column_list = ''[collection_time][session_id][program_name][login_name][database_name][CPU][used_memory][open_tran_count][status][wait_info][sql_command][blocked_session_count][blocking_session_id][sql_text][avg_elapsed_time][physical_io][reads][physical_reads][writes][tempdb_allocations][tempdb_current][context_switches][max_used_memory][requested_memory][granted_memory][tasks][tran_start_time][tran_log_writes][implicit_tran][query_plan][percent_complete][host_name][additional_info][memory_info][start_time][login_time][request_id]'',
+            @destination_table = ''#whoisactive'';
+
+      SELECT
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), [start_time]) AS bigint) AS [start_time],
+        [session_id],
+        COALESCE([program_name], '''') AS [program_name],
+        [login_name],
+        COALESCE([database_name], '''') AS [database_name],
+        [status],
+        COALESCE([wait_info], '''') AS [wait_info],
+        COALESCE([sql_command], '''') AS [sql_command],
+        [blocked_session_count],
+        [blocking_session_id],
+        COALESCE([sql_text], '''') AS [sql_text],
+        [avg_elapsed_time],
+        [physical_io],
+        [physical_reads],
+        [tempdb_current],
+        [context_switches],
+        [max_used_memory],
+        [requested_memory],
+        [granted_memory],
+        [tasks],
+        COALESCE(CONVERT(nvarchar(33), [tran_start_time], 126), '''') AS [tran_start_time],
+        COALESCE([tran_log_writes], '''') AS [tran_log_writes],
+        COALESCE([implicit_tran], '''') AS [implicit_tran],
+        COALESCE(CONVERT(nvarchar(max), [query_plan]), '''') AS [query_plan],
+        COALESCE([host_name], '''') AS [host_name],
+        COALESCE(CONVERT(nvarchar(max), [additional_info]), '''') AS [additional_info],
+        COALESCE(CONVERT(nvarchar(max), [memory_info]), '''') AS [memory_info],
+        COALESCE(CONVERT(nvarchar(33), [login_time], 126), '''') AS [login_time],
+        [request_id],
+        [reads],
+        [used_memory],
+        [CPU],
+        [open_tran_count],
+        [writes],
+        [tempdb_allocations],
+        [percent_complete],
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), [collection_time]) AS bigint) AS [collection_time]
+      FROM #whoisactive;
+      ');
 
