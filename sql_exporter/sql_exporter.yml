@@ -27,7 +27,7 @@ target:
   # Glob patterns are supported (see <https://pkg.go.dev/path/filepath#Match> for syntax).
   collectors:
     - mssql_*
-    - mssql-*
+    # - mssql-*
 
 # Collector files specifies a list of globs. One collector definition is read from each matching file.
 # Glob patterns are supported (see <https://pkg.go.dev/path/filepath#Match> for syntax).
