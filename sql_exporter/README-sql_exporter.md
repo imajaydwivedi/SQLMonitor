@@ -117,11 +117,16 @@ $collectors = Get-ChildItem -Path "E:\Github\SQLMonitor\sql_exporter\mssql_*.col
 Get-ChildItem "\\aghost-1a\d$\sql_exporter\mssql_*.collector.yml" | ForEach-Object {if($_.Name -notin $collectors.Name){$_}} | Remove-Item
 Get-ChildItem "\\aghost-1b\d$\sql_exporter\mssql_*.collector.yml" | ForEach-Object {if($_.Name -notin $collectors.Name){$_}} | Remove-Item
 
+# Copy sql_exporter.yml config file
+Get-ChildItem "E:\Github\SQLMonitor\sql_exporter\sql_exporter.yml" | Copy-Item -Destination "\\aghost-1a\d$\sql_exporter\" -Verbose -Force
+Get-ChildItem "E:\Github\SQLMonitor\sql_exporter\sql_exporter.yml" | Copy-Item -Destination "\\aghost-1a\d$\sql_exporter\" -Verbose -Force
+
 # Add new collectors to remote machines
 $collectors | Copy-Item -Destination "\\aghost-1a\d$\sql_exporter\" -Verbose -Force
 $collectors | Copy-Item -Destination "\\aghost-1b\d$\sql_exporter\" -Verbose -Force
 
 # Restart sql_exporter service
+# get-service sql_exporter | Stop-Service -PassThru
 get-service sql_exporter | Restart-Service -PassThru
 Invoke-Command -ComputerName aghost-1a -ScriptBlock {get-service sql_exporter | Restart-Service -PassThru}
 Invoke-Command -ComputerName aghost-1b -ScriptBlock {get-service sql_exporter | Restart-Service -PassThru}
