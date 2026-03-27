@@ -14,6 +14,11 @@ metrics:
   - metric_name: mssql_service_info
     type: gauge
     help: 'SQL Server instance/service availability and metadata.'
+    static_labels:
+      env: prod
+      infra_type: on-prem
+      owner: dba_team
+      app: sqlmonitor
     key_labels:
       - domain
       - ip
@@ -497,6 +502,58 @@ metrics:
     values: [max_minutes_overdue]
     query_ref: mssql_last_logsweep_query
 
+  - metric_name: mssql_max_server_memory_mb
+    type: gauge
+    help: 'Configured max server memory in MB.'
+    values: [max_server_memory_mb]
+    query: |
+      SELECT CAST(value_in_use AS bigint) AS max_server_memory_mb
+      FROM sys.configurations
+      WHERE name = 'max server memory (MB)'
+
+  - metric_name: mssql_memory_consumers
+    type: gauge
+    help: 'Requests currently consuming more than 500 MB of granted query memory.'
+    values: [memory_consumers]
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      DECLARE @granted_memory_threshold_mb int = 500;
+      SELECT COUNT(*) AS memory_consumers
+      FROM sys.dm_exec_requests
+      WHERE (granted_query_memory * 8) > (@granted_memory_threshold_mb * 1024);
+
+  - metric_name: mssql_active_requests_count
+    type: gauge
+    help: 'Count of active, blocking, or open-transaction sessions based on DBA usp_active_requests_count logic.'
+    values: [active_requests_count]
+    query_ref: mssql_active_requests_count
+
+  - metric_name: mssql_db__log_reuse_wait
+    type: gauge
+    help: 'sys.databases.log_reuse_wait value.'
+    key_labels:
+      - db_name
+      - log_reuse_wait_desc
+    values: [log_reuse_wait]
+    query:
+      SELECT name AS db_name, log_reuse_wait, log_reuse_wait_desc from sys.databases
+
+  - metric_name: mssql_memory_clerks__size_mb
+    type: gauge
+    help: 'Memory clerk size in MB information.'
+    key_labels:
+      - memory_clerk_type
+      - memory_clerk_name
+    values: [size_mb]
+    query: |
+      SELECT	[memory_clerk_type] = [type],
+              [memory_clerk_name] = MAX(name),
+              [size_mb] = SUM(pages_kb) / 1024
+      FROM sys.dm_os_memory_clerks WITH (NOLOCK)
+      GROUP BY [type]
+      HAVING (SUM(pages_kb) / 1024) > 0
+      ORDER BY SUM(pages_kb) DESC;
+
 queries:
   - query_name: mssql_sys_memory
     query: |
@@ -912,3 +969,23 @@ queries:
       FROM sys.dm_os_performance_counters WITH (NOLOCK)
       WHERE object_name LIKE '%:SQL Errors%'
         AND counter_name = 'Errors/sec'
+
+  - query_name: mssql_active_requests_count
+    query: |
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      SELECT COUNT(*) AS active_requests_count
+      FROM sys.dm_exec_sessions AS s
+      LEFT JOIN sys.dm_exec_requests AS r
+        ON r.session_id = s.session_id
+      WHERE s.session_id <> @@SPID
+        AND (
+          s.session_id IN (
+            SELECT ri.blocking_session_id
+            FROM sys.dm_exec_requests AS ri
+            WHERE ri.blocking_session_id IS NOT NULL
+              AND ri.blocking_session_id <> 0
+          )
+          OR (r.blocking_session_id IS NOT NULL AND r.blocking_session_id <> 0)
+          OR (s.session_id > 50 AND r.session_id IS NOT NULL AND s.status <> 'sleeping')
+          OR (s.session_id > 50 AND s.open_transaction_count <> 0)
+        )
