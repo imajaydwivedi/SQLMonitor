@@ -36,7 +36,6 @@ jobs:
           localhost: 'sqlserver://localhost:1433/master?trusted_connection=yes&encrypt=true&TrustServerCertificate=true'
 
   - job_name: mssql_long_running
-    scrape_timeout: 2m
     collectors:
       - mssql_dba_whoisactive
     static_configs:
