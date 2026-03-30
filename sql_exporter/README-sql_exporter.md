@@ -28,7 +28,13 @@ New-NetFirewallRule -DisplayName "SQL Exporter (TCP/9399)" -Direction Inbound -P
 ## Create mac service
 ```
 
+sudo launchctl list | grep prometheus
+brew services list | grep prometheus
 
+brew services info prometheus
+
+cat $(brew --prefix)/etc/prometheus.yml
+brew services restart prometheus
 ```
 
 ### Validate on Mac - Service Management

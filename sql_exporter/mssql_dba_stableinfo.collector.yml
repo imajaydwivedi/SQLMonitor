@@ -582,80 +582,6 @@ metrics:
     values: [is_data_retention_enabled]
     query_ref: mssql_sys_databases
 
-  - metric_name: mssql_db__is_ledger_on
-    type: gauge
-    help: 'sys.databases.is_ledger_on value.'
-    key_labels:
-      - db_name
-    values: [is_ledger_on]
-    query_ref: mssql_sys_databases
-
-  - metric_name: mssql_db__is_change_feed_enabled
-    type: gauge
-    help: 'sys.databases.is_change_feed_enabled value.'
-    key_labels:
-      - db_name
-    values: [is_change_feed_enabled]
-    query_ref: mssql_sys_databases
-
-  - metric_name: mssql_db__is_data_lake_replication_enabled
-    type: gauge
-    help: 'sys.databases.is_data_lake_replication_enabled value.'
-    key_labels:
-      - db_name
-    values: [is_data_lake_replication_enabled]
-    query_ref: mssql_sys_databases
-
-  - metric_name: mssql_db__is_event_stream_enabled
-    type: gauge
-    help: 'sys.databases.is_event_stream_enabled value.'
-    key_labels:
-      - db_name
-    values: [is_event_stream_enabled]
-    query_ref: mssql_sys_databases
-
-  - metric_name: mssql_db__data_compaction
-    type: gauge
-    help: 'sys.databases.data_compaction value.'
-    key_labels:
-      - db_name
-      - data_compaction_desc
-    values: [data_compaction]
-    query_ref: mssql_sys_databases
-
-  - metric_name: mssql_db__data_lake_log_publishing
-    type: gauge
-    help: 'sys.databases.data_lake_log_publishing value.'
-    key_labels:
-      - db_name
-      - data_lake_log_publishing_desc
-    values: [data_lake_log_publishing]
-    query_ref: mssql_sys_databases
-
-  - metric_name: mssql_db__is_vorder_enabled
-    type: gauge
-    help: 'sys.databases.is_vorder_enabled value.'
-    key_labels:
-      - db_name
-    values: [is_vorder_enabled]
-    query_ref: mssql_sys_databases
-
-  - metric_name: mssql_db__is_proactive_statistics_refresh_on
-    type: gauge
-    help: 'sys.databases.is_proactive_statistics_refresh_on value.'
-    key_labels:
-      - db_name
-    values: [is_proactive_statistics_refresh_on]
-    query_ref: mssql_sys_databases
-
-  - metric_name: mssql_db__is_optimized_locking_on
-    type: gauge
-    help: 'sys.databases.is_optimized_locking_on value.'
-    key_labels:
-      - db_name
-    values: [is_optimized_locking_on]
-    query_ref: mssql_sys_databases
-
   - metric_name: mssql_config__value
     type: gauge
     help: 'sys.configurations.value value.'
@@ -763,15 +689,6 @@ queries:
         CAST(d.is_stale_page_detection_on AS bigint) AS is_stale_page_detection_on,
         CAST(d.is_memory_optimized_enabled AS bigint) AS is_memory_optimized_enabled,
         CAST(d.is_data_retention_enabled AS bigint) AS is_data_retention_enabled,
-        CAST(d.is_ledger_on AS bigint) AS is_ledger_on,
-        CAST(d.is_change_feed_enabled AS bigint) AS is_change_feed_enabled,
-        CAST(d.is_data_lake_replication_enabled AS bigint) AS is_data_lake_replication_enabled,
-        CAST(d.is_event_stream_enabled AS bigint) AS is_event_stream_enabled,
-        d.data_compaction AS data_compaction,
-        d.data_lake_log_publishing AS data_lake_log_publishing,
-        CAST(d.is_vorder_enabled AS bigint) AS is_vorder_enabled,
-        CAST(d.is_proactive_statistics_refresh_on AS bigint) AS is_proactive_statistics_refresh_on,
-        CAST(d.is_optimized_locking_on AS bigint) AS is_optimized_locking_on,
         COALESCE(d.user_access_desc, N'') AS user_access_desc,
         COALESCE(d.state_desc, N'') AS state_desc,
         COALESCE(d.snapshot_isolation_state_desc, N'') AS snapshot_isolation_state_desc,
@@ -779,9 +696,7 @@ queries:
         COALESCE(d.page_verify_option_desc, N'') AS page_verify_option_desc,
         COALESCE(d.containment_desc, N'') AS containment_desc,
         COALESCE(d.delayed_durability_desc, N'') AS delayed_durability_desc,
-        COALESCE(d.catalog_collation_type_desc, N'') AS catalog_collation_type_desc,
-        COALESCE(d.data_compaction_desc, N'') AS data_compaction_desc,
-        COALESCE(d.data_lake_log_publishing_desc, N'') AS data_lake_log_publishing_desc
+        COALESCE(d.catalog_collation_type_desc, N'') AS catalog_collation_type_desc
       FROM sys.databases AS d
       ORDER BY d.name
 
