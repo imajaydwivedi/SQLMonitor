@@ -25,6 +25,25 @@ New-NetFirewallRule -DisplayName "SQL Exporter (TCP/9399)" -Direction Inbound -P
 # Validate at http://localhost:9399/metrics
 ```
 
+## Create mac service
+```
+
+
+```
+
+### Validate on Mac - Service Management
+
+| Action         | Command |
+|---------------|---|
+| Check status | `sudo launchctl list \| grep sql_exporter` |
+| Stop | `sudo launchctl unload /Library/LaunchDaemons/com.sql_exporter.plist` |
+| Start | `sudo launchctl load /Library/LaunchDaemons/com.sql_exporter.plist` |
+| View logs | `tail -f /usr/local/var/log/sql_exporter.log` |
+| View errors | `tail -f /usr/local/var/log/sql_exporter.err.log` |
+| Test metrics | `curl -s http://localhost:9399/metrics \| head -20` |
+
+The service auto-starts on every reboot and auto-restarts if it crashes (KeepAlive).
+
 # How to add in Prometheus
 
 ```
