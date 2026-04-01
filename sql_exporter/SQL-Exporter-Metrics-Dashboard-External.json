@@ -1081,7 +1081,7 @@
             "h": 7,
             "w": 6,
             "x": 0,
-            "y": 628
+            "y": 723
           },
           "id": 14,
           "options": {
@@ -1191,7 +1191,7 @@
             "h": 7,
             "w": 6,
             "x": 6,
-            "y": 628
+            "y": 723
           },
           "id": 15,
           "options": {
@@ -1281,7 +1281,7 @@
             "h": 7,
             "w": 4,
             "x": 12,
-            "y": 628
+            "y": 723
           },
           "id": 16,
           "options": {
@@ -1345,7 +1345,7 @@
             "h": 7,
             "w": 4,
             "x": 16,
-            "y": 628
+            "y": 723
           },
           "id": 54,
           "options": {
@@ -1409,7 +1409,7 @@
             "h": 7,
             "w": 4,
             "x": 20,
-            "y": 628
+            "y": 723
           },
           "id": 55,
           "options": {
@@ -1484,7 +1484,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 754
+            "y": 849
           },
           "id": 17,
           "options": {
@@ -1548,7 +1548,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 761
+            "y": 856
           },
           "id": 18,
           "options": {
@@ -1653,7 +1653,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 629
+            "y": 724
           },
           "id": 20,
           "options": {
@@ -1754,7 +1754,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 629
+            "y": 724
           },
           "id": 21,
           "options": {
@@ -1873,7 +1873,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 629
+            "y": 724
           },
           "id": 22,
           "options": {
@@ -1997,7 +1997,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 630
+            "y": 725
           },
           "id": 24,
           "options": {
@@ -2116,7 +2116,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 630
+            "y": 725
           },
           "id": 25,
           "options": {
@@ -2244,7 +2244,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 630
+            "y": 725
           },
           "id": 26,
           "options": {
@@ -2359,7 +2359,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 631
+            "y": 726
           },
           "id": 28,
           "options": {
@@ -2478,7 +2478,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 631
+            "y": 726
           },
           "id": 29,
           "options": {
@@ -2615,7 +2615,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 631
+            "y": 726
           },
           "id": 30,
           "options": {
@@ -2725,7 +2725,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 722
+            "y": 817
           },
           "id": 31,
           "options": {
@@ -2853,7 +2853,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 722
+            "y": 817
           },
           "id": 32,
           "options": {
@@ -2972,7 +2972,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 722
+            "y": 817
           },
           "id": 33,
           "options": {
@@ -3096,7 +3096,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 632
+            "y": 727
           },
           "id": 35,
           "options": {
@@ -3215,7 +3215,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 632
+            "y": 727
           },
           "id": 36,
           "options": {
@@ -3325,7 +3325,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 632
+            "y": 727
           },
           "id": 37,
           "options": {
@@ -3458,7 +3458,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 633
+            "y": 728
           },
           "id": 39,
           "options": {
@@ -3577,7 +3577,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 633
+            "y": 728
           },
           "id": 40,
           "options": {
@@ -3705,7 +3705,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 633
+            "y": 728
           },
           "id": 41,
           "options": {
@@ -3820,7 +3820,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 634
+            "y": 729
           },
           "id": 43,
           "options": {
@@ -3921,7 +3921,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 634
+            "y": 729
           },
           "id": 44,
           "options": {
@@ -4022,7 +4022,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 634
+            "y": 729
           },
           "id": 45,
           "options": {
@@ -4137,7 +4137,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 635
+            "y": 730
           },
           "id": 47,
           "options": {
@@ -4256,7 +4256,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 635
+            "y": 730
           },
           "id": 48,
           "options": {
@@ -4375,7 +4375,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 635
+            "y": 730
           },
           "id": 49,
           "options": {
@@ -4499,7 +4499,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 636
+            "y": 731
           },
           "id": 51,
           "options": {
@@ -4618,7 +4618,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 636
+            "y": 731
           },
           "id": 52,
           "options": {
@@ -4737,7 +4737,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 636
+            "y": 731
           },
           "id": 53,
           "options": {
@@ -5576,7 +5576,7 @@
             "h": 10,
             "w": 19,
             "x": 0,
-            "y": 638
+            "y": 733
           },
           "id": 62,
           "options": {
@@ -5999,7 +5999,7 @@
             "h": 9,
             "w": 19,
             "x": 0,
-            "y": 660
+            "y": 755
           },
           "id": 63,
           "options": {
@@ -6303,7 +6303,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 639
+            "y": 734
           },
           "id": 68,
           "interval": "5m",
@@ -6416,6 +6416,162 @@
                     "value": 242
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reads"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "used_memory"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "writes"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "tempdb_allocations"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "physical_reads"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "physical_io"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "tempdb_current"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "granted_memory"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "requested_memory"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "max_used_memory"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "login_time"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "start_time"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "cpu"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  }
+                ]
               }
             ]
           },
@@ -6425,7 +6581,7 @@
             "x": 0,
             "y": 14
           },
-          "id": 69,
+          "id": 75,
           "options": {
             "cellHeight": "sm",
             "showHeader": true
@@ -6439,7 +6595,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__start_time{instance=\"$Server\"} * 1000",
+              "expr": "mssql_whoisactive__start_time{instance=\"$Server\"} * 1000\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
@@ -6453,7 +6609,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__reads{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__reads{instance=\"$Server\"} * 8\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
@@ -6467,7 +6623,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__used_memory{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__used_memory{instance=\"$Server\"} * 8\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
@@ -6481,7 +6637,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__cpu{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__cpu{instance=\"$Server\"}\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
@@ -6495,7 +6651,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__open_tran_count{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__open_tran_count{instance=\"$Server\"}\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
@@ -6509,7 +6665,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__writes{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__writes{instance=\"$Server\"} * 8\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
@@ -6523,7 +6679,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__tempdb_allocations{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__tempdb_allocations{instance=\"$Server\"} * 8\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
@@ -6537,7 +6693,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__percent_complete{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__percent_complete{instance=\"$Server\"}\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
@@ -6551,7 +6707,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__collection_time_utc{instance=\"$Server\"} * 1000",
+              "expr": "mssql_whoisactive__collection_time_utc{instance=\"$Server\"} * 1000\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
@@ -6565,12 +6721,96 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__tasks{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__tasks{instance=\"$Server\"}\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
               "range": false,
               "refId": "tasks"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__physical_reads{instance=\"$Server\"} * 8\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "physical_reads"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__physical_io{instance=\"$Server\"} * 8\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "physical_io"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__tempdb_current{instance=\"$Server\"} * 8\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "tempdb_current"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__granted_memory{instance=\"$Server\"} * 8\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "granted_memory"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__requested_memory{instance=\"$Server\"} * 8\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "requested_memory"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__max_used_memory{instance=\"$Server\"} * 8\nand on(unique_key)\n(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} >= scalar(max(mssql_whoisactive__collection_time_utc{instance=\"$Server\"})))",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "max_used_memory"
             }
           ],
           "title": "WhoIsActive",
@@ -6586,22 +6826,16 @@
                     "blocking_session_id",
                     "context_switches",
                     "database_name",
-                    "granted_memory",
                     "host_name",
                     "login_name",
                     "login_time",
-                    "max_used_memory",
-                    "physical_io",
-                    "physical_reads",
                     "program_name",
                     "query_plan",
                     "request_id",
-                    "requested_memory",
                     "session_id",
                     "sql_command",
                     "sql_text",
                     "status",
-                    "tempdb_current",
                     "unique_key",
                     "wait_info",
                     "Value #start_time",
@@ -6613,7 +6847,13 @@
                     "Value #tempdb_allocations",
                     "Value #percent_complete",
                     "Value #collection_time_utc",
-                    "Value #tasks"
+                    "Value #tasks",
+                    "Value #physical_reads",
+                    "Value #physical_io",
+                    "Value #tempdb_current",
+                    "Value #granted_memory",
+                    "Value #requested_memory",
+                    "Value #max_used_memory"
                   ]
                 }
               }
@@ -6757,17 +6997,20 @@
                 "renameByName": {
                   "Value #collection_time_utc": "collection_time",
                   "Value #cpu": "cpu",
+                  "Value #granted_memory": "granted_memory",
+                  "Value #max_used_memory": "max_used_memory",
                   "Value #open_tran_count": "open_tran_count",
                   "Value #percent_complete": "percent_complete",
+                  "Value #physical_io": "physical_io",
+                  "Value #physical_reads": "physical_reads",
                   "Value #reads": "reads",
+                  "Value #requested_memory": "requested_memory",
                   "Value #start_time": "start_time",
                   "Value #tasks": "tasks",
                   "Value #tempdb_allocations": "tempdb_allocations",
+                  "Value #tempdb_current": "tempdb_current",
                   "Value #used_memory": "used_memory",
-                  "Value #writes": "writes",
-                  "max_used_memory": "",
-                  "requested_memory": "",
-                  "tempdb_current": ""
+                  "Value #writes": "writes"
                 }
               }
             }
@@ -6889,16 +7132,124 @@
                     "value": "percent"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "reads"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "writes"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "tempdb_allocations"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "physical_reads"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "physical_io"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "tempdb_current"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "granted_memory"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "requested_memory"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "max_used_memory"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
               }
             ]
           },
           "gridPos": {
-            "h": 11,
+            "h": 12,
             "w": 24,
             "x": 0,
             "y": 22
           },
-          "id": 73,
+          "id": 76,
           "options": {
             "cellHeight": "sm",
             "showHeader": true,
@@ -6932,7 +7283,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__reads{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__reads{instance=\"$Server\"} * 8",
               "format": "table",
               "instant": false,
               "legendFormat": "__auto",
@@ -6946,7 +7297,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__used_memory{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__used_memory{instance=\"$Server\"} * 8",
               "format": "table",
               "instant": false,
               "legendFormat": "__auto",
@@ -6988,7 +7339,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__writes{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__writes{instance=\"$Server\"} * 8",
               "format": "table",
               "instant": false,
               "legendFormat": "__auto",
@@ -7002,7 +7353,7 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_whoisactive__tempdb_allocations{instance=\"$Server\"}",
+              "expr": "mssql_whoisactive__tempdb_allocations{instance=\"$Server\"} * 8",
               "format": "table",
               "instant": false,
               "legendFormat": "__auto",
@@ -7036,6 +7387,90 @@
               "legendFormat": "__auto",
               "range": true,
               "refId": "collection_time_utc"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__physical_reads{instance=\"$Server\"} * 8",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "physical_reads"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__physical_io{instance=\"$Server\"} * 8",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "physical_io"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__tempdb_current{instance=\"$Server\"} * 8",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "tempdb_current"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__granted_memory{instance=\"$Server\"} * 8",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "granted_memory"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__requested_memory{instance=\"$Server\"} * 8",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "requested_memory"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__max_used_memory{instance=\"$Server\"} * 8",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "max_used_memory"
             }
           ],
           "title": "WhoIsActive — Session History (respects dashboard time range)",
@@ -7061,12 +7496,14 @@
                     "blocking_session_id",
                     "context_switches",
                     "database_name",
+                    "granted_memory",
                     "host_name",
                     "login_name",
                     "login_time",
+                    "max_used_memory",
                     "physical_io",
-                    "physical_reads",
                     "program_name",
+                    "query_plan",
                     "request_id",
                     "session_id",
                     "sql_command",
@@ -7075,7 +7512,6 @@
                     "tempdb_current",
                     "unique_key",
                     "wait_info",
-                    "query_plan",
                     "Value #start_time",
                     "Value #reads",
                     "Value #used_memory",
@@ -7085,8 +7521,13 @@
                     "Value #tempdb_allocations",
                     "Value #percent_complete",
                     "Value #collection_time_utc",
-                    "granted_memory",
-                    "max_used_memory",
+                    "Value #physical_reads",
+                    "Value #physical_io",
+                    "Value #tempdb_current",
+                    "Value #granted_memory",
+                    "Value #requested_memory",
+                    "Value #max_used_memory",
+                    "physical_reads",
                     "requested_memory"
                   ]
                 }
@@ -7109,20 +7550,15 @@
                   "avg_elapsed_time": false,
                   "context_switches": false,
                   "exported_job": true,
-                  "granted_memory": false,
                   "implicit_tran": true,
                   "instance": true,
                   "job": true,
                   "login_time": false,
-                  "max_used_memory": false,
                   "memory_info": true,
-                  "physical_reads": false,
                   "query_plan": false,
                   "request_id": false,
-                  "requested_memory": false,
                   "target": true,
                   "tasks": true,
-                  "tempdb_current": false,
                   "tran_log_writes": true,
                   "tran_start_time": true,
                   "unique_key": true
@@ -7167,11 +7603,17 @@
                   "Time": "Collection Time",
                   "Value #collection_time_utc": "Collection Time",
                   "Value #cpu": "cpu",
+                  "Value #granted_memory": "granted_memory",
+                  "Value #max_used_memory": "max_used_memory",
                   "Value #open_tran_count": "open_tran_count",
                   "Value #percent_complete": "percent_complete",
+                  "Value #physical_io": "physical_io",
+                  "Value #physical_reads": "physical_reads",
                   "Value #reads": "reads",
+                  "Value #requested_memory": "requested_memory",
                   "Value #start_time": "start_time",
                   "Value #tempdb_allocations": "tempdb_allocations",
+                  "Value #tempdb_current": "tempdb_current",
                   "Value #used_memory": "used_memory",
                   "Value #writes": "writes"
                 }
@@ -7325,6 +7767,6 @@
   "timezone": "browser",
   "title": "SQL Exporter Metrics",
   "uid": "sql-exporter-metrics-v2",
-  "version": 30,
+  "version": 36,
   "weekStart": ""
 }

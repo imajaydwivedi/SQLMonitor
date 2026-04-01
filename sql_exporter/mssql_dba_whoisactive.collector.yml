@@ -31,13 +31,7 @@ metrics:
       - blocking_session_id
       - sql_text
       - avg_elapsed_time
-      - physical_io
-      - physical_reads
-      - tempdb_current
       - context_switches
-      - max_used_memory
-      - requested_memory
-      - granted_memory
       - tran_start_time
       - tran_log_writes
       - implicit_tran
@@ -120,6 +114,54 @@ metrics:
     key_labels:
       - unique_key
     values: [tasks]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__physical_reads
+    type: gauge
+    help: 'Physical reads performed by the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [physical_reads]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__physical_io
+    type: gauge
+    help: 'Physical I/O (reads + writes) for the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [physical_io]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__tempdb_current
+    type: gauge
+    help: 'Current tempdb pages held by the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [tempdb_current]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__granted_memory
+    type: gauge
+    help: 'Memory grant given to the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [granted_memory]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__requested_memory
+    type: gauge
+    help: 'Memory grant requested by the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [requested_memory]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__max_used_memory
+    type: gauge
+    help: 'Maximum memory used by the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [max_used_memory]
     query_ref: mssql_sp_whoisactive
 
 queries:
