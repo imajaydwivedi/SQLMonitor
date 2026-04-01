@@ -159,6 +159,27 @@ Invoke-Command -ComputerName aghost-1b -ScriptBlock {get-service sql_exporter | 
 ```
 
 
+# PasteThePlan Bridge
+- Uses `sql_exporter/pastetheplan-proxy.py` to bridge Grafana data link to PasteThePlan website.
+  - Reads the raw query plan XML from the ?xml= URL query parameter
+  - POSTs `{"queryplan_xml": "<xml>"}` to the same AWS Lambda API that the `sqlops-pastetheplan` extension uses
+  - Redirects the browser to `https://www.brentozar.com/pastetheplan/?id=<planId>`
+```
+
+# Step 1 — Start the local HTTP server
+cd sql_exporter
+
+python3 pastetheplan-proxy.py          # Prometheus on localhost:9090
+# OR if Prometheus is elsewhere:
+python3 pastetheplan-proxy.py 8080 http://your-prometheus-host:9090
+
+# → PasteThePlan proxy  →  http://localhost:8080/pastetheplan-bridge.html
+
+# Step 2 — Import the updated dashboard JSON into Grafana.
+# Step 3 — Click any non-empty query_plan cell → a "Paste The Plan" icon/link appears → click it → the bridge page opens, submits the XML, and auto-redirects you to the Brent Ozar plan viewer.
+```
+
+
 # Grafana Dashboard Specifications for AI Tool
 
 ```

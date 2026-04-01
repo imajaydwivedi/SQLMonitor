@@ -1031,7 +1031,7 @@
             "h": 7,
             "w": 6,
             "x": 0,
-            "y": 723
+            "y": 848
           },
           "id": 14,
           "options": {
@@ -1141,7 +1141,7 @@
             "h": 7,
             "w": 6,
             "x": 6,
-            "y": 723
+            "y": 848
           },
           "id": 15,
           "options": {
@@ -1231,7 +1231,7 @@
             "h": 7,
             "w": 4,
             "x": 12,
-            "y": 723
+            "y": 848
           },
           "id": 16,
           "options": {
@@ -1295,7 +1295,7 @@
             "h": 7,
             "w": 4,
             "x": 16,
-            "y": 723
+            "y": 848
           },
           "id": 54,
           "options": {
@@ -1359,7 +1359,7 @@
             "h": 7,
             "w": 4,
             "x": 20,
-            "y": 723
+            "y": 848
           },
           "id": 55,
           "options": {
@@ -1434,7 +1434,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 849
+            "y": 974
           },
           "id": 17,
           "options": {
@@ -1498,7 +1498,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 856
+            "y": 981
           },
           "id": 18,
           "options": {
@@ -1603,7 +1603,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 724
+            "y": 849
           },
           "id": 20,
           "options": {
@@ -1704,7 +1704,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 724
+            "y": 849
           },
           "id": 21,
           "options": {
@@ -1823,7 +1823,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 724
+            "y": 849
           },
           "id": 22,
           "options": {
@@ -1947,7 +1947,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 725
+            "y": 850
           },
           "id": 24,
           "options": {
@@ -2066,7 +2066,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 725
+            "y": 850
           },
           "id": 25,
           "options": {
@@ -2194,7 +2194,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 725
+            "y": 850
           },
           "id": 26,
           "options": {
@@ -2309,7 +2309,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 726
+            "y": 851
           },
           "id": 28,
           "options": {
@@ -2428,7 +2428,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 726
+            "y": 851
           },
           "id": 29,
           "options": {
@@ -2565,7 +2565,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 726
+            "y": 851
           },
           "id": 30,
           "options": {
@@ -2675,7 +2675,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 817
+            "y": 942
           },
           "id": 31,
           "options": {
@@ -2803,7 +2803,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 817
+            "y": 942
           },
           "id": 32,
           "options": {
@@ -2922,7 +2922,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 817
+            "y": 942
           },
           "id": 33,
           "options": {
@@ -3046,7 +3046,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 727
+            "y": 852
           },
           "id": 35,
           "options": {
@@ -3165,7 +3165,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 727
+            "y": 852
           },
           "id": 36,
           "options": {
@@ -3275,7 +3275,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 727
+            "y": 852
           },
           "id": 37,
           "options": {
@@ -3408,7 +3408,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 728
+            "y": 853
           },
           "id": 39,
           "options": {
@@ -3527,7 +3527,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 728
+            "y": 853
           },
           "id": 40,
           "options": {
@@ -3655,7 +3655,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 728
+            "y": 853
           },
           "id": 41,
           "options": {
@@ -3770,7 +3770,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 729
+            "y": 854
           },
           "id": 43,
           "options": {
@@ -3871,7 +3871,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 729
+            "y": 854
           },
           "id": 44,
           "options": {
@@ -3972,7 +3972,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 729
+            "y": 854
           },
           "id": 45,
           "options": {
@@ -4087,7 +4087,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 730
+            "y": 855
           },
           "id": 47,
           "options": {
@@ -4206,7 +4206,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 730
+            "y": 855
           },
           "id": 48,
           "options": {
@@ -4325,7 +4325,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 730
+            "y": 855
           },
           "id": 49,
           "options": {
@@ -4449,7 +4449,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 731
+            "y": 856
           },
           "id": 51,
           "options": {
@@ -4568,7 +4568,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 731
+            "y": 856
           },
           "id": 52,
           "options": {
@@ -4687,7 +4687,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 731
+            "y": 856
           },
           "id": 53,
           "options": {
@@ -5526,7 +5526,7 @@
             "h": 10,
             "w": 19,
             "x": 0,
-            "y": 733
+            "y": 858
           },
           "id": 62,
           "options": {
@@ -5949,7 +5949,7 @@
             "h": 9,
             "w": 19,
             "x": 0,
-            "y": 755
+            "y": 880
           },
           "id": 63,
           "options": {
@@ -6253,7 +6253,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 734
+            "y": 859
           },
           "id": 68,
           "interval": "5m",
@@ -7190,14 +7190,44 @@
                     "value": "kbytes"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "query_plan"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Paste The Plan",
+                        "url": "http://localhost:8080/pastetheplan-bridge.html?key=${__data.fields.unique_key}&server=${Server}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "unique_key"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hideFrom.viz",
+                    "value": true
+                  }
+                ]
               }
             ]
           },
           "gridPos": {
-            "h": 12,
+            "h": 10,
             "w": 24,
             "x": 0,
-            "y": 22
+            "y": 15
           },
           "id": 76,
           "options": {
@@ -7446,21 +7476,17 @@
                     "blocking_session_id",
                     "context_switches",
                     "database_name",
-                    "granted_memory",
                     "host_name",
                     "login_name",
                     "login_time",
-                    "max_used_memory",
-                    "physical_io",
                     "program_name",
-                    "query_plan",
                     "request_id",
                     "session_id",
                     "sql_command",
                     "sql_text",
                     "status",
-                    "tempdb_current",
                     "unique_key",
+                    "query_plan",
                     "wait_info",
                     "Value #start_time",
                     "Value #reads",
@@ -7477,8 +7503,7 @@
                     "Value #granted_memory",
                     "Value #requested_memory",
                     "Value #max_used_memory",
-                    "physical_reads",
-                    "requested_memory"
+                    "memory_info"
                   ]
                 }
               }
@@ -7504,14 +7529,14 @@
                   "instance": true,
                   "job": true,
                   "login_time": false,
-                  "memory_info": true,
+                  "memory_info": false,
                   "query_plan": false,
                   "request_id": false,
                   "target": true,
                   "tasks": true,
                   "tran_log_writes": true,
                   "tran_start_time": true,
-                  "unique_key": true
+                  "unique_key": false
                 },
                 "includeByName": {},
                 "indexByName": {
@@ -7628,8 +7653,8 @@
       },
       {
         "current": {
-          "text": "1775042347000",
-          "value": "1775042347000"
+          "text": "1775048978000",
+          "value": "1775048978000"
         },
         "datasource": {
           "type": "prometheus",
@@ -7689,8 +7714,8 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": "1775042347000",
-          "value": "1775042347000"
+          "text": "",
+          "value": ""
         },
         "datasource": {
           "type": "prometheus",
@@ -7713,13 +7738,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "SQL Exporter Metrics",
   "uid": "sql-exporter-metrics-v2",
-  "version": 36,
+  "version": 40,
   "weekStart": ""
 }
