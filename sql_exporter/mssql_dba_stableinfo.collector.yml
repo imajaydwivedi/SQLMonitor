@@ -8,7 +8,7 @@
 collector_name: mssql_dba_stableinfo
 
 # Similar to global.min_interval, but applies to the queries defined by this collector only.
-min_interval: 10m
+min_interval: 1m
 
 metrics:
   #

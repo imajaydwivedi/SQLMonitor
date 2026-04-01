@@ -719,7 +719,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 5
+            "y": 148
           },
           "id": 10,
           "options": {
@@ -838,7 +838,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 5
+            "y": 148
           },
           "id": 11,
           "options": {
@@ -948,7 +948,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 5
+            "y": 148
           },
           "id": 12,
           "options": {
@@ -1081,7 +1081,7 @@
             "h": 7,
             "w": 6,
             "x": 0,
-            "y": 848
+            "y": 2
           },
           "id": 14,
           "options": {
@@ -1191,7 +1191,7 @@
             "h": 7,
             "w": 6,
             "x": 6,
-            "y": 848
+            "y": 2
           },
           "id": 15,
           "options": {
@@ -1281,7 +1281,7 @@
             "h": 7,
             "w": 4,
             "x": 12,
-            "y": 848
+            "y": 2
           },
           "id": 16,
           "options": {
@@ -1345,7 +1345,7 @@
             "h": 7,
             "w": 4,
             "x": 16,
-            "y": 848
+            "y": 2
           },
           "id": 54,
           "options": {
@@ -1409,7 +1409,7 @@
             "h": 7,
             "w": 4,
             "x": 20,
-            "y": 848
+            "y": 2
           },
           "id": 55,
           "options": {
@@ -1484,7 +1484,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 974
+            "y": 9
           },
           "id": 17,
           "options": {
@@ -1548,7 +1548,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 981
+            "y": 137
           },
           "id": 18,
           "options": {
@@ -1653,7 +1653,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 849
+            "y": 1269
           },
           "id": 20,
           "options": {
@@ -1754,7 +1754,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 849
+            "y": 1269
           },
           "id": 21,
           "options": {
@@ -1873,7 +1873,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 849
+            "y": 1269
           },
           "id": 22,
           "options": {
@@ -1997,7 +1997,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 850
+            "y": 1270
           },
           "id": 24,
           "options": {
@@ -2116,7 +2116,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 850
+            "y": 1270
           },
           "id": 25,
           "options": {
@@ -2244,7 +2244,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 850
+            "y": 1270
           },
           "id": 26,
           "options": {
@@ -2359,7 +2359,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 851
+            "y": 1271
           },
           "id": 28,
           "options": {
@@ -2478,7 +2478,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 851
+            "y": 1271
           },
           "id": 29,
           "options": {
@@ -2615,7 +2615,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 851
+            "y": 1271
           },
           "id": 30,
           "options": {
@@ -2725,7 +2725,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 942
+            "y": 1362
           },
           "id": 31,
           "options": {
@@ -2853,7 +2853,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 942
+            "y": 1362
           },
           "id": 32,
           "options": {
@@ -2972,7 +2972,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 942
+            "y": 1362
           },
           "id": 33,
           "options": {
@@ -3096,7 +3096,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 852
+            "y": 1272
           },
           "id": 35,
           "options": {
@@ -3215,7 +3215,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 852
+            "y": 1272
           },
           "id": 36,
           "options": {
@@ -3325,7 +3325,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 852
+            "y": 1272
           },
           "id": 37,
           "options": {
@@ -3458,7 +3458,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 853
+            "y": 1273
           },
           "id": 39,
           "options": {
@@ -3577,7 +3577,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 853
+            "y": 1273
           },
           "id": 40,
           "options": {
@@ -3705,7 +3705,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 853
+            "y": 1273
           },
           "id": 41,
           "options": {
@@ -3820,7 +3820,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 854
+            "y": 1274
           },
           "id": 43,
           "options": {
@@ -3921,7 +3921,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 854
+            "y": 1274
           },
           "id": 44,
           "options": {
@@ -4022,7 +4022,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 854
+            "y": 1274
           },
           "id": 45,
           "options": {
@@ -4137,7 +4137,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 855
+            "y": 1275
           },
           "id": 47,
           "options": {
@@ -4256,7 +4256,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 855
+            "y": 1275
           },
           "id": 48,
           "options": {
@@ -4375,7 +4375,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 855
+            "y": 1275
           },
           "id": 49,
           "options": {
@@ -4499,7 +4499,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 856
+            "y": 1276
           },
           "id": 51,
           "options": {
@@ -4618,7 +4618,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 856
+            "y": 1276
           },
           "id": 52,
           "options": {
@@ -4737,7 +4737,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 856
+            "y": 1276
           },
           "id": 53,
           "options": {
@@ -5065,7 +5065,7 @@
             "h": 11,
             "w": 19,
             "x": 0,
-            "y": 11
+            "y": 447
           },
           "hideTimeOverride": true,
           "id": 61,
@@ -5576,7 +5576,7 @@
             "h": 10,
             "w": 19,
             "x": 0,
-            "y": 858
+            "y": 1278
           },
           "id": 62,
           "options": {
@@ -5999,7 +5999,7 @@
             "h": 9,
             "w": 19,
             "x": 0,
-            "y": 880
+            "y": 1300
           },
           "id": 63,
           "options": {
@@ -6303,7 +6303,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 859
+            "y": 1279
           },
           "id": 68,
           "interval": "5m",
@@ -6414,6 +6414,10 @@
                   {
                     "id": "custom.width",
                     "value": 242
+                  },
+                  {
+                    "id": "custom.hideFrom.viz",
+                    "value": true
                   }
                 ]
               },
@@ -6570,6 +6574,24 @@
                   {
                     "id": "unit",
                     "value": "ms"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "query_plan"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Paste The Plan",
+                        "url": "http://localhost:8080/pastetheplan-bridge.html?key=${__data.fields.unique_key}&server=${Server}"
+                      }
+                    ]
                   }
                 ]
               }
@@ -6827,8 +6849,10 @@
                     "context_switches",
                     "database_name",
                     "host_name",
+                    "implicit_tran",
                     "login_name",
                     "login_time",
+                    "memory_info",
                     "program_name",
                     "query_plan",
                     "request_id",
@@ -6853,7 +6877,8 @@
                     "Value #tempdb_current",
                     "Value #granted_memory",
                     "Value #requested_memory",
-                    "Value #max_used_memory"
+                    "Value #max_used_memory",
+                    "tran_log_writes"
                   ]
                 }
               }
@@ -7650,6 +7675,744 @@
       ],
       "title": "WhoIsActive - For Duration - Latest @ ${whoisactive_collection_time:date:YYYY-MM-DD HH:mm}",
       "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 78,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "description": "Latest collected values from sys.configurations — one row per configuration setting.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 24,
+            "x": 0,
+            "y": 16
+          },
+          "id": 77,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true
+          },
+          "pluginVersion": "12.4.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_config__value{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "config_value"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_config__value_in_use{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "config_value_in_use"
+            }
+          ],
+          "title": "sys.configurations - Latest",
+          "transformations": [
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "exported_job": true,
+                  "instance": true,
+                  "job": true,
+                  "target": true
+                },
+                "includeByName": {},
+                "indexByName": {
+                  "Value #config_value": 2,
+                  "Value #config_value_in_use": 3,
+                  "config_description": 1,
+                  "config_name": 0
+                },
+                "renameByName": {
+                  "Value #config_value": "Value",
+                  "Value #config_value_in_use": "Value In Use",
+                  "config_description": "Description",
+                  "config_name": "Config Name"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "title": "Stable Info - sys.configurations - Latest",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 80,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "description": "Configurations that changed at least once within the selected time range. Only rows with >= 1 change are shown.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 17
+          },
+          "id": 79,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true
+          },
+          "pluginVersion": "12.4.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "changes(mssql_config__value{instance=\"$Server\"}[$__range])",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "changes_value"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_config__value{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "current_value"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_config__value_in_use{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "current_value_in_use"
+            }
+          ],
+          "title": "sys.configurations - Changed in Range",
+          "transformations": [
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "filterByValue",
+              "options": {
+                "filters": [
+                  {
+                    "config": {
+                      "id": "greaterOrEqual",
+                      "options": {
+                        "value": 1
+                      }
+                    },
+                    "fieldName": "Value #changes_value"
+                  }
+                ],
+                "match": "any",
+                "type": "include"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "instance": true
+                },
+                "indexByName": {
+                  "Value #changes_value": 4,
+                  "Value #current_value": 2,
+                  "Value #current_value_in_use": 3,
+                  "config_description": 1,
+                  "config_name": 0
+                },
+                "renameByName": {
+                  "Value #changes_value": "# Changes",
+                  "Value #current_value": "Current Value",
+                  "Value #current_value_in_use": "Current Value In Use",
+                  "config_description": "Description",
+                  "config_name": "Config Name"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "title": "Stable Info - sys.configurations - Changes",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 82,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "description": "Latest collected values from sys.databases for key database settings — one row per database.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 24,
+            "x": 0,
+            "y": 18
+          },
+          "id": 81,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true
+          },
+          "pluginVersion": "12.4.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__state{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "state"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__recovery_model{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "recovery_model"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__compatibility_level{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "compat_level"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_read_only{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_read_only"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_trustworthy_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_trustworthy_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_cdc_enabled{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_cdc_enabled"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_query_store_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_query_store_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_encrypted{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_encrypted"
+            }
+          ],
+          "title": "sys.databases - Latest",
+          "transformations": [
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "Value #recovery_model": true,
+                  "Value #state": true,
+                  "__name__": true,
+                  "exported_job": true,
+                  "instance": true,
+                  "job": true,
+                  "target": true
+                },
+                "includeByName": {},
+                "indexByName": {
+                  "Value #compat_level": 3,
+                  "Value #is_cdc_enabled": 6,
+                  "Value #is_encrypted": 8,
+                  "Value #is_query_store_on": 7,
+                  "Value #is_read_only": 4,
+                  "Value #is_trustworthy_on": 5,
+                  "db_name": 0,
+                  "recovery_model_desc": 2,
+                  "state_desc": 1
+                },
+                "renameByName": {
+                  "Value #compat_level": "Compat Level",
+                  "Value #is_cdc_enabled": "CDC",
+                  "Value #is_encrypted": "Encrypted",
+                  "Value #is_query_store_on": "Query Store",
+                  "Value #is_read_only": "Read Only",
+                  "Value #is_trustworthy_on": "Trustworthy",
+                  "db_name": "Database",
+                  "recovery_model_desc": "Recovery Model",
+                  "state_desc": "State"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "title": "Stable Info - sys.databases - Latest",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 84,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "description": "Databases where at least one key setting changed within the selected time range. Numbers indicate how many times each metric changed. Databases with no changes are not shown.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 11,
+            "w": 24,
+            "x": 0,
+            "y": 31
+          },
+          "id": 83,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true
+          },
+          "pluginVersion": "12.4.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "changes(mssql_db__state{instance=\"$Server\"}[$__range]) > 0",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "state_changes"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "changes(mssql_db__recovery_model{instance=\"$Server\"}[$__range]) > 0",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "recovery_model_changes"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "changes(mssql_db__compatibility_level{instance=\"$Server\"}[$__range]) > 0",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "compat_level_changes"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "changes(mssql_db__is_read_only{instance=\"$Server\"}[$__range]) > 0",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_read_only_changes"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "changes(mssql_db__is_trustworthy_on{instance=\"$Server\"}[$__range]) > 0",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_trustworthy_changes"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "changes(mssql_db__is_cdc_enabled{instance=\"$Server\"}[$__range]) > 0",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_cdc_changes"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "changes(mssql_db__is_query_store_on{instance=\"$Server\"}[$__range]) > 0",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_query_store_changes"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "changes(mssql_db__is_encrypted{instance=\"$Server\"}[$__range]) > 0",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_encrypted_changes"
+            }
+          ],
+          "title": "sys.databases - Changed in Range",
+          "transformations": [
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "instance": true
+                },
+                "indexByName": {
+                  "Value #compat_level_changes": 5,
+                  "Value #is_cdc_changes": 8,
+                  "Value #is_encrypted_changes": 10,
+                  "Value #is_query_store_changes": 9,
+                  "Value #is_read_only_changes": 6,
+                  "Value #is_trustworthy_changes": 7,
+                  "Value #recovery_model_changes": 3,
+                  "Value #state_changes": 1,
+                  "db_name": 0,
+                  "recovery_model_desc": 4,
+                  "state_desc": 2
+                },
+                "renameByName": {
+                  "Value #compat_level_changes": "Compat Level Changes",
+                  "Value #is_cdc_changes": "CDC Changes",
+                  "Value #is_encrypted_changes": "Encrypted Changes",
+                  "Value #is_query_store_changes": "Query Store Changes",
+                  "Value #is_read_only_changes": "Read Only Changes",
+                  "Value #is_trustworthy_changes": "Trustworthy Changes",
+                  "Value #recovery_model_changes": "Recovery Model Changes",
+                  "Value #state_changes": "State Changes",
+                  "db_name": "Database",
+                  "recovery_model_desc": "Current Recovery Model",
+                  "state_desc": "Current State"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "title": "Stable Info - sys.databases - Changes",
+      "type": "row"
     }
   ],
   "preload": false,
@@ -7792,6 +8555,6 @@
   "timezone": "browser",
   "title": "SQL Exporter Metrics",
   "uid": "sql-exporter-metrics-v2",
-  "version": 40,
+  "version": 50,
   "weekStart": ""
 }
