@@ -1081,7 +1081,7 @@
             "h": 7,
             "w": 6,
             "x": 0,
-            "y": 401
+            "y": 628
           },
           "id": 14,
           "options": {
@@ -1191,7 +1191,7 @@
             "h": 7,
             "w": 6,
             "x": 6,
-            "y": 401
+            "y": 628
           },
           "id": 15,
           "options": {
@@ -1281,7 +1281,7 @@
             "h": 7,
             "w": 4,
             "x": 12,
-            "y": 401
+            "y": 628
           },
           "id": 16,
           "options": {
@@ -1345,7 +1345,7 @@
             "h": 7,
             "w": 4,
             "x": 16,
-            "y": 401
+            "y": 628
           },
           "id": 54,
           "options": {
@@ -1409,7 +1409,7 @@
             "h": 7,
             "w": 4,
             "x": 20,
-            "y": 401
+            "y": 628
           },
           "id": 55,
           "options": {
@@ -1484,7 +1484,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 527
+            "y": 754
           },
           "id": 17,
           "options": {
@@ -1548,7 +1548,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 534
+            "y": 761
           },
           "id": 18,
           "options": {
@@ -1653,7 +1653,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 402
+            "y": 629
           },
           "id": 20,
           "options": {
@@ -1754,7 +1754,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 402
+            "y": 629
           },
           "id": 21,
           "options": {
@@ -1873,7 +1873,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 402
+            "y": 629
           },
           "id": 22,
           "options": {
@@ -1997,7 +1997,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 403
+            "y": 630
           },
           "id": 24,
           "options": {
@@ -2116,7 +2116,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 403
+            "y": 630
           },
           "id": 25,
           "options": {
@@ -2244,7 +2244,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 403
+            "y": 630
           },
           "id": 26,
           "options": {
@@ -2359,7 +2359,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 404
+            "y": 631
           },
           "id": 28,
           "options": {
@@ -2478,7 +2478,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 404
+            "y": 631
           },
           "id": 29,
           "options": {
@@ -2615,7 +2615,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 404
+            "y": 631
           },
           "id": 30,
           "options": {
@@ -2725,7 +2725,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 495
+            "y": 722
           },
           "id": 31,
           "options": {
@@ -2853,7 +2853,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 495
+            "y": 722
           },
           "id": 32,
           "options": {
@@ -2972,7 +2972,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 495
+            "y": 722
           },
           "id": 33,
           "options": {
@@ -3096,7 +3096,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 405
+            "y": 632
           },
           "id": 35,
           "options": {
@@ -3215,7 +3215,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 405
+            "y": 632
           },
           "id": 36,
           "options": {
@@ -3325,7 +3325,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 405
+            "y": 632
           },
           "id": 37,
           "options": {
@@ -3458,7 +3458,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 406
+            "y": 633
           },
           "id": 39,
           "options": {
@@ -3577,7 +3577,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 406
+            "y": 633
           },
           "id": 40,
           "options": {
@@ -3705,7 +3705,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 406
+            "y": 633
           },
           "id": 41,
           "options": {
@@ -3820,7 +3820,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 407
+            "y": 634
           },
           "id": 43,
           "options": {
@@ -3921,7 +3921,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 407
+            "y": 634
           },
           "id": 44,
           "options": {
@@ -4022,7 +4022,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 407
+            "y": 634
           },
           "id": 45,
           "options": {
@@ -4137,7 +4137,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 408
+            "y": 635
           },
           "id": 47,
           "options": {
@@ -4256,7 +4256,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 408
+            "y": 635
           },
           "id": 48,
           "options": {
@@ -4375,7 +4375,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 408
+            "y": 635
           },
           "id": 49,
           "options": {
@@ -4499,7 +4499,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 409
+            "y": 636
           },
           "id": 51,
           "options": {
@@ -4618,7 +4618,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 409
+            "y": 636
           },
           "id": 52,
           "options": {
@@ -4737,7 +4737,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 409
+            "y": 636
           },
           "id": 53,
           "options": {
@@ -5065,7 +5065,7 @@
             "h": 11,
             "w": 19,
             "x": 0,
-            "y": 211
+            "y": 11
           },
           "hideTimeOverride": true,
           "id": 61,
@@ -5576,7 +5576,7 @@
             "h": 10,
             "w": 19,
             "x": 0,
-            "y": 411
+            "y": 638
           },
           "id": 62,
           "options": {
@@ -5999,7 +5999,7 @@
             "h": 9,
             "w": 19,
             "x": 0,
-            "y": 433
+            "y": 660
           },
           "id": 63,
           "options": {
@@ -6303,7 +6303,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 412
+            "y": 639
           },
           "id": 68,
           "interval": "5m",
@@ -6404,6 +6404,18 @@
                     "value": "dateTimeAsIso"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "unique_key"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 242
+                  }
+                ]
               }
             ]
           },
@@ -6411,7 +6423,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 76
+            "y": 14
           },
           "id": 69,
           "options": {
@@ -6545,14 +6557,71 @@
               "legendFormat": "__auto",
               "range": false,
               "refId": "collection_time_utc"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__tasks{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "tasks"
             }
           ],
           "title": "WhoIsActive",
           "transformations": [
             {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "additional_info",
+                    "avg_elapsed_time",
+                    "blocked_session_count",
+                    "blocking_session_id",
+                    "context_switches",
+                    "database_name",
+                    "granted_memory",
+                    "host_name",
+                    "login_name",
+                    "login_time",
+                    "max_used_memory",
+                    "physical_io",
+                    "physical_reads",
+                    "program_name",
+                    "query_plan",
+                    "request_id",
+                    "requested_memory",
+                    "session_id",
+                    "sql_command",
+                    "sql_text",
+                    "status",
+                    "tempdb_current",
+                    "unique_key",
+                    "wait_info",
+                    "Value #start_time",
+                    "Value #reads",
+                    "Value #used_memory",
+                    "Value #cpu",
+                    "Value #open_tran_count",
+                    "Value #writes",
+                    "Value #tempdb_allocations",
+                    "Value #percent_complete",
+                    "Value #collection_time_utc",
+                    "Value #tasks"
+                  ]
+                }
+              }
+            },
+            {
               "id": "joinByField",
               "options": {
-                "byField": "session_id",
+                "byField": "unique_key",
                 "mode": "outer"
               }
             },
@@ -6606,7 +6675,8 @@
                   "target 5": true,
                   "target 6": true,
                   "target 7": true,
-                  "target 8": true
+                  "target 8": true,
+                  "unique_key": false
                 },
                 "includeByName": {},
                 "indexByName": {
@@ -6688,11 +6758,15 @@
                   "Value #collection_time_utc": "collection_time",
                   "Value #cpu": "cpu",
                   "Value #open_tran_count": "open_tran_count",
+                  "Value #percent_complete": "percent_complete",
                   "Value #reads": "reads",
                   "Value #start_time": "start_time",
+                  "Value #tasks": "tasks",
                   "Value #tempdb_allocations": "tempdb_allocations",
                   "Value #used_memory": "used_memory",
                   "Value #writes": "writes",
+                  "max_used_memory": "",
+                  "requested_memory": "",
                   "tempdb_current": ""
                 }
               }
@@ -6819,10 +6893,10 @@
             ]
           },
           "gridPos": {
-            "h": 10,
+            "h": 11,
             "w": 24,
             "x": 0,
-            "y": 15
+            "y": 22
           },
           "id": 73,
           "options": {
@@ -6978,66 +7052,120 @@
                     "job",
                     "target"
                   ]
+                },
+                "include": {
+                  "names": [
+                    "additional_info",
+                    "avg_elapsed_time",
+                    "blocked_session_count",
+                    "blocking_session_id",
+                    "context_switches",
+                    "database_name",
+                    "host_name",
+                    "login_name",
+                    "login_time",
+                    "physical_io",
+                    "physical_reads",
+                    "program_name",
+                    "request_id",
+                    "session_id",
+                    "sql_command",
+                    "sql_text",
+                    "status",
+                    "tempdb_current",
+                    "unique_key",
+                    "wait_info",
+                    "query_plan",
+                    "Value #start_time",
+                    "Value #reads",
+                    "Value #used_memory",
+                    "Value #cpu",
+                    "Value #open_tran_count",
+                    "Value #writes",
+                    "Value #tempdb_allocations",
+                    "Value #percent_complete",
+                    "Value #collection_time_utc",
+                    "granted_memory",
+                    "max_used_memory",
+                    "requested_memory"
+                  ]
                 }
               }
             },
             {
-              "id": "merge",
-              "options": {}
+              "id": "joinByField",
+              "options": {
+                "byField": "unique_key",
+                "mode": "outer"
+              }
             },
             {
               "id": "organize",
               "options": {
                 "excludeByName": {
-                  "Value #collection_time_utc": true,
+                  "Value #collection_time_utc": false,
                   "__name__": true,
-                  "additional_info": true,
-                  "avg_elapsed_time": true,
-                  "context_switches": true,
+                  "additional_info": false,
+                  "avg_elapsed_time": false,
+                  "context_switches": false,
                   "exported_job": true,
-                  "granted_memory": true,
+                  "granted_memory": false,
                   "implicit_tran": true,
                   "instance": true,
                   "job": true,
-                  "login_time": true,
-                  "max_used_memory": true,
+                  "login_time": false,
+                  "max_used_memory": false,
                   "memory_info": true,
-                  "physical_reads": true,
-                  "query_plan": true,
-                  "request_id": true,
-                  "requested_memory": true,
+                  "physical_reads": false,
+                  "query_plan": false,
+                  "request_id": false,
+                  "requested_memory": false,
                   "target": true,
                   "tasks": true,
-                  "tempdb_current": true,
+                  "tempdb_current": false,
                   "tran_log_writes": true,
-                  "tran_start_time": true
+                  "tran_start_time": true,
+                  "unique_key": true
                 },
                 "includeByName": {},
                 "indexByName": {
-                  "Time": 0,
-                  "Value #cpu": 12,
-                  "Value #open_tran_count": 16,
-                  "Value #percent_complete": 18,
+                  "Value #collection_time_utc": 0,
+                  "Value #cpu": 16,
+                  "Value #open_tran_count": 12,
+                  "Value #percent_complete": 21,
                   "Value #reads": 13,
-                  "Value #start_time": 11,
+                  "Value #start_time": 30,
                   "Value #tempdb_allocations": 17,
                   "Value #used_memory": 15,
                   "Value #writes": 14,
+                  "additional_info": 26,
+                  "avg_elapsed_time": 11,
                   "blocked_session_count": 8,
                   "blocking_session_id": 9,
-                  "database_name": 2,
-                  "host_name": 10,
+                  "context_switches": 27,
+                  "database_name": 4,
+                  "granted_memory": 23,
+                  "host_name": 29,
                   "login_name": 3,
+                  "login_time": 31,
+                  "max_used_memory": 24,
                   "physical_io": 20,
-                  "program_name": 4,
+                  "physical_reads": 19,
+                  "program_name": 2,
+                  "query_plan": 28,
+                  "request_id": 32,
+                  "requested_memory": 22,
                   "session_id": 1,
                   "sql_command": 7,
-                  "sql_text": 19,
+                  "sql_text": 10,
                   "status": 5,
+                  "tempdb_current": 18,
+                  "unique_key": 25,
                   "wait_info": 6
                 },
                 "renameByName": {
                   "Time": "Collection Time",
+                  "Value #collection_time_utc": "Collection Time",
                   "Value #cpu": "cpu",
                   "Value #open_tran_count": "open_tran_count",
                   "Value #percent_complete": "percent_complete",
@@ -7190,13 +7318,13 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "SQL Exporter Metrics",
   "uid": "sql-exporter-metrics-v2",
-  "version": 23,
+  "version": 30,
   "weekStart": ""
 }

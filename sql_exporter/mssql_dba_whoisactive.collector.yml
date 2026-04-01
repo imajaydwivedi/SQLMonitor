@@ -19,6 +19,7 @@ metrics:
     type: gauge
     help: 'Start time of the session along with other session details.'
     key_labels:
+      - unique_key
       - session_id
       - program_name
       - login_name
@@ -37,7 +38,6 @@ metrics:
       - max_used_memory
       - requested_memory
       - granted_memory
-      - tasks
       - tran_start_time
       - tran_log_writes
       - implicit_tran
@@ -54,7 +54,7 @@ metrics:
     type: gauge
     help: 'Number of reads for the session.'
     key_labels:
-      - session_id
+      - unique_key
     values: [reads]
     query_ref: mssql_sp_whoisactive
 
@@ -62,7 +62,7 @@ metrics:
     type: gauge
     help: 'Used memory for the session.'
     key_labels:
-      - session_id
+      - unique_key
     values: [used_memory]
     query_ref: mssql_sp_whoisactive
 
@@ -70,7 +70,7 @@ metrics:
     type: gauge
     help: 'CPU used by the session.'
     key_labels:
-      - session_id
+      - unique_key
     values: [CPU]
     query_ref: mssql_sp_whoisactive
 
@@ -78,7 +78,7 @@ metrics:
     type: gauge
     help: 'Open transaction count for the session.'
     key_labels:
-      - session_id
+      - unique_key
     values: [open_tran_count]
     query_ref: mssql_sp_whoisactive
 
@@ -86,7 +86,7 @@ metrics:
     type: gauge
     help: 'Number of writes for the session.'
     key_labels:
-      - session_id
+      - unique_key
     values: [writes]
     query_ref: mssql_sp_whoisactive
 
@@ -94,7 +94,7 @@ metrics:
     type: gauge
     help: 'Tempdb allocations for the session.'
     key_labels:
-      - session_id
+      - unique_key
     values: [tempdb_allocations]
     query_ref: mssql_sp_whoisactive
 
@@ -102,7 +102,7 @@ metrics:
     type: gauge
     help: 'Percent complete for the session.'
     key_labels:
-      - session_id
+      - unique_key
     values: [percent_complete]
     query_ref: mssql_sp_whoisactive
 
@@ -110,8 +110,16 @@ metrics:
     type: gauge
     help: 'Collection time for the session snapshot.'
     key_labels:
-      - session_id
+      - unique_key
     values: [collection_time_utc]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__tasks
+    type: gauge
+    help: 'Number of tasks for the session.'
+    key_labels:
+      - unique_key
+    values: [tasks]
     query_ref: mssql_sp_whoisactive
 
 queries:
@@ -166,7 +174,8 @@ queries:
             @destination_table = ''#whoisactive'';
 
       SELECT
-        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), [start_time]) AS bigint) AS [start_time],
+        [unique_key] = convert(varchar(30),getdate(),121) + '' | '' + convert(varchar(10),[session_id]),
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), getutcdate()) AS bigint) AS [collection_time_utc],
         [session_id],
         COALESCE([program_name], '''') AS [program_name],
         [login_name],
@@ -174,18 +183,18 @@ queries:
         [status],
         COALESCE([wait_info], '''') AS [wait_info],
         COALESCE([sql_command], '''') AS [sql_command],
-        [blocked_session_count],
-        [blocking_session_id],
+        COALESCE([blocked_session_count], 0) AS [blocked_session_count],
+        COALESCE([blocking_session_id],'''') AS [blocking_session_id],
         COALESCE([sql_text], '''') AS [sql_text],
-        [avg_elapsed_time],
-        [physical_io],
-        [physical_reads],
-        [tempdb_current],
-        [context_switches],
-        [max_used_memory],
-        [requested_memory],
-        [granted_memory],
-        [tasks],
+        COALESCE([avg_elapsed_time], 0) AS [avg_elapsed_time],
+        COALESCE([physical_io], 0) AS [physical_io],
+        COALESCE([physical_reads], 0) AS [physical_reads],
+        COALESCE([tempdb_current], 0) AS [tempdb_current],
+        COALESCE([context_switches], 0) AS [context_switches],
+        COALESCE([max_used_memory], 0) AS [max_used_memory],
+        COALESCE([requested_memory], 0) AS [requested_memory],
+        COALESCE([granted_memory], 0) AS [granted_memory],
+        COALESCE([tasks], 0) AS [tasks],
         COALESCE(CONVERT(nvarchar(33), [tran_start_time], 126), '''') AS [tran_start_time],
         COALESCE([tran_log_writes], '''') AS [tran_log_writes],
         COALESCE([implicit_tran], '''') AS [implicit_tran],
@@ -194,15 +203,15 @@ queries:
         COALESCE(CONVERT(nvarchar(max), [additional_info]), '''') AS [additional_info],
         COALESCE(CONVERT(nvarchar(max), [memory_info]), '''') AS [memory_info],
         COALESCE(CONVERT(nvarchar(33), [login_time], 126), '''') AS [login_time],
-        [request_id],
-        [reads],
+        COALESCE([request_id], 0) AS [request_id],
+        COALESCE([reads], 0) AS [reads],
         [used_memory],
-        [CPU],
-        [open_tran_count],
-        [writes],
-        [tempdb_allocations],
-        [percent_complete],
-        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), getutcdate()) AS bigint) AS [collection_time_utc]
+        COALESCE([CPU], 0) AS [CPU],
+        COALESCE([open_tran_count], 0) AS [open_tran_count],
+        COALESCE([writes], 0) AS [writes],
+        COALESCE([tempdb_allocations], 0) AS [tempdb_allocations],
+        COALESCE([percent_complete], 0) AS [percent_complete],
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), [start_time]) AS bigint) AS [start_time]
       FROM #whoisactive;
       ');
 
