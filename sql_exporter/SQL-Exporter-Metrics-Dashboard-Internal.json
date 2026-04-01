@@ -1031,7 +1031,7 @@
             "h": 7,
             "w": 6,
             "x": 0,
-            "y": 168
+            "y": 401
           },
           "id": 14,
           "options": {
@@ -1141,7 +1141,7 @@
             "h": 7,
             "w": 6,
             "x": 6,
-            "y": 168
+            "y": 401
           },
           "id": 15,
           "options": {
@@ -1231,7 +1231,7 @@
             "h": 7,
             "w": 4,
             "x": 12,
-            "y": 168
+            "y": 401
           },
           "id": 16,
           "options": {
@@ -1295,7 +1295,7 @@
             "h": 7,
             "w": 4,
             "x": 16,
-            "y": 168
+            "y": 401
           },
           "id": 54,
           "options": {
@@ -1359,7 +1359,7 @@
             "h": 7,
             "w": 4,
             "x": 20,
-            "y": 168
+            "y": 401
           },
           "id": 55,
           "options": {
@@ -1434,7 +1434,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 294
+            "y": 527
           },
           "id": 17,
           "options": {
@@ -1498,7 +1498,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 301
+            "y": 534
           },
           "id": 18,
           "options": {
@@ -1603,7 +1603,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 169
+            "y": 402
           },
           "id": 20,
           "options": {
@@ -1704,7 +1704,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 169
+            "y": 402
           },
           "id": 21,
           "options": {
@@ -1823,7 +1823,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 169
+            "y": 402
           },
           "id": 22,
           "options": {
@@ -1947,7 +1947,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 170
+            "y": 403
           },
           "id": 24,
           "options": {
@@ -2066,7 +2066,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 170
+            "y": 403
           },
           "id": 25,
           "options": {
@@ -2194,7 +2194,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 170
+            "y": 403
           },
           "id": 26,
           "options": {
@@ -2309,7 +2309,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 171
+            "y": 404
           },
           "id": 28,
           "options": {
@@ -2428,7 +2428,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 171
+            "y": 404
           },
           "id": 29,
           "options": {
@@ -2565,7 +2565,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 171
+            "y": 404
           },
           "id": 30,
           "options": {
@@ -2675,7 +2675,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 262
+            "y": 495
           },
           "id": 31,
           "options": {
@@ -2803,7 +2803,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 262
+            "y": 495
           },
           "id": 32,
           "options": {
@@ -2922,7 +2922,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 262
+            "y": 495
           },
           "id": 33,
           "options": {
@@ -3046,7 +3046,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 172
+            "y": 405
           },
           "id": 35,
           "options": {
@@ -3165,7 +3165,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 172
+            "y": 405
           },
           "id": 36,
           "options": {
@@ -3275,7 +3275,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 172
+            "y": 405
           },
           "id": 37,
           "options": {
@@ -3408,7 +3408,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 173
+            "y": 406
           },
           "id": 39,
           "options": {
@@ -3527,7 +3527,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 173
+            "y": 406
           },
           "id": 40,
           "options": {
@@ -3655,7 +3655,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 173
+            "y": 406
           },
           "id": 41,
           "options": {
@@ -3770,7 +3770,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 174
+            "y": 407
           },
           "id": 43,
           "options": {
@@ -3871,7 +3871,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 174
+            "y": 407
           },
           "id": 44,
           "options": {
@@ -3972,7 +3972,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 174
+            "y": 407
           },
           "id": 45,
           "options": {
@@ -4087,7 +4087,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 175
+            "y": 408
           },
           "id": 47,
           "options": {
@@ -4206,7 +4206,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 175
+            "y": 408
           },
           "id": 48,
           "options": {
@@ -4325,7 +4325,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 175
+            "y": 408
           },
           "id": 49,
           "options": {
@@ -4449,7 +4449,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 176
+            "y": 409
           },
           "id": 51,
           "options": {
@@ -4568,7 +4568,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 176
+            "y": 409
           },
           "id": 52,
           "options": {
@@ -4687,7 +4687,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 176
+            "y": 409
           },
           "id": 53,
           "options": {
@@ -5015,7 +5015,7 @@
             "h": 11,
             "w": 19,
             "x": 0,
-            "y": 177
+            "y": 211
           },
           "hideTimeOverride": true,
           "id": 61,
@@ -5526,7 +5526,7 @@
             "h": 10,
             "w": 19,
             "x": 0,
-            "y": 178
+            "y": 411
           },
           "id": 62,
           "options": {
@@ -5949,7 +5949,7 @@
             "h": 9,
             "w": 19,
             "x": 0,
-            "y": 200
+            "y": 433
           },
           "id": 63,
           "options": {
@@ -6253,7 +6253,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 179
+            "y": 412
           },
           "id": 68,
           "interval": "5m",
@@ -6295,6 +6295,715 @@
         }
       ],
       "title": "Wait Stats - Trend -  \"__$SQLCPUCount CPUs__\" @ ${local_time_seconds:date:YYYY-MM-DD HH:mm:ss}",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 70,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 76
+          },
+          "id": 69,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true
+          },
+          "pluginVersion": "12.4.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__start_time{instance=\"$Server\"} * 1000",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "start_time"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__reads{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "reads"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__used_memory{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "used_memory"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__cpu{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "cpu"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__open_tran_count{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "open_tran_count"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__writes{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "writes"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__tempdb_allocations{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "tempdb_allocations"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__percent_complete{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "percent_complete"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__collection_time_utc{instance=\"$Server\"} * 1000",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "collection_time_utc"
+            }
+          ],
+          "title": "WhoIsActive",
+          "transformations": [
+            {
+              "id": "joinByField",
+              "options": {
+                "byField": "session_id",
+                "mode": "outer"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time 1": true,
+                  "Time 2": true,
+                  "Time 3": true,
+                  "Time 4": true,
+                  "Time 5": true,
+                  "Time 6": true,
+                  "Time 7": true,
+                  "Time 8": true,
+                  "Value #tempdb_allocations": false,
+                  "__name__ 1": true,
+                  "__name__ 2": true,
+                  "__name__ 3": true,
+                  "__name__ 4": true,
+                  "__name__ 5": true,
+                  "__name__ 6": true,
+                  "exported_job 1": true,
+                  "exported_job 2": true,
+                  "exported_job 3": true,
+                  "exported_job 4": true,
+                  "exported_job 5": true,
+                  "exported_job 6": true,
+                  "exported_job 7": true,
+                  "exported_job 8": true,
+                  "instance 1": true,
+                  "instance 2": true,
+                  "instance 3": true,
+                  "instance 4": true,
+                  "instance 5": true,
+                  "instance 6": true,
+                  "instance 7": true,
+                  "instance 8": true,
+                  "job 1": true,
+                  "job 2": true,
+                  "job 3": true,
+                  "job 4": true,
+                  "job 5": true,
+                  "job 6": true,
+                  "job 7": true,
+                  "job 8": true,
+                  "target 1": true,
+                  "target 2": true,
+                  "target 3": true,
+                  "target 4": true,
+                  "target 5": true,
+                  "target 6": true,
+                  "target 7": true,
+                  "target 8": true
+                },
+                "includeByName": {},
+                "indexByName": {
+                  "Time 1": 8,
+                  "Time 2": 27,
+                  "Time 3": 34,
+                  "Time 4": 41,
+                  "Time 5": 48,
+                  "Time 6": 55,
+                  "Time 7": 62,
+                  "Time 8": 68,
+                  "Value #collection_time_utc": 0,
+                  "Value #cpu": 47,
+                  "Value #open_tran_count": 54,
+                  "Value #reads": 33,
+                  "Value #start_time": 26,
+                  "Value #tempdb_allocations": 67,
+                  "Value #used_memory": 40,
+                  "Value #writes": 61,
+                  "__name__ 1": 9,
+                  "__name__ 2": 28,
+                  "__name__ 3": 35,
+                  "__name__ 4": 42,
+                  "__name__ 5": 49,
+                  "__name__ 6": 56,
+                  "additional_info": 10,
+                  "blocked_session_count": 11,
+                  "context_switches": 12,
+                  "database_name": 4,
+                  "exported_job 1": 13,
+                  "exported_job 2": 29,
+                  "exported_job 3": 36,
+                  "exported_job 4": 43,
+                  "exported_job 5": 50,
+                  "exported_job 6": 57,
+                  "exported_job 7": 63,
+                  "exported_job 8": 69,
+                  "host_name": 14,
+                  "instance 1": 15,
+                  "instance 2": 30,
+                  "instance 3": 37,
+                  "instance 4": 44,
+                  "instance 5": 51,
+                  "instance 6": 58,
+                  "instance 7": 64,
+                  "instance 8": 70,
+                  "job 1": 16,
+                  "job 2": 31,
+                  "job 3": 38,
+                  "job 4": 45,
+                  "job 5": 52,
+                  "job 6": 59,
+                  "job 7": 65,
+                  "job 8": 71,
+                  "login_name": 3,
+                  "login_time": 17,
+                  "physical_io": 18,
+                  "physical_reads": 19,
+                  "program_name": 2,
+                  "query_plan": 20,
+                  "request_id": 21,
+                  "session_id": 1,
+                  "sql_command": 7,
+                  "sql_text": 22,
+                  "status": 5,
+                  "target 1": 23,
+                  "target 2": 32,
+                  "target 3": 39,
+                  "target 4": 46,
+                  "target 5": 53,
+                  "target 6": 60,
+                  "target 7": 66,
+                  "target 8": 72,
+                  "tasks": 24,
+                  "tempdb_current": 25,
+                  "wait_info": 6
+                },
+                "renameByName": {
+                  "Value #collection_time_utc": "collection_time",
+                  "Value #cpu": "cpu",
+                  "Value #open_tran_count": "open_tran_count",
+                  "Value #reads": "reads",
+                  "Value #start_time": "start_time",
+                  "Value #tempdb_allocations": "tempdb_allocations",
+                  "Value #used_memory": "used_memory",
+                  "Value #writes": "writes",
+                  "tempdb_current": ""
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "title": "WhoIsActive - Latest Snapshot - ${whoisactive_collection_time:date:YYYY-MM-DD HH:mm}",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "id": 72,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "description": "Active sessions captured by sp_WhoIsActive. Respects the dashboard time range — all snapshots collected within the selected window are shown as individual rows (e.g. 2 sessions at 7:00 am + 3 sessions at 7:02 am = 5 rows). Rows are joined by session_id across metrics; the Prometheus scrape timestamp becomes the Collection Time column.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Collection Time"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 155
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "start_time"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "cpu"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "ms"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "used_memory"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "kbytes"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "percent_complete"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 15
+          },
+          "id": 73,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Collection Time"
+              }
+            ]
+          },
+          "pluginVersion": "12.4.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__start_time{instance=\"$Server\"} * 1000",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "start_time"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__reads{instance=\"$Server\"}",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "reads"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__used_memory{instance=\"$Server\"}",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "used_memory"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__cpu{instance=\"$Server\"}",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "cpu"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__open_tran_count{instance=\"$Server\"}",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "open_tran_count"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__writes{instance=\"$Server\"}",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "writes"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__tempdb_allocations{instance=\"$Server\"}",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "tempdb_allocations"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__percent_complete{instance=\"$Server\"}",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "percent_complete"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_whoisactive__collection_time_utc{instance=\"$Server\"} * 1000",
+              "format": "table",
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "collection_time_utc"
+            }
+          ],
+          "title": "WhoIsActive — Session History (respects dashboard time range)",
+          "transformations": [
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "byVariable": false,
+                "exclude": {
+                  "names": [
+                    "__name__",
+                    "exported_job",
+                    "instance",
+                    "job",
+                    "target"
+                  ]
+                }
+              }
+            },
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Value #collection_time_utc": true,
+                  "__name__": true,
+                  "additional_info": true,
+                  "avg_elapsed_time": true,
+                  "context_switches": true,
+                  "exported_job": true,
+                  "granted_memory": true,
+                  "implicit_tran": true,
+                  "instance": true,
+                  "job": true,
+                  "login_time": true,
+                  "max_used_memory": true,
+                  "memory_info": true,
+                  "physical_reads": true,
+                  "query_plan": true,
+                  "request_id": true,
+                  "requested_memory": true,
+                  "target": true,
+                  "tasks": true,
+                  "tempdb_current": true,
+                  "tran_log_writes": true,
+                  "tran_start_time": true
+                },
+                "includeByName": {},
+                "indexByName": {
+                  "Time": 0,
+                  "Value #cpu": 12,
+                  "Value #open_tran_count": 16,
+                  "Value #percent_complete": 18,
+                  "Value #reads": 13,
+                  "Value #start_time": 11,
+                  "Value #tempdb_allocations": 17,
+                  "Value #used_memory": 15,
+                  "Value #writes": 14,
+                  "blocked_session_count": 8,
+                  "blocking_session_id": 9,
+                  "database_name": 2,
+                  "host_name": 10,
+                  "login_name": 3,
+                  "physical_io": 20,
+                  "program_name": 4,
+                  "session_id": 1,
+                  "sql_command": 7,
+                  "sql_text": 19,
+                  "status": 5,
+                  "wait_info": 6
+                },
+                "renameByName": {
+                  "Time": "Collection Time",
+                  "Value #cpu": "cpu",
+                  "Value #open_tran_count": "open_tran_count",
+                  "Value #percent_complete": "percent_complete",
+                  "Value #reads": "reads",
+                  "Value #start_time": "start_time",
+                  "Value #tempdb_allocations": "tempdb_allocations",
+                  "Value #used_memory": "used_memory",
+                  "Value #writes": "writes"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "title": "WhoIsActive - For Duration - Latest @ ${whoisactive_collection_time:date:YYYY-MM-DD HH:mm}",
       "type": "row"
     }
   ],
@@ -6349,8 +7058,8 @@
       },
       {
         "current": {
-          "text": "1774866288000",
-          "value": "1774866288000"
+          "text": "1775032798000",
+          "value": "1775032798000"
         },
         "datasource": {
           "type": "prometheus",
@@ -6406,6 +7115,30 @@
         "query": "12",
         "skipUrlSync": true,
         "type": "constant"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "1775032798000",
+          "value": "1775032798000"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "query_result(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} * 1000)",
+        "hide": 2,
+        "name": "whoisactive_collection_time",
+        "options": [],
+        "query": {
+          "qryType": 3,
+          "query": "query_result(mssql_whoisactive__collection_time_utc{instance=\"$Server\"} * 1000)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "regex": "/.* ([0-9]+(\\.[0-9]+)?).*/",
+        "regexApplyTo": "value",
+        "type": "query"
       }
     ]
   },
@@ -6417,6 +7150,6 @@
   "timezone": "browser",
   "title": "SQL Exporter Metrics",
   "uid": "sql-exporter-metrics-v2",
-  "version": 12,
+  "version": 23,
   "weekStart": ""
 }
