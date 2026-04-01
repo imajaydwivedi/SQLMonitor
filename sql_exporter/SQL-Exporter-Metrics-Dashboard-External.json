@@ -121,7 +121,7 @@
             "h": 4,
             "w": 3,
             "x": 0,
-            "y": 1
+            "y": 75
           },
           "id": 66,
           "options": {
@@ -199,7 +199,7 @@
             "h": 4,
             "w": 3,
             "x": 3,
-            "y": 1
+            "y": 75
           },
           "id": 67,
           "options": {
@@ -265,7 +265,7 @@
             "h": 4,
             "w": 3,
             "x": 6,
-            "y": 1
+            "y": 75
           },
           "id": 4,
           "options": {
@@ -328,7 +328,7 @@
             "h": 4,
             "w": 3,
             "x": 9,
-            "y": 1
+            "y": 75
           },
           "id": 5,
           "options": {
@@ -401,7 +401,7 @@
             "h": 4,
             "w": 3,
             "x": 12,
-            "y": 1
+            "y": 75
           },
           "id": 6,
           "options": {
@@ -474,7 +474,7 @@
             "h": 4,
             "w": 3,
             "x": 15,
-            "y": 1
+            "y": 75
           },
           "id": 7,
           "options": {
@@ -545,7 +545,7 @@
             "h": 4,
             "w": 3,
             "x": 18,
-            "y": 1
+            "y": 75
           },
           "id": 8,
           "options": {
@@ -618,7 +618,7 @@
             "h": 4,
             "w": 3,
             "x": 21,
-            "y": 1
+            "y": 75
           },
           "id": 9,
           "options": {
@@ -719,7 +719,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 225
+            "y": 392
           },
           "id": 10,
           "options": {
@@ -838,7 +838,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 225
+            "y": 392
           },
           "id": 11,
           "options": {
@@ -948,7 +948,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 225
+            "y": 392
           },
           "id": 12,
           "options": {
@@ -1081,7 +1081,7 @@
             "h": 7,
             "w": 6,
             "x": 0,
-            "y": 2
+            "y": 76
           },
           "id": 14,
           "options": {
@@ -1191,7 +1191,7 @@
             "h": 7,
             "w": 6,
             "x": 6,
-            "y": 2
+            "y": 76
           },
           "id": 15,
           "options": {
@@ -1281,7 +1281,7 @@
             "h": 7,
             "w": 4,
             "x": 12,
-            "y": 2
+            "y": 76
           },
           "id": 16,
           "options": {
@@ -1345,7 +1345,7 @@
             "h": 7,
             "w": 4,
             "x": 16,
-            "y": 2
+            "y": 76
           },
           "id": 54,
           "options": {
@@ -1409,7 +1409,7 @@
             "h": 7,
             "w": 4,
             "x": 20,
-            "y": 2
+            "y": 76
           },
           "id": 55,
           "options": {
@@ -1484,7 +1484,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 9
+            "y": 83
           },
           "id": 17,
           "options": {
@@ -1548,7 +1548,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 214
+            "y": 381
           },
           "id": 18,
           "options": {
@@ -1653,7 +1653,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1346
+            "y": 1513
           },
           "id": 20,
           "options": {
@@ -1754,7 +1754,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1346
+            "y": 1513
           },
           "id": 21,
           "options": {
@@ -1873,7 +1873,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1346
+            "y": 1513
           },
           "id": 22,
           "options": {
@@ -1997,7 +1997,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1347
+            "y": 1514
           },
           "id": 24,
           "options": {
@@ -2116,7 +2116,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1347
+            "y": 1514
           },
           "id": 25,
           "options": {
@@ -2244,7 +2244,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1347
+            "y": 1514
           },
           "id": 26,
           "options": {
@@ -2359,7 +2359,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1348
+            "y": 1515
           },
           "id": 28,
           "options": {
@@ -2478,7 +2478,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1348
+            "y": 1515
           },
           "id": 29,
           "options": {
@@ -2615,7 +2615,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1348
+            "y": 1515
           },
           "id": 30,
           "options": {
@@ -2725,7 +2725,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1439
+            "y": 1606
           },
           "id": 31,
           "options": {
@@ -2853,7 +2853,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1439
+            "y": 1606
           },
           "id": 32,
           "options": {
@@ -2972,7 +2972,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1439
+            "y": 1606
           },
           "id": 33,
           "options": {
@@ -3096,7 +3096,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1349
+            "y": 1516
           },
           "id": 35,
           "options": {
@@ -3215,7 +3215,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1349
+            "y": 1516
           },
           "id": 36,
           "options": {
@@ -3325,7 +3325,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1349
+            "y": 1516
           },
           "id": 37,
           "options": {
@@ -3458,7 +3458,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1350
+            "y": 1517
           },
           "id": 39,
           "options": {
@@ -3577,7 +3577,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1350
+            "y": 1517
           },
           "id": 40,
           "options": {
@@ -3705,7 +3705,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1350
+            "y": 1517
           },
           "id": 41,
           "options": {
@@ -3820,7 +3820,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1351
+            "y": 1518
           },
           "id": 43,
           "options": {
@@ -3921,7 +3921,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1351
+            "y": 1518
           },
           "id": 44,
           "options": {
@@ -4022,7 +4022,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1351
+            "y": 1518
           },
           "id": 45,
           "options": {
@@ -4137,7 +4137,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1352
+            "y": 1519
           },
           "id": 47,
           "options": {
@@ -4256,7 +4256,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1352
+            "y": 1519
           },
           "id": 48,
           "options": {
@@ -4375,7 +4375,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1352
+            "y": 1519
           },
           "id": 49,
           "options": {
@@ -4499,7 +4499,7 @@
             "h": 7,
             "w": 8,
             "x": 0,
-            "y": 1353
+            "y": 1520
           },
           "id": 51,
           "options": {
@@ -4618,7 +4618,7 @@
             "h": 7,
             "w": 8,
             "x": 8,
-            "y": 1353
+            "y": 1520
           },
           "id": 52,
           "options": {
@@ -4737,7 +4737,7 @@
             "h": 7,
             "w": 8,
             "x": 16,
-            "y": 1353
+            "y": 1520
           },
           "id": 53,
           "options": {
@@ -5065,7 +5065,7 @@
             "h": 11,
             "w": 19,
             "x": 0,
-            "y": 524
+            "y": 691
           },
           "hideTimeOverride": true,
           "id": 61,
@@ -5576,7 +5576,7 @@
             "h": 10,
             "w": 19,
             "x": 0,
-            "y": 1355
+            "y": 1522
           },
           "id": 62,
           "options": {
@@ -5999,7 +5999,7 @@
             "h": 9,
             "w": 19,
             "x": 0,
-            "y": 1377
+            "y": 1544
           },
           "id": 63,
           "options": {
@@ -6303,7 +6303,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 1356
+            "y": 1523
           },
           "id": 68,
           "interval": "5m",
@@ -6601,7 +6601,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 88
           },
           "id": 75,
           "options": {
@@ -7302,7 +7302,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 15
+            "y": 89
           },
           "id": 76,
           "options": {
@@ -7729,7 +7729,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 16
+            "y": 90
           },
           "id": 77,
           "options": {
@@ -7821,7 +7821,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "description": "Configurations that changed at least once within the selected time range. Only rows with >= 1 change are shown.",
+          "description": "Configuration value change events within the selected time range. Each row represents one detected change between consecutive 10-minute collections.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -7853,15 +7853,28 @@
                 ]
               }
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated Time"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              }
+            ]
           },
           "gridPos": {
-            "h": 9,
+            "h": 10,
             "w": 24,
             "x": 0,
             "y": 17
           },
-          "id": 79,
+          "id": 89,
           "options": {
             "cellHeight": "sm",
             "showHeader": true
@@ -7875,12 +7888,13 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "changes(mssql_config__value{instance=\"$Server\"}[$__range])",
+              "expr": "mssql_config__value{instance=\"$Server\"} offset 10m != mssql_config__value{instance=\"$Server\"}",
               "format": "table",
-              "instant": true,
+              "instant": false,
+              "interval": "10m",
               "legendFormat": "__auto",
-              "range": false,
-              "refId": "changes_value"
+              "range": true,
+              "refId": "old_value"
             },
             {
               "datasource": {
@@ -7889,26 +7903,13 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_config__value{instance=\"$Server\"}",
+              "expr": "mssql_config__value{instance=\"$Server\"} != mssql_config__value{instance=\"$Server\"} offset 10m",
               "format": "table",
-              "instant": true,
+              "instant": false,
+              "interval": "10m",
               "legendFormat": "__auto",
-              "range": false,
-              "refId": "current_value"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "mssql_config__value_in_use{instance=\"$Server\"}",
-              "format": "table",
-              "instant": true,
-              "legendFormat": "__auto",
-              "range": false,
-              "refId": "current_value_in_use"
+              "range": true,
+              "refId": "new_value"
             }
           ],
           "title": "Stable Info - sys.configurations - Changed in Range",
@@ -7918,44 +7919,41 @@
               "options": {}
             },
             {
-              "id": "filterByValue",
-              "options": {
-                "filters": [
-                  {
-                    "config": {
-                      "id": "greaterOrEqual",
-                      "options": {
-                        "value": 1
-                      }
-                    },
-                    "fieldName": "Value #changes_value"
-                  }
-                ],
-                "match": "any",
-                "type": "include"
-              }
-            },
-            {
               "id": "organize",
               "options": {
                 "excludeByName": {
-                  "Time": true,
-                  "instance": true
+                  "__name__": true,
+                  "exported_job": true,
+                  "instance": true,
+                  "job": true,
+                  "target": true
                 },
                 "indexByName": {
-                  "Value #changes_value": 4,
-                  "Value #current_value": 2,
-                  "Value #current_value_in_use": 3,
-                  "config_description": 1,
-                  "config_name": 0
+                  "Time": 0,
+                  "Value #new_value": 4,
+                  "Value #old_value": 3,
+                  "config_description": 2,
+                  "config_name": 1
                 },
                 "renameByName": {
-                  "Value #changes_value": "# Changes",
-                  "Value #current_value": "Current Value",
-                  "Value #current_value_in_use": "Current Value In Use",
+                  "Time": "Updated Time",
+                  "Value #new_value": "New Value",
+                  "Value #old_value": "Old Value",
                   "config_description": "Description",
                   "config_name": "Config Name"
                 }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "desc": true,
+                    "field": "Updated Time"
+                  }
+                ]
               }
             }
           ],
@@ -7980,7 +7978,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "description": "Latest collected values from sys.databases for key database settings — one row per database.",
+          "description": "Latest sys.databases flag and feature settings — one row per database.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -8012,15 +8010,28 @@
                 ]
               }
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              }
+            ]
           },
           "gridPos": {
-            "h": 12,
+            "h": 9,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 1
           },
-          "id": 81,
+          "id": 87,
           "options": {
             "cellHeight": "sm",
             "showHeader": true
@@ -8034,40 +8045,12 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_db__state{instance=\"$Server\"}",
+              "expr": "mssql_db__collection_time_utc{instance=\"$Server\"} * 1000",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
               "range": false,
-              "refId": "state"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "mssql_db__recovery_model{instance=\"$Server\"}",
-              "format": "table",
-              "instant": true,
-              "legendFormat": "__auto",
-              "range": false,
-              "refId": "recovery_model"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "mssql_db__compatibility_level{instance=\"$Server\"}",
-              "format": "table",
-              "instant": true,
-              "legendFormat": "__auto",
-              "range": false,
-              "refId": "compat_level"
+              "refId": "collection_time_utc"
             },
             {
               "datasource": {
@@ -8090,6 +8073,314 @@
               },
               "editorMode": "code",
               "exemplar": false,
+              "expr": "mssql_db__is_auto_close_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_auto_close_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_auto_shrink_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_auto_shrink_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_in_standby{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_in_standby"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_cleanly_shutdown{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_cleanly_shutdown"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_supplemental_logging_enabled{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_supplemental_logging_enabled"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_read_committed_snapshot_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_read_committed_snapshot_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_auto_create_stats_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_auto_create_stats_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_auto_create_stats_incremental_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_auto_create_stats_incremental_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_auto_update_stats_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_auto_update_stats_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_auto_update_stats_async_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_auto_update_stats_async_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_ansi_null_default_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_ansi_null_default_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_ansi_nulls_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_ansi_nulls_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_ansi_padding_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_ansi_padding_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_ansi_warnings_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_ansi_warnings_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_arithabort_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_arithabort_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_concat_null_yields_null_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_concat_null_yields_null_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_numeric_roundabort_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_numeric_roundabort_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_quoted_identifier_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_quoted_identifier_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_recursive_triggers_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_recursive_triggers_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_cursor_close_on_commit_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_cursor_close_on_commit_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_local_cursor_default{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_local_cursor_default"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_fulltext_enabled{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_fulltext_enabled"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
               "expr": "mssql_db__is_trustworthy_on{instance=\"$Server\"}",
               "format": "table",
               "instant": true,
@@ -8104,12 +8395,40 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "mssql_db__is_cdc_enabled{instance=\"$Server\"}",
+              "expr": "mssql_db__is_db_chaining_on{instance=\"$Server\"}",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
               "range": false,
-              "refId": "is_cdc_enabled"
+              "refId": "is_db_chaining_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_parameterization_forced{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_parameterization_forced"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_master_key_encrypted_by_server{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_master_key_encrypted_by_server"
             },
             {
               "datasource": {
@@ -8132,55 +8451,970 @@
               },
               "editorMode": "code",
               "exemplar": false,
+              "expr": "mssql_db__is_published{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_published"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_subscribed{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_subscribed"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_merge_published{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_merge_published"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_distributor{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_distributor"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_sync_with_backup{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_sync_with_backup"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_broker_enabled{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_broker_enabled"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_date_correlation_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_date_correlation_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_cdc_enabled{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_cdc_enabled"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
               "expr": "mssql_db__is_encrypted{instance=\"$Server\"}",
               "format": "table",
               "instant": true,
               "legendFormat": "__auto",
               "range": false,
               "refId": "is_encrypted"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_honor_broker_priority_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_honor_broker_priority_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_nested_triggers_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_nested_triggers_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_transform_noise_words_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_transform_noise_words_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_memory_optimized_elevate_to_snapshot_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_memory_optimized_elevate_to_snapshot_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_federation_member{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_federation_member"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_remote_data_archive_enabled{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_remote_data_archive_enabled"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_mixed_page_allocation_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_mixed_page_allocation_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_temporal_history_retention_enabled{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_temporal_history_retention_enabled"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_result_set_caching_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_result_set_caching_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_accelerated_database_recovery_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_accelerated_database_recovery_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_tempdb_spill_to_remote_store{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_tempdb_spill_to_remote_store"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_stale_page_detection_on{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_stale_page_detection_on"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_memory_optimized_enabled{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_memory_optimized_enabled"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__is_data_retention_enabled{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "is_data_retention_enabled"
             }
           ],
-          "title": "Stable Info - sys.databases - Latest",
+          "title": "Stable Info - sys.databases - Latest - Settings & Flags",
           "transformations": [
             {
-              "id": "merge",
-              "options": {}
+              "id": "joinByField",
+              "options": {
+                "byField": "db_name",
+                "mode": "outer"
+              }
+            },
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "db_name",
+                    "Value #collection_time_utc",
+                    "Value #is_read_only",
+                    "Value #is_auto_close_on",
+                    "Value #is_auto_shrink_on",
+                    "Value #is_in_standby",
+                    "Value #is_cleanly_shutdown",
+                    "Value #is_supplemental_logging_enabled",
+                    "Value #is_read_committed_snapshot_on",
+                    "Value #is_auto_create_stats_on",
+                    "Value #is_auto_create_stats_incremental_on",
+                    "Value #is_auto_update_stats_on",
+                    "Value #is_auto_update_stats_async_on",
+                    "Value #is_ansi_null_default_on",
+                    "Value #is_ansi_nulls_on",
+                    "Value #is_ansi_padding_on",
+                    "Value #is_ansi_warnings_on",
+                    "Value #is_arithabort_on",
+                    "Value #is_concat_null_yields_null_on",
+                    "Value #is_numeric_roundabort_on",
+                    "Value #is_quoted_identifier_on",
+                    "Value #is_recursive_triggers_on",
+                    "Value #is_cursor_close_on_commit_on",
+                    "Value #is_local_cursor_default",
+                    "Value #is_fulltext_enabled",
+                    "Value #is_trustworthy_on",
+                    "Value #is_db_chaining_on",
+                    "Value #is_parameterization_forced",
+                    "Value #is_master_key_encrypted_by_server",
+                    "Value #is_query_store_on",
+                    "Value #is_published",
+                    "Value #is_subscribed",
+                    "Value #is_merge_published",
+                    "Value #is_distributor",
+                    "Value #is_sync_with_backup",
+                    "Value #is_broker_enabled",
+                    "Value #is_date_correlation_on",
+                    "Value #is_cdc_enabled",
+                    "Value #is_encrypted",
+                    "Value #is_honor_broker_priority_on",
+                    "Value #is_nested_triggers_on",
+                    "Value #is_transform_noise_words_on",
+                    "Value #is_memory_optimized_elevate_to_snapshot_on",
+                    "Value #is_federation_member",
+                    "Value #is_remote_data_archive_enabled",
+                    "Value #is_mixed_page_allocation_on",
+                    "Value #is_temporal_history_retention_enabled",
+                    "Value #is_result_set_caching_on",
+                    "Value #is_accelerated_database_recovery_on",
+                    "Value #is_tempdb_spill_to_remote_store",
+                    "Value #is_stale_page_detection_on",
+                    "Value #is_memory_optimized_enabled",
+                    "Value #is_data_retention_enabled"
+                  ]
+                }
+              }
             },
             {
               "id": "organize",
               "options": {
-                "excludeByName": {
-                  "Time": true,
-                  "Value #recovery_model": true,
-                  "Value #state": true,
-                  "__name__": true,
-                  "exported_job": true,
-                  "instance": true,
-                  "job": true,
-                  "target": true
-                },
-                "includeByName": {},
                 "indexByName": {
-                  "Value #compat_level": 3,
-                  "Value #is_cdc_enabled": 6,
-                  "Value #is_encrypted": 8,
-                  "Value #is_query_store_on": 7,
-                  "Value #is_read_only": 4,
-                  "Value #is_trustworthy_on": 5,
-                  "db_name": 0,
-                  "recovery_model_desc": 2,
-                  "state_desc": 1
+                  "Value #collection_time_utc": 1,
+                  "Value #is_accelerated_database_recovery_on": 48,
+                  "Value #is_ansi_null_default_on": 13,
+                  "Value #is_ansi_nulls_on": 14,
+                  "Value #is_ansi_padding_on": 15,
+                  "Value #is_ansi_warnings_on": 16,
+                  "Value #is_arithabort_on": 17,
+                  "Value #is_auto_close_on": 3,
+                  "Value #is_auto_create_stats_incremental_on": 10,
+                  "Value #is_auto_create_stats_on": 9,
+                  "Value #is_auto_shrink_on": 4,
+                  "Value #is_auto_update_stats_async_on": 12,
+                  "Value #is_auto_update_stats_on": 11,
+                  "Value #is_broker_enabled": 35,
+                  "Value #is_cdc_enabled": 37,
+                  "Value #is_cleanly_shutdown": 6,
+                  "Value #is_concat_null_yields_null_on": 18,
+                  "Value #is_cursor_close_on_commit_on": 22,
+                  "Value #is_data_retention_enabled": 52,
+                  "Value #is_date_correlation_on": 36,
+                  "Value #is_db_chaining_on": 26,
+                  "Value #is_distributor": 33,
+                  "Value #is_encrypted": 38,
+                  "Value #is_federation_member": 43,
+                  "Value #is_fulltext_enabled": 24,
+                  "Value #is_honor_broker_priority_on": 39,
+                  "Value #is_in_standby": 5,
+                  "Value #is_local_cursor_default": 23,
+                  "Value #is_master_key_encrypted_by_server": 28,
+                  "Value #is_memory_optimized_elevate_to_snapshot_on": 42,
+                  "Value #is_memory_optimized_enabled": 51,
+                  "Value #is_merge_published": 32,
+                  "Value #is_mixed_page_allocation_on": 45,
+                  "Value #is_nested_triggers_on": 40,
+                  "Value #is_numeric_roundabort_on": 19,
+                  "Value #is_parameterization_forced": 27,
+                  "Value #is_published": 30,
+                  "Value #is_query_store_on": 29,
+                  "Value #is_quoted_identifier_on": 20,
+                  "Value #is_read_committed_snapshot_on": 8,
+                  "Value #is_read_only": 2,
+                  "Value #is_recursive_triggers_on": 21,
+                  "Value #is_remote_data_archive_enabled": 44,
+                  "Value #is_result_set_caching_on": 47,
+                  "Value #is_stale_page_detection_on": 50,
+                  "Value #is_subscribed": 31,
+                  "Value #is_supplemental_logging_enabled": 7,
+                  "Value #is_sync_with_backup": 34,
+                  "Value #is_tempdb_spill_to_remote_store": 49,
+                  "Value #is_temporal_history_retention_enabled": 46,
+                  "Value #is_transform_noise_words_on": 41,
+                  "Value #is_trustworthy_on": 25,
+                  "db_name": 0
                 },
                 "renameByName": {
-                  "Value #compat_level": "Compat Level",
-                  "Value #is_cdc_enabled": "CDC",
-                  "Value #is_encrypted": "Encrypted",
-                  "Value #is_query_store_on": "Query Store",
-                  "Value #is_read_only": "Read Only",
-                  "Value #is_trustworthy_on": "Trustworthy",
-                  "db_name": "Database",
-                  "recovery_model_desc": "Recovery Model",
-                  "state_desc": "State"
+                  "Value #collection_time_utc": "collection_time_utc",
+                  "Value #is_accelerated_database_recovery_on": "is_accelerated_database_recovery_on",
+                  "Value #is_ansi_null_default_on": "is_ansi_null_default_on",
+                  "Value #is_ansi_nulls_on": "is_ansi_nulls_on",
+                  "Value #is_ansi_padding_on": "is_ansi_padding_on",
+                  "Value #is_ansi_warnings_on": "is_ansi_warnings_on",
+                  "Value #is_arithabort_on": "is_arithabort_on",
+                  "Value #is_auto_close_on": "is_auto_close_on",
+                  "Value #is_auto_create_stats_incremental_on": "is_auto_create_stats_incremental_on",
+                  "Value #is_auto_create_stats_on": "is_auto_create_stats_on",
+                  "Value #is_auto_shrink_on": "is_auto_shrink_on",
+                  "Value #is_auto_update_stats_async_on": "is_auto_update_stats_async_on",
+                  "Value #is_auto_update_stats_on": "is_auto_update_stats_on",
+                  "Value #is_broker_enabled": "is_broker_enabled",
+                  "Value #is_cdc_enabled": "is_cdc_enabled",
+                  "Value #is_cleanly_shutdown": "is_cleanly_shutdown",
+                  "Value #is_concat_null_yields_null_on": "is_concat_null_yields_null_on",
+                  "Value #is_cursor_close_on_commit_on": "is_cursor_close_on_commit_on",
+                  "Value #is_data_retention_enabled": "is_data_retention_enabled",
+                  "Value #is_date_correlation_on": "is_date_correlation_on",
+                  "Value #is_db_chaining_on": "is_db_chaining_on",
+                  "Value #is_distributor": "is_distributor",
+                  "Value #is_encrypted": "is_encrypted",
+                  "Value #is_federation_member": "is_federation_member",
+                  "Value #is_fulltext_enabled": "is_fulltext_enabled",
+                  "Value #is_honor_broker_priority_on": "is_honor_broker_priority_on",
+                  "Value #is_in_standby": "is_in_standby",
+                  "Value #is_local_cursor_default": "is_local_cursor_default",
+                  "Value #is_master_key_encrypted_by_server": "is_master_key_encrypted_by_server",
+                  "Value #is_memory_optimized_elevate_to_snapshot_on": "is_memory_optimized_elevate_to_snapshot_on",
+                  "Value #is_memory_optimized_enabled": "is_memory_optimized_enabled",
+                  "Value #is_merge_published": "is_merge_published",
+                  "Value #is_mixed_page_allocation_on": "is_mixed_page_allocation_on",
+                  "Value #is_nested_triggers_on": "is_nested_triggers_on",
+                  "Value #is_numeric_roundabort_on": "is_numeric_roundabort_on",
+                  "Value #is_parameterization_forced": "is_parameterization_forced",
+                  "Value #is_published": "is_published",
+                  "Value #is_query_store_on": "is_query_store_on",
+                  "Value #is_quoted_identifier_on": "is_quoted_identifier_on",
+                  "Value #is_read_committed_snapshot_on": "is_read_committed_snapshot_on",
+                  "Value #is_read_only": "is_read_only",
+                  "Value #is_recursive_triggers_on": "is_recursive_triggers_on",
+                  "Value #is_remote_data_archive_enabled": "is_remote_data_archive_enabled",
+                  "Value #is_result_set_caching_on": "is_result_set_caching_on",
+                  "Value #is_stale_page_detection_on": "is_stale_page_detection_on",
+                  "Value #is_subscribed": "is_subscribed",
+                  "Value #is_supplemental_logging_enabled": "is_supplemental_logging_enabled",
+                  "Value #is_sync_with_backup": "is_sync_with_backup",
+                  "Value #is_tempdb_spill_to_remote_store": "is_tempdb_spill_to_remote_store",
+                  "Value #is_temporal_history_retention_enabled": "is_temporal_history_retention_enabled",
+                  "Value #is_transform_noise_words_on": "is_transform_noise_words_on",
+                  "Value #is_trustworthy_on": "is_trustworthy_on",
+                  "db_name": "db_name"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "description": "Latest sys.databases identity, metadata, and mode-related values — one row per database.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "collection_time_utc"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "create_date"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 10
+          },
+          "id": 86,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true
+          },
+          "pluginVersion": "12.4.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__collection_time_utc{instance=\"$Server\"} * 1000",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "collection_time_utc"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__create_date{instance=\"$Server\"} * 1000",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "create_date"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__database_id{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "database_id"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__source_database_id{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "source_database_id"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__compatibility_level{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "compatibility_level"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__user_access{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "user_access"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__state{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "state"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__snapshot_isolation_state{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "snapshot_isolation_state"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__recovery_model{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "recovery_model"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__page_verify_option{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "page_verify_option"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__resource_pool_id{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "resource_pool_id"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__default_language_lcid{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "default_language_lcid"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__default_fulltext_language_lcid{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "default_fulltext_language_lcid"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__two_digit_year_cutoff{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "two_digit_year_cutoff"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__containment{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "containment"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__target_recovery_time_in_seconds{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "target_recovery_time_in_seconds"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__delayed_durability{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "delayed_durability"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "mssql_db__catalog_collation_type{instance=\"$Server\"}",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "catalog_collation_type"
+            }
+          ],
+          "title": "Stable Info - sys.databases - Latest - Identity & Modes",
+          "transformations": [
+            {
+              "id": "joinByField",
+              "options": {
+                "byField": "db_name",
+                "mode": "outer"
+              }
+            },
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "db_name",
+                    "Value #collection_time_utc",
+                    "Value #create_date",
+                    "Value #database_id",
+                    "Value #source_database_id",
+                    "owner_sid",
+                    "collation_name",
+                    "service_broker_guid",
+                    "replica_id",
+                    "group_database_id",
+                    "default_language_name",
+                    "default_fulltext_language_name",
+                    "physical_database_name",
+                    "Value #compatibility_level",
+                    "user_access_desc",
+                    "Value #user_access",
+                    "state_desc",
+                    "Value #state",
+                    "snapshot_isolation_state_desc",
+                    "Value #snapshot_isolation_state",
+                    "recovery_model_desc",
+                    "Value #recovery_model",
+                    "page_verify_option_desc",
+                    "Value #page_verify_option",
+                    "Value #resource_pool_id",
+                    "Value #default_language_lcid",
+                    "Value #default_fulltext_language_lcid",
+                    "containment_desc",
+                    "Value #containment",
+                    "Value #target_recovery_time_in_seconds",
+                    "delayed_durability_desc",
+                    "Value #delayed_durability",
+                    "catalog_collation_type_desc",
+                    "Value #catalog_collation_type",
+                    "Value #two_digit_year_cutoff"
+                  ]
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "indexByName": {
+                  "Value #catalog_collation_type": 29,
+                  "Value #collection_time_utc": 1,
+                  "Value #compatibility_level": 13,
+                  "Value #containment": 25,
+                  "Value #create_date": 2,
+                  "Value #database_id": 3,
+                  "Value #default_fulltext_language_lcid": 32,
+                  "Value #default_language_lcid": 31,
+                  "Value #delayed_durability": 27,
+                  "Value #page_verify_option": 23,
+                  "Value #recovery_model": 21,
+                  "Value #resource_pool_id": 30,
+                  "Value #snapshot_isolation_state": 19,
+                  "Value #source_database_id": 4,
+                  "Value #state": 17,
+                  "Value #target_recovery_time_in_seconds": 33,
+                  "Value #two_digit_year_cutoff": 34,
+                  "Value #user_access": 15,
+                  "catalog_collation_type_desc": 28,
+                  "collation_name": 6,
+                  "containment_desc": 24,
+                  "db_name": 0,
+                  "default_fulltext_language_name": 12,
+                  "default_language_name": 11,
+                  "delayed_durability_desc": 26,
+                  "group_database_id": 10,
+                  "owner_sid": 5,
+                  "page_verify_option_desc": 22,
+                  "physical_database_name": 7,
+                  "recovery_model_desc": 20,
+                  "replica_id": 9,
+                  "service_broker_guid": 8,
+                  "snapshot_isolation_state_desc": 18,
+                  "state_desc": 16,
+                  "user_access_desc": 14
+                },
+                "renameByName": {
+                  "Value #catalog_collation_type": "catalog_collation_type",
+                  "Value #collection_time_utc": "collection_time_utc",
+                  "Value #compatibility_level": "compatibility_level",
+                  "Value #containment": "containment",
+                  "Value #create_date": "create_date",
+                  "Value #database_id": "database_id",
+                  "Value #default_fulltext_language_lcid": "default_fulltext_language_lcid",
+                  "Value #default_language_lcid": "default_language_lcid",
+                  "Value #delayed_durability": "delayed_durability",
+                  "Value #page_verify_option": "page_verify_option",
+                  "Value #recovery_model": "recovery_model",
+                  "Value #resource_pool_id": "resource_pool_id",
+                  "Value #snapshot_isolation_state": "snapshot_isolation_state",
+                  "Value #source_database_id": "source_database_id",
+                  "Value #state": "state",
+                  "Value #target_recovery_time_in_seconds": "target_recovery_time_in_seconds",
+                  "Value #two_digit_year_cutoff": "two_digit_year_cutoff",
+                  "Value #user_access": "user_access",
+                  "catalog_collation_type_desc": "catalog_collation_type_desc",
+                  "collation_name": "collation_name",
+                  "containment_desc": "containment_desc",
+                  "db_name": "db_name",
+                  "default_fulltext_language_name": "default_fulltext_language_name",
+                  "default_language_name": "default_language_name",
+                  "delayed_durability_desc": "delayed_durability_desc",
+                  "group_database_id": "group_database_id",
+                  "owner_sid": "owner_sid",
+                  "page_verify_option_desc": "page_verify_option_desc",
+                  "physical_database_name": "physical_database_name",
+                  "recovery_model_desc": "recovery_model_desc",
+                  "replica_id": "replica_id",
+                  "service_broker_guid": "service_broker_guid",
+                  "snapshot_isolation_state_desc": "snapshot_isolation_state_desc",
+                  "state_desc": "state_desc",
+                  "user_access_desc": "user_access_desc"
                 }
               }
             }
@@ -8206,7 +9440,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "description": "Databases where at least one key setting changed within the selected time range. Numbers indicate how many times each metric changed. Databases with no changes are not shown.",
+          "description": "Database setting change events within the selected time range. Each row represents one detected change between consecutive 10-minute collections.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -8238,15 +9472,28 @@
                 ]
               }
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated Time"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeAsIso"
+                  }
+                ]
+              }
+            ]
           },
           "gridPos": {
-            "h": 11,
+            "h": 10,
             "w": 24,
             "x": 0,
             "y": 19
           },
-          "id": 83,
+          "id": 90,
           "options": {
             "cellHeight": "sm",
             "showHeader": true
@@ -8260,12 +9507,13 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "changes(mssql_db__state{instance=\"$Server\"}[$__range]) > 0",
+              "expr": "label_join(label_replace(max without(state_desc) (mssql_db__state{instance=\"$Server\"} offset 10m != on(db_name) mssql_db__state{instance=\"$Server\"}), \"config_name\", \"state\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(max without(recovery_model_desc) (mssql_db__recovery_model{instance=\"$Server\"} offset 10m != on(db_name) mssql_db__recovery_model{instance=\"$Server\"}), \"config_name\", \"recovery_model\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__compatibility_level{instance=\"$Server\"} offset 10m != on(db_name) mssql_db__compatibility_level{instance=\"$Server\"}, \"config_name\", \"compatibility_level\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__is_read_only{instance=\"$Server\"} offset 10m != on(db_name) mssql_db__is_read_only{instance=\"$Server\"}, \"config_name\", \"is_read_only\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__is_trustworthy_on{instance=\"$Server\"} offset 10m != on(db_name) mssql_db__is_trustworthy_on{instance=\"$Server\"}, \"config_name\", \"is_trustworthy_on\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__is_cdc_enabled{instance=\"$Server\"} offset 10m != on(db_name) mssql_db__is_cdc_enabled{instance=\"$Server\"}, \"config_name\", \"is_cdc_enabled\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__is_query_store_on{instance=\"$Server\"} offset 10m != on(db_name) mssql_db__is_query_store_on{instance=\"$Server\"}, \"config_name\", \"is_query_store_on\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__is_encrypted{instance=\"$Server\"} offset 10m != on(db_name) mssql_db__is_encrypted{instance=\"$Server\"}, \"config_name\", \"is_encrypted\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\")",
               "format": "table",
-              "instant": true,
+              "instant": false,
+              "interval": "10m",
               "legendFormat": "__auto",
-              "range": false,
-              "refId": "state_changes"
+              "range": true,
+              "refId": "old_db_value"
             },
             {
               "datasource": {
@@ -8274,96 +9522,13 @@
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "changes(mssql_db__recovery_model{instance=\"$Server\"}[$__range]) > 0",
+              "expr": "label_join(label_replace(max without(state_desc) (mssql_db__state{instance=\"$Server\"} != on(db_name) mssql_db__state{instance=\"$Server\"} offset 10m), \"config_name\", \"state\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(max without(recovery_model_desc) (mssql_db__recovery_model{instance=\"$Server\"} != on(db_name) mssql_db__recovery_model{instance=\"$Server\"} offset 10m), \"config_name\", \"recovery_model\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__compatibility_level{instance=\"$Server\"} != on(db_name) mssql_db__compatibility_level{instance=\"$Server\"} offset 10m, \"config_name\", \"compatibility_level\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__is_read_only{instance=\"$Server\"} != on(db_name) mssql_db__is_read_only{instance=\"$Server\"} offset 10m, \"config_name\", \"is_read_only\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__is_trustworthy_on{instance=\"$Server\"} != on(db_name) mssql_db__is_trustworthy_on{instance=\"$Server\"} offset 10m, \"config_name\", \"is_trustworthy_on\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__is_cdc_enabled{instance=\"$Server\"} != on(db_name) mssql_db__is_cdc_enabled{instance=\"$Server\"} offset 10m, \"config_name\", \"is_cdc_enabled\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__is_query_store_on{instance=\"$Server\"} != on(db_name) mssql_db__is_query_store_on{instance=\"$Server\"} offset 10m, \"config_name\", \"is_query_store_on\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\") or label_join(label_replace(mssql_db__is_encrypted{instance=\"$Server\"} != on(db_name) mssql_db__is_encrypted{instance=\"$Server\"} offset 10m, \"config_name\", \"is_encrypted\", \"db_name\", \".*\"), \"change_key\", \" :: \", \"db_name\", \"config_name\")",
               "format": "table",
-              "instant": true,
+              "instant": false,
+              "interval": "10m",
               "legendFormat": "__auto",
-              "range": false,
-              "refId": "recovery_model_changes"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "changes(mssql_db__compatibility_level{instance=\"$Server\"}[$__range]) > 0",
-              "format": "table",
-              "instant": true,
-              "legendFormat": "__auto",
-              "range": false,
-              "refId": "compat_level_changes"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "changes(mssql_db__is_read_only{instance=\"$Server\"}[$__range]) > 0",
-              "format": "table",
-              "instant": true,
-              "legendFormat": "__auto",
-              "range": false,
-              "refId": "is_read_only_changes"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "changes(mssql_db__is_trustworthy_on{instance=\"$Server\"}[$__range]) > 0",
-              "format": "table",
-              "instant": true,
-              "legendFormat": "__auto",
-              "range": false,
-              "refId": "is_trustworthy_changes"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "changes(mssql_db__is_cdc_enabled{instance=\"$Server\"}[$__range]) > 0",
-              "format": "table",
-              "instant": true,
-              "legendFormat": "__auto",
-              "range": false,
-              "refId": "is_cdc_changes"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "changes(mssql_db__is_query_store_on{instance=\"$Server\"}[$__range]) > 0",
-              "format": "table",
-              "instant": true,
-              "legendFormat": "__auto",
-              "range": false,
-              "refId": "is_query_store_changes"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "changes(mssql_db__is_encrypted{instance=\"$Server\"}[$__range]) > 0",
-              "format": "table",
-              "instant": true,
-              "legendFormat": "__auto",
-              "range": false,
-              "refId": "is_encrypted_changes"
+              "range": true,
+              "refId": "new_db_value"
             }
           ],
           "title": "Stable Info - sys.databases - Changed in Range",
@@ -8376,35 +9541,41 @@
               "id": "organize",
               "options": {
                 "excludeByName": {
-                  "Time": true,
-                  "instance": true
+                  "__name__": true,
+                  "change_key": true,
+                  "exported_job": true,
+                  "instance": true,
+                  "job": true,
+                  "recovery_model_desc": true,
+                  "state_desc": true,
+                  "target": true
                 },
                 "indexByName": {
-                  "Value #compat_level_changes": 5,
-                  "Value #is_cdc_changes": 8,
-                  "Value #is_encrypted_changes": 10,
-                  "Value #is_query_store_changes": 9,
-                  "Value #is_read_only_changes": 6,
-                  "Value #is_trustworthy_changes": 7,
-                  "Value #recovery_model_changes": 3,
-                  "Value #state_changes": 1,
-                  "db_name": 0,
-                  "recovery_model_desc": 4,
-                  "state_desc": 2
+                  "Time": 0,
+                  "Value #new_db_value": 4,
+                  "Value #old_db_value": 3,
+                  "config_name": 2,
+                  "db_name": 1
                 },
                 "renameByName": {
-                  "Value #compat_level_changes": "Compat Level Changes",
-                  "Value #is_cdc_changes": "CDC Changes",
-                  "Value #is_encrypted_changes": "Encrypted Changes",
-                  "Value #is_query_store_changes": "Query Store Changes",
-                  "Value #is_read_only_changes": "Read Only Changes",
-                  "Value #is_trustworthy_changes": "Trustworthy Changes",
-                  "Value #recovery_model_changes": "Recovery Model Changes",
-                  "Value #state_changes": "State Changes",
-                  "db_name": "Database",
-                  "recovery_model_desc": "Current Recovery Model",
-                  "state_desc": "Current State"
+                  "Time": "Updated Time",
+                  "Value #new_db_value": "New Value",
+                  "Value #old_db_value": "Old Value",
+                  "config_name": "Config Name",
+                  "db_name": "Database Name"
                 }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "desc": true,
+                    "field": "Updated Time"
+                  }
+                ]
               }
             }
           ],
@@ -8555,6 +9726,6 @@
   "timezone": "browser",
   "title": "SQL Exporter Metrics",
   "uid": "sql-exporter-metrics-v2",
-  "version": 52,
+  "version": 55,
   "weekStart": ""
 }
