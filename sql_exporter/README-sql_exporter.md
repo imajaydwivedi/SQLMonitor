@@ -35,6 +35,10 @@ brew services info prometheus
 
 cat $(brew --prefix)/etc/prometheus.yml
 brew services restart prometheus
+
+# Update grafana
+vim /opt/homebrew/etc/grafana/grafana.ini
+brew services restart grafana
 ```
 
 ### Validate on Mac - Service Management
