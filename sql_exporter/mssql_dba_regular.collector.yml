@@ -562,6 +562,32 @@ metrics:
     values: [collection_time]
     query_ref: mssql_logsaver
 
+  - metric_name: mssql_logsaver__thresholds_violated
+    type: gauge
+    help: 'Whether configured log saver thresholds are violated for the database.'
+    key_labels:
+      - database_name
+      - recovery_model
+      - log_reuse_wait_desc
+      - threshold_condition
+    values: [thresholds_violated]
+    query_ref: mssql_logsaver
+
+  - metric_name: mssql_logsaver__transaction_start_time
+    type: gauge
+    help: 'Oldest open transaction start time as Unix epoch seconds per database.'
+    key_labels:
+      - database_name
+      - spid
+      - login_name
+      - program_name
+      - host_name
+      - host_process_id
+      - command
+      - sql_text
+    values: [transaction_start_time]
+    query_ref: mssql_logsaver
+
   - metric_name: mssql_logsaver__log_size_mb
     type: gauge
     help: 'Transaction log size in MB per database.'
@@ -594,22 +620,6 @@ metrics:
     values: [log_used_pct]
     query_ref: mssql_logsaver
 
-  - metric_name: mssql_logsaver__thresholds_violated
-    type: gauge
-    help: 'Whether configured log saver thresholds are violated for the database.'
-    key_labels:
-      - database_name
-      - recovery_model
-      - log_reuse_wait_desc
-      - threshold_condition
-      - login_name
-      - program_name
-      - host_name
-      - command
-      - sql_text
-    values: [thresholds_violated]
-    query_ref: mssql_logsaver
-
   - metric_name: mssql_logsaver__log_used_pct_threshold
     type: gauge
     help: 'Configured transaction log used percentage threshold per database.'
@@ -640,21 +650,6 @@ metrics:
     key_labels:
       - database_name
     values: [is_gb_threshold_valid]
-    query_ref: mssql_logsaver
-
-  - metric_name: mssql_logsaver__transaction_start_time
-    type: gauge
-    help: 'Oldest open transaction start time as Unix epoch seconds per database.'
-    key_labels:
-      - database_name
-      - spid
-      - login_name
-      - program_name
-      - host_name
-      - host_process_id
-      - command
-      - sql_text
-    values: [transaction_start_time]
     query_ref: mssql_logsaver
 
 queries:
