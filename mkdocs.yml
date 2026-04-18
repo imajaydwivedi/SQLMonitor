@@ -86,6 +86,9 @@ plugins:
   - minify:
       minify_html: true
 
+hooks:
+  - hooks/external_links.py
+
 extra:
   social:
     - icon: fontawesome/brands/github
