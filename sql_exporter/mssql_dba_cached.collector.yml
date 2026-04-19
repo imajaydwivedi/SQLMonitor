@@ -1,0 +1,900 @@
+# A collector defining standard metrics for Microsoft SQL Server.
+#
+# It is required that the SQL Server user has the following permissions:
+#
+#   GRANT VIEW ANY DEFINITION TO
+#   GRANT VIEW SERVER STATE TO
+#
+collector_name: mssql_dba_cached
+
+# Similar to global.min_interval, but applies to the queries defined by this collector only.
+min_interval: 2m
+
+metrics:
+
+  #
+  # Collected from sys.dm_os_wait_stats
+  #
+  - metric_name: mssql_waits__collection_time_utc
+    type: gauge
+    help: 'Collection time as Unix epoch seconds for sys.dm_os_wait_stats rows.'
+    key_labels:
+      - wait_type
+    values: [collection_time_utc]
+    query_ref: mssql_os_wait_stats
+
+  - metric_name: mssql_waits__wait_time_seconds
+    type: counter
+    help: 'Total wait time in seconds by wait type since SQL Server startup.'
+    key_labels:
+      - wait_type
+      # - wait_percentage
+      # - wait_rank_no
+    values: [wait_time_seconds]
+    query_ref: mssql_os_wait_stats
+
+  - metric_name: mssql_waits__resource_time_seconds
+    type: counter
+    help: 'Total resource wait time in seconds by wait type since SQL Server startup.'
+    key_labels:
+      - wait_type
+      # - wait_percentage
+      # - wait_rank_no
+    values: [resource_time_seconds]
+    query_ref: mssql_os_wait_stats
+
+  - metric_name: mssql_waits__signal_time_seconds
+    type: counter
+    help: 'Total signal wait time in seconds by wait type since SQL Server startup.'
+    key_labels:
+      - wait_type
+      # - wait_percentage
+      # - wait_rank_no
+    values: [signal_time_seconds]
+    query_ref: mssql_os_wait_stats
+
+  - metric_name: mssql_waits__waiting_tasks_count
+    type: counter
+    help: 'Total waiting tasks by wait type since SQL Server startup.'
+    key_labels:
+      - wait_type
+      # - wait_percentage
+      # - wait_rank_no
+    values: [waiting_tasks_count]
+    query_ref: mssql_os_wait_stats
+
+  - metric_name: mssql_waits__wait_percentage
+    type: counter
+    help: 'Percentage of wait time by wait type since SQL Server startup.'
+    key_labels:
+      - wait_type
+      # - wait_percentage
+      # - wait_rank_no
+    values: [wait_percentage]
+    query_ref: mssql_os_wait_stats
+
+  - metric_name: mssql_waits__wait_rank_no
+    type: counter
+    help: 'Rank of wait time by wait type since SQL Server startup.'
+    key_labels:
+      - wait_type
+      # - wait_percentage
+      # - wait_rank_no
+    values: [wait_rank_no]
+    query_ref: mssql_os_wait_stats
+
+  # - metric_name: mssql_diskspace__capacity_mb
+  #   type: gauge
+  #   help: 'Disk capacity in megabytes.'
+  #   key_labels:
+  #     - host_name
+  #     - disk_volume
+  #     # - label
+  #     - filesystem
+  #   values: [capacity_mb]
+  #   query_ref: mssql_diskspace
+
+  # - metric_name: mssql_diskspace__free_mb
+  #   type: gauge
+  #   help: 'Disk free space in megabytes.'
+  #   key_labels:
+  #     - host_name
+  #     - disk_volume
+  #     # - label
+  #     - filesystem
+  #   values: [free_mb]
+  #   query_ref: mssql_diskspace
+
+  # - metric_name: mssql_diskspace__used_mb
+  #   type: gauge
+  #   help: 'Disk used space in megabytes.'
+  #   key_labels:
+  #     - host_name
+  #     - disk_volume
+  #     # - label
+  #     - filesystem
+  #   values: [used_mb]
+  #   query_ref: mssql_diskspace
+
+  - metric_name: mssql_virtualfilestats__collection_time_utc
+    type: gauge
+    help: 'Collection time as Unix epoch seconds for the SQL Server file virtual stats row.'
+    key_labels: [file_location, database_name, file_logical_name, disk_volume, disk_filesystem]
+    values: [collection_time_utc]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__sample_ms
+    type: counter
+    help: 'Virtual file stats sample age in milliseconds for the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [sample_ms]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__num_of_reads
+    type: counter
+    help: 'Total reads for the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [num_of_reads]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__num_of_bytes_read
+    type: counter
+    help: 'Total bytes read for the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [num_of_bytes_read]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__io_stall_read_ms
+    type: counter
+    help: 'Total read stall time in milliseconds for the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [io_stall_read_ms]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__io_stall_queued_read_ms
+    type: counter
+    help: 'Total queued read stall time in milliseconds for the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [io_stall_queued_read_ms]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__num_of_writes
+    type: counter
+    help: 'Total writes for the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [num_of_writes]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__num_of_bytes_written
+    type: counter
+    help: 'Total bytes written for the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [num_of_bytes_written]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__io_stall_write_ms
+    type: counter
+    help: 'Total write stall time in milliseconds for the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [io_stall_write_ms]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__io_stall_queued_write_ms
+    type: counter
+    help: 'Total queued write stall time in milliseconds for the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [io_stall_queued_write_ms]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__io_stall
+    type: counter
+    help: 'Total I/O stall time in milliseconds for the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [io_stall]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__size_on_disk_bytes
+    type: gauge
+    help: 'Current on-disk size in bytes for the SQL Server file.'
+    key_labels: [file_location, database_name, file_logical_name, disk_volume, disk_filesystem]
+    values: [size_on_disk_bytes]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__disk_capacity_mb
+    type: gauge
+    help: 'Disk capacity in megabytes for the volume hosting the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [disk_capacity_mb]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__disk_free_mb
+    type: gauge
+    help: 'Disk free space in megabytes for the volume hosting the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [disk_free_mb]
+    query_ref: mssql_virtualfilestats
+
+  - metric_name: mssql_virtualfilestats__disk_used_mb
+    type: gauge
+    help: 'Disk used space in megabytes for the volume hosting the SQL Server file.'
+    key_labels: [file_location, database_name, disk_volume]
+    values: [disk_used_mb]
+    query_ref: mssql_virtualfilestats
+
+  #
+  # Collected using tempdb file space usage DMVs
+  #
+  - metric_name: mssql_tempdb_usage__collection_time_utc
+    type: gauge
+    help: 'Collection time as Unix epoch seconds for the tempdb usage snapshot.'
+    values: [collection_time_utc]
+    query_ref: mssql_tempdb_usage
+
+  - metric_name: mssql_tempdb_usage__data_size_mb
+    type: gauge
+    help: 'Total tempdb data file size in megabytes.'
+    values: [data_size_mb]
+    query_ref: mssql_tempdb_usage
+
+  - metric_name: mssql_tempdb_usage__data_used_mb
+    type: gauge
+    help: 'Used tempdb data file space in megabytes.'
+    values: [data_used_mb]
+    query_ref: mssql_tempdb_usage
+
+  - metric_name: mssql_tempdb_usage__data_used_pct
+    type: gauge
+    help: 'Used tempdb data file space as a percentage of total data size.'
+    values: [data_used_pct]
+    query_ref: mssql_tempdb_usage
+
+  - metric_name: mssql_tempdb_usage__log_size_mb
+    type: gauge
+    help: 'Total tempdb log file size in megabytes.'
+    values: [log_size_mb]
+    query_ref: mssql_tempdb_usage
+
+  - metric_name: mssql_tempdb_usage__log_used_mb
+    type: gauge
+    help: 'Used tempdb log file space in megabytes.'
+    values: [log_used_mb]
+    query_ref: mssql_tempdb_usage
+
+  - metric_name: mssql_tempdb_usage__log_used_pct
+    type: gauge
+    help: 'Used tempdb log file space as a percentage of total log size.'
+    values: [log_used_pct]
+    query_ref: mssql_tempdb_usage
+
+  - metric_name: mssql_tempdb_usage__version_store_mb
+    type: gauge
+    help: 'Tempdb version store size in megabytes.'
+    values: [version_store_mb]
+    query_ref: mssql_tempdb_usage
+
+  - metric_name: mssql_tempdb_usage__version_store_pct
+    type: gauge
+    help: 'Tempdb version store size as a percentage of used data space.'
+    values: [version_store_pct]
+    query_ref: mssql_tempdb_usage
+
+  #
+  # Collected using tempdb consumer session details
+  #
+  - metric_name: mssql_tempdb_consumers__collection_time_utc
+    type: gauge
+    help: 'Collection time as Unix epoch seconds for the tempdb consumer row.'
+    key_labels: [spid]
+    values: [collection_time_utc]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__host_process_id
+    type: gauge
+    help: 'Host process ID for the tempdb consumer session.'
+    key_labels: [spid]
+    values: [host_process_id]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__is_active_session
+    type: gauge
+    help: 'Whether the tempdb consumer session currently has an active request.'
+    key_labels: [spid]
+    values: [is_active_session]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__open_transaction_count
+    type: gauge
+    help: 'Open transaction count for the tempdb consumer session.'
+    key_labels: [spid]
+    values: [open_transaction_count]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__size_bytes
+    type: gauge
+    help: 'Current tempdb space consumed by the session in bytes.'
+    key_labels: [spid]
+    values: [size_bytes]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__transaction_begin_time
+    type: gauge
+    help: 'Transaction begin time as Unix epoch seconds for the tempdb consumer session.'
+    key_labels: [spid]
+    values: [transaction_begin_time]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__is_snapshot
+    type: gauge
+    help: 'Whether the tempdb consumer session is associated with snapshot activity.'
+    key_labels: [spid]
+    values: [is_snapshot]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__log_bytes
+    type: gauge
+    help: 'Transaction log bytes used by the tempdb consumer session.'
+    key_labels: [spid]
+    values: [log_bytes]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__log_rsvd
+    type: gauge
+    help: 'Transaction log bytes reserved by the tempdb consumer session.'
+    key_labels: [spid]
+    values: [log_rsvd]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__data_used_pct_threshold
+    type: gauge
+    help: 'Configured tempdb data used percentage threshold.'
+    key_labels: [spid]
+    values: [data_used_pct_threshold]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__data_used_gb_threshold
+    type: gauge
+    help: 'Configured tempdb data used threshold in gigabytes.'
+    key_labels: [spid]
+    values: [data_used_gb_threshold]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__version_store_pct_threshold
+    type: gauge
+    help: 'Configured version store percentage threshold.'
+    key_labels: [spid]
+    values: [version_store_pct_threshold]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__thresholds_violated
+    type: gauge
+    help: 'Whether the configured tempdb thresholds are violated for the session result row.'
+    key_labels:
+      - spid
+      - login_name
+      - program_name
+      - host_name
+      - transaction_isolation_level
+      - action_taken
+      - issue_type
+      - threshold_condition
+    values: [thresholds_violated]
+    query_ref: mssql_tempdb_consumers
+
+  - metric_name: mssql_tempdb_consumers__usage_rank
+    type: gauge
+    help: 'Ranking of the tempdb consumer row within the result set.'
+    key_labels: [spid]
+    values: [usage_rank]
+    query_ref: mssql_tempdb_consumers
+
+queries:
+  - query_name: mssql_os_wait_stats
+    query: |
+      SELECT
+        [collection_time_utc] = CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint),
+        [wait_type],
+        [wait_time_ms] / 1000.0 AS [wait_time_seconds],
+        ([wait_time_ms] - [signal_wait_time_ms]) / 1000.0 AS [resource_time_seconds],
+        [signal_wait_time_ms] / 1000.0 AS [signal_time_seconds],
+        [waiting_tasks_count],
+        100.0 * [wait_time_ms] / SUM([wait_time_ms]) OVER() AS [wait_percentage],
+        ROW_NUMBER() OVER (ORDER BY [wait_time_ms] DESC) AS [wait_rank_no]
+      FROM sys.dm_os_wait_stats
+      WHERE [wait_type] NOT IN (
+        N'BROKER_EVENTHANDLER', N'BROKER_RECEIVE_WAITFOR', N'BROKER_TASK_STOP', N'BROKER_TO_FLUSH', N'BROKER_TRANSMITTER', N'CHECKPOINT_QUEUE', N'CHKPT', 
+        N'CLR_AUTO_EVENT', N'CLR_MANUAL_EVENT', N'CLR_SEMAPHORE', N'DBMIRROR_DBM_EVENT', N'DBMIRROR_EVENTS_QUEUE', N'DBMIRROR_WORKER_QUEUE', 
+        N'DBMIRRORING_CMD', N'DIRTY_PAGE_POLL', N'DISPATCHER_QUEUE_SEMAPHORE', N'EXECSYNC', N'FSAGENT', N'FT_IFTS_SCHEDULER_IDLE_WAIT', N'FT_IFTSHC_MUTEX', 
+        N'HADR_CLUSAPI_CALL', N'HADR_FILESTREAM_IOMGR_IOCOMPLETION', N'HADR_LOGCAPTURE_WAIT', N'HADR_NOTIFICATION_DEQUEUE', N'HADR_TIMER_TASK', 
+        N'HADR_WORK_QUEUE', N'KSOURCE_WAKEUP', N'LAZYWRITER_SLEEP', N'LOGMGR_QUEUE', N'MEMORY_ALLOCATION_EXT', N'ONDEMAND_TASK_QUEUE', 
+        N'PARALLEL_REDO_DRAIN_WORKER', N'PARALLEL_REDO_LOG_CACHE', N'PARALLEL_REDO_TRAN_LIST', N'PARALLEL_REDO_WORKER_SYNC', N'PARALLEL_REDO_WORKER_WAIT_WORK', 
+        N'PREEMPTIVE_OS_FLUSHFILEBUFFERS', N'PREEMPTIVE_XE_GETTARGETSTATE', N'PVS_PREALLOCATE', N'PWAIT_ALL_COMPONENTS_INITIALIZED', 
+        N'PWAIT_DIRECTLOGCONSUMER_GETNEXT', N'PWAIT_EXTENSIBILITY_CLEANUP_TASK', N'QDS_PERSIST_TASK_MAIN_LOOP_SLEEP', N'QDS_ASYNC_QUEUE', 
+        N'QDS_CLEANUP_STALE_QUERIES_TASK_MAIN_LOOP_SLEEP', N'QDS_SHUTDOWN_QUEUE', N'REDO_THREAD_PENDING_WORK', N'REQUEST_FOR_DEADLOCK_SEARCH', 
+        N'RESOURCE_QUEUE', N'SERVER_IDLE_CHECK', N'SLEEP_BPOOL_FLUSH', N'SLEEP_DBSTARTUP', N'SLEEP_DCOMSTARTUP', N'SLEEP_MASTERDBREADY', 
+        N'SLEEP_MASTERMDREADY', N'SLEEP_MASTERUPGRADED', N'SLEEP_MSDBSTARTUP', N'SLEEP_SYSTEMTASK', N'SLEEP_TASK', N'SLEEP_TEMPDBSTARTUP', 
+        N'SNI_HTTP_ACCEPT', N'SOS_WORK_DISPATCHER', N'SP_SERVER_DIAGNOSTICS_SLEEP', N'SQLTRACE_BUFFER_FLUSH', N'SQLTRACE_INCREMENTAL_FLUSH_SLEEP', 
+        N'SQLTRACE_WAIT_ENTRIES', N'VDI_CLIENT_OTHER', N'WAIT_FOR_RESULTS', N'WAITFOR', N'WAITFOR_TASKSHUTDOWN', N'WAIT_XTP_RECOVERY', N'WAIT_XTP_HOST_WAIT', 
+        N'WAIT_XTP_OFFLINE_CKPT_NEW_LOG', N'WAIT_XTP_CKPT_CLOSE', N'XE_DISPATCHER_JOIN', N'XE_DISPATCHER_WAIT', N'XE_TIMER_EVENT'
+      )
+      AND [wait_type] NOT LIKE 'SLEEP_%'
+      AND [wait_type] NOT LIKE 'BROKER_%'
+        AND [waiting_tasks_count] > 0;
+
+  # - query_name: mssql_diskspace
+  #   query: |
+  #     select	distinct
+  #         --[collection_time_utc] = CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint),
+  #         [host_name] = convert(varchar(225),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))),
+  #         [disk_volume] = vs.volume_mount_point,
+  #         --[label] = null,
+  #         [capacity_mb] = vs.total_bytes / 1048576,
+  #         [free_mb] = vs.available_bytes / 1048576,
+  #         [used_mb] = (vs.total_bytes - vs.available_bytes) / 1048576,
+  #         --[block_size] = null,
+  #         [filesystem] = file_system_type
+  #     from sys.master_files as mf
+  #     cross apply sys.dm_os_volume_stats(mf.database_id, mf.file_id) as vs
+  #     join sys.databases as db on db.database_id = mf.database_id;
+
+  - query_name: mssql_virtualfilestats
+    query: |
+      select  [collection_time_utc] = CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint),
+              d.name as [database_name], mf.name as file_logical_name,
+              --mf.file_id, d.database_id,
+              [disk_volume] = coalesce(vs.volume_mount_point, N''), mf.physical_name as file_location,
+              vfs.sample_ms, vfs.num_of_reads, vfs.num_of_bytes_read, vfs.io_stall_read_ms, vfs.io_stall_queued_read_ms,
+              vfs.num_of_writes, vfs.num_of_bytes_written, vfs.io_stall_write_ms, vfs.io_stall_queued_write_ms,
+              vfs.io_stall, vfs.size_on_disk_bytes,
+                  [disk_capacity_mb] = coalesce(vs.total_bytes / 1048576, 0),
+                  [disk_free_mb] = coalesce(vs.available_bytes / 1048576, 0),
+                  [disk_used_mb] = coalesce((vs.total_bytes - vs.available_bytes) / 1048576, 0),
+                  --[block_size] = null,
+                  [disk_filesystem] = coalesce(file_system_type, N'')
+      from sys.dm_io_virtual_file_stats(null,null) vfs
+      join sys.master_files mf on mf.database_id = vfs.database_id and mf.file_id = vfs.file_id
+      join sys.databases d on d.database_id = mf.database_id
+      outer apply (select * from sys.dm_os_volume_stats(mf.database_id, mf.file_id) as vs) vs;
+
+  - query_name: mssql_tempdb_usage
+    query: |
+      use tempdb ;
+
+      ;with t_files_size as (
+        select	[file_type] = f.type_desc,
+            [size_mb] = convert(numeric(10,2), (f.size*8.0)/1024 ),
+            [used_mb] = convert(numeric(10,2), CAST(FILEPROPERTY(f.name, 'SpaceUsed') as int)/128.0 )
+        from sys.database_files f left join sys.filegroups fg on fg.data_space_id = f.data_space_id
+      )
+      ,t_files_by_type as (
+        select	[data_size_mb] = case when file_type = 'ROWS' then [size_mb] else 0.0 end,
+            [data_used_mb] = case when file_type = 'ROWS' then [used_mb] else 0.0 end,
+            [log_size_mb] = case when file_type = 'LOG' then [size_mb] else 0.0 end,
+            [log_used_mb] = case when file_type = 'LOG' then [used_mb] else 0 end,
+            vs.[version_store_mb]
+        from t_files_size fs
+        full outer join (	SELECT [version_store_mb] = (SUM(version_store_reserved_page_count) / 128.0)
+                  FROM tempdb.sys.dm_db_file_space_usage fsu with (nolock)
+                ) vs
+          on 1=1
+      )
+      select	[collection_time_utc] = CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint),
+          [data_size_mb] = sum([data_size_mb]),
+          [data_used_mb] = sum([data_used_mb]),
+          [data_used_pct] = convert(numeric(12,2),sum([data_used_mb])*100.0/(sum([data_size_mb]))),
+          [log_size_mb] = sum([log_size_mb]),
+          [log_used_mb] = sum([log_used_mb]),
+          [log_used_pct] = convert(numeric(12,2),sum([log_used_mb])*100.0/(sum([log_size_mb]))),
+          [version_store_mb] = max([version_store_mb]),
+          [version_store_pct] = convert(numeric(12,2),max([version_store_mb])*100.0/sum([data_used_mb]))
+      from t_files_by_type;
+
+
+  - query_name: mssql_tempdb_consumers
+    query: |
+      SET NOCOUNT ON;
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      SET XACT_ABORT ON;
+
+      DECLARE
+        @data_used_pct_threshold tinyint = 90,
+        @data_used_gb_threshold int = 100,
+        @version_store_pct_threshold tinyint = 30,
+        @threshold_condition varchar(5) = 'or', /* {and | or} */
+        @kill_spids bit = 0,
+        @verbose tinyint = 0, /* 1 => messages, 2 => messages + table results */
+        @first_x_rows int = 10
+
+      IF @data_used_pct_threshold IS NULL AND @data_used_gb_threshold IS NULL
+        THROW 51000, '@data_used_pct_threshold or @data_used_gb_threshold must be provided.', 1;
+      IF @threshold_condition NOT IN ('and','or')
+        THROW 51000, 'Expected value for @threshold_condition are {and || or} only.', 1;
+
+      DECLARE @_start_time datetime2;
+      SET @_start_time = SYSDATETIME();
+
+      DECLARE @_sql nvarchar(max) = '';
+      DECLARE @_sql_kill nvarchar(max);
+      DECLARE @_params nvarchar(max);
+      DECLARE @_email_body varchar(max) = null;
+      DECLARE @_email_subject nvarchar(255) = 'Tempdb Saver: ' + @@SERVERNAME;
+      DECLARE @_data_used_pct_current decimal(5,2);
+      DECLARE @_is_pct_threshold_violated bit = 0;
+      DECLARE @_is_gb_threshold_violated bit = 0;
+      DECLARE @_is_version_store_issue bit = 0;
+      DEclare @_thresholds_violated bit = 0;
+
+      SET @_params = N'@collection_time datetime2';
+
+      DECLARE @t_login_exceptions TABLE (login_name sysname);
+      /*
+      INSERT @t_login_exceptions
+      VALUES ('sa'),
+          ('NT AUTHORITY\SYSTEM');
+      */
+
+      IF (@verbose > 0)
+        PRINT '('+convert(varchar, getdate(), 21)+') Creating table variable @t_tempdb_space_usage..';
+      DECLARE @t_tempdb_space_usage TABLE
+      (	[collection_time] datetime2 not null,
+        [data_size_mb] varchar(100) not null,
+        [data_used_mb] varchar(100) not null,
+        [data_used_pct] decimal(5,2) not null,
+        [log_size_mb] varchar(100) not null,
+        [log_used_mb] varchar(100) null,
+        [log_used_pct] decimal(5,2) null,
+        [version_store_mb] decimal(20,2) null,
+        [version_store_pct] decimal(20,2) null
+      );
+
+      IF (@verbose > 0)
+        PRINT '('+convert(varchar, getdate(), 21)+') Creating table variable @t_tempdb_consumers..';
+      DECLARE @t_tempdb_consumers TABLE
+      (
+        [collection_time] [datetime2] NOT NULL,
+        [spid] [smallint] NULL,
+        [login_name] [nvarchar](128) NOT NULL,
+        [program_name] [nvarchar](128) NULL,
+        [host_name] [nvarchar](128) NULL,
+        [host_process_id] [int] NULL,
+        [is_active_session] [int] NOT NULL,
+        [open_transaction_count] [int] NOT NULL,
+        [transaction_isolation_level] [varchar](15) NULL,
+        [size_bytes] [bigint] NULL,
+        [transaction_begin_time] [datetime] NULL,
+        [is_snapshot] [int] NOT NULL,
+        [log_bytes] [bigint] NULL,
+        [log_rsvd] [bigint] NULL,
+        [action_taken] [varchar](200) NULL
+      );
+
+      IF (@verbose > 0)
+        PRINT '('+convert(varchar, getdate(), 21)+') Populate table @t_tempdb_space_usage..'
+      SET @_sql = '
+        use tempdb ;
+
+        ;with t_files_size as (
+          select	[file_type] = f.type_desc,
+              [size_mb] = convert(numeric(10,2), (f.size*8.0)/1024 ),
+              [used_mb] = convert(numeric(10,2), CAST(FILEPROPERTY(f.name, ''SpaceUsed'') as int)/128.0 )
+          from sys.database_files f left join sys.filegroups fg on fg.data_space_id = f.data_space_id
+        )
+        ,t_files_by_type as (
+          select	[data_size_mb] = case when file_type = ''ROWS'' then [size_mb] else 0.0 end,
+              [data_used_mb] = case when file_type = ''ROWS'' then [used_mb] else 0.0 end,
+              [log_size_mb] = case when file_type = ''LOG'' then [size_mb] else 0.0 end,
+              [log_used_mb] = case when file_type = ''LOG'' then [used_mb] else 0 end,
+              vs.[version_store_mb]
+          from t_files_size fs
+          full outer join (	SELECT [version_store_mb] = (SUM(version_store_reserved_page_count) / 128.0)
+                    FROM tempdb.sys.dm_db_file_space_usage fsu with (nolock)
+                  ) vs
+            on 1=1
+        )
+        select	[collection_time] = @collection_time,
+            [data_size_mb] = sum([data_size_mb]),
+            [data_used_mb] = sum([data_used_mb]),
+            [data_used_pct] = convert(numeric(12,2),sum([data_used_mb])*100.0/(sum([data_size_mb]))),
+            [log_size_mb] = sum([log_size_mb]),
+            [log_used_mb] = sum([log_used_mb]),
+            [log_used_pct] = convert(numeric(12,2),sum([log_used_mb])*100.0/(sum([log_size_mb]))),
+            [version_store_mb] = max([version_store_mb]),
+            [version_store_pct] = convert(numeric(12,2),max([version_store_mb])*100.0/sum([data_used_mb]))
+        from t_files_by_type; ';
+
+      IF (@verbose > 0)
+      BEGIN
+        PRINT '('+convert(varchar, getdate(), 21)+') Insert @t_tempdb_space_usage..'+CHAR(10)+CHAR(13);
+        PRINT @_sql;
+      END
+
+      INSERT INTO @t_tempdb_space_usage
+      ([collection_time], data_size_mb, data_used_mb, data_used_pct, log_size_mb, log_used_mb, log_used_pct, version_store_mb, version_store_pct)
+      EXEC sp_executesql @_sql, @_params, @collection_time = @_start_time;
+
+      IF (@verbose >= 2)
+      BEGIN
+        PRINT '('+convert(varchar, getdate(), 21)+') select * from @t_tempdb_space_usage..'
+        select top 1 running_query, t.*
+        from @t_tempdb_space_usage t
+        full outer join (values ('@t_tempdb_space_usage') )dummy(running_query) on 1 = 1
+        where t.collection_time = @_start_time;
+      END
+
+      IF (@verbose > 0)
+        PRINT '('+convert(varchar, getdate(), 21)+') Populate table @t_tempdb_consumers..'
+      SET @_sql = '
+      ;WITH T_SnapshotTran
+      AS (
+        SELECT	[s_tst].[session_id], --DB_NAME(s_tdt.database_id) as database_name,
+            [begin_time] = ISNULL(MIN([s_tdt].[database_transaction_begin_time]),MIN(DATEADD(SECOND,-snp.elapsed_time_seconds,GETDATE()))),
+            --[database_transaction_begin_time] = MIN([s_tdt].[database_transaction_begin_time]),
+            --[database_transaction_begin_time2] = MIN(DATEADD(SECOND,-snp.elapsed_time_seconds,GETDATE())),
+            SUM([s_tdt].[database_transaction_log_bytes_used]) AS [log_bytes],
+            SUM([s_tdt].[database_transaction_log_bytes_reserved]) AS [log_rsvd],
+            MAX(CASE WHEN snp.elapsed_time_seconds IS NOT NULL THEN 1 ELSE 0 END) AS is_snapshot
+        FROM sys.dm_tran_database_transactions [s_tdt]
+        JOIN sys.dm_tran_session_transactions [s_tst]
+          ON [s_tst].[transaction_id] = [s_tdt].[transaction_id]
+        LEFT JOIN sys.dm_tran_active_snapshot_database_transactions snp
+          ON snp.session_id = s_tst.session_id AND snp.transaction_id = s_tst.transaction_id
+        --WHERE s_tdt.database_id = 2
+        GROUP BY [s_tst].[session_id] --,s_tdt.database_id
+      )
+      ,T_TempDbTrans AS
+      (
+        SELECT	[collection_time] = @collection_time,
+            [spid] = des.session_id,
+            [login_name] = des.original_login_name,
+            --des.program_name,
+            [program_name] = CASE	WHEN	des.program_name like ''SQLAgent - TSQL JobStep %''
+              THEN	(	select	top 1 ''SQL Job = ''+j.name
+                    from msdb.dbo.sysjobs (nolock) as j
+                    inner join msdb.dbo.sysjobsteps (nolock) AS js on j.job_id=js.job_id
+                    where right(cast(js.job_id as nvarchar(50)),10) = RIGHT(substring(des.program_name,30,34),10)
+                  ) + '' ( ''+SUBSTRING(LTRIM(RTRIM(des.program_name)), CHARINDEX('': Step '',LTRIM(RTRIM(des.program_name)))+2,LEN(LTRIM(RTRIM(des.program_name)))-CHARINDEX('': Step '',LTRIM(RTRIM(des.program_name)))-2)+'' )'' collate SQL_Latin1_General_CP1_CI_AS
+              ELSE	des.program_name
+              END,
+            des.host_name,
+            des.host_process_id,
+            [is_active_session] = CASE WHEN er.request_id IS NOT NULL THEN 1 ELSE 0 END,
+            des.open_transaction_count,
+            [transaction_isolation_level] = (CASE des.transaction_isolation_level
+                WHEN 0 THEN ''Unspecified''
+                WHEN 1 THEN ''ReadUncommitted''
+                WHEN 2 THEN ''ReadCommitted''
+                WHEN 3 THEN ''Repeatable''
+                WHEN 4 THEN ''Serializable''
+                WHEN 5 THEN ''Snapshot'' END ),
+            [size_bytes] = ((ssu.user_objects_alloc_page_count+ssu.internal_objects_alloc_page_count)-(ssu.internal_objects_dealloc_page_count+ssu.user_objects_dealloc_page_count))*8192,
+            [transaction_begin_time] = case when des.open_transaction_count > 0 then (case when ott.begin_time is not null then ott.begin_time when er.start_time is not null then er.start_time else des.last_request_start_time end) else er.start_time end,
+            [is_snapshot] = CASE WHEN ISNULL(ott.is_snapshot,0) = 1 THEN 1
+                        WHEN tasdt.is_snapshot = 1 THEN 1
+                        ELSE ISNULL(ott.is_snapshot,0)
+                        END,
+            ott.[log_bytes], ott.log_rsvd,
+            CONVERT(varchar(200),NULL) AS action_taken
+        FROM       sys.dm_exec_sessions des
+        LEFT JOIN sys.dm_db_session_space_usage ssu on ssu.session_id = des.session_id
+        LEFT JOIN T_SnapshotTran ott ON ott.session_id = ssu.session_id
+        LEFT JOIN sys.dm_exec_requests er ON er.session_id = des.session_id
+        OUTER APPLY (SELECT ( (tsu.user_objects_alloc_page_count+tsu.internal_objects_alloc_page_count)-(tsu.user_objects_dealloc_page_count+tsu.internal_objects_dealloc_page_count) )*8192 AS size_bytes 
+              FROM sys.dm_db_task_space_usage tsu
+              WHERE ((tsu.user_objects_alloc_page_count+tsu.internal_objects_alloc_page_count)-(tsu.user_objects_dealloc_page_count+tsu.internal_objects_dealloc_page_count)) > 0
+                AND tsu.session_id = er.session_id
+              ) as ra
+        OUTER APPLY (select 1 as [is_snapshot] from sys.dm_tran_active_snapshot_database_transactions asdt where asdt.session_id = des.session_id) as tasdt
+        WHERE des.session_id <> @@SPID --AND (er.request_id IS NOT NULL OR des.open_transaction_count > 0)
+          --AND ssu.database_id = 2
+      )
+      SELECT top (@first_x_rows) *
+      FROM T_TempDbTrans ot
+      WHERE 1=1
+      and ot.[spid] >= 50
+      and (size_bytes > 0 OR is_active_session = 1 OR open_transaction_count > 0 OR  is_snapshot = 1)
+      '
+      IF EXISTS (SELECT * FROM @t_tempdb_space_usage s WHERE s.collection_time = @_start_time and s.version_store_pct >= @version_store_pct_threshold)
+      BEGIN
+        SET @_sql = @_sql + 'order by is_snapshot DESC, (case when transaction_begin_time is null then dateadd(day,1,getdate()) else transaction_begin_time end ) ASC, size_bytes desc;'+CHAR(10)
+      END
+      ELSE
+        SET @_sql = @_sql + 'order by size_bytes desc;'+CHAR(10)
+
+      IF (@verbose > 1)
+        PRINT @_sql
+
+      SET @_params = N'@collection_time datetime2, @first_x_rows int';
+      INSERT @t_tempdb_consumers
+      EXEC sp_executesql @_sql, @_params, @collection_time = @_start_time, @first_x_rows = @first_x_rows;
+
+      IF (@verbose > 1)
+      BEGIN
+        PRINT '('+convert(varchar, getdate(), 21)+') select * from @t_tempdb_consumers..'
+
+        IF EXISTS (SELECT * FROM @t_tempdb_space_usage s WHERE s.collection_time = @_start_time and s.version_store_pct >= @version_store_pct_threshold)
+          select running_query, t.*
+          from @t_tempdb_consumers t
+          full outer join (values ('@t_tempdb_consumers') )dummy(running_query) on 1 = 1
+          order by is_snapshot DESC, transaction_begin_time ASC;
+        ELSE
+          select running_query, t.* --top (@first_x_rows)
+          from @t_tempdb_consumers t
+          full outer join (values ('@t_tempdb_consumers') )dummy(running_query) on 1 = 1
+          order by size_bytes desc;
+      END
+
+      IF @data_used_pct_threshold IS NOT NULL AND EXISTS (SELECT 1/0 FROM @t_tempdb_space_usage s WHERE s.collection_time = @_start_time and data_used_pct > @data_used_pct_threshold)
+        SET @_is_pct_threshold_violated = 1;
+      IF @data_used_gb_threshold IS NOT NULL AND EXISTS (SELECT 1/0 FROM @t_tempdb_space_usage s WHERE s.collection_time = @_start_time and data_used_mb > (@data_used_gb_threshold*1024.0))
+        SET @_is_gb_threshold_violated = 1;
+      SET @_thresholds_violated = (CASE	WHEN @threshold_condition = 'and' and (@_is_pct_threshold_violated = 1 and @_is_gb_threshold_violated = 1) THEN 1
+                        WHEN @threshold_condition = 'or' and (@_is_pct_threshold_violated = 1 OR @_is_gb_threshold_violated = 1) THEN 1
+                        ELSE 0
+                        END);
+
+      IF @verbose >= 1
+      BEGIN
+        SELECT	[@data_used_pct_threshold] = @data_used_pct_threshold,
+            [@_is_pct_threshold_violated] = @_is_pct_threshold_violated,
+            [@data_used_gb_threshold] = @data_used_gb_threshold,
+            [@_is_gb_threshold_violated] = @_is_gb_threshold_violated,
+            [@_thresholds_violated] = @_thresholds_violated,
+            [@threshold_condition] = @threshold_condition;
+      END
+
+      IF @verbose > 0
+        PRINT '('+convert(varchar, getdate(), 21)+') Validate @_thresholds_violated, and take action..'
+      IF @_thresholds_violated = 1
+      BEGIN
+        IF @verbose > 0
+          PRINT '('+convert(varchar, getdate(), 21)+') Found @_thresholds_violated to be true.'
+
+        IF EXISTS (SELECT * FROM @t_tempdb_space_usage s WHERE s.collection_time = @_start_time and s.version_store_pct >= @version_store_pct_threshold) -- If Version Store Issue
+          SET @_is_version_store_issue = 1;
+        ELSE
+          SET @_is_version_store_issue = 0;
+
+        IF @_is_version_store_issue = 1
+        BEGIN
+          IF @verbose > 0
+          BEGIN
+            PRINT '('+convert(varchar, getdate(), 21)+') Version Store Issue.';
+            PRINT '('+convert(varchar, getdate(), 21)+') version_store_mb >= '+convert(varchar(20), @version_store_pct_threshold)+'% of data_used_mb';
+            PRINT '('+convert(varchar, getdate(), 21)+') Pick top spid (@_sql_kill) order by ''ORDER BY is_snapshot DESC, transaction_begin_time ASC''';
+          END
+          SELECT TOP 1 @_sql_kill = CONVERT(varchar(30), tu.spid)
+          FROM	@t_tempdb_consumers tu
+          WHERE   host_process_id IS NOT NULL
+          AND     login_name NOT IN (SELECT ex.login_name FROM @t_login_exceptions ex)
+          ORDER BY is_snapshot DESC, transaction_begin_time ASC;
+        END
+        ELSE
+        BEGIN -- Not Version Store issue.
+          IF @verbose > 0
+          BEGIN
+            PRINT '('+convert(varchar, getdate(), 21)+') Not Version Store Issue.';
+            PRINT '('+convert(varchar, getdate(), 21)+') version_store_mb < '+convert(varchar(20), @version_store_pct_threshold)+'% of data_used_mb';
+            PRINT '('+convert(varchar, getdate(), 21)+') Pick top spid (@_sql_kill) order by ''(ISNULL(size_bytes,0)+ISNULL(log_bytes,0)+ISNULL(log_rsvd,0)) DESC''';
+          END
+          SELECT TOP 1 @_sql_kill = CONVERT(varchar(30), tu.spid)
+          FROM @t_tempdb_consumers tu
+          WHERE host_process_id IS NOT NULL
+          AND   login_name NOT IN (SELECT ex.login_name FROM @t_login_exceptions ex)
+          AND size_bytes <> 0
+          ORDER BY (ISNULL(size_bytes,0)+ISNULL(log_bytes,0)+ISNULL(log_rsvd,0)) DESC;
+        END
+
+
+        IF @verbose > 0
+          PRINT '('+convert(varchar, getdate(), 21)+') Top tempdb consumer spid (@_sql_kill) = '+@_sql_kill;
+
+        IF (@_sql_kill IS NOT NULL)
+        BEGIN
+          IF (@kill_spids = 1)
+          BEGIN
+            IF @verbose > 0
+              PRINT '('+convert(varchar, getdate(), 21)+') Kill top consumer.';
+            UPDATE @t_tempdb_consumers SET action_taken = 'Process Terminated' WHERE spid = @_sql_kill
+            SET @_sql = 'kill ' + @_sql_kill;
+            PRINT (@_sql);
+            EXEC (@_sql);
+            IF @verbose > 0
+              PRINT '('+convert(varchar, getdate(), 21)+') Update @t_tempdb_consumers with action_taken ''Process Terminated''.';
+          END
+          ELSE
+          BEGIN
+            UPDATE @t_tempdb_consumers SET action_taken = 'Notified DBA' WHERE spid = @_sql_kill
+            IF @verbose > 0
+              PRINT '('+convert(varchar, getdate(), 21)+') Update @t_tempdb_consumers with action_taken ''Notified DBA''.';
+          END;
+
+          SET @_email_body = 'The following SQL Server process ' + CASE WHEN @kill_spids = 1 THEN 'was' ELSE 'is' END + ' consuming the most tempdb space.' + CHAR(10) + CHAR(10)
+          SELECT @_data_used_pct_current = data_used_pct FROM @t_tempdb_space_usage s WHERE s.collection_time = @_start_time;
+          SELECT @_email_body = @_email_body +
+                    '      date_time: ' + CONVERT(varchar(100), collection_time, 121) + CHAR(10) +
+                    'tempdb_used_pct: ' + CONVERT(varchar(100), @_data_used_pct_current) + CHAR(10) +
+                    '           spid: ' + CONVERT(varchar(30), spid) + CHAR(10) +
+                    '     login_name: ' + login_name + CHAR(10) +
+                    '   program_name: ' + ISNULL(program_name, '') + CHAR(10) +
+                    '      host_name: ' + ISNULL(host_name, '') + CHAR(10) +
+                    'host_process_id: ' + CONVERT(varchar(30), host_process_id) + CHAR(10) +
+                    '      is_active: ' + CONVERT(varchar(30), is_active_session) + CHAR(10) +
+                    '     tran_count: ' + CONVERT(varchar(30), open_transaction_count) + CHAR(10) +
+                    '    is_snapshot: ' + CONVERT(varchar(30), is_snapshot) + CHAR(10) +
+                    'tran_start_time: ' + (case when transaction_begin_time is null then '' else CONVERT(varchar(100), transaction_begin_time, 121) end) + CHAR(10) + 
+                    '   action_taken: ' + action_taken + CHAR(10) + CHAR(10)
+          FROM   @t_tempdb_consumers tu
+          WHERE spid = @_sql_kill;
+
+          IF @verbose > 0
+            PRINT '('+convert(varchar, getdate(), 21)+') Email body to send to DBA..'+CHAR(10)+CHAR(13)+@_email_body;
+        END;
+      END;
+      ELSE
+      BEGIN
+        IF @verbose > 0
+          PRINT '('+convert(varchar, getdate(), 21)+') Current tempdb space usage under threshold.';
+      END
+
+      IF @verbose > 0
+        PRINT '('+convert(varchar, getdate(), 21)+') Get top 10 session details causing version store issue..';
+      IF EXISTS (SELECT * FROM @t_tempdb_space_usage s WHERE s.collection_time = @_start_time and s.version_store_pct >= @version_store_pct_threshold)
+      BEGIN
+        SELECT	[collection_time_utc] = CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint),
+            [spid] = COALESCE(CONVERT(varchar(30), c.[spid]), ''),
+            [login_name] = COALESCE(c.[login_name], ''),
+            [program_name] = COALESCE(c.[program_name], ''),
+            [host_name] = COALESCE(c.[host_name], ''),
+            [host_process_id] = COALESCE(c.[host_process_id], 0),
+            [is_active_session] = COALESCE(c.[is_active_session], 0),
+            [open_transaction_count] = COALESCE(c.[open_transaction_count], 0),
+            [transaction_isolation_level] = COALESCE(c.[transaction_isolation_level], ''),
+            [size_bytes] = COALESCE(c.[size_bytes], 0),
+            [transaction_begin_time] = CASE WHEN c.[transaction_begin_time] IS NULL THEN 0 ELSE DATEDIFF_BIG(SECOND, '1970-01-01T00:00:00', CAST(c.[transaction_begin_time] AS datetime2)) END,
+            [is_snapshot] = COALESCE(c.[is_snapshot], 0),
+            [log_bytes] = COALESCE(c.[log_bytes], 0),
+            [log_rsvd] = COALESCE(c.[log_rsvd], 0),
+            [action_taken] = COALESCE(c.[action_taken], ''),
+            [issue_type] = 'version-store',
+            [data_used_pct_threshold] = COALESCE(@data_used_pct_threshold, 0),
+            [data_used_gb_threshold] = COALESCE(@data_used_gb_threshold, 0),
+            [version_store_pct_threshold] = COALESCE(@version_store_pct_threshold, 0),
+            [threshold_condition] = COALESCE(@threshold_condition, ''),
+            [thresholds_violated] = CONVERT(int, COALESCE(@_thresholds_violated, 0)),
+            [usage_rank] = ROW_NUMBER()over(order by collection_time, is_snapshot DESC, (case when transaction_begin_time is null then dateadd(day,1,getdate()) else transaction_begin_time end) ASC)
+        FROM  @t_tempdb_consumers c
+        WHERE @_thresholds_violated = 1
+        order by collection_time, is_snapshot DESC, (case when transaction_begin_time is null then dateadd(day,1,getdate()) else transaction_begin_time end) ASC, [size_bytes] desc, [log_rsvd] desc
+        offset 0 rows fetch next @first_x_rows rows only;
+      END
+      ELSE
+      BEGIN
+        SELECT	[collection_time_utc] = CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint),
+            [spid] = COALESCE(CONVERT(varchar(30), [spid]), ''),
+            [login_name] = COALESCE([login_name], ''),
+            [program_name] = COALESCE([program_name], ''),
+            [host_name] = COALESCE([host_name], ''),
+            [host_process_id] = COALESCE([host_process_id], 0),
+            [is_active_session] = COALESCE([is_active_session], 0),
+            [open_transaction_count] = COALESCE([open_transaction_count], 0),
+            [transaction_isolation_level] = COALESCE([transaction_isolation_level], ''),
+            [size_bytes] = COALESCE([size_bytes], 0),
+            [transaction_begin_time] = CASE WHEN [transaction_begin_time] IS NULL THEN 0 ELSE DATEDIFF_BIG(SECOND, '1970-01-01T00:00:00', CAST([transaction_begin_time] AS datetime2)) END,
+            [is_snapshot] = COALESCE([is_snapshot], 0),
+            [log_bytes] = COALESCE([log_bytes], 0),
+            [log_rsvd] = COALESCE([log_rsvd], 0),
+            [action_taken] = COALESCE([action_taken], ''),
+            [issue_type] = 'non-version-store',
+            [data_used_pct_threshold] = COALESCE(@data_used_pct_threshold, 0),
+            [data_used_gb_threshold] = COALESCE(@data_used_gb_threshold, 0),
+            [version_store_pct_threshold] = COALESCE(@version_store_pct_threshold, 0),
+            [threshold_condition] = COALESCE(@threshold_condition, ''),
+            [thresholds_violated] = CONVERT(int, COALESCE(@_thresholds_violated, 0)),
+            [usage_rank] = ROW_NUMBER()over(order by collection_time, size_bytes DESC)
+        FROM  @t_tempdb_consumers
+        WHERE @_thresholds_violated = 1
+        order by collection_time, size_bytes DESC
+        offset 0 rows fetch next @first_x_rows rows only;
+      END
+
+
+

@@ -40,7 +40,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'usp_comp
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S localhost -H "(dba) Compute-AllServerVolatileInfoHistoryHourly" -d DBA -Q "exec dbo.usp_compute_all_server_volatile_info_history_hourly @days_per_processing_batch = 2, @verbose = 0;"', 
+		@command=N'sqlcmd -C -E -b -S localhost -H "(dba) Compute-AllServerVolatileInfoHistoryHourly" -d DBA -Q "exec dbo.usp_compute_all_server_volatile_info_history_hourly @days_per_processing_batch = 2, @verbose = 0;"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1

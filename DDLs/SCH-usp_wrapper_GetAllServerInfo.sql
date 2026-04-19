@@ -302,7 +302,7 @@ else
 if @schedule_minutes = 0 or not exists (select 1/0 from dbo.all_server_collection_latency_info where collection_time >= dateadd(minute,-@schedule_minutes,getdate()))
 begin
 	exec dbo.usp_GetAllServerInfo @result_to_table = ''dbo.all_server_collection_latency_info'', @verbose = @verbose,
-				@output = ''srv_name, host_name, performance_counters__latency_minutes, xevent_metrics__latency_minutes, WhoIsActive__latency_minutes, os_task_list__latency_minutes, disk_space__latency_minutes, file_io_stats__latency_minutes, sql_agent_job_stats__latency_minutes, memory_clerks__latency_minutes, wait_stats__latency_minutes, BlitzIndex__latency_days, BlitzIndex_Mode0__latency_days, BlitzIndex_Mode1__latency_days, BlitzIndex_Mode4__latency_days'';
+				@output = ''srv_name, host_name, performance_counters__latency_minutes, xevent_metrics__latency_minutes, WhoIsActive__latency_minutes, disk_space__latency_minutes, file_io_stats__latency_minutes, sql_agent_job_stats__latency_minutes, memory_clerks__latency_minutes, wait_stats__latency_minutes, BlitzIndex__latency_days, BlitzIndex_Mode0__latency_days, BlitzIndex_Mode1__latency_days, BlitzIndex_Mode4__latency_days'';
 end
 else
 	print ''Did not meet schedule requirement.''+char(13);';

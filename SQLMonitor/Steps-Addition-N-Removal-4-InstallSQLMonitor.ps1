@@ -5,7 +5,7 @@ Param (
     [String]$Action = "AddStep",
 
     [Parameter(Mandatory=$false)]
-    [String]$StepName = "51__CreateJobComputeAllServerVolatileInfoHistoryHourly",
+    [String]$StepName = "45__CreateJobGetAllServerAlertHistory",
 
     [Parameter(Mandatory=$false)]
     [Bool]$PrintUserFriendlyFormat = $true,

@@ -15,7 +15,8 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_NAME = 'u
 GO
 
 ALTER PROCEDURE dbo.usp_create_agent_alerts
-(	@verbose tinyint = 0, /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
+(	@drop_create_alert bit = 0, /* When enabled, drop the alert, and recreate */
+	@verbose tinyint = 0, /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
 	@alert_operator_name varchar(255) = null
 )
 AS 
@@ -23,9 +24,11 @@ BEGIN
 
 	/*
 		https://learn.microsoft.com/en-us/sql/ssms/agent/use-tokens-in-job-steps?view=sql-server-ver16
-		Version:		1.0.0
 		Pre-requisites:	dbo.alert_categories, dbo.alert_history, dbo.usp_capture_alert_messages, job [(dba) Capture-AlertMessages]
-		Date:			2024-05-23 - Updated to include Sev 19-25
+
+		Version -> 2026-01-31
+		2026-01-31 - #3 - Infra to Track Server and Database Configuration Changes
+		2024-05-23 - Updated to include Sev 19-25
 
 		EXEC dbo.usp_create_agent_alerts
 	*/
@@ -72,7 +75,15 @@ BEGIN
 
 		WHILE @@fetch_status = 0
 		BEGIN
-			IF NOT EXISTS ( SELECT 1/0 FROM msdb.dbo.sysalerts WHERE name = @c_alert_name  )
+			IF ( @drop_create_alert = 1 
+				OR EXISTS ( SELECT 1/0 FROM msdb.dbo.sysalerts WHERE name = @c_alert_name
+							AND job_id = '00000000-0000-0000-0000-000000000000' )
+			)
+			BEGIN
+				EXECUTE msdb.dbo.sp_delete_alert @name = @c_alert_name;			
+			END
+
+			IF NOT EXISTS ( SELECT 1/0 FROM msdb.dbo.sysalerts WHERE name = @c_alert_name )
 			BEGIN
 				EXECUTE msdb.dbo.sp_add_alert @name = @c_alert_name, @message_id = @c_alert_error_number, @severity = @c_error_severity, @enabled = 1, @delay_between_responses = 0, @include_event_description_in = 1, @job_name = N'(dba) Capture-AlertMessages';
 

@@ -40,7 +40,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'sp_Blitz
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S "localhost" -H "(dba) Run-BlitzIndex - Weekly - @Mode = 0" -d "DBA" -Q "EXEC master.dbo.sp_BlitzIndex @GetAllDatabases = 1, @Mode = 0, @BringThePain = 1, @OutputDatabaseName = ''DBA'', @OutputSchemaName = ''dbo'', @OutputTableName = ''BlitzIndex_Mode0'';"', 
+		@command=N'sqlcmd -C -E -b -S "localhost" -H "(dba) Run-BlitzIndex - Weekly - @Mode = 0" -d "DBA" -Q "EXEC master.dbo.sp_BlitzIndex @GetAllDatabases = 1, @Mode = 0, @BringThePain = 1, @OutputDatabaseName = ''DBA'', @OutputSchemaName = ''dbo'', @OutputTableName = ''BlitzIndex_Mode0'';"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
@@ -54,7 +54,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'sp_Blitz
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S "localhost" -H "(dba) Run-BlitzIndex - Weekly - @Mode = 1" -d "DBA" -Q "EXEC master.dbo.sp_BlitzIndex @GetAllDatabases = 1, @Mode = 1, @BringThePain = 1, @OutputDatabaseName = ''DBA'', @OutputSchemaName = ''dbo'', @OutputTableName = ''BlitzIndex_Mode1'';"', 
+		@command=N'sqlcmd -C -E -b -S "localhost" -H "(dba) Run-BlitzIndex - Weekly - @Mode = 1" -d "DBA" -Q "EXEC master.dbo.sp_BlitzIndex @GetAllDatabases = 1, @Mode = 1, @BringThePain = 1, @OutputDatabaseName = ''DBA'', @OutputSchemaName = ''dbo'', @OutputTableName = ''BlitzIndex_Mode1'';"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 
@@ -68,7 +68,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'sp_Blitz
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -E -b -S "localhost" -H "(dba) Run-BlitzIndex - Weekly - @Mode = 4" -d "DBA" -Q "EXEC master.dbo.sp_BlitzIndex @GetAllDatabases = 1, @Mode = 4, @BringThePain = 1, @OutputDatabaseName = ''DBA'', @OutputSchemaName = ''dbo'', @OutputTableName = ''BlitzIndex_Mode4'';"', 
+		@command=N'sqlcmd -C -E -b -S "localhost" -H "(dba) Run-BlitzIndex - Weekly - @Mode = 4" -d "DBA" -Q "EXEC master.dbo.sp_BlitzIndex @GetAllDatabases = 1, @Mode = 4, @BringThePain = 1, @OutputDatabaseName = ''DBA'', @OutputSchemaName = ''dbo'', @OutputTableName = ''BlitzIndex_Mode4'';"', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 

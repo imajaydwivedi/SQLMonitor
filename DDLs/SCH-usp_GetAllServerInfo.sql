@@ -79,23 +79,22 @@ BEGIN
 	DECLARE @_sql NVARCHAR(max);
 	DECLARE @_isLocalHost bit = 0;
 	create table #server_details (
-			srv_name varchar(125), at_server_name varchar(125), machine_name varchar(125), server_name varchar(125), 
-			ip varchar(30), domain varchar(125), host_name varchar(125), fqdn varchar(255), host_distribution varchar(200),  
-			processor_name varchar(200), product_version varchar(30), edition varchar(50), sqlserver_start_time_utc datetime2, 
-			os_cpu decimal(20,2), sql_cpu decimal(20,2), pcnt_kernel_mode decimal(20,2), page_faults_kb decimal(20,2), 
-			blocked_counts int, blocked_duration_max_seconds bigint, total_physical_memory_kb bigint, 
-			available_physical_memory_kb bigint, system_high_memory_signal_state varchar(20), 
-			physical_memory_in_use_kb decimal(20,2), memory_grants_pending int, connection_count int, 
+			srv_name varchar(125), at_server_name varchar(125), machine_name varchar(125), server_name varchar(125),
+			ip varchar(30), domain varchar(125), host_name varchar(125), fqdn varchar(255), host_distribution varchar(200),
+			processor_name varchar(200), product_version varchar(30), edition varchar(50), sqlserver_start_time_utc datetime2,
+			os_cpu decimal(20,2), sql_cpu decimal(20,2), pcnt_kernel_mode decimal(20,2), page_faults_kb decimal(20,2),
+			blocked_counts int, blocked_duration_max_seconds bigint, total_physical_memory_kb bigint,
+			available_physical_memory_kb bigint, system_high_memory_signal_state varchar(20),
+			physical_memory_in_use_kb decimal(20,2), memory_grants_pending int, connection_count int,
 			active_requests_count int, waits_per_core_per_minute decimal(20,2), avg_disk_wait_ms decimal(20,2), [avg_disk_latency_ms] int,
-			os_start_time_utc datetime2, cpu_count smallint, scheduler_count smallint, major_version_number smallint, 
-			minor_version_number smallint, max_server_memory_mb int, page_life_expectancy int, memory_consumers int, 
+			os_start_time_utc datetime2, cpu_count smallint, scheduler_count smallint, major_version_number smallint,
+			minor_version_number smallint, max_server_memory_mb int, page_life_expectancy int, memory_consumers int,
 			target_server_memory_kb bigint, total_server_memory_kb bigint,
 
 			performance_counters__latency_minutes int, xevent_metrics__latency_minutes int, WhoIsActive__latency_minutes int,
-			os_task_list__latency_minutes int, disk_space__latency_minutes int, file_io_stats__latency_minutes int,
-			sql_agent_job_stats__latency_minutes int, memory_clerks__latency_minutes int, wait_stats__latency_minutes int, 
-			BlitzIndex__latency_days int, BlitzIndex_Mode0__latency_days int, BlitzIndex_Mode1__latency_days int, 
-			BlitzIndex_Mode4__latency_days int
+			disk_space__latency_minutes int, file_io_stats__latency_minutes int, sql_agent_job_stats__latency_minutes int,
+			memory_clerks__latency_minutes int, wait_stats__latency_minutes int, BlitzIndex__latency_days int,
+			BlitzIndex_Mode0__latency_days int, BlitzIndex_Mode1__latency_days int, BlitzIndex_Mode4__latency_days int
 		);
 
 	declare @_srv_name	nvarchar (125);
@@ -146,7 +145,6 @@ BEGIN
 	declare @_file_io_stats__latency_minutes int;
 	declare @_sql_agent_job_stats__latency_minutes int;
 	declare @_memory_clerks__latency_minutes int;
-	declare @_os_task_list__latency_minutes int;
 	declare @_performance_counters__latency_minutes int;
 	declare @_xevent_metrics__latency_minutes int;
 	declare @_xevent_metrics_queries__latency_minutes int;
@@ -321,7 +319,6 @@ BEGIN
 		set @_file_io_stats__latency_minutes = NULL;
 		set @_sql_agent_job_stats__latency_minutes = NULL;
 		set @_memory_clerks__latency_minutes = NULL;
-		set @_os_task_list__latency_minutes = NULL;
 		set @_performance_counters__latency_minutes = NULL;
 		set @_xevent_metrics__latency_minutes = NULL;
 		set @_xevent_metrics_queries__latency_minutes = NULL;
@@ -2344,57 +2341,6 @@ on 1=1";
 		end
 
 
-		-- [os_task_list__latency_minutes] => Create SQL Statement to Execute
-		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'os_task_list__latency_minutes') )
-		begin
-			delete from @_result;
-			set @_sql = "
-"+(case when @enable_lock_timeout = 1 then '' else '--' end)+"SET LOCK_TIMEOUT 60000;
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-select [latency_minutes] = coalesce(latency_minutes,dummy_latency_minutes)
-from 
-(	select top 1 [latency_minutes] = datediff(minute,collection_time_utc,getutcdate()) from dbo.vw_os_task_list
-	where 1=1
-	and collection_time_utc >= dateadd(minute,-120,getutcdate())
-	--and [host_name] = CONVERT(varchar(125),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))) 
-	order by collection_time_utc desc
-) od
-full outer join (select [dummy_latency_minutes] = 10080) dmy -- 7 days
-on 1=1";
-			-- Decorate for remote query if LinkedServer
-			if @_isLocalHost = 0
-				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
-
-			begin try
-				insert @_result (col_int)
-				exec (@_sql);
-
-				-- set @_ip
-				select @_os_task_list__latency_minutes = col_int from @_result;
-			end try
-			begin catch
-				select	@_errorNumber	 = Error_Number()
-						,@_errorSeverity = Error_Severity()
-						,@_errorState	 = Error_State()
-						,@_errorLine	 = Error_Line()
-						,@_errorMessage	 = Error_Message();
-
-				insert [dbo].[sma_errorlog]
-				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
-				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerInfo', 
-						[function_call_arguments] = 'os_task_list__latency_minutes', [server] = @_srv_name, [error] = @_errorMessage, 
-						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
-
-				set @_errorMessage = 'Error Details => Severity: '+CONVERT(varchar(125),isnull(@_errorSeverity,''))+
-								'. State: '+CONVERT(varchar(125),isnull(@_errorState,'')) +
-								'. Error Line: '+CONVERT(varchar(125),isnull(@_errorLine,'')) + 
-								'. Error Message::: '+ @_errorMessage;
-
-				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
-			end catch
-		end
-
-
 		-- [disk_space__latency_minutes] => Create SQL Statement to Execute
 		if @_linked_server_failed = 0 and ( @output is null or exists (select * from @_tbl_output_columns where column_name = 'disk_space__latency_minutes') )
 		begin
@@ -2842,10 +2788,10 @@ on 1=1";
 				[connection_count], [active_requests_count], [waits_per_core_per_minute], [avg_disk_wait_ms], [avg_disk_latency_ms], [os_start_time_utc],
 				[cpu_count], [scheduler_count], [major_version_number], [minor_version_number], [max_server_memory_mb], [page_life_expectancy], [memory_consumers], 
 				[target_server_memory_kb], [total_server_memory_kb], [performance_counters__latency_minutes],
-				[xevent_metrics__latency_minutes], [WhoIsActive__latency_minutes], [os_task_list__latency_minutes], 
-				[disk_space__latency_minutes], [file_io_stats__latency_minutes], [sql_agent_job_stats__latency_minutes], 
-				[memory_clerks__latency_minutes], [wait_stats__latency_minutes], [BlitzIndex__latency_days],
-				[BlitzIndex_Mode0__latency_days], [BlitzIndex_Mode1__latency_days], [BlitzIndex_Mode4__latency_days]
+				[xevent_metrics__latency_minutes], [WhoIsActive__latency_minutes], [disk_space__latency_minutes], 
+				[file_io_stats__latency_minutes], [sql_agent_job_stats__latency_minutes], [memory_clerks__latency_minutes],
+				[wait_stats__latency_minutes], [BlitzIndex__latency_days], [BlitzIndex_Mode0__latency_days],
+				[BlitzIndex_Mode1__latency_days], [BlitzIndex_Mode4__latency_days]
 			)
 			select	[srv_name] = @_srv_name
 					,[@@servername] = @_at_server_name
@@ -2889,7 +2835,6 @@ on 1=1";
 					,[performance_counters__latency_minutes] = @_performance_counters__latency_minutes
 					,[xevent_metrics__latency_minutes] = @_xevent_metrics__latency_minutes
 					,[WhoIsActive__latency_minutes] = @_WhoIsActive__latency_minutes
-					,[os_task_list__latency_minutes] = @_os_task_list__latency_minutes
 					,[disk_space__latency_minutes] = @_disk_space__latency_minutes
 					,[file_io_stats__latency_minutes] = @_file_io_stats__latency_minutes
 					,[sql_agent_job_stats__latency_minutes] = @_sql_agent_job_stats__latency_minutes

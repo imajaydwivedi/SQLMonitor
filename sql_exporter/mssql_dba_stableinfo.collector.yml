@@ -1,0 +1,732 @@
+# A collector defining standard metrics for Microsoft SQL Server.
+#
+# It is required that the SQL Server user has the following permissions:
+#
+#   GRANT VIEW ANY DEFINITION TO
+#   GRANT VIEW SERVER STATE TO
+#
+collector_name: mssql_dba_stableinfo
+
+# Similar to global.min_interval, but applies to the queries defined by this collector only.
+min_interval: 1m
+
+metrics:
+  #
+  # Collected using sys.databases
+  #
+  - metric_name: mssql_db__collection_time_utc
+    type: gauge
+    help: 'Collection time as Unix epoch seconds for sys.databases rows.'
+    key_labels:
+      - db_name
+    values: [collection_time_utc]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__create_date
+    type: gauge
+    help: 'Database create date from sys.databases.'
+    key_labels:
+      - db_name
+      - owner_sid
+      - collation_name
+      - service_broker_guid
+      - replica_id
+      - group_database_id
+      - default_language_name
+      - default_fulltext_language_name
+      - physical_database_name
+    values: [create_date]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__database_id
+    type: gauge
+    help: 'sys.databases.database_id value.'
+    key_labels:
+      - db_name
+    values: [database_id]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__source_database_id
+    type: gauge
+    help: 'sys.databases.source_database_id value.'
+    key_labels:
+      - db_name
+    values: [source_database_id]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__compatibility_level
+    type: gauge
+    help: 'sys.databases.compatibility_level value.'
+    key_labels:
+      - db_name
+    values: [compatibility_level]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__user_access
+    type: gauge
+    help: 'sys.databases.user_access value.'
+    key_labels:
+      - db_name
+      - user_access_desc
+    values: [user_access]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_read_only
+    type: gauge
+    help: 'sys.databases.is_read_only value.'
+    key_labels:
+      - db_name
+    values: [is_read_only]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_auto_close_on
+    type: gauge
+    help: 'sys.databases.is_auto_close_on value.'
+    key_labels:
+      - db_name
+    values: [is_auto_close_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_auto_shrink_on
+    type: gauge
+    help: 'sys.databases.is_auto_shrink_on value.'
+    key_labels:
+      - db_name
+    values: [is_auto_shrink_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__state
+    type: gauge
+    help: 'sys.databases.state value.'
+    key_labels:
+      - db_name
+      - state_desc
+    values: [state]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_in_standby
+    type: gauge
+    help: 'sys.databases.is_in_standby value.'
+    key_labels:
+      - db_name
+    values: [is_in_standby]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_cleanly_shutdown
+    type: gauge
+    help: 'sys.databases.is_cleanly_shutdown value.'
+    key_labels:
+      - db_name
+    values: [is_cleanly_shutdown]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_supplemental_logging_enabled
+    type: gauge
+    help: 'sys.databases.is_supplemental_logging_enabled value.'
+    key_labels:
+      - db_name
+    values: [is_supplemental_logging_enabled]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__snapshot_isolation_state
+    type: gauge
+    help: 'sys.databases.snapshot_isolation_state value.'
+    key_labels:
+      - db_name
+      - snapshot_isolation_state_desc
+    values: [snapshot_isolation_state]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_read_committed_snapshot_on
+    type: gauge
+    help: 'sys.databases.is_read_committed_snapshot_on value.'
+    key_labels:
+      - db_name
+    values: [is_read_committed_snapshot_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__recovery_model
+    type: gauge
+    help: 'sys.databases.recovery_model value.'
+    key_labels:
+      - db_name
+      - recovery_model_desc
+    values: [recovery_model]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__page_verify_option
+    type: gauge
+    help: 'sys.databases.page_verify_option value.'
+    key_labels:
+      - db_name
+      - page_verify_option_desc
+    values: [page_verify_option]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_auto_create_stats_on
+    type: gauge
+    help: 'sys.databases.is_auto_create_stats_on value.'
+    key_labels:
+      - db_name
+    values: [is_auto_create_stats_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_auto_create_stats_incremental_on
+    type: gauge
+    help: 'sys.databases.is_auto_create_stats_incremental_on value.'
+    key_labels:
+      - db_name
+    values: [is_auto_create_stats_incremental_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_auto_update_stats_on
+    type: gauge
+    help: 'sys.databases.is_auto_update_stats_on value.'
+    key_labels:
+      - db_name
+    values: [is_auto_update_stats_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_auto_update_stats_async_on
+    type: gauge
+    help: 'sys.databases.is_auto_update_stats_async_on value.'
+    key_labels:
+      - db_name
+    values: [is_auto_update_stats_async_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_ansi_null_default_on
+    type: gauge
+    help: 'sys.databases.is_ansi_null_default_on value.'
+    key_labels:
+      - db_name
+    values: [is_ansi_null_default_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_ansi_nulls_on
+    type: gauge
+    help: 'sys.databases.is_ansi_nulls_on value.'
+    key_labels:
+      - db_name
+    values: [is_ansi_nulls_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_ansi_padding_on
+    type: gauge
+    help: 'sys.databases.is_ansi_padding_on value.'
+    key_labels:
+      - db_name
+    values: [is_ansi_padding_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_ansi_warnings_on
+    type: gauge
+    help: 'sys.databases.is_ansi_warnings_on value.'
+    key_labels:
+      - db_name
+    values: [is_ansi_warnings_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_arithabort_on
+    type: gauge
+    help: 'sys.databases.is_arithabort_on value.'
+    key_labels:
+      - db_name
+    values: [is_arithabort_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_concat_null_yields_null_on
+    type: gauge
+    help: 'sys.databases.is_concat_null_yields_null_on value.'
+    key_labels:
+      - db_name
+    values: [is_concat_null_yields_null_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_numeric_roundabort_on
+    type: gauge
+    help: 'sys.databases.is_numeric_roundabort_on value.'
+    key_labels:
+      - db_name
+    values: [is_numeric_roundabort_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_quoted_identifier_on
+    type: gauge
+    help: 'sys.databases.is_quoted_identifier_on value.'
+    key_labels:
+      - db_name
+    values: [is_quoted_identifier_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_recursive_triggers_on
+    type: gauge
+    help: 'sys.databases.is_recursive_triggers_on value.'
+    key_labels:
+      - db_name
+    values: [is_recursive_triggers_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_cursor_close_on_commit_on
+    type: gauge
+    help: 'sys.databases.is_cursor_close_on_commit_on value.'
+    key_labels:
+      - db_name
+    values: [is_cursor_close_on_commit_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_local_cursor_default
+    type: gauge
+    help: 'sys.databases.is_local_cursor_default value.'
+    key_labels:
+      - db_name
+    values: [is_local_cursor_default]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_fulltext_enabled
+    type: gauge
+    help: 'sys.databases.is_fulltext_enabled value.'
+    key_labels:
+      - db_name
+    values: [is_fulltext_enabled]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_trustworthy_on
+    type: gauge
+    help: 'sys.databases.is_trustworthy_on value.'
+    key_labels:
+      - db_name
+    values: [is_trustworthy_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_db_chaining_on
+    type: gauge
+    help: 'sys.databases.is_db_chaining_on value.'
+    key_labels:
+      - db_name
+    values: [is_db_chaining_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_parameterization_forced
+    type: gauge
+    help: 'sys.databases.is_parameterization_forced value.'
+    key_labels:
+      - db_name
+    values: [is_parameterization_forced]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_master_key_encrypted_by_server
+    type: gauge
+    help: 'sys.databases.is_master_key_encrypted_by_server value.'
+    key_labels:
+      - db_name
+    values: [is_master_key_encrypted_by_server]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_query_store_on
+    type: gauge
+    help: 'sys.databases.is_query_store_on value.'
+    key_labels:
+      - db_name
+    values: [is_query_store_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_published
+    type: gauge
+    help: 'sys.databases.is_published value.'
+    key_labels:
+      - db_name
+    values: [is_published]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_subscribed
+    type: gauge
+    help: 'sys.databases.is_subscribed value.'
+    key_labels:
+      - db_name
+    values: [is_subscribed]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_merge_published
+    type: gauge
+    help: 'sys.databases.is_merge_published value.'
+    key_labels:
+      - db_name
+    values: [is_merge_published]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_distributor
+    type: gauge
+    help: 'sys.databases.is_distributor value.'
+    key_labels:
+      - db_name
+    values: [is_distributor]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_sync_with_backup
+    type: gauge
+    help: 'sys.databases.is_sync_with_backup value.'
+    key_labels:
+      - db_name
+    values: [is_sync_with_backup]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_broker_enabled
+    type: gauge
+    help: 'sys.databases.is_broker_enabled value.'
+    key_labels:
+      - db_name
+    values: [is_broker_enabled]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_date_correlation_on
+    type: gauge
+    help: 'sys.databases.is_date_correlation_on value.'
+    key_labels:
+      - db_name
+    values: [is_date_correlation_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_cdc_enabled
+    type: gauge
+    help: 'sys.databases.is_cdc_enabled value.'
+    key_labels:
+      - db_name
+    values: [is_cdc_enabled]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_encrypted
+    type: gauge
+    help: 'sys.databases.is_encrypted value.'
+    key_labels:
+      - db_name
+    values: [is_encrypted]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_honor_broker_priority_on
+    type: gauge
+    help: 'sys.databases.is_honor_broker_priority_on value.'
+    key_labels:
+      - db_name
+    values: [is_honor_broker_priority_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__resource_pool_id
+    type: gauge
+    help: 'sys.databases.resource_pool_id value.'
+    key_labels:
+      - db_name
+    values: [resource_pool_id]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__default_language_lcid
+    type: gauge
+    help: 'sys.databases.default_language_lcid value.'
+    key_labels:
+      - db_name
+    values: [default_language_lcid]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__default_fulltext_language_lcid
+    type: gauge
+    help: 'sys.databases.default_fulltext_language_lcid value.'
+    key_labels:
+      - db_name
+    values: [default_fulltext_language_lcid]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_nested_triggers_on
+    type: gauge
+    help: 'sys.databases.is_nested_triggers_on value.'
+    key_labels:
+      - db_name
+    values: [is_nested_triggers_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_transform_noise_words_on
+    type: gauge
+    help: 'sys.databases.is_transform_noise_words_on value.'
+    key_labels:
+      - db_name
+    values: [is_transform_noise_words_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__two_digit_year_cutoff
+    type: gauge
+    help: 'sys.databases.two_digit_year_cutoff value.'
+    key_labels:
+      - db_name
+    values: [two_digit_year_cutoff]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__containment
+    type: gauge
+    help: 'sys.databases.containment value.'
+    key_labels:
+      - db_name
+      - containment_desc
+    values: [containment]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__target_recovery_time_in_seconds
+    type: gauge
+    help: 'sys.databases.target_recovery_time_in_seconds value.'
+    key_labels:
+      - db_name
+    values: [target_recovery_time_in_seconds]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__delayed_durability
+    type: gauge
+    help: 'sys.databases.delayed_durability value.'
+    key_labels:
+      - db_name
+      - delayed_durability_desc
+    values: [delayed_durability]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_memory_optimized_elevate_to_snapshot_on
+    type: gauge
+    help: 'sys.databases.is_memory_optimized_elevate_to_snapshot_on value.'
+    key_labels:
+      - db_name
+    values: [is_memory_optimized_elevate_to_snapshot_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_federation_member
+    type: gauge
+    help: 'sys.databases.is_federation_member value.'
+    key_labels:
+      - db_name
+    values: [is_federation_member]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_remote_data_archive_enabled
+    type: gauge
+    help: 'sys.databases.is_remote_data_archive_enabled value.'
+    key_labels:
+      - db_name
+    values: [is_remote_data_archive_enabled]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_mixed_page_allocation_on
+    type: gauge
+    help: 'sys.databases.is_mixed_page_allocation_on value.'
+    key_labels:
+      - db_name
+    values: [is_mixed_page_allocation_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_temporal_history_retention_enabled
+    type: gauge
+    help: 'sys.databases.is_temporal_history_retention_enabled value.'
+    key_labels:
+      - db_name
+    values: [is_temporal_history_retention_enabled]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__catalog_collation_type
+    type: gauge
+    help: 'sys.databases.catalog_collation_type value.'
+    key_labels:
+      - db_name
+      - catalog_collation_type_desc
+    values: [catalog_collation_type]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_result_set_caching_on
+    type: gauge
+    help: 'sys.databases.is_result_set_caching_on value.'
+    key_labels:
+      - db_name
+    values: [is_result_set_caching_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_accelerated_database_recovery_on
+    type: gauge
+    help: 'sys.databases.is_accelerated_database_recovery_on value.'
+    key_labels:
+      - db_name
+    values: [is_accelerated_database_recovery_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_tempdb_spill_to_remote_store
+    type: gauge
+    help: 'sys.databases.is_tempdb_spill_to_remote_store value.'
+    key_labels:
+      - db_name
+    values: [is_tempdb_spill_to_remote_store]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_stale_page_detection_on
+    type: gauge
+    help: 'sys.databases.is_stale_page_detection_on value.'
+    key_labels:
+      - db_name
+    values: [is_stale_page_detection_on]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_memory_optimized_enabled
+    type: gauge
+    help: 'sys.databases.is_memory_optimized_enabled value.'
+    key_labels:
+      - db_name
+    values: [is_memory_optimized_enabled]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_db__is_data_retention_enabled
+    type: gauge
+    help: 'sys.databases.is_data_retention_enabled value.'
+    key_labels:
+      - db_name
+    values: [is_data_retention_enabled]
+    query_ref: mssql_sys_databases
+
+  - metric_name: mssql_config__value
+    type: gauge
+    help: 'sys.configurations.value value.'
+    key_labels:
+      - config_name
+      - config_description
+    values: [config_value]
+    query_ref: mssql_sys_configurations
+
+  - metric_name: mssql_config__collection_time_utc
+    type: gauge
+    help: 'Collection time as Unix epoch seconds for sys.configurations rows.'
+    key_labels:
+      - config_name
+    values: [collection_time_utc]
+    query_ref: mssql_sys_configurations
+
+  - metric_name: mssql_config__value_in_use
+    type: gauge
+    help: 'sys.configurations.value_in_use value.'
+    key_labels:
+      - config_name
+    values: [config_value_in_use]
+    query_ref: mssql_sys_configurations
+
+queries:
+  - query_name: mssql_sys_databases
+    query: |
+      -- Dynamic SQL: substitute CAST(0 AS bigint) for columns that do not
+      -- exist on the running SQL Server version so the same metric schema
+      -- is emitted on SQL 2016 through SQL 2025. The following columns are
+      -- present only on SQL Server 2022 (16.x) or later.
+      DECLARE @c_tempdb_spill_to_remote_store nvarchar(200) = IIF(
+        COL_LENGTH('sys.databases','is_tempdb_spill_to_remote_store') IS NOT NULL,
+        N'CAST(d.is_tempdb_spill_to_remote_store AS bigint)', N'CAST(0 AS bigint)');
+      DECLARE @c_stale_page_detection_on nvarchar(200) = IIF(
+        COL_LENGTH('sys.databases','is_stale_page_detection_on') IS NOT NULL,
+        N'CAST(d.is_stale_page_detection_on AS bigint)', N'CAST(0 AS bigint)');
+      DECLARE @c_memory_optimized_enabled nvarchar(200) = IIF(
+        COL_LENGTH('sys.databases','is_memory_optimized_enabled') IS NOT NULL,
+        N'CAST(d.is_memory_optimized_enabled AS bigint)', N'CAST(0 AS bigint)');
+      DECLARE @c_data_retention_enabled nvarchar(200) = IIF(
+        COL_LENGTH('sys.databases','is_data_retention_enabled') IS NOT NULL,
+        N'CAST(d.is_data_retention_enabled AS bigint)', N'CAST(0 AS bigint)');
+
+      DECLARE @sql nvarchar(max) = N'
+      SELECT
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), GETUTCDATE()) AS bigint) as collection_time_utc,
+        d.name AS db_name,
+        COALESCE(sys.fn_varbintohexstr(d.owner_sid), N'''') AS owner_sid,
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), d.create_date) AS bigint) AS create_date,
+        COALESCE(d.collation_name, N'''') AS collation_name,
+        COALESCE(CONVERT(nvarchar(36), d.service_broker_guid), N'''') AS service_broker_guid,
+        COALESCE(CONVERT(nvarchar(36), d.replica_id), N'''') AS replica_id,
+        COALESCE(CONVERT(nvarchar(36), d.group_database_id), N'''') AS group_database_id,
+        COALESCE(d.default_language_name, N'''') AS default_language_name,
+        COALESCE(d.default_fulltext_language_name, N'''') AS default_fulltext_language_name,
+        COALESCE(d.physical_database_name, N'''') AS physical_database_name,
+        d.database_id AS database_id,
+        d.source_database_id AS source_database_id,
+        d.compatibility_level AS compatibility_level,
+        d.user_access AS user_access,
+        CAST(d.is_read_only AS bigint) AS is_read_only,
+        CAST(d.is_auto_close_on AS bigint) AS is_auto_close_on,
+        CAST(d.is_auto_shrink_on AS bigint) AS is_auto_shrink_on,
+        d.state AS state,
+        CAST(d.is_in_standby AS bigint) AS is_in_standby,
+        CAST(d.is_cleanly_shutdown AS bigint) AS is_cleanly_shutdown,
+        CAST(d.is_supplemental_logging_enabled AS bigint) AS is_supplemental_logging_enabled,
+        d.snapshot_isolation_state AS snapshot_isolation_state,
+        CAST(d.is_read_committed_snapshot_on AS bigint) AS is_read_committed_snapshot_on,
+        d.recovery_model AS recovery_model,
+        d.page_verify_option AS page_verify_option,
+        CAST(d.is_auto_create_stats_on AS bigint) AS is_auto_create_stats_on,
+        CAST(d.is_auto_create_stats_incremental_on AS bigint) AS is_auto_create_stats_incremental_on,
+        CAST(d.is_auto_update_stats_on AS bigint) AS is_auto_update_stats_on,
+        CAST(d.is_auto_update_stats_async_on AS bigint) AS is_auto_update_stats_async_on,
+        CAST(d.is_ansi_null_default_on AS bigint) AS is_ansi_null_default_on,
+        CAST(d.is_ansi_nulls_on AS bigint) AS is_ansi_nulls_on,
+        CAST(d.is_ansi_padding_on AS bigint) AS is_ansi_padding_on,
+        CAST(d.is_ansi_warnings_on AS bigint) AS is_ansi_warnings_on,
+        CAST(d.is_arithabort_on AS bigint) AS is_arithabort_on,
+        CAST(d.is_concat_null_yields_null_on AS bigint) AS is_concat_null_yields_null_on,
+        CAST(d.is_numeric_roundabort_on AS bigint) AS is_numeric_roundabort_on,
+        CAST(d.is_quoted_identifier_on AS bigint) AS is_quoted_identifier_on,
+        CAST(d.is_recursive_triggers_on AS bigint) AS is_recursive_triggers_on,
+        CAST(d.is_cursor_close_on_commit_on AS bigint) AS is_cursor_close_on_commit_on,
+        CAST(d.is_local_cursor_default AS bigint) AS is_local_cursor_default,
+        CAST(d.is_fulltext_enabled AS bigint) AS is_fulltext_enabled,
+        CAST(d.is_trustworthy_on AS bigint) AS is_trustworthy_on,
+        CAST(d.is_db_chaining_on AS bigint) AS is_db_chaining_on,
+        CAST(d.is_parameterization_forced AS bigint) AS is_parameterization_forced,
+        CAST(d.is_master_key_encrypted_by_server AS bigint) AS is_master_key_encrypted_by_server,
+        CAST(d.is_query_store_on AS bigint) AS is_query_store_on,
+        CAST(d.is_published AS bigint) AS is_published,
+        CAST(d.is_subscribed AS bigint) AS is_subscribed,
+        CAST(d.is_merge_published AS bigint) AS is_merge_published,
+        CAST(d.is_distributor AS bigint) AS is_distributor,
+        CAST(d.is_sync_with_backup AS bigint) AS is_sync_with_backup,
+        CAST(d.is_broker_enabled AS bigint) AS is_broker_enabled,
+        CAST(d.is_date_correlation_on AS bigint) AS is_date_correlation_on,
+        CAST(d.is_cdc_enabled AS bigint) AS is_cdc_enabled,
+        CAST(d.is_encrypted AS bigint) AS is_encrypted,
+        CAST(d.is_honor_broker_priority_on AS bigint) AS is_honor_broker_priority_on,
+        d.resource_pool_id AS resource_pool_id,
+        d.default_language_lcid AS default_language_lcid,
+        d.default_fulltext_language_lcid AS default_fulltext_language_lcid,
+        CAST(d.is_nested_triggers_on AS bigint) AS is_nested_triggers_on,
+        CAST(d.is_transform_noise_words_on AS bigint) AS is_transform_noise_words_on,
+        d.two_digit_year_cutoff AS two_digit_year_cutoff,
+        d.containment AS containment,
+        d.target_recovery_time_in_seconds AS target_recovery_time_in_seconds,
+        d.delayed_durability AS delayed_durability,
+        CAST(d.is_memory_optimized_elevate_to_snapshot_on AS bigint) AS is_memory_optimized_elevate_to_snapshot_on,
+        CAST(d.is_federation_member AS bigint) AS is_federation_member,
+        CAST(d.is_remote_data_archive_enabled AS bigint) AS is_remote_data_archive_enabled,
+        CAST(d.is_mixed_page_allocation_on AS bigint) AS is_mixed_page_allocation_on,
+        CAST(d.is_temporal_history_retention_enabled AS bigint) AS is_temporal_history_retention_enabled,
+        d.catalog_collation_type AS catalog_collation_type,
+        CAST(d.is_result_set_caching_on AS bigint) AS is_result_set_caching_on,
+        CAST(d.is_accelerated_database_recovery_on AS bigint) AS is_accelerated_database_recovery_on,
+        ' + @c_tempdb_spill_to_remote_store + N' AS is_tempdb_spill_to_remote_store,
+        ' + @c_stale_page_detection_on       + N' AS is_stale_page_detection_on,
+        ' + @c_memory_optimized_enabled      + N' AS is_memory_optimized_enabled,
+        ' + @c_data_retention_enabled        + N' AS is_data_retention_enabled,
+        COALESCE(d.user_access_desc, N'''') AS user_access_desc,
+        COALESCE(d.state_desc, N'''') AS state_desc,
+        COALESCE(d.snapshot_isolation_state_desc, N'''') AS snapshot_isolation_state_desc,
+        COALESCE(d.recovery_model_desc, N'''') AS recovery_model_desc,
+        COALESCE(d.page_verify_option_desc, N'''') AS page_verify_option_desc,
+        COALESCE(d.containment_desc, N'''') AS containment_desc,
+        COALESCE(d.delayed_durability_desc, N'''') AS delayed_durability_desc,
+        COALESCE(d.catalog_collation_type_desc, N'''') AS catalog_collation_type_desc
+      FROM sys.databases AS d
+      ORDER BY d.name';
+
+      EXEC sp_executesql @sql;
+
+  - query_name: mssql_sys_configurations
+    query: |
+      SELECT
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint) as collection_time_utc,
+        name AS config_name,
+        CAST(value AS int) AS config_value,
+        CAST(value_in_use AS int) AS config_value_in_use,
+        description AS config_description
+      FROM sys.configurations
+      ORDER BY name

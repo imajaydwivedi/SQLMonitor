@@ -45,6 +45,7 @@ ALTER PROCEDURE dbo.usp_GetAllServerDashboardMail
 	@full_threshold_days int = 8,
 	@diff_threshold_hours int = 26,
 	@tlog_threshold_minutes int = 240,
+	@alert_history_hours int = 4,
 	@collect_core_health_metrics bit = 1,
 	@collect_tempdb_health bit = 1,
 	@collect_log_space bit = 1,
@@ -53,18 +54,23 @@ ALTER PROCEDURE dbo.usp_GetAllServerDashboardMail
 	@collect_offline_servers bit = 1,
 	@collect_sqlmonitor_jobs bit = 1,
 	@collect_backup_history bit = 1,
+	@collect_alert_history bit = 1,
+	@hide_row_if_no_data bit = 0, /* Hide all details in Mailer for all categories that have no alert issue */
 	@verbose tinyint = 0 /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
 )
 AS 
 BEGIN
 	/*
-		Version:		2025-Jan-28
-		Update:			2025-Jan-28 - Added Disk Latency in Core Health Metrics Table
+		Version:		2026-Feb-27
+		Update:			2026-Feb-27 - #56 - Add alert_history into mailer
+						2026-Jan-31 - #56 - Improve Presentation of Results
+						2025-Jan-28 - Added Disk Latency in Core Health Metrics Table
 						2024-01-11 - #7 - Adding Backup Issues in mailer
 						2023-12-31 - #24 - Daily Mailer containing similar content of 'Monitoring - Live - All Servers' dashboard
 
 		EXEC dbo.usp_GetAllServerDashboardMail @recipients = 'sqlagentservice@gmail.com', 
-							@only_threshold_validated = 1, @send_mail = 1, @verbose = 2;
+							@only_threshold_validated = 1, @hide_row_if_no_data = 0,
+							@send_mail = 1, @verbose = 2;
 	*/
 	SET NOCOUNT ON; 
 	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
@@ -90,13 +96,23 @@ BEGIN
 	declare @_title nvarchar(2000);
 	declare @_style_css nvarchar(max);
 	declare @_html_core_health nvarchar(MAX); -- 'Core Health Metrics'
+	declare @_collection_time_core_health datetime = convert(date,'2000-01-01');
 	declare @_html_tempdb_health nvarchar(MAX); -- 'Tempdb Health'
+	declare @_collection_time_tempdb_health datetime = convert(date,'2000-01-01');
 	declare @_html_log_space_health nvarchar(MAX); -- 'Log Space'
+	declare @_collection_time_log_space_health datetime = convert(date,'2000-01-01');
 	declare @_html_ag_health nvarchar(MAX); -- 'Ag Latency'
+	declare @_collection_time_ag_health datetime = convert(date,'2000-01-01');
 	declare @_html_disk_health nvarchar(MAX); -- 'Disk Space'
+	declare @_collection_time_disk_health datetime = convert(date,'2000-01-01');
 	declare @_html_offline_servers nvarchar(MAX); -- 'Offline Servers'
+	declare @_collection_time_offline_servers datetime = convert(date,'2000-01-01');
 	declare @_html_sqlmonitor_jobs nvarchar(max); -- 'SQLMonitor Jobs'
+	declare @_collection_time_sqlmonitor_jobs datetime = convert(date,'2000-01-01');
 	declare @_html_backup_history nvarchar(max); -- 'Backup History'
+	declare @_collection_time_backup_history datetime = convert(date,'2000-01-01');
+	declare @_html_alert_history nvarchar(max); -- 'Backup History'
+	declare @_collection_time_alert_history datetime = convert(date,'2000-01-01');
 	declare @_table_headline nvarchar(500);
 	declare @_table_header nvarchar(max);
 	declare @_table_data nvarchar(max);	
@@ -110,6 +126,7 @@ BEGIN
 	declare @_url_offline_servers_panel varchar(4000) = @_url_all_servers_dashboard+'?viewPanel=844';
 	declare @_url_sqlmonitor_jobs_panel varchar(4000) = @_url_all_servers_dashboard+'?viewPanel=864';
 	declare @_url_backup_history_panel varchar(4000) = @_url_all_servers_dashboard+'?viewPanel=869';
+	declare @_url_alert_history_panel varchar(4000) = @_url_all_servers_dashboard+'?viewPanel=890';
 
 	declare @_line nvarchar(500);
 	declare @_tab nchar(2) = nchar(9);
@@ -225,62 +242,9 @@ BEGIN
 		if not exists (select * from dbo.vw_all_server_info)
 			raiserror ('Data does not exist in dbo.vw_all_server_info', 17, -1) with log;
 
-		if @verbose > 1
-		begin
-			;with asi as (
-				select	srv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, avg_disk_latency_ms,
-						available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, 
-						memory_grants_pending, connection_count, waits_per_core_per_minute
-						,issue_rank =   (case when os_cpu >= 90 then 3 when os_cpu >= @os_cpu_threshold then 1 else 0 end) +
-                            (case when os_cpu >= 80 then 3 when sql_cpu >= @sql_cpu_threshold then 1 else 0 end) +
-                            (case when blocked_counts >= 20 then 5
-                                    when blocked_counts >= 10 then 4
-                                    when blocked_counts >= 5 then 2
-                                    when blocked_counts >= @blocked_counts_threshold then 1
-                                    else 0
-                                    end) +
-                            (case when blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold then 1 else 0 end) +
-                            (case when ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) and system_high_memory_signal_state = @system_high_memory_signal_state_threshold ) then 1 else 0 end) +
-                            (case when memory_grants_pending > 10 then 5
-                                    when memory_grants_pending > 5 then 4
-                                    when memory_grants_pending > @memory_grants_pending_threshold then 2
-                                    else 0
-                                    end) +
-                            (case when connection_count >= @connection_count_threshold then 1 else 0 end) +
-                            (case when avg_disk_latency_ms >= 100 then 5
-                                    when avg_disk_latency_ms >= 80 then 4
-                                    when avg_disk_latency_ms >= 50 then 3
-                                    when avg_disk_latency_ms >= 35 then 2
-                                    when avg_disk_latency_ms >= @avg_disk_latency_ms then 1
-                                    else 0
-                                    end) +
-                            (case when waits_per_core_per_minute > @waits_per_core_per_minute_threshold then 1 else 0 end)
-				from dbo.vw_all_server_info
-			)
-			,asi_filtered as (
-				select *
-				from asi
-				where 1=1
-				and (   os_cpu >= @os_cpu_threshold
-					or  sql_cpu >= @sql_cpu_threshold 
-					or  blocked_counts >= @blocked_counts_threshold
-					or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold
-					or  ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) 
-						and system_high_memory_signal_state = @system_high_memory_signal_state_threshold 
-						)
-					or  memory_grants_pending > @memory_grants_pending_threshold
-					--or  connection_count >= @connection_count_threshold
-					or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold
-					or  avg_disk_latency_ms >= @avg_disk_latency_ms
-					)
-			)
-			select [RunningQuery], cte.*
-			from asi_filtered cte
-			full outer join (select [RunningQuery] = 'Core Health Metrics') rq
-				on 1=1
-			order by issue_rank desc, avg_disk_latency_ms desc, srv_name;
-		end
-
+		-- Get temp table with alert data
+		if object_id('tempdb..#asi_filtered') is not null
+			drop table #asi_filtered;
 		;with asi as (
 			select	srv_name, os_cpu, sql_cpu, blocked_counts, blocked_duration_max_seconds, avg_disk_latency_ms,
 					available_physical_memory_kb, system_high_memory_signal_state, physical_memory_in_use_kb, 
@@ -311,97 +275,121 @@ BEGIN
                         (case when waits_per_core_per_minute > @waits_per_core_per_minute_threshold then 1 else 0 end)
 			from dbo.vw_all_server_info
 		)
-		,asi_filtered as (
-			select *
-			from asi
-			where 1=1
-			and (   os_cpu >= @os_cpu_threshold
-				or  sql_cpu >= @sql_cpu_threshold 
-				or  blocked_counts >= @blocked_counts_threshold
-				or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold
-				or  ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) 
-					and system_high_memory_signal_state = @system_high_memory_signal_state_threshold 
-					)
-				or  memory_grants_pending > @memory_grants_pending_threshold
-				--or  connection_count >= @connection_count_threshold
-				or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold
-				or  avg_disk_latency_ms >= @avg_disk_latency_ms
+		select *
+		into #asi_filtered
+		from asi
+		where 1=1
+		and (   os_cpu >= @os_cpu_threshold
+			or  sql_cpu >= @sql_cpu_threshold 
+			or  blocked_counts >= @blocked_counts_threshold
+			or  blocked_duration_max_seconds >= @blocked_duration_max_seconds_threshold
+			or  ( available_physical_memory_kb < (@available_physical_memory_mb_threshold*1024) 
+				and system_high_memory_signal_state = @system_high_memory_signal_state_threshold 
 				)
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_key">'+srv_name+'</td>'
-					+'<td class="'+(case when os_cpu >= 90 then 'bg_red'
-									when os_cpu >= 80 then 'bg_orange'
-									when os_cpu >= 70 then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+convert(varchar,os_cpu)+'</td>'
-					+'<td class="'+(case when sql_cpu >= 90 then 'bg_red'
-									when sql_cpu >= 80 then 'bg_orange'
-									when sql_cpu >= 70 then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+convert(varchar,sql_cpu)+'</td>'
-					+'<td class="'+(case when blocked_counts >= 10 then 'bg_red'
-									when blocked_counts >= 5 then 'bg_orange'
-									when blocked_counts >= 1 then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+convert(varchar,isnull(blocked_counts,0))+'</td>'
-					+'<td class="'+(case when blocked_duration_max_seconds >= 1800 then 'bg_red'
-									when blocked_duration_max_seconds >= 600 then 'bg_orange'
-									when blocked_duration_max_seconds >= 300 then 'bg_yellow_dark'
-									when blocked_duration_max_seconds >= 120 then 'bg_yellow_medium'
-									when blocked_duration_max_seconds >= 60 then 'bg_yellow_light'
-									else 'bg_none'
-									end)+'">'+isnull((case when blocked_duration_max_seconds < 60 then convert(varchar,floor(blocked_duration_max_seconds))+' sec'
-							when blocked_duration_max_seconds < 3600 then convert(varchar,floor(blocked_duration_max_seconds/60))+' min'
-							when blocked_duration_max_seconds < 86400 then convert(varchar,floor(blocked_duration_max_seconds/3600))+' hrs'
-							when blocked_duration_max_seconds >= 86400 then convert(varchar,floor(blocked_duration_max_seconds/86400))+' days'
-							else 'xx' end),0)+'</td>'
-					+'<td class="'+(case when avg_disk_latency_ms >= 50 then 'bg_red'
-									when avg_disk_latency_ms >= 35 then 'bg_orange'
-									when avg_disk_latency_ms >= 10 then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+convert(varchar,isnull(avg_disk_latency_ms,0))+' ms</td>'
-					+'<td class="'+(case when available_physical_memory_kb > 4194304 then 'bg_none'
-									when available_physical_memory_kb > 2097152 then 'bg_yellow'
-									when available_physical_memory_kb > 512000 then 'bg_orange'
-									else 'bg_red'
-									end)+'">'+(case when available_physical_memory_kb < 1024 then convert(varchar,available_physical_memory_kb)+' kb'
-							when available_physical_memory_kb < 1024*1024 then convert(varchar,floor(available_physical_memory_kb/1024))+' mb'
-							when available_physical_memory_kb < 1024*1024*1024 then convert(varchar,floor(available_physical_memory_kb/(1024*1024)))+' gb'
-							when available_physical_memory_kb >= 1024*1024*1024 then convert(varchar,floor(available_physical_memory_kb/(1024*1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					--+'<td>'+system_high_memory_signal_state+'</td>'
-					+'<td>'+(case when physical_memory_in_use_kb < 1024 then convert(varchar,physical_memory_in_use_kb)+' kb'
-							when physical_memory_in_use_kb < 1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/1024))+' mb'
-							when physical_memory_in_use_kb < 1024*1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/(1024*1024)))+' gb'
-							when physical_memory_in_use_kb >= 1024*1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/(1024*1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case when memory_grants_pending > 0 then 'bg_red'
-									else 'bg_none'
-									end)+'">'+convert(varchar,isnull(memory_grants_pending,0))+'</td>'
-					/*
-					+'<td class="'+(case when connection_count >= 1200 then 'bg_red'
-									when connection_count >= 1000 then 'bg_orange'
-									when connection_count >= 800 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+convert(varchar,connection_count)+'</td>'
-					*/
-					+'<td class="'+(case when waits_per_core_per_minute >= 300 then 'bg_red'
-									when waits_per_core_per_minute >= 240 then 'bg_orange'
-									when waits_per_core_per_minute >= 180 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+isnull((case when waits_per_core_per_minute < 60 then convert(varchar,floor(waits_per_core_per_minute))+' sec'
-							when waits_per_core_per_minute < 3600 then convert(varchar,floor(waits_per_core_per_minute/60))+' min'
-							when waits_per_core_per_minute < 86400 then convert(varchar,floor(waits_per_core_per_minute/3600))+' hrs'
-							when waits_per_core_per_minute >= 86400 then convert(varchar,floor(waits_per_core_per_minute/86400))+' days'
-							else 'xx' end),'-1')+'</td>'
-					+'</tr>' as [table_row]
-			from asi_filtered cte
-			where 1=1
-		)
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+			or  memory_grants_pending > @memory_grants_pending_threshold
+			--or  connection_count >= @connection_count_threshold
+			or  waits_per_core_per_minute > @waits_per_core_per_minute_threshold
+			or  avg_disk_latency_ms >= @avg_disk_latency_ms
+			);
+
+		if @verbose > 1
+		begin
+			select [RunningQuery], cte.*
+			from #asi_filtered cte
+			full outer join (select [RunningQuery] = 'Core Health Metrics') rq
+				on 1=1
+			order by issue_rank desc, avg_disk_latency_ms desc, srv_name;
+		end
+
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #asi_filtered cte)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_key">'+srv_name+'</td>'
+						+'<td class="'+(case when os_cpu >= 90 then 'bg_red'
+										when os_cpu >= 80 then 'bg_orange'
+										when os_cpu >= 70 then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+convert(varchar,os_cpu)+'</td>'
+						+'<td class="'+(case when sql_cpu >= 90 then 'bg_red'
+										when sql_cpu >= 80 then 'bg_orange'
+										when sql_cpu >= 70 then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+convert(varchar,sql_cpu)+'</td>'
+						+'<td class="'+(case when blocked_counts >= 10 then 'bg_red'
+										when blocked_counts >= 5 then 'bg_orange'
+										when blocked_counts >= 1 then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+convert(varchar,isnull(blocked_counts,0))+'</td>'
+						+'<td class="'+(case when blocked_duration_max_seconds >= 1800 then 'bg_red'
+										when blocked_duration_max_seconds >= 600 then 'bg_orange'
+										when blocked_duration_max_seconds >= 300 then 'bg_yellow_dark'
+										when blocked_duration_max_seconds >= 120 then 'bg_yellow_medium'
+										when blocked_duration_max_seconds >= 60 then 'bg_yellow_light'
+										else 'bg_none'
+										end)+'">'+isnull((case when blocked_duration_max_seconds < 60 then convert(varchar,floor(blocked_duration_max_seconds))+' sec'
+								when blocked_duration_max_seconds < 3600 then convert(varchar,floor(blocked_duration_max_seconds/60))+' min'
+								when blocked_duration_max_seconds < 86400 then convert(varchar,floor(blocked_duration_max_seconds/3600))+' hrs'
+								when blocked_duration_max_seconds >= 86400 then convert(varchar,floor(blocked_duration_max_seconds/86400))+' days'
+								else 'xx' end),0)+'</td>'
+						+'<td class="'+(case when avg_disk_latency_ms >= 50 then 'bg_red'
+										when avg_disk_latency_ms >= 35 then 'bg_orange'
+										when avg_disk_latency_ms >= 10 then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+convert(varchar,isnull(avg_disk_latency_ms,0))+' ms</td>'
+						+'<td class="'+(case when available_physical_memory_kb > 4194304 then 'bg_none'
+										when available_physical_memory_kb > 2097152 then 'bg_yellow'
+										when available_physical_memory_kb > 512000 then 'bg_orange'
+										else 'bg_red'
+										end)+'">'+(case when available_physical_memory_kb < 1024 then convert(varchar,available_physical_memory_kb)+' kb'
+								when available_physical_memory_kb < 1024*1024 then convert(varchar,floor(available_physical_memory_kb/1024))+' mb'
+								when available_physical_memory_kb < 1024*1024*1024 then convert(varchar,floor(available_physical_memory_kb/(1024*1024)))+' gb'
+								when available_physical_memory_kb >= 1024*1024*1024 then convert(varchar,floor(available_physical_memory_kb/(1024*1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						--+'<td>'+system_high_memory_signal_state+'</td>'
+						+'<td>'+(case when physical_memory_in_use_kb < 1024 then convert(varchar,physical_memory_in_use_kb)+' kb'
+								when physical_memory_in_use_kb < 1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/1024))+' mb'
+								when physical_memory_in_use_kb < 1024*1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/(1024*1024)))+' gb'
+								when physical_memory_in_use_kb >= 1024*1024*1024 then convert(varchar,floor(physical_memory_in_use_kb/(1024*1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when memory_grants_pending > 0 then 'bg_red'
+										else 'bg_none'
+										end)+'">'+convert(varchar,isnull(memory_grants_pending,0))+'</td>'
+						/*
+						+'<td class="'+(case when connection_count >= 1200 then 'bg_red'
+										when connection_count >= 1000 then 'bg_orange'
+										when connection_count >= 800 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+convert(varchar,connection_count)+'</td>'
+						*/
+						+'<td class="'+(case when waits_per_core_per_minute >= 300 then 'bg_red'
+										when waits_per_core_per_minute >= 240 then 'bg_orange'
+										when waits_per_core_per_minute >= 180 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+isnull((case when waits_per_core_per_minute < 60 then convert(varchar,floor(waits_per_core_per_minute))+' sec'
+								when waits_per_core_per_minute < 3600 then convert(varchar,floor(waits_per_core_per_minute/60))+' min'
+								when waits_per_core_per_minute < 86400 then convert(varchar,floor(waits_per_core_per_minute/3600))+' hrs'
+								when waits_per_core_per_minute >= 86400 then convert(varchar,floor(waits_per_core_per_minute/86400))+' days'
+								else 'xx' end),'-1')+'</td>'
+						+'</tr>' as [table_row]
+				from #asi_filtered cte
+				where 1=1
+			)
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_core_health_metrics = 0;
+
+			select top 1 @_collection_time_core_health = collection_time
+			from dbo.all_server_volatile_info
+			order by collection_time desc;
+
+			set @_table_data = '<tr><td colspan="10">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_core_health,120)+'</td></tr>';
+		end
 
 		set @_html_core_health = @_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>@os_cpu_threshold:'+convert(varchar,@os_cpu_threshold)
@@ -446,90 +434,95 @@ BEGIN
 		if not exists (select * from dbo.tempdb_space_usage_all_servers)
 			raiserror ('Data does not exist in dbo.tempdb_space_usage_all_servers', 17, -1) with log;
 
+		-- Get temp table with alert data
+		if object_id('tempdb..#tsu') is not null
+			drop table #tsu;
+		select	[collection_time_utc] = [updated_date_utc],
+				[sql_instance], [data_size_mb], [data_used_mb], [data_used_pct], [log_size_mb], [log_used_mb], 
+				[log_used_pct], [version_store_mb], [version_store_pct]
+		into #tsu
+		from dbo.tempdb_space_usage_all_servers su
+		where (su.data_used_pct > @data_used_pct
+			or su.data_used_mb > (@data_used_gb*1024) -- 200 gb
+			)
+		and (su.updated_date_utc >= dateadd(minute,-60,getutcdate())
+			and su.collection_time_utc >= dateadd(minute,-20,getutcdate())
+			);
+
 		if @verbose > 1
 		begin
-			;with t_cte as (
-				select	[collection_time_utc] = [updated_date_utc],
-						[sql_instance], [data_size_mb], [data_used_mb], [data_used_pct], [log_size_mb], [log_used_mb], 
-						[log_used_pct], [version_store_mb], [version_store_pct]
-				from dbo.tempdb_space_usage_all_servers su
-				where 1=1
-				and (su.data_used_pct > @data_used_pct
-					or su.data_used_mb > (@data_used_gb*1024) -- 200 gb
-					)
-				and (su.updated_date_utc >= dateadd(minute,-60,getutcdate())
-				  and su.collection_time_utc >= dateadd(minute,-20,getutcdate())
-					)
-			)
 			select [RunningQuery], t_cte.*
-			from t_cte
+			from #tsu t_cte
 			full outer join (select [RunningQuery] = 'Tempdb Health') rq
 				on 1=1
-		end
+		end		
 
-		;with tsu as (
-			select	[collection_time_utc] = [updated_date_utc],
-					[sql_instance], [data_size_mb], [data_used_mb], [data_used_pct], [log_size_mb], [log_used_mb], 
-					[log_used_pct], [version_store_mb], [version_store_pct]
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #tsu)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc),120)+'</td>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td>'+(case when data_size_mb < 1024 then convert(varchar,data_size_mb)+' mb'
+								when data_size_mb < 1024*1024 then convert(varchar,floor(data_size_mb/1024))+' gb'
+								when data_size_mb >= 1024*1024 then convert(varchar,floor(data_size_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when data_used_mb > (@data_used_gb*1024) then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+(case when data_used_mb < 1024 then convert(varchar,data_used_mb)+' mb'
+								when data_used_mb < 1024*1024 then convert(varchar,floor(data_used_mb/1024))+' gb'
+								when data_used_mb >= 1024*1024 then convert(varchar,floor(data_used_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when data_used_pct >= 95 then 'bg_red'
+										when data_used_pct >= 90 then 'bg_red_light'
+										when data_used_pct >= 80 then 'bg_orange'
+										when data_used_pct >= 70 then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+convert(varchar,data_used_pct)+'</td>'
+						+'<td>'+(case when log_size_mb < 1024 then convert(varchar,log_size_mb)+' mb'
+								when log_size_mb < 1024*1024 then convert(varchar,floor(log_size_mb/1024))+' gb'
+								when log_size_mb >= 1024*1024 then convert(varchar,floor(log_size_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td>'+(case when log_used_mb < 1024 then convert(varchar,log_used_mb)+' mb'
+								when log_used_mb < 1024*1024 then convert(varchar,floor(log_used_mb/1024))+' gb'
+								when log_used_mb >= 1024*1024 then convert(varchar,floor(log_used_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when log_used_pct >= 90.0 then 'bg_red'
+										when log_used_pct >= 80.0 then 'bg_orange'
+										when log_used_pct >= 70.0 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+convert(varchar,log_used_pct)+'</td>'
+						+'<td class="'+(case when version_store_mb > (@data_used_gb*1024) then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+(case when version_store_mb < 1024 then convert(varchar,version_store_mb)+' mb'
+								when version_store_mb < 1024*1024 then convert(varchar,floor(version_store_mb/1024))+' gb'
+								when version_store_mb >= 1024*1024 then convert(varchar,floor(version_store_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when version_store_pct >= 90.0 then 'bg_red'
+										when version_store_pct >= 80.0 then 'bg_orange'
+										when version_store_pct >= 70.0 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+convert(varchar,version_store_pct)+'</td>'
+						+'</tr>' as [table_row]
+				from #tsu tsu
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_tempdb_health = 0;
+
+			select top 1 @_collection_time_tempdb_health = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), updated_date_utc)
 			from dbo.tempdb_space_usage_all_servers su
-			where (su.data_used_pct > @data_used_pct
-				or su.data_used_mb > (@data_used_gb*1024) -- 200 gb
-				)
-			and (su.updated_date_utc >= dateadd(minute,-60,getutcdate())
-			  and su.collection_time_utc >= dateadd(minute,-20,getutcdate())
-				)
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc),120)+'</td>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td>'+(case when data_size_mb < 1024 then convert(varchar,data_size_mb)+' mb'
-							when data_size_mb < 1024*1024 then convert(varchar,floor(data_size_mb/1024))+' gb'
-							when data_size_mb >= 1024*1024 then convert(varchar,floor(data_size_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case when data_used_mb > (@data_used_gb*1024) then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+(case when data_used_mb < 1024 then convert(varchar,data_used_mb)+' mb'
-							when data_used_mb < 1024*1024 then convert(varchar,floor(data_used_mb/1024))+' gb'
-							when data_used_mb >= 1024*1024 then convert(varchar,floor(data_used_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case when data_used_pct >= 95 then 'bg_red'
-									when data_used_pct >= 90 then 'bg_red_light'
-									when data_used_pct >= 80 then 'bg_orange'
-									when data_used_pct >= 70 then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+convert(varchar,data_used_pct)+'</td>'
-					+'<td>'+(case when log_size_mb < 1024 then convert(varchar,log_size_mb)+' mb'
-							when log_size_mb < 1024*1024 then convert(varchar,floor(log_size_mb/1024))+' gb'
-							when log_size_mb >= 1024*1024 then convert(varchar,floor(log_size_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td>'+(case when log_used_mb < 1024 then convert(varchar,log_used_mb)+' mb'
-							when log_used_mb < 1024*1024 then convert(varchar,floor(log_used_mb/1024))+' gb'
-							when log_used_mb >= 1024*1024 then convert(varchar,floor(log_used_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case when log_used_pct >= 90.0 then 'bg_red'
-									when log_used_pct >= 80.0 then 'bg_orange'
-									when log_used_pct >= 70.0 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+convert(varchar,log_used_pct)+'</td>'
-					+'<td class="'+(case when version_store_mb > (@data_used_gb*1024) then 'bg_yellow_medium'
-									else 'bg_none'
-									end)+'">'+(case when version_store_mb < 1024 then convert(varchar,version_store_mb)+' mb'
-							when version_store_mb < 1024*1024 then convert(varchar,floor(version_store_mb/1024))+' gb'
-							when version_store_mb >= 1024*1024 then convert(varchar,floor(version_store_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case when version_store_pct >= 90.0 then 'bg_red'
-									when version_store_pct >= 80.0 then 'bg_orange'
-									when version_store_pct >= 70.0 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+convert(varchar,version_store_pct)+'</td>'
-					+'</tr>' as [table_row]
-			from tsu
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+			order by updated_date_utc desc;
+
+			set @_table_data = '<tr><td colspan="10">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_tempdb_health,120)+'</td></tr>';
+		end
 
 		set @_html_tempdb_health = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>@data_used_pct:'+convert(varchar,@data_used_pct)+' || @data_used_gb:'+convert(varchar,@data_used_gb)+'</caption>'
@@ -565,84 +558,101 @@ BEGIN
 		if not exists (select * from dbo.log_space_consumers_all_servers)
 			raiserror ('Data does not exist in dbo.log_space_consumers_all_servers', 17, -1) with log;
 
-		if @verbose > 1
-		begin
-			set @_params = '@only_threshold_validated bit, @log_used_pct float, @log_used_gb float';
-			set @_sql = '
-			;with t_cte as (
-				select	[collection_time_utc] = [updated_date_utc],
-						[sql_instance], [database_name], [recovery_model], [log_reuse_wait_desc], [log_size_mb], [exists_valid_autogrowing_file],
-						[log_used_mb], [log_used_pct], [login_name], [program_name]
-						--,[log_used_pct_threshold], [log_used_gb_threshold], [spid]
-						--,[transaction_start_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), [transaction_start_time])
-						--,[host_name], [host_process_id], [command], [additional_info]
-						--,[action_taken], [sql_text]		
-				from dbo.log_space_consumers_all_servers ls
-				where 1=1
-				'+(case when @only_threshold_validated = 1 then '' else '--' end)+'and ls.thresholds_validated = @only_threshold_validated
-				'+(case when @only_threshold_validated = 1 then '--' else '' end)+'and ( (ls.log_used_pct > @log_used_pct)	or (ls.log_used_mb > (@log_used_gb*1024)) )
-				and (ls.updated_date_utc >= dateadd(minute,-60,getutcdate())
-				  and ls.collection_time_utc >= dateadd(minute,-20,getutcdate())
-						)
-			)
-			select [RunningQuery], t_cte.*
-			from t_cte
-			full outer join (select [RunningQuery] = ''Log Space'') rq
-				on 1=1
-			';
+		-- Get temp table with alert data
+		if object_id('tempdb..#lsc') is not null
+			drop table #lsc;
+		create table #lsc (
+			[collection_time_utc] datetime2 not null,
+			[sql_instance] varchar(255) not null,
+			[database_name] varchar(256) not null,
+			[recovery_model] varchar(20) not null,
+			[log_reuse_wait_desc] varchar(125) null,
+			[log_size_mb] decimal(20,2) not null,
+			[exists_valid_autogrowing_file] bit default 0 not null,
+			[log_used_mb] decimal(20,2) not null,
+			[log_used_pct] decimal(20,2) not null,
+			[login_name] varchar(256) null,
+			[program_name] varchar(256) null
+		);
 
-			exec sp_executesql @_sql, @_params, @only_threshold_validated, @log_used_pct, @log_used_gb;
-		end
-
-		set @_params = '@only_threshold_validated bit, @log_used_pct float, @log_used_gb float, @table_data nvarchar(max) output';
+		set @_params = '@only_threshold_validated bit, @log_used_pct float, @log_used_gb float';
 		set @_sql = '
-		;with lsc as 
-		(
-			select	[collection_time_utc] = [updated_date_utc],
-					[sql_instance], [database_name], [recovery_model], [log_reuse_wait_desc], [log_size_mb], [exists_valid_autogrowing_file],
-					[log_used_mb], [log_used_pct], [login_name], [program_name]
-			from dbo.log_space_consumers_all_servers ls
-			where 1=1
-			'+(case when @only_threshold_validated = 1 then '' else '--' end)+'and ls.thresholds_validated = @only_threshold_validated
-			'+(case when @only_threshold_validated = 1 then '--' else '' end)+'and ( (ls.log_used_pct > @log_used_pct)	or (ls.log_used_mb > (@log_used_gb*1024)) )
-			and (ls.updated_date_utc >= dateadd(minute,-60,getutcdate())
-				and ls.collection_time_utc >= dateadd(minute,-20,getutcdate())
-					)
-		)
-		,t_cte as (
-			select	''<tr>''
-					+''<td class="bg_metric_neutral">''+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc),120)+''</td>''
-					+''<td class="bg_key">''+sql_instance+''</td>''
-					+''<td class="bg_key">''+[database_name]+''</td>''
-					+''<td>''+recovery_model+''</td>''
-					+''<td>''+log_reuse_wait_desc+''</td>''
-					+''<td>''+(case when log_size_mb < 1024 then convert(varchar,log_size_mb)+'' mb''
-							when log_size_mb < 1024*1024 then convert(varchar,floor(log_size_mb/1024))+'' gb''
-							when log_size_mb >= 1024*1024 then convert(varchar,floor(log_size_mb/(1024*1024)))+'' tb''
-							else ''xx'' end)+''</td>''
-					+''<td>''+convert(varchar,exists_valid_autogrowing_file)+''</td>''
-					+''<td class="''+(case when log_used_mb > (@log_used_gb*1024) then ''bg_yellow_medium''
-									else ''bg_none''
-									end)+''">''+(case when log_used_mb < 1024 then convert(varchar,log_used_mb)+'' mb''
-							when log_used_mb < 1024*1024 then convert(varchar,floor(log_used_mb/1024))+'' gb''
-							when log_used_mb >= 1024*1024 then convert(varchar,floor(log_used_mb/(1024*1024)))+'' tb''
-							else ''xx'' end)+''</td>''
-					+''<td class="''+(case when log_used_pct >= 90.0 then ''bg_red''
-									when log_used_pct >= 80.0 then ''bg_orange''
-									when log_used_pct >= 70.0 then ''bg_yellow''
-									else ''bg_none''
-									end)+''">''+convert(varchar,log_used_pct)+''</td>''
-					+''<td>''+coalesce([login_name],'''')+''</td>''
-					+''<td>''+coalesce([program_name],'''')+''</td>''
-					+''</tr>'' as [table_row]
-			from lsc
-		)
-		--select * from t_cte
-		select @table_data = coalesce(@table_data+'' ''+[table_row],[table_row])
-		from t_cte;
+		select	[collection_time_utc] = [updated_date_utc],
+				[sql_instance], [database_name], [recovery_model], [log_reuse_wait_desc], [log_size_mb], [exists_valid_autogrowing_file],
+				[log_used_mb], [log_used_pct], [login_name], [program_name]
+				--,[log_used_pct_threshold], [log_used_gb_threshold], [spid]
+				--,[transaction_start_time] = DATEADD(mi, DATEDIFF(mi, getdate(), getutcdate()), [transaction_start_time])
+				--,[host_name], [host_process_id], [command], [additional_info]
+				--,[action_taken], [sql_text]		
+		from dbo.log_space_consumers_all_servers ls
+		where 1=1
+		'+(case when @only_threshold_validated = 1 then '' else '--' end)+'and ls.thresholds_validated = @only_threshold_validated
+		'+(case when @only_threshold_validated = 1 then '--' else '' end)+'and ( (ls.log_used_pct > @log_used_pct)	or (ls.log_used_mb > (@log_used_gb*1024)) )
+		and (ls.updated_date_utc >= dateadd(minute,-60,getutcdate())
+			and ls.collection_time_utc >= dateadd(minute,-20,getutcdate())
+			)
 		';
 
-		exec sp_executesql @_sql, @_params, @only_threshold_validated, @log_used_pct, @log_used_gb, @table_data = @_table_data output;
+		insert #lsc 
+		(	[collection_time_utc], [sql_instance], [database_name], [recovery_model], [log_reuse_wait_desc], [log_size_mb],
+			[exists_valid_autogrowing_file], [log_used_mb], [log_used_pct], [login_name], [program_name]
+		)
+		exec sp_executesql @_sql, @_params, @only_threshold_validated, @log_used_pct, @log_used_gb;
+
+		if @verbose > 1
+		begin
+			select [RunningQuery], t_cte.*
+			from #lsc t_cte
+			full outer join (select [RunningQuery] = 'Log Space') rq
+				on 1=1;
+		end
+
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #lsc)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc),120)+'</td>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+[database_name]+'</td>'
+						+'<td>'+recovery_model+'</td>'
+						+'<td>'+log_reuse_wait_desc+'</td>'
+						+'<td>'+(case when log_size_mb < 1024 then convert(varchar,log_size_mb)+' mb'
+								when log_size_mb < 1024*1024 then convert(varchar,floor(log_size_mb/1024))+' gb'
+								when log_size_mb >= 1024*1024 then convert(varchar,floor(log_size_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td>'+convert(varchar,exists_valid_autogrowing_file)+'</td>'
+						+'<td class="'+(case when log_used_mb > (@log_used_gb*1024) then 'bg_yellow_medium'
+										else 'bg_none'
+										end)+'">'+(case when log_used_mb < 1024 then convert(varchar,log_used_mb)+' mb'
+								when log_used_mb < 1024*1024 then convert(varchar,floor(log_used_mb/1024))+' gb'
+								when log_used_mb >= 1024*1024 then convert(varchar,floor(log_used_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case when log_used_pct >= 90.0 then 'bg_red'
+										when log_used_pct >= 80.0 then 'bg_orange'
+										when log_used_pct >= 70.0 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+convert(varchar,log_used_pct)+'</td>'
+						+'<td>'+coalesce([login_name],'')+'</td>'
+						+'<td>'+coalesce([program_name],'')+'</td>'
+						+'</tr>' as [table_row]
+				from #lsc
+			)
+			--select * from t_cte
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_log_space = 0;
+
+			select top 1 @_collection_time_log_space_health = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), updated_date_utc)
+			from dbo.log_space_consumers_all_servers ls
+			order by updated_date_utc desc;
+
+			set @_table_data = '<tr><td colspan="11">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_log_space_health,120)+'</td></tr>';
+		end
 
 		set @_html_log_space_health = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>@only_threshold_validated:'+convert(varchar,@only_threshold_validated)+' || @log_used_pct:'+convert(varchar,@log_used_pct)+' || @log_used_gb:'+convert(varchar,@log_used_gb)+'</caption>'
@@ -678,100 +688,105 @@ BEGIN
 		if not exists (select * from dbo.ag_health_state_all_servers)
 			print 'Data does not exist in dbo.ag_health_state_all_servers';
 
+		-- Get temp table with alert data
+		if object_id('tempdb..#aghs') is not null
+			drop table #aghs;
+		select	sql_instance, [replica_database] = replica_server_name+' || '+database_name,
+				is_primary_replica,	ag_listener, is_local, synchronization_state_desc, synchronization_health_desc, 
+				latency_seconds, log_send_queue_size, redo_queue_size, is_suspended
+		into #aghs
+		from dbo.ag_health_state_all_servers ahs
+		where 1=1
+		and (	ahs.synchronization_health_desc <> 'HEALTHY'
+			or	ahs.synchronization_state_desc not in ('SYNCHRONIZED','SYNCHRONIZING')
+			or	(ahs.latency_seconds is not null and ahs.latency_seconds >= @ag_latency_minutes*60)
+			or	(ahs.log_send_queue_size is not null and ahs.log_send_queue_size >= @log_send_queue_size_gb*1024*1024)
+			or	(ahs.redo_queue_size is not null and ahs.redo_queue_size >= @ag_redo_queue_size_gb*1024*1024)
+			);
+
 		if @verbose > 1
 		begin
-			;with t_cte as (
-				select	sql_instance, [replica_database] = replica_server_name+' || '+database_name,
-						is_primary_replica,	ag_listener, is_local, synchronization_state_desc, synchronization_health_desc, 
-						latency_seconds, log_send_queue_size, redo_queue_size, is_suspended
-				from dbo.ag_health_state_all_servers ahs
-				where 1=1
-				and (	ahs.synchronization_health_desc <> 'HEALTHY'
-					or	ahs.synchronization_state_desc not in ('SYNCHRONIZED','SYNCHRONIZING')
-					or	(ahs.latency_seconds is not null and ahs.latency_seconds >= @ag_latency_minutes*60)
-					or	(ahs.log_send_queue_size is not null and ahs.log_send_queue_size >= @log_send_queue_size_gb*1024*1024)
-					or	(ahs.redo_queue_size is not null and ahs.redo_queue_size >= @ag_redo_queue_size_gb*1024*1024)
-					)
-			)
 			select [RunningQuery], t_cte.*
-			from t_cte
+			from #aghs t_cte
 			full outer join (select [RunningQuery] = 'Ag Latency') rq
 				on 1=1;
 		end
-
-		;with tsu as (
-			select	sql_instance, [replica_database] = replica_server_name+' || '+database_name,
-						is_primary_replica,	ag_listener, is_local, synchronization_state_desc, synchronization_health_desc, 
-						latency_seconds, log_send_queue_size, redo_queue_size, is_suspended
-				from dbo.ag_health_state_all_servers ahs
+		
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #aghs)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+replica_database+'</td>'
+						+'<td>'+convert(varchar,is_primary_replica)+'</td>'
+						+'<td>'+isnull(ag_listener,'')+'</td>'
+						+'<td>'+convert(varchar,is_local)+'</td>'
+						+'<td class="'+(case synchronization_state_desc
+										when 'SYNCHRONIZED' then 'bg_green'
+										when 'NOT SYNCHRONIZING' then 'bg_red'
+										when 'SYNCHRONIZING' then 'bg_cyan'
+										when 'REVERTING' then 'bg_yellow_dark'
+										when 'INITIALIZING' then 'bg_yellow_light'
+										else 'bg_none'
+										end)+'">'+isnull(synchronization_state_desc,'')+'</td>'
+						+'<td class="'+(case synchronization_health_desc
+										when 'HEALTHY' then 'bg_green'
+										when 'NOT_HEALTHY' then 'bg_red'
+										when 'PARTIALLY_HEALTHY' then 'bg_orange'
+										else 'bg_none'
+										end)+'">'+isnull(synchronization_health_desc,'')+'</td>'
+						+'<td class="'+(case when latency_seconds >= 1800 then 'bg_red'
+										when latency_seconds >= 600 then 'bg_orange'
+										when latency_seconds >= 300 then 'bg_yellow_dark'
+										when latency_seconds >= 240 then 'bg_yellow_medium'
+										when latency_seconds >= 120 then 'bg_yellow_light'
+										else 'bg_none'
+										end)+'">'+isnull((case when latency_seconds < 60 then convert(varchar,floor(latency_seconds))+' sec'
+								when latency_seconds < 3600 then convert(varchar,floor(latency_seconds/60))+' min'
+								when latency_seconds < 86400 then convert(varchar,floor(latency_seconds/3600))+' hrs'
+								when latency_seconds >= 86400 then convert(varchar,floor(latency_seconds/86400))+' days'
+								else '' end),' ')+'</td>'
+						+'<td class="'+(case when log_send_queue_size > 100000000 then 'bg_red'
+										when log_send_queue_size > 10000000 then 'bg_orange'
+										when log_send_queue_size > 1000000 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+
+								isnull((case when log_send_queue_size < 1024 then convert(varchar,log_send_queue_size)+' kb'
+									when log_send_queue_size < 1024*1024 then convert(varchar,log_send_queue_size/1024)+' mb'
+									when log_send_queue_size < 1024*1024*1024 then convert(varchar,floor(log_send_queue_size/(1024*1024)))+' gb'
+									when log_send_queue_size >= 1024*1024*1024 then convert(varchar,floor(log_send_queue_size/(1024*1024*1024)))+' tb'
+									else '' end),' ')+'</td>'
+						+'<td class="'+(case when redo_queue_size > 100000000 then 'bg_red'
+										when redo_queue_size > 10000000 then 'bg_orange'
+										when redo_queue_size > 1000000 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'
+								+isnull((case when redo_queue_size < 1024 then convert(varchar,redo_queue_size)+' kb'
+									when redo_queue_size < 1024*1024 then convert(varchar,redo_queue_size/1024)+' mb'
+									when redo_queue_size < 1024*1024*1024 then convert(varchar,floor(redo_queue_size/(1024*1024)))+' gb'
+									when redo_queue_size >= 1024*1024*1024 then convert(varchar,floor(redo_queue_size/(1024*1024*1024)))+' tb'
+									else '' end),' ')+'</td>'
+						+'<td>'+convert(varchar,is_suspended)+'</td>'
+						+'</tr>' as [table_row]
+				from #aghs
 				where 1=1
-				and (	ahs.synchronization_health_desc <> 'HEALTHY'
-					or	ahs.synchronization_state_desc not in ('SYNCHRONIZED','SYNCHRONIZING')
-					or	(ahs.latency_seconds is not null and ahs.latency_seconds >= @ag_latency_minutes*60)
-					or	(ahs.log_send_queue_size is not null and ahs.log_send_queue_size >= @log_send_queue_size_gb*1024*1024)
-					or	(ahs.redo_queue_size is not null and ahs.redo_queue_size >= @ag_redo_queue_size_gb*1024*1024)
-					)
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td class="bg_key">'+replica_database+'</td>'
-					+'<td>'+convert(varchar,is_primary_replica)+'</td>'
-					+'<td>'+isnull(ag_listener,'')+'</td>'
-					+'<td>'+convert(varchar,is_local)+'</td>'
-					+'<td class="'+(case synchronization_state_desc
-									when 'SYNCHRONIZED' then 'bg_green'
-									when 'NOT SYNCHRONIZING' then 'bg_red'
-									when 'SYNCHRONIZING' then 'bg_cyan'
-									when 'REVERTING' then 'bg_yellow_dark'
-									when 'INITIALIZING' then 'bg_yellow_light'
-									else 'bg_none'
-									end)+'">'+isnull(synchronization_state_desc,'')+'</td>'
-					+'<td class="'+(case synchronization_health_desc
-									when 'HEALTHY' then 'bg_green'
-									when 'NOT_HEALTHY' then 'bg_red'
-									when 'PARTIALLY_HEALTHY' then 'bg_orange'
-									else 'bg_none'
-									end)+'">'+isnull(synchronization_health_desc,'')+'</td>'
-					+'<td class="'+(case when latency_seconds >= 1800 then 'bg_red'
-									when latency_seconds >= 600 then 'bg_orange'
-									when latency_seconds >= 300 then 'bg_yellow_dark'
-									when latency_seconds >= 240 then 'bg_yellow_medium'
-									when latency_seconds >= 120 then 'bg_yellow_light'
-									else 'bg_none'
-									end)+'">'+isnull((case when latency_seconds < 60 then convert(varchar,floor(latency_seconds))+' sec'
-							when latency_seconds < 3600 then convert(varchar,floor(latency_seconds/60))+' min'
-							when latency_seconds < 86400 then convert(varchar,floor(latency_seconds/3600))+' hrs'
-							when latency_seconds >= 86400 then convert(varchar,floor(latency_seconds/86400))+' days'
-							else '' end),' ')+'</td>'
-					+'<td class="'+(case when log_send_queue_size > 100000000 then 'bg_red'
-									when log_send_queue_size > 10000000 then 'bg_orange'
-									when log_send_queue_size > 1000000 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+
-							isnull((case when log_send_queue_size < 1024 then convert(varchar,log_send_queue_size)+' kb'
-								when log_send_queue_size < 1024*1024 then convert(varchar,log_send_queue_size/1024)+' mb'
-								when log_send_queue_size < 1024*1024*1024 then convert(varchar,floor(log_send_queue_size/(1024*1024)))+' gb'
-								when log_send_queue_size >= 1024*1024*1024 then convert(varchar,floor(log_send_queue_size/(1024*1024*1024)))+' tb'
-								else '' end),' ')+'</td>'
-					+'<td class="'+(case when redo_queue_size > 100000000 then 'bg_red'
-									when redo_queue_size > 10000000 then 'bg_orange'
-									when redo_queue_size > 1000000 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'
-							+isnull((case when redo_queue_size < 1024 then convert(varchar,redo_queue_size)+' kb'
-								when redo_queue_size < 1024*1024 then convert(varchar,redo_queue_size/1024)+' mb'
-								when redo_queue_size < 1024*1024*1024 then convert(varchar,floor(redo_queue_size/(1024*1024)))+' gb'
-								when redo_queue_size >= 1024*1024*1024 then convert(varchar,floor(redo_queue_size/(1024*1024*1024)))+' tb'
-								else '' end),' ')+'</td>'
-					+'<td>'+convert(varchar,is_suspended)+'</td>'
-					+'</tr>' as [table_row]
-			from tsu
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_ag_latency = 0;
+
+			select top 1 @_collection_time_ag_health = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), updated_date_utc)
+			from dbo.ag_health_state_all_servers aghs
+			order by updated_date_utc desc;
+
+			set @_table_data = '<tr><td colspan="11">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_ag_health,120)+'</td></tr>';
+		end
 
 		set @_html_ag_health = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>@ag_latency_minutes:'+convert(varchar,@ag_latency_minutes)
@@ -808,74 +823,79 @@ BEGIN
 		if not exists (select * from dbo.disk_space_all_servers)
 			raiserror ('Data does not exist in dbo.disk_space_all_servers', 17, -1) with log;
 
+		-- Get temp table with alert data
+		if object_id('tempdb..#disk_space') is not null
+			drop table #disk_space;
+		select	top 100000
+				ds.sql_instance, ds.[host_name], ds.disk_volume, ds.capacity_mb, 
+				ds.free_mb,
+				[state] = case when (ds.free_mb*100.0/ds.capacity_mb) < (100.0-@disk_critical_pct) then 'Critical' else 'Warning' end,
+				[used_pct] = 100.0-convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb)
+		into #disk_space
+		from dbo.disk_space_all_servers ds
+		where ds.updated_date_utc >= dateadd(minute,-60,getutcdate())
+		and (	(	(ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_warning_pct)
+					and ds.free_mb < (@disk_threshold_gb)*1024
+	  			)
+				or ( (ds.free_mb*100.0/ds.capacity_mb) < (100-@large_disk_threshold_pct)) -- free %
+				)
+		order by [used_pct] desc;
+
 		if @verbose > 1
 		begin
-			;with t_cte as (
-				select	ds.sql_instance, ds.host_name, ds.disk_volume, ds.capacity_mb, 
-						ds.free_mb,
-						[state] = case when (ds.free_mb*100.0/ds.capacity_mb) < (100.0-@disk_critical_pct) then 'Critical' else 'Warning' end,
-						[used_pct] = 100.0-convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb)
-				from dbo.disk_space_all_servers ds
-				where ds.updated_date_utc >= dateadd(minute,-60,getutcdate())
-				and (	(	(ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_warning_pct)
-							and ds.free_mb < (@disk_threshold_gb)*1024
-	  					)
-						or ( (ds.free_mb*100.0/ds.capacity_mb) < (100-@large_disk_threshold_pct)) -- free %
-						)
-			)
 			select [RunningQuery], t_cte.*
-			from t_cte
+			from #disk_space t_cte
 			full outer join (select [RunningQuery] = 'Disk Space') rq
 				on 1=1
-			order by [used_pct] desc
+			order by [used_pct] desc;
 		end
 
-		;with tsu as (
-			select	top 100000
-					ds.sql_instance, ds.[host_name], ds.disk_volume, ds.capacity_mb, 
-					ds.free_mb,
-					[state] = case when (ds.free_mb*100.0/ds.capacity_mb) < (100.0-@disk_critical_pct) then 'Critical' else 'Warning' end,
-					[used_pct] = 100.0-convert(numeric(20,2),ds.free_mb*100.0/ds.capacity_mb)
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #disk_space)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+[host_name]+'</td>'
+						+'<td class="bg_key">'+disk_volume+'</td>'
+						+'<td>'+(case when capacity_mb < 1024 then convert(varchar,capacity_mb)+' mb'
+								when capacity_mb < 1024*1024 then convert(varchar,floor(capacity_mb/1024))+' gb'
+								when capacity_mb >= 1024*1024 then convert(varchar,floor(capacity_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td>'+(case when free_mb < 1024 then convert(varchar,free_mb)+' mb'
+								when free_mb < 1024*1024 then convert(varchar,floor(free_mb/1024))+' gb'
+								when free_mb >= 1024*1024 then convert(varchar,floor(free_mb/(1024*1024)))+' tb'
+								else 'xx' end)+'</td>'
+						+'<td class="'+(case [state]
+										when 'Critical' then 'bg_red'
+										when 'Warning' then 'bg_orange'
+										else 'bg_none'
+										end)+'">'+[state]+'</td>'
+						+'<td class="'+(case when used_pct >= 95.0 then 'bg_red'
+										when used_pct >= 90.0 then 'bg_orange'
+										when used_pct >= 80.0 then 'bg_yellow_dark'
+										when used_pct >= 70.0 then 'bg_yellow_light'
+										else 'bg_none'
+										end)+'">'+convert(varchar,used_pct)+'</td>'
+						+'</tr>' as [table_row]
+				from #disk_space tsu
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_disk_space = 0;
+
+			select top 1 @_collection_time_disk_health = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), updated_date_utc)
 			from dbo.disk_space_all_servers ds
-			where ds.updated_date_utc >= dateadd(minute,-60,getutcdate())
-			and (	(	(ds.free_mb*100.0/ds.capacity_mb) < (100-@disk_warning_pct)
-						and ds.free_mb < (@disk_threshold_gb)*1024
-	  				)
-					or ( (ds.free_mb*100.0/ds.capacity_mb) < (100-@large_disk_threshold_pct)) -- free %
-					)
-			order by [used_pct] desc
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td class="bg_key">'+[host_name]+'</td>'
-					+'<td class="bg_key">'+disk_volume+'</td>'
-					+'<td>'+(case when capacity_mb < 1024 then convert(varchar,capacity_mb)+' mb'
-							when capacity_mb < 1024*1024 then convert(varchar,floor(capacity_mb/1024))+' gb'
-							when capacity_mb >= 1024*1024 then convert(varchar,floor(capacity_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td>'+(case when free_mb < 1024 then convert(varchar,free_mb)+' mb'
-							when free_mb < 1024*1024 then convert(varchar,floor(free_mb/1024))+' gb'
-							when free_mb >= 1024*1024 then convert(varchar,floor(free_mb/(1024*1024)))+' tb'
-							else 'xx' end)+'</td>'
-					+'<td class="'+(case [state]
-									when 'Critical' then 'bg_red'
-									when 'Warning' then 'bg_orange'
-									else 'bg_none'
-									end)+'">'+[state]+'</td>'
-					+'<td class="'+(case when used_pct >= 95.0 then 'bg_red'
-									when used_pct >= 90.0 then 'bg_orange'
-									when used_pct >= 80.0 then 'bg_yellow_dark'
-									when used_pct >= 70.0 then 'bg_yellow_light'
-									else 'bg_none'
-									end)+'">'+convert(varchar,used_pct)+'</td>'
-					+'</tr>' as [table_row]
-			from tsu
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+			order by updated_date_utc desc;
+
+			set @_table_data = '<tr><td colspan="11">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_disk_health,120)+'</td></tr>';
+		end
 
 		set @_html_disk_health = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>@disk_warning_pct:'+convert(varchar,@disk_warning_pct)
@@ -912,59 +932,63 @@ BEGIN
 						+N'<th>Report Time</th>'
 		set @_table_data = NULL;
 
+		-- Get temp table with alert data
+		if object_id('tempdb..#offline_servers') is not null
+			drop table #offline_servers;
+		select	sql_instance, [host_name], 
+				is_available, 
+				is_linked_server_working = case when is_available = 0 then null else is_linked_server_working end,
+				[tsql jobs server] = collector_tsql_jobs_server, 
+				[powershell jobs server] = collector_powershell_jobs_server,
+				[perfmon data server] = data_destination_sql_instance, 
+				last_unavailability_time_utc
+		into #offline_servers
+		from dbo.instance_details id
+		where is_enabled = 1
+		and (is_available = 0 or is_linked_server_working = 0);
+
 		if @verbose > 1
 		begin
-			;with t_cte as (
-				select	sql_instance, [host_name], 
-						is_available, 
-						is_linked_server_working = case when is_available = 0 then null else is_linked_server_working end,
-						[tsql jobs server] = collector_tsql_jobs_server, 
-						[powershell jobs server] = collector_powershell_jobs_server,
-						[perfmon data server] = data_destination_sql_instance, 
-						last_unavailability_time_utc
-				from dbo.instance_details id
-				where is_enabled = 1
-				and (is_available = 0 or is_linked_server_working = 0)
-			)
 			select [RunningQuery], t_cte.*
-			from t_cte
+			from #offline_servers t_cte
 			full outer join (select [RunningQuery] = 'Offline Servers') rq
 				on 1=1;
 		end
 
-		;with tsu as (
-			select	sql_instance, [host_name], 
-					is_available, 
-					is_linked_server_working = case when is_available = 0 then null else is_linked_server_working end,
-					[tsql jobs server] = collector_tsql_jobs_server, 
-					[powershell jobs server] = collector_powershell_jobs_server,
-					[perfmon data server] = data_destination_sql_instance, 
-					last_unavailability_time_utc
-			from dbo.instance_details id
-			where is_enabled = 1
-			and (is_available = 0 or is_linked_server_working = 0)
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td class="bg_key">'+[host_name]+'</td>'
-					+'<td class="'+(case when is_available = 0 then 'bg_red'
-									else 'bg_none'
-									end)+'">'+convert(varchar,is_available)+'</td>'
-					+'<td class="'+(case when is_linked_server_working = 0 then 'bg_red'
-									else 'bg_none'
-									end)+'">'+isnull(convert(varchar,is_linked_server_working),'')+'</td>'
-					+'<td>'+[tsql jobs server]+'</td>'
-					+'<td>'+[powershell jobs server]+'</td>'
-					+'<td>'+[perfmon data server]+'</td>'
-					+'<td>'+isnull(convert(varchar,last_unavailability_time_utc,120),'')+'</td>'
-					+'</tr>' as [table_row]
-			from tsu
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #offline_servers)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+[host_name]+'</td>'
+						+'<td class="'+(case when is_available = 0 then 'bg_red'
+										else 'bg_none'
+										end)+'">'+convert(varchar,is_available)+'</td>'
+						+'<td class="'+(case when is_linked_server_working = 0 then 'bg_red'
+										else 'bg_none'
+										end)+'">'+isnull(convert(varchar,is_linked_server_working),'')+'</td>'
+						+'<td>'+[tsql jobs server]+'</td>'
+						+'<td>'+[powershell jobs server]+'</td>'
+						+'<td>'+[perfmon data server]+'</td>'
+						+'<td>'+isnull(convert(varchar,last_unavailability_time_utc,120),'')+'</td>'
+						+'</tr>' as [table_row]
+				from #offline_servers
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_offline_servers = 0;
+
+			set @_collection_time_offline_servers = DATEADD(mi, -2, GETDATE());
+
+			set @_table_data = '<tr><td colspan="8">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_offline_servers,120)+'</td></tr>';
+		end
 
 		set @_html_offline_servers = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>select * from dbo.instance_details where is_enabled = 1 and is_available = 0</caption>'
@@ -1000,90 +1024,89 @@ BEGIN
 		if not exists (select * from dbo.sql_agent_jobs_all_servers)
 			print 'Data does not exist in dbo.sql_agent_jobs_all_servers';
 
+		-- Get temp table with alert data
+		if object_id('tempdb..#saj') is not null
+			drop table #saj;
+		select	top 1000000
+				[CollectionTimeUTC] = [UpdatedDateUTC],
+				[sql_instance], [JobName],
+				[Job-Delay-Minutes] = case when sj.Last_Successful_ExecutionTime is null then 10080 else datediff(minute, sj.Last_Successful_ExecutionTime, dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate())) end,
+				[Last_RunTime], [Last_Run_Duration_Seconds], [Last_Run_Outcome], 
+				[Successfull_Execution_ClockTime_Threshold_Minutes], 
+				[Last_Successful_ExecutionTime]
+		into #saj
+		from dbo.sql_agent_jobs_all_servers sj
+		where 1=1
+		and exists (select 1/0 from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1)
+		and sj.JobCategory = '(dba) SQLMonitor'
+		and sj.JobName like '(dba) %'
+		and sj.IsDisabled = 0
+		and (	dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate()) > sj.Last_Successful_ExecutionTime
+					or sj.Last_Successful_ExecutionTime is null
+				)
+		order by [Last_Successful_ExecutionTime];
+
 		if @verbose > 1
 		begin
-			;with t_cte as (
-				select	top 10000000
-						[CollectionTimeUTC] = [UpdatedDateUTC],
-						[sql_instance], [JobName],
-						[Job-Delay-Minutes] = case when sj.Last_Successful_ExecutionTime is null then 10080 else datediff(minute, sj.Last_Successful_ExecutionTime, dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate())) end,
-						 [Last_RunTime], [Last_Run_Duration_Seconds], [Last_Run_Outcome], 
-						 [Successfull_Execution_ClockTime_Threshold_Minutes], 
-						 [Last_Successful_ExecutionTime]
-				from dbo.sql_agent_jobs_all_servers sj
-				where 1=1
-				and exists (select 1/0 from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1)
-				and sj.JobCategory = '(dba) SQLMonitor'
-				and sj.JobName like '(dba) %'
-				and sj.IsDisabled = 0
-				and (	dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate()) > sj.Last_Successful_ExecutionTime
-							or sj.Last_Successful_ExecutionTime is null
-						)
-				order by [Last_Successful_ExecutionTime]
-			)
 			select [RunningQuery], t_cte.*
-			from t_cte
+			from #saj t_cte
 			full outer join (select [RunningQuery] = 'SQLMonitor Jobs') rq
 				on 1=1;
 		end
 
-		;with tsu as (
-			select	top 1000000
-					[CollectionTimeUTC] = [UpdatedDateUTC],
-					[sql_instance], [JobName],
-					[Job-Delay-Minutes] = case when sj.Last_Successful_ExecutionTime is null then 10080 else datediff(minute, sj.Last_Successful_ExecutionTime, dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate())) end,
-					[Last_RunTime], [Last_Run_Duration_Seconds], [Last_Run_Outcome], 
-					[Successfull_Execution_ClockTime_Threshold_Minutes], 
-					[Last_Successful_ExecutionTime]
-			from dbo.sql_agent_jobs_all_servers sj
-			where 1=1
-			and exists (select 1/0 from dbo.instance_details id where id.sql_instance = sj.sql_instance and id.is_enabled = 1)
-			and sj.JobCategory = '(dba) SQLMonitor'
-			and sj.JobName like '(dba) %'
-			and sj.IsDisabled = 0
-			and (	dateadd(minute,-(sj.Successfull_Execution_ClockTime_Threshold_Minutes+@buffer_time_minutes),getutcdate()) > sj.Last_Successful_ExecutionTime
-						or sj.Last_Successful_ExecutionTime is null
-					)
-			order by [Last_Successful_ExecutionTime]
-		)
-		,t_cte as (
-			select	'<tr>'
-					+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), CollectionTimeUTC),120)+'</td>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td class="bg_key">'+JobName+'</td>'
-					+'<td class="'+(case when [Job-Delay-Minutes] >= 120 then 'bg_red'
-									when [Job-Delay-Minutes] >= 60 then 'bg_orange'
-									when [Job-Delay-Minutes] >= 30 then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'
-						+isnull((case when [Job-Delay-Minutes] < 60 then convert(varchar,floor([Job-Delay-Minutes]))+' min'
-									when [Job-Delay-Minutes] < 60*24 then convert(varchar,floor([Job-Delay-Minutes]/60))+' hrs'
-									when [Job-Delay-Minutes] >= 60*24 then convert(varchar,floor([Job-Delay-Minutes]/(60*24)))+' days'
-									else convert(varchar,[Job-Delay-Minutes]) end),'')+'</td>'
-					+'<td>'+convert(varchar,Last_RunTime,120)+'</td>'
-					+'<td>'+isnull((case when Last_Run_Duration_Seconds < 60 then convert(varchar,floor(Last_Run_Duration_Seconds))+' sec'
-							when Last_Run_Duration_Seconds < 3600 then convert(varchar,floor(Last_Run_Duration_Seconds/60))+' min'
-							when Last_Run_Duration_Seconds < 86400 then convert(varchar,floor(Last_Run_Duration_Seconds/3600))+' hrs'
-							when Last_Run_Duration_Seconds >= 86400 then convert(varchar,floor(Last_Run_Duration_Seconds/86400))+' days'
-							else convert(varchar,Last_Run_Duration_Seconds) end),'')+'</td>'
-					+'<td class="'+(case Last_Run_Outcome
-									when 'Failed' then 'bg_red'
-									when 'Canceled' then 'bg_orange'
-									when 'Success' then 'bg_green'
-									else 'bg_none'
-									end)+'">'+Last_Run_Outcome+'</td>'
-					+'<td>'+isnull((case when Successfull_Execution_ClockTime_Threshold_Minutes < 60 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes))+' min'
-									when Successfull_Execution_ClockTime_Threshold_Minutes < 1440 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes/60))+' hrs'
-									when Successfull_Execution_ClockTime_Threshold_Minutes >= 86400 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes/1440))+' days'
-									else '' end),0)+'</td>'
-					+'<td>'+convert(varchar,Last_Successful_ExecutionTime,120)+'</td>'
-					+'</tr>' as [table_row]
-			from tsu
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #saj)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), CollectionTimeUTC),120)+'</td>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+JobName+'</td>'
+						+'<td class="'+(case when [Job-Delay-Minutes] >= 120 then 'bg_red'
+										when [Job-Delay-Minutes] >= 60 then 'bg_orange'
+										when [Job-Delay-Minutes] >= 30 then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'
+							+isnull((case when [Job-Delay-Minutes] < 60 then convert(varchar,floor([Job-Delay-Minutes]))+' min'
+										when [Job-Delay-Minutes] < 60*24 then convert(varchar,floor([Job-Delay-Minutes]/60))+' hrs'
+										when [Job-Delay-Minutes] >= 60*24 then convert(varchar,floor([Job-Delay-Minutes]/(60*24)))+' days'
+										else convert(varchar,[Job-Delay-Minutes]) end),'')+'</td>'
+						+'<td>'+convert(varchar,Last_RunTime,120)+'</td>'
+						+'<td>'+isnull((case when Last_Run_Duration_Seconds < 60 then convert(varchar,floor(Last_Run_Duration_Seconds))+' sec'
+								when Last_Run_Duration_Seconds < 3600 then convert(varchar,floor(Last_Run_Duration_Seconds/60))+' min'
+								when Last_Run_Duration_Seconds < 86400 then convert(varchar,floor(Last_Run_Duration_Seconds/3600))+' hrs'
+								when Last_Run_Duration_Seconds >= 86400 then convert(varchar,floor(Last_Run_Duration_Seconds/86400))+' days'
+								else convert(varchar,Last_Run_Duration_Seconds) end),'')+'</td>'
+						+'<td class="'+(case Last_Run_Outcome
+										when 'Failed' then 'bg_red'
+										when 'Canceled' then 'bg_orange'
+										when 'Success' then 'bg_green'
+										else 'bg_none'
+										end)+'">'+Last_Run_Outcome+'</td>'
+						+'<td>'+isnull((case when Successfull_Execution_ClockTime_Threshold_Minutes < 60 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes))+' min'
+										when Successfull_Execution_ClockTime_Threshold_Minutes < 1440 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes/60))+' hrs'
+										when Successfull_Execution_ClockTime_Threshold_Minutes >= 86400 then convert(varchar,floor(Successfull_Execution_ClockTime_Threshold_Minutes/1440))+' days'
+										else '' end),0)+'</td>'
+						+'<td>'+convert(varchar,Last_Successful_ExecutionTime,120)+'</td>'
+						+'</tr>' as [table_row]
+				from #saj
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_sqlmonitor_jobs = 0;
+
+			select top 1 @_collection_time_sqlmonitor_jobs = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), UpdatedDateUTC)
+			from dbo.sql_agent_jobs_all_servers saj
+			order by UpdatedDateUTC desc;
+
+			set @_table_data = '<tr><td colspan="9">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_sqlmonitor_jobs,120)+'</td></tr>';
+		end
 
 		set @_html_sqlmonitor_jobs = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>dbo.sql_agent_jobs_all_servers || @buffer_time_minutes:'+convert(varchar,@buffer_time_minutes)
@@ -1120,83 +1143,9 @@ BEGIN
 		if not exists (select * from dbo.backups_all_servers)
 			raiserror ('Data does not exist in dbo.backups_all_servers', 17, -1) with log;
 
-		if @verbose > 1
-		begin
-			;with t_backups as (
-				select [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]
-				from dbo.backups_all_servers bas
-			)
-			,t_pivot as (
-				select	[sql_instance], [database_name]
-						,[recovery_model] = max([recovery_model])
-						,[full_backup_time_utc] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_finish_date_utc] else null end)
-						,[full_backup_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[backup_size_mb] else null end)
-						,[full_compressed_size_mb] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[compressed_backup_size_mb] else null end)
-						,[diff_backup_time_utc] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_finish_date_utc] else null end)
-						,[diff_backup_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[backup_size_mb] else null end)
-						,[diff_compressed_size_mb] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[compressed_backup_size_mb] else null end)
-						,[tlog_backup_time_utc] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_finish_date_utc] else null end)
-						,[tlog_backup_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[backup_size_mb] else null end)
-						,[tlog_compressed_size_mb] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[compressed_backup_size_mb] else null end)
-						,[log_backups_count] = max([log_backups_count])
-						,[database_creation_date_utc] = max([database_creation_date_utc])
-						,[full_backup_file] = max(case when bkp.[backup_type] = 'Full Database Backup' then bkp.[latest_backup_location] else null end)
-						,[diff_backup_file] = max(case when bkp.[backup_type] = 'Differential database Backup' then bkp.[latest_backup_location] else null end)
-						,[tlog_backup_file] = max(case when bkp.[backup_type] = 'Transaction Log Backup' then bkp.[latest_backup_location] else null end)
-				from t_backups bkp
-				where 1=1
-				group by [sql_instance], [database_name]
-			)
-			,t_latency as (
-				select 	[sql_instance], [database_name], [recovery_model], 				
-						[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10
-																			else datediff(day,[full_backup_time_utc],getutcdate())
-																			end,						
-						[diff_latency_hours] = case when [diff_backup_time_utc] is null 
-																				then	case when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)
-																										then @full_threshold_days * 24
-																										when (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours
-																										then ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )
-																										else null
-																										end
-																			else datediff(hour,[diff_backup_time_utc],getutcdate())
-																			end,
-						[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null
-																			when recovery_model <> 'SIMPLE'
-																			then	case when [tlog_backup_time_utc] is null then @full_threshold_days * 1440
-																									when [tlog_backup_time_utc] is not null
-																									then datediff(minute,[tlog_backup_time_utc],getutcdate())
-																									else null
-																									end
-																			else null
-																			end,
-						[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], 
-						[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],
-						[tlog_compressed_size_mb], [log_backups_count],
-						[database_creation_date_utc], [full_backup_file], [diff_backup_file], [tlog_backup_file]
-				from t_pivot as bkp
-				where 1=1
-			)
-			,t_cte as (
-				select [sql_instance], [database_name], [recovery_model], 				
-						[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],
-						[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], 
-						[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], 
-						[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], 
-						[full_backup_file], [diff_backup_file], [tlog_backup_file]
-				from t_latency as l
-				where 1=1
-				AND (		(full_latency_days is null or full_latency_days >= @full_threshold_days)
-						OR 	(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)
-						OR	(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)
-						)
-			)
-			select [RunningQuery], t_cte.*
-			from t_cte
-			full outer join (select [RunningQuery] = 'Backup History') rq
-				on 1=1;
-		end
-
+		-- Get temp table with alert data
+		if object_id('tempdb..#backups') is not null
+			drop table #backups;
 		;with t_backups as (
 			select [collection_time_utc], [sql_instance], [database_name], [backup_type], [log_backups_count], [backup_start_date_utc], [backup_finish_date_utc], [latest_backup_location], [backup_size_mb], [compressed_backup_size_mb], [first_lsn], [last_lsn], [checkpoint_lsn], [database_backup_lsn], [database_creation_date_utc], [backup_software], [recovery_model], [compatibility_level], [device_type], [description]
 			from dbo.backups_all_servers bas
@@ -1225,26 +1174,26 @@ BEGIN
 		,t_latency as (
 			select 	[sql_instance], [database_name], [recovery_model], 				
 					[full_latency_days] = case when [full_backup_time_utc] is null then @full_threshold_days * 10
-																		else datediff(day,[full_backup_time_utc],getutcdate())
-																		end,						
+											else datediff(day,[full_backup_time_utc],getutcdate())
+											end,						
 					[diff_latency_hours] = case when [diff_backup_time_utc] is null 
-																			then	case when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)
-																									then @full_threshold_days * 24
-																									when (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours
-																									then ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )
-																									else null
-																									end
-																		else datediff(hour,[diff_backup_time_utc],getutcdate())
-																		end,
+												then case when (datediff(day,[full_backup_time_utc],getutcdate()) > @full_threshold_days) and (@full_threshold_days >= 7)
+														then @full_threshold_days * 24
+														when (datediff(day,[full_backup_time_utc],getutcdate())*24) > @diff_threshold_hours
+														then ( (datediff(day,[full_backup_time_utc],getutcdate())-1) * 24 )
+														else null
+														end
+														else datediff(hour,[diff_backup_time_utc],getutcdate())
+														end,
 					[tlog_latency_minutes] = case when recovery_model = 'SIMPLE' then null
-																		when recovery_model <> 'SIMPLE'
-																		then	case when [tlog_backup_time_utc] is null then @full_threshold_days * 1440
-																								when [tlog_backup_time_utc] is not null
-																								then datediff(minute,[tlog_backup_time_utc],getutcdate())
-																								else null
-																								end
-																		else null
-																		end,
+												when recovery_model <> 'SIMPLE'
+												then case when [tlog_backup_time_utc] is null then @full_threshold_days * 1440
+														when [tlog_backup_time_utc] is not null
+														then datediff(minute,[tlog_backup_time_utc],getutcdate())
+														else null
+														end
+												else null
+												end,
 					[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], 
 					[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], [tlog_backup_size_mb],
 					[tlog_compressed_size_mb], [log_backups_count],
@@ -1252,59 +1201,82 @@ BEGIN
 			from t_pivot as bkp
 			where 1=1
 		)
-		,t_issues as (
-			select [sql_instance], [database_name], [recovery_model], 				
-					[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],
-					[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], 
-					[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], 
-					[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], 
-					[full_backup_file], [diff_backup_file], [tlog_backup_file]
-			from t_latency as l
-			where 1=1
-			AND (		(full_latency_days is null or full_latency_days >= @full_threshold_days)
-					OR 	(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)
-					OR	(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)
-					)
-		)
-		,t_cte as (
-			select	'<tr>'
-					--+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), CollectionTimeUTC),120)+'</td>'
-					+'<td class="bg_key">'+sql_instance+'</td>'
-					+'<td class="bg_key">'+[database_name]+'</td>'
-					+'<td class="bg_key">'+isnull(recovery_model,'')+'</td>'
-					+'<td class="'+(case when full_latency_days >= (@full_threshold_days*2) then 'bg_red'
-									when full_latency_days >= (@full_threshold_days+2) then 'bg_orange'
-									when full_latency_days >= (@full_threshold_days) then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'+isnull(convert(varchar,full_latency_days),'')+' days'+'</td>'
-					+'<td class="'+(case when diff_latency_hours >= (@diff_threshold_hours*2) then 'bg_red'
-									when diff_latency_hours >= (@diff_threshold_hours+2) then 'bg_orange'
-									when diff_latency_hours >= (@diff_threshold_hours) then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'
-						+isnull((case when diff_latency_hours < 24 then convert(varchar,floor(diff_latency_hours))+' hrs'
-									when diff_latency_hours >= 24 then convert(varchar,convert(numeric(20,2),diff_latency_hours/24))+' days'
-									else convert(varchar,diff_latency_hours) end),'')+'</td>'
-					+'<td class="'+(case when tlog_latency_minutes >= (@tlog_threshold_minutes*2) then 'bg_red'
-									when tlog_latency_minutes >= (@tlog_threshold_minutes+2) then 'bg_orange'
-									when tlog_latency_minutes >= (@tlog_threshold_minutes) then 'bg_yellow'
-									else 'bg_none'
-									end)+'">'
-						+isnull((case when tlog_latency_minutes < 60 then convert(varchar,floor(tlog_latency_minutes))+' min'
-									when tlog_latency_minutes < 60*24 then convert(varchar,convert(numeric(20,2),tlog_latency_minutes/60))+' hrs'
-									when tlog_latency_minutes >= 60*24 then convert(varchar,convert(numeric(20,2),tlog_latency_minutes/(60*24)))+' days'
-									else convert(varchar,tlog_latency_minutes) end),'')+'</td>'
-					+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), full_backup_time_utc),120),'')+'</td>'
-					+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), diff_backup_time_utc),120),'')+'</td>'
-					+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), tlog_backup_time_utc),120),'')+'</td>'
-					+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), database_creation_date_utc),120),'')+'</td>'
-					+'</tr>' as [table_row]
-			from t_issues bi
-			where 1=1
-		)
-		--select * from t_cte;
-		select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
-		from t_cte;
+		select [sql_instance], [database_name], [recovery_model], 				
+				[full_latency_days], [diff_latency_hours], [tlog_latency_minutes],
+				[full_backup_time_utc], [diff_backup_time_utc], [tlog_backup_time_utc], 
+				[full_backup_size_mb], [full_compressed_size_mb], [diff_backup_size_mb], [diff_compressed_size_mb], 
+				[tlog_backup_size_mb], [tlog_compressed_size_mb], [log_backups_count], [database_creation_date_utc], 
+				[full_backup_file], [diff_backup_file], [tlog_backup_file]
+		into #backups
+		from t_latency as l
+		where 1=1
+		AND (		(full_latency_days is null or full_latency_days >= @full_threshold_days)
+				OR 	(diff_latency_hours is not null and diff_latency_hours >= @diff_threshold_hours)
+				OR	(tlog_latency_minutes is not null and tlog_latency_minutes >= @tlog_threshold_minutes)
+			);
+
+		if @verbose > 1
+		begin
+			select [RunningQuery], t_cte.*
+			from #backups t_cte
+			full outer join (select [RunningQuery] = 'Backup History') rq
+				on 1=1;
+		end
+
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #backups)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						--+'<td class="bg_metric_neutral">'+convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), CollectionTimeUTC),120)+'</td>'
+						+'<td class="bg_key">'+sql_instance+'</td>'
+						+'<td class="bg_key">'+[database_name]+'</td>'
+						+'<td class="bg_key">'+isnull(recovery_model,'')+'</td>'
+						+'<td class="'+(case when full_latency_days >= (@full_threshold_days*2) then 'bg_red'
+										when full_latency_days >= (@full_threshold_days+2) then 'bg_orange'
+										when full_latency_days >= (@full_threshold_days) then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'+isnull(convert(varchar,full_latency_days),'')+' days'+'</td>'
+						+'<td class="'+(case when diff_latency_hours >= (@diff_threshold_hours*2) then 'bg_red'
+										when diff_latency_hours >= (@diff_threshold_hours+2) then 'bg_orange'
+										when diff_latency_hours >= (@diff_threshold_hours) then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'
+							+isnull((case when diff_latency_hours < 24 then convert(varchar,floor(diff_latency_hours))+' hrs'
+										when diff_latency_hours >= 24 then convert(varchar,convert(numeric(20,2),diff_latency_hours/24))+' days'
+										else convert(varchar,diff_latency_hours) end),'')+'</td>'
+						+'<td class="'+(case when tlog_latency_minutes >= (@tlog_threshold_minutes*2) then 'bg_red'
+										when tlog_latency_minutes >= (@tlog_threshold_minutes+2) then 'bg_orange'
+										when tlog_latency_minutes >= (@tlog_threshold_minutes) then 'bg_yellow'
+										else 'bg_none'
+										end)+'">'
+							+isnull((case when tlog_latency_minutes < 60 then convert(varchar,floor(tlog_latency_minutes))+' min'
+										when tlog_latency_minutes < 60*24 then convert(varchar,convert(numeric(20,2),tlog_latency_minutes/60))+' hrs'
+										when tlog_latency_minutes >= 60*24 then convert(varchar,convert(numeric(20,2),tlog_latency_minutes/(60*24)))+' days'
+										else convert(varchar,tlog_latency_minutes) end),'')+'</td>'
+						+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), full_backup_time_utc),120),'')+'</td>'
+						+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), diff_backup_time_utc),120),'')+'</td>'
+						+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), tlog_backup_time_utc),120),'')+'</td>'
+						+'<td>'+isnull(convert(varchar,DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), database_creation_date_utc),120),'')+'</td>'
+						+'</tr>' as [table_row]
+				from #backups bi
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_backup_history = 0;
+
+			select top 1 @_collection_time_backup_history = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc)
+			from dbo.backups_all_servers bas
+			order by collection_time_utc desc;
+
+			set @_table_data = '<tr><td colspan="10">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_backup_history,120)+'</td></tr>';
+		end
 
 		set @_html_backup_history = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
 						+'<caption>dbo.backups_all_servers || @full_threshold_days:'+convert(varchar,@full_threshold_days)
@@ -1323,6 +1295,134 @@ BEGIN
 		end
 	end -- 'Backup History'
 
+
+	if(@collect_alert_history = 1) -- 'Alert History'
+	begin
+		if @verbose > 0
+		begin
+			print @_line;
+			print @_line;
+			print 'Set @_html_alert_history variable..';
+			print @_tab+@_line;
+		end
+		--error_number, error_severity, error_message, [sql_instance | occurrences | last_occurred]
+		set @_table_headline = N'<h3><a href="'+@_url_alert_history_panel+'" target="_blank">All Servers - Alert History - Require ATTENTION</a></h3>';
+		set @_table_header = N'<tr><th>Error Number</th> <th>Severity</th> <th>Error Message (Generic)</th> <th>[sql_instance | occurrences | last_occurred]</th> </tr>';
+		set @_table_data = NULL;
+
+		if not exists (select * from dbo.alert_history_all_servers)
+			raiserror ('Data does not exist in dbo.alert_history_all_servers', 17, -1) with log;
+
+		-- Get temp table with alert data
+		if object_id('tempdb..#alert_history') is not null
+			drop table #alert_history;
+		;with t_aggregated_messages as 
+		(
+			select a.sql_instance, a.error_number, a.error_severity, occurrences = count(*), last_occurred = max(a.collection_time_utc), error_message = coalesce(max(m.text), max(a.error_message))
+			from dbo.alert_history_all_servers a
+			left join sys.messages m 
+				on m.language_id = 1033 and m.message_id = a.error_number
+			where 1 = 1
+			and a.collection_time_utc >= dateadd(hour,-@alert_history_hours,GETUTCDATE())
+			and (case when a.error_number = 50000 and error_severity = 20 and a.error_message like '%application intent is set to read only%'
+					 then 0
+					 when a.error_number = 1204 then 0
+					 when a.error_number = 50000 and error_severity = 20 and a.error_message like 'Error: 50000 Severity: 20 State: 1 Could not create constraint or index. See previous errors. '
+					 then 0
+					 when a.error_number = 50000 and error_severity = 20 and a.error_message like 'Error: 50000 Severity: 20 State: 1 The instance of the SQL Server Database Engine cannot obtain a LOCK resource at this time%'
+					 then 0
+					 when a.error_number = 17806 and error_severity = 20 and a.error_message like 'SSPI handshake failed with error code 0x8009030c%'
+					 then 0
+					 when a.error_number = 50000 and error_severity = 20 and a.error_message like 'Error: 50000 Severity: 20 State: 1 Lock request time out period exceeded. '
+					 then 0
+					 when a.error_number = 976 and error_severity = 14 and a.error_message like '%Either data movement is suspended or the availability replica is not enabled for read access%'
+					 then 0
+					 when a.error_number = 5084 and error_severity = 10 and a.error_message like 'Setting database option MULTI_USER to ON%'
+					 then 0
+					 when a.error_number = 5084 and error_severity = 10 and a.error_message like 'Setting database option SINGLE_USER to ON%'
+					 then 0
+					 when a.error_number = 14151 and error_severity = 18 and a.error_message like '%Named Pipes Provider: Could not open a connection to SQL Server%'
+					 then 0
+					 when a.error_number = 17828 and error_severity = 20
+					 then 0
+					 when a.error_number in (17832, 17836)
+					 then 0
+					 else 1
+					 end
+				 ) = 1
+			and exists (select * from dbo.sma_servers s where s.is_decommissioned = 0 and s.is_onboarded = 1 and s.server = a.sql_instance)
+			group by a.sql_instance, a.error_number, a.error_severity
+		)
+		,t_unique_errors as (
+			select  error_number, error_severity, error_message
+			from t_aggregated_messages
+			group by error_number, error_severity, error_message
+		)
+		select  error_number, error_severity, error_message,
+				[sql_instance | occurrences | last_occurred] = 
+						stuff(( SELECT ', ' + cc.[sql_instance | occurrences | last_occurred]
+								FROM t_aggregated_messages am
+								outer apply (select [last_occurred_localtime] = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), last_occurred) ) lt
+								outer apply (select [sql_instance | occurrences | last_occurred] = '('+sql_instance+' | '+convert(varchar(10),occurrences)+' | '+convert(varchar,lt.last_occurred_localtime,120)+')') cc
+								where am.error_number = ue.error_number and am.error_severity = ue.error_severity
+								order by occurrences desc
+								FOR XML PATH('')
+							   ), 1, 2, '')
+		into #alert_history
+		from t_unique_errors ue;
+
+		if @verbose > 1
+		begin
+			select [RunningQuery], t_cte.*
+			from #alert_history t_cte
+			full outer join (select [RunningQuery] = 'Alert History') rq
+				on 1=1
+			where 1=1;
+		end
+
+		-- Decide if alert data is present, or add empty info row
+		if exists (select * from #alert_history)
+		begin
+			;with t_cte as (
+				select	'<tr>'
+						+'<td class="bg_key">'+convert(varchar(20),ah.[error_number])+'</td>'
+						+'<td class="bg_key">'+convert(varchar(20),ah.[error_severity])+'</td>'
+						+'<td class="bg_key">'+ah.[error_message]+'</td>'
+						+'<td class="bg_key">'+ah.[sql_instance | occurrences | last_occurred]+'</td>'
+						+'</tr>' as [table_row]
+				from #alert_history ah
+				where 1=1
+			)
+			--select * from t_cte;
+			select @_table_data = coalesce(@_table_data+' '+[table_row],[table_row])
+			from t_cte;
+		end
+		else
+		begin
+			if @hide_row_if_no_data = 1
+				set @collect_alert_history = 0;
+
+			select top 1 @_collection_time_alert_history = DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), collection_time_utc)
+			from dbo.alert_history_all_servers ds
+			order by collection_time_utc desc;
+
+			set @_table_data = '<tr><td colspan="11">No alert qualifying data found. Latest collection @ '+convert(varchar,@_collection_time_alert_history,120)+'</td></tr>';
+		end
+
+		set @_html_alert_history = '<hr><br>'+@_table_headline+'<div class="tableContainerDiv"><table border="1">'
+						+'<caption>@alert_history_hours:'+convert(varchar,@alert_history_hours)+'</caption>'
+						+'<thead>'+@_table_header+'</thead><tbody>'+isnull(@_table_data,'')+'</tbody></table></div>';
+
+		if @verbose > 0
+		begin
+			print @_tab+'@_table_header => '+@_crlf+@_table_header;
+			print @_tab+@_line;
+			print @_tab+'@_table_data => '+@_crlf+ISNULL(@_table_data,'');
+			print @_tab+@_line;
+			print @_tab+'@_html_alert_history => '+@_crlf+ISNULL(@_html_alert_history,'');
+		end
+	end -- 'Alert History'
+
 	set @mail_subject = @mail_subject+' - '+convert(varchar,@_collection_time,120);
 
 	set @_mail_body_html = '<html>'
@@ -1337,6 +1437,7 @@ BEGIN
 						+(case when @collect_log_space = 1 then N'<p>'+@_html_log_space_health+'</p>' else '' end)
 						+(case when @collect_ag_latency = 1 then N'<p>'+@_html_ag_health+'</p>' else '' end)
 						+(case when @collect_disk_space = 1 then N'<p>'+@_html_disk_health+'</p>' else '' end)
+						+(case when @collect_alert_history = 1 then N'<p>'+@_html_alert_history+'</p>' else '' end)
 						+(case when @collect_offline_servers = 1 then N'<p>'+@_html_offline_servers+'</p>' else '' end)
 						+(case when @collect_sqlmonitor_jobs = 1 then N'<p>'+@_html_sqlmonitor_jobs+'</p>' else '' end)
 						+(case when @collect_backup_history = 1 then N'<p>'+@_html_backup_history+'</p>' else '' end)

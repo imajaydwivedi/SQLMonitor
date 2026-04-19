@@ -45,6 +45,12 @@
       "version": "11.3.0"
     },
     {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
       "type": "panel",
       "id": "timeseries",
       "name": "Time series",
@@ -284,7 +290,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 9973
+            "y": 18292
           },
           "id": 64,
           "options": {
@@ -416,7 +422,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 2
+            "y": 90314
           },
           "id": 26,
           "options": {
@@ -517,7 +523,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 7246
+            "y": 102391
           },
           "id": 58,
           "options": {
@@ -639,7 +645,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 7257
+            "y": 102402
           },
           "id": 60,
           "options": {
@@ -761,7 +767,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -878,7 +885,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -890,7 +898,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 5608
+            "y": 14
           },
           "id": 30,
           "options": {
@@ -996,7 +1004,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1012,7 +1021,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 5619
+            "y": 25
           },
           "id": 66,
           "options": {
@@ -1148,7 +1157,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 4
+            "y": 46903
           },
           "id": 105,
           "options": {
@@ -1270,7 +1279,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 4843
+            "y": 55347
           },
           "id": 106,
           "options": {
@@ -1407,7 +1416,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 5
+            "y": 18211
           },
           "id": 110,
           "options": {
@@ -1415,7 +1424,7 @@
               "calcs": [
                 "max",
                 "p99",
-                "p98"
+                "last"
               ],
               "displayMode": "table",
               "placement": "right",
@@ -1528,14 +1537,14 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 4825
+            "y": 18216
           },
           "id": 112,
           "options": {
             "legend": {
               "calcs": [
                 "p99",
-                "p98"
+                "last"
               ],
               "displayMode": "table",
               "placement": "right",
@@ -1581,6 +1590,122 @@
             }
           ],
           "title": "Logical Disk - Latency",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "Disk Transfer/Sec => The number of reads and writes per second to disk ",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 2,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "always",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 18222
+          },
+          "id": 157,
+          "options": {
+            "legend": {
+              "calcs": [
+                "max",
+                "p99"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\ndeclare @disk_drive varchar(255) = '$disk_drive';\ndeclare @database varchar(255) = '$database';\n\nset @database = case when ltrim(rtrim(@database)) = '__All__' then null else @database end;\nset @disk_drive = case when ltrim(rtrim(@disk_drive)) = '__All__' then null else @disk_drive end;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125), @disk_drive varchar(255), @database varchar(255)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance+' ('+replace(counter,'disk ','')+')' as metric\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'logicaldisk' and pc.counter in ('disk transfers/sec')\n--and pc.object = 'logicaldisk' and pc.counter in ('disk reads/sec','disk writes/sec')\nand (pc.instance <> '_total' and pc.instance not like 'harddiskvolume%')\n\"+(case when @disk_drive is null then '-- ' else '' end)+\"and (pc.instance+'\\') = @disk_drive\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object, @disk_drive, @database;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object, @disk_drive, @database;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Logical Disk - IOPS",
           "type": "timeseries"
         },
         {
@@ -1648,7 +1773,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 4831
+            "y": 18230
           },
           "id": 114,
           "options": {
@@ -1783,7 +1908,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 6
+            "y": 51137
           },
           "id": 34,
           "options": {
@@ -1905,7 +2030,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 4199
+            "y": 51142
           },
           "id": 68,
           "options": {
@@ -2026,7 +2151,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 4205
+            "y": 51148
           },
           "id": 69,
           "options": {
@@ -2080,6 +2205,124 @@
             }
           ],
           "title": "Physical Disk - Throughput",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "Disk Transfers/Sec => The number of disk reads and writes per second",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 2,
+                "scaleDistribution": {
+                  "log": 10,
+                  "type": "log"
+                },
+                "showPoints": "always",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 51155
+          },
+          "id": 158,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "p99",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${DS_SQLMONITOR}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\ndeclare @perfmon_object varchar(125);\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @perfmon_object = '$perfmon_object';\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2, @perfmon_object varchar(125)';\n\nset quoted_identifier off;\nset @sql = \"\nset nocount on;\nselect pc.collection_time_utc as time\n\t,instance+' ('+replace(counter,'disk ','')+')' as metric\n\t--,object, counter, instance\n\t,pc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name \nand pc.object = 'physicaldisk' and pc.counter in ('disk transfers/sec') and instance like '%:%'\n--and pc.object = 'physicaldisk' and pc.counter in ('disk bytes/sec','disk write bytes/sec','disk read bytes/sec')\nand pc.instance <> '_total'\norder by time\n\"\nset quoted_identifier on;\n\nif '$InstanceScopeFeaturesOnly' = 'true'\n\tselect [time], remarks as metric, [value]\n\tfrom (values ('This feature is not available for this SQLInstance',getutcdate(), 0)) dummy(remarks, [time], value)\n\torder by [time]\nelse\nbegin\n\tif ($is_local = 1)\n\t\t\texec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\n\t\telse\n\t\t\texec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc, @perfmon_object;\nend",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Physical Disk - IOPS",
           "type": "timeseries"
         }
       ],
@@ -2162,7 +2405,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 7
+            "y": 95152
           },
           "id": 71,
           "options": {
@@ -2299,7 +2542,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 15
+            "y": 95160
           },
           "id": 38,
           "options": {
@@ -2427,7 +2670,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 30
+            "y": 95175
           },
           "id": 115,
           "options": {
@@ -2570,7 +2813,7 @@
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 1897
+            "y": 97042
           },
           "id": 119,
           "options": {
@@ -2696,7 +2939,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 1906
+            "y": 97051
           },
           "id": 121,
           "options": {
@@ -2819,7 +3062,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 1916
+            "y": 97061
           },
           "id": 123,
           "options": {
@@ -2955,7 +3198,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 2666
+            "y": 97811
           },
           "id": 22,
           "options": {
@@ -3089,7 +3332,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 2677
+            "y": 97822
           },
           "id": 126,
           "options": {
@@ -3210,7 +3453,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 2683
+            "y": 97828
           },
           "id": 14,
           "options": {
@@ -3332,7 +3575,7 @@
             "h": 17,
             "w": 24,
             "x": 0,
-            "y": 2690
+            "y": 97835
           },
           "id": 124,
           "options": {
@@ -3466,7 +3709,7 @@
             "h": 13,
             "w": 24,
             "x": 0,
-            "y": 2956
+            "y": 98101
           },
           "id": 153,
           "options": {
@@ -3601,7 +3844,7 @@
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 2970
+            "y": 98115
           },
           "id": 77,
           "options": {
@@ -3722,7 +3965,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 2979
+            "y": 98124
           },
           "id": 128,
           "options": {
@@ -3859,7 +4102,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 3116
+            "y": 98261
           },
           "id": 46,
           "options": {
@@ -3980,7 +4223,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 3122
+            "y": 98267
           },
           "id": 129,
           "options": {
@@ -4101,7 +4344,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 3130
+            "y": 98275
           },
           "id": 78,
           "options": {
@@ -4223,7 +4466,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 3137
+            "y": 98282
           },
           "id": 130,
           "options": {
@@ -4360,7 +4603,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 19640
+            "y": 114785
           },
           "id": 134,
           "options": {
@@ -4481,7 +4724,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 19718
+            "y": 114863
           },
           "id": 137,
           "options": {
@@ -4602,7 +4845,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 19724
+            "y": 114869
           },
           "id": 135,
           "options": {
@@ -4723,7 +4966,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 19730
+            "y": 114875
           },
           "id": 136,
           "options": {
@@ -4858,7 +5101,7 @@
             "h": 5,
             "w": 11,
             "x": 0,
-            "y": 3242
+            "y": 98387
           },
           "id": 85,
           "options": {
@@ -4972,7 +5215,7 @@
             "h": 5,
             "w": 13,
             "x": 11,
-            "y": 3242
+            "y": 98387
           },
           "id": 89,
           "options": {
@@ -5090,7 +5333,7 @@
             "h": 5,
             "w": 11,
             "x": 0,
-            "y": 3247
+            "y": 98392
           },
           "id": 88,
           "options": {
@@ -5204,7 +5447,7 @@
             "h": 5,
             "w": 13,
             "x": 11,
-            "y": 3247
+            "y": 98392
           },
           "id": 90,
           "options": {
@@ -5339,7 +5582,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 3253
+            "y": 98398
           },
           "id": 151,
           "options": {
@@ -5459,7 +5702,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 3261
+            "y": 98406
           },
           "id": 16,
           "options": {
@@ -5595,7 +5838,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 3370
+            "y": 98515
           },
           "id": 80,
           "options": {
@@ -5717,7 +5960,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 3378
+            "y": 98523
           },
           "id": 79,
           "options": {
@@ -5839,7 +6082,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 3386
+            "y": 98531
           },
           "id": 82,
           "options": {
@@ -5975,7 +6218,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 19644
+            "y": 114789
           },
           "id": 102,
           "options": {
@@ -6096,7 +6339,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 19650
+            "y": 114795
           },
           "id": 100,
           "options": {
@@ -6228,7 +6471,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 22300
+            "y": 117445
           },
           "id": 148,
           "options": {
@@ -6324,7 +6567,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 22308
+            "y": 117453
           },
           "id": 147,
           "options": {
@@ -6435,7 +6678,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 22301
+            "y": 117446
           },
           "id": 149,
           "options": {
@@ -6875,6 +7118,6 @@
   "timezone": "",
   "title": "Monitoring - Perfmon Counters - Quest Softwares - Distributed",
   "uid": "distributed_perfmon",
-  "version": 23,
+  "version": 34,
   "weekStart": ""
 }

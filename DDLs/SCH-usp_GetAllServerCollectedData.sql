@@ -23,6 +23,9 @@ go
 ALTER PROCEDURE dbo.usp_GetAllServerCollectedData
 (	@servers varchar(max) = null, /* comma separated list of servers to query */
 	@result_to_table nvarchar(125), /* table that need to be populated */
+	@paginate bit = 0, /* when true, means this proc is running in multiple sessions. So table should not be truncated */
+	@page_count int = 1, /* Divide the server count in these pages */
+	@page_no int = 1, /* Compulate info for servers of this page */
 	@verbose tinyint = 0, /* display debugging messages. 0 = No messages. 1 = Only print messages. 2 = Print & Table Results */
 	@truncate_table bit = 1, /* when enabled, table would be truncated */
 	@has_staging_table bit = 1 /* when enabled, assume there is no staging table */
@@ -32,8 +35,9 @@ AS
 BEGIN
 
 	/*
-		Version:		2024-08-20
-		Date:			2024-08-20 - #10 Add error log entry
+		Version:		2026-01-31
+		Date:			2026-01-31 - #3 Infra to Track Server and Database Configuration Changes
+						2024-08-20 - #10 Add error log entry
 						2024-02-10 - #26 Track Status of SQLAgent Service
 						2024-01-08 - Backup History on Dashboard
 						2023-10-17 - Add Latency Dashboard for AG
@@ -54,7 +58,7 @@ BEGIN
 
 	IF @result_to_table NOT IN ('dbo.sql_agent_jobs_all_servers','dbo.disk_space_all_servers','dbo.log_space_consumers_all_servers',
 								'dbo.tempdb_space_usage_all_servers','dbo.ag_health_state_all_servers','dbo.backups_all_servers',
-								'dbo.services_all_servers')
+								'dbo.services_all_servers','dbo.alert_history_all_servers')
 		THROW 50001, '''result_to_table'' Parameter value is invalid.', 1;	
 		
 	declare @_start_time datetime2 = sysdatetime();
@@ -108,36 +112,15 @@ BEGIN
 	IF @verbose >= 2
 	BEGIN
 		SELECT @_int_variable = COUNT(1) FROM @_tbl_servers;
-		PRINT 'No of servers to process => '+CONVERT(varchar,@_int_variable)+'';
+		PRINT 'No of servers to process => '+CONVERT(varchar(125),@_int_variable)+'';
 		SELECT [RunningQuery] = 'select * from @_tbl_servers', *
 		FROM @_tbl_servers;
 	END
 
-	IF @verbose >= 2
-	BEGIN
-		select distinct [RunningQuery] = 'Cursor-Servers', [srvname] = sql_instance
-		from dbo.instance_details
-		where is_available = 1 and is_enabled = 1
-		and	(	(	@servers is null
-				and	is_alias = 0
-				)
-			or	(	@servers is not null
-				and	(	sql_instance in (select srv_name from @_tbl_servers) 
-					--or	source_sql_instance in (select srv_name from @_tbl_servers)
-					)
-				)
-			);
-	END
-
-	IF @truncate_table = 1
-	BEGIN
-		SET @_sql = 'truncate table '+@_staging_table+';';
-		IF @verbose >= 1
-			PRINT @_sql;
-		EXEC (@_sql);
-	END
-
-	DECLARE cur_servers CURSOR LOCAL FORWARD_ONLY FOR
+	-- Populate table to get list of Servers to process
+	if object_id('tempdb..#instance_details') is not null
+		drop table #instance_details
+	;with cte_instance_details as (
 		select distinct [srvname] = sql_instance
 		from dbo.instance_details
 		where is_available = 1 and is_enabled = 1
@@ -149,7 +132,37 @@ BEGIN
 					--or	source_sql_instance in (select srv_name from @_tbl_servers)
 					)
 				)
+			)
+	)
+	,cte_instance_details_paged as (
+		select srvname, page_no = NTILE(@page_count) over (order by srvname)
+		from cte_instance_details
+	)
+	select srvname
+	into #instance_details
+	from cte_instance_details_paged
+	where 1=1
+		and (	@paginate = 0
+			or	( @paginate = 1 and page_no = @page_no )
 			);
+
+	IF @verbose >= 2
+	BEGIN
+		select [RunningQuery] = 'Cursor-Servers', srvname
+		from #instance_details
+	END
+
+	IF @truncate_table = 1
+	BEGIN
+		SET @_sql = 'truncate table '+@_staging_table+';';
+		IF @verbose >= 1
+			PRINT @_sql;
+		EXEC (@_sql);
+	END
+
+	DECLARE cur_servers CURSOR LOCAL FORWARD_ONLY FOR
+	select srvname
+	from #instance_details;
 
 	OPEN cur_servers;
 	FETCH NEXT FROM cur_servers INTO @_srv_name;
@@ -172,8 +185,6 @@ BEGIN
 		begin
 			set @_isLocalHost = 0
 			begin try
-				--set @_sql = "SELECT	@@servername as srv_name;";
-				--set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
 				exec sys.sp_testlinkedserver @_srv_name;
 			end try
 			begin catch
@@ -197,8 +208,6 @@ BEGIN
 						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
 
 				set @_linked_server_failed = 1;
-				--fetch next from cur_servers into @_srv_name;
-				--continue;
 			end catch;
 		end
 
@@ -720,6 +729,69 @@ and (dm.servicename like 'SQL Server (%)' or dm.servicename like 'SQL Server Age
 				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
 			end catch
 		end
+
+		
+		-- dbo.alert_history_all_servers
+		if @_linked_server_failed = 0 and @result_to_table = 'dbo.alert_history_all_servers'
+		begin
+			declare @_alert_history_collection_time_utc datetime2 = DATEADD(hour,-2,sysutcdatetime());
+
+			select @_alert_history_collection_time_utc = coalesce(max(collection_time_utc), @_alert_history_collection_time_utc)
+			from dbo.alert_history_all_servers ahas
+			where ahas.collection_time_utc > DATEADD(hour,-2,sysutcdatetime())
+			and ahas.sql_instance = @_srv_name;
+
+			set @_sql =  "
+SET QUOTED_IDENTIFIER ON;
+SET NOCOUNT ON; 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+SET LOCK_TIMEOUT 60000; -- 60 seconds
+
+declare @_alert_history_collection_time_utc datetime2 = '"+convert(varchar,@_alert_history_collection_time_utc,121)+"';
+
+select	collection_time_utc = convert(varchar,ah.collection_time_utc,121),
+		[sql_instance] = '"+@_srv_name+"',
+		ah.server_name, ah.database_name, ah.error_number, 
+		ah.error_severity, ah.error_message, ah.host_instance,
+		[updated_time_utc] = sysutcdatetime()
+from dbo.alert_history ah
+where 1=1
+and ah.collection_time_utc > @_alert_history_collection_time_utc
+"
+			-- Decorate for remote query if LinkedServer
+			if @_isLocalHost = 0
+				set @_sql = 'select * from openquery(' + QUOTENAME(@_srv_name) + ', "'+ @_sql + '")';
+			if @verbose >= 2 or (@verbose >= 1 and @_counter = 1)
+				print @_crlf+@_sql+@_crlf;
+		
+			begin try
+				insert [dbo].[alert_history_all_servers]
+				(	[collection_time_utc], [sql_instance], [server_name], [database_name],
+					[error_number], [error_severity], [error_message], [host_instance], [updated_time_utc])
+				exec (@_sql);
+			end try
+			begin catch
+				select	@_errorNumber	 = Error_Number()
+						,@_errorSeverity = Error_Severity()
+						,@_errorState	 = Error_State()
+						,@_errorLine	 = Error_Line()
+						,@_errorMessage	 = Error_Message();
+
+				insert [dbo].[sma_errorlog]
+				([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+				select	[collection_time] = @_start_time, [function_name] = 'usp_GetAllServerCollectedData', 
+						[function_call_arguments] = 'dbo.services_all_servers', [server] = @_srv_name, [error] = @_errorMessage, 
+						[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+
+				set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+								'. State: '+convert(varchar,isnull(@_errorState,'')) +
+								'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+								'. Error Message::: '+ @_errorMessage;
+
+				print @_crlf+@_long_star_line+@_crlf+'Error occurred while executing below query on ['+@_srv_name+'].'+@_crlf+@_errorMessage+@_crlf+'     '+@_sql+@_long_star_line+@_crlf;
+			end catch
+		end
+
 
 		-- All the logic should be within the Cursor Loop block
 		FETCH NEXT FROM cur_servers INTO @_srv_name;

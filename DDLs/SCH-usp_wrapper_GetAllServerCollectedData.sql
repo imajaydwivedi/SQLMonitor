@@ -29,8 +29,9 @@ AS
 BEGIN
 
 	/*
-		Version:		2024-02-10
-		Date:			2024-02-10 - #26 Track Status of SQLAgent Service
+		Version:		2026-01-31
+		Date:			2026-01-31 - #3 Infra to Track Server and Database Configuration Changes
+						2024-02-10 - #26 Track Status of SQLAgent Service
 						2024-01-08 - Backup History
 						2023-10-17 - Add Latency Dashboard for AG
 						2023-08-30 - Adding @schedule_minutes parameter
@@ -69,6 +70,17 @@ BEGIN
 	DECLARE @recipients varchar(500); /* Folks who receive the failure mail */
 	DECLARE @send_error_mail bit; /* Send mail on failure */
 
+	DECLARE @_parallelize_collection bit = 0;
+	DECLARE @_parallel_threads int = 1;
+	DECLARE @_thread_counter int = 1;
+	DECLARE @_parallel_job_command nvarchar(max);
+	DECLARE @_parallel_job_name nvarchar(255);
+	DECLARE @_parallel_job_id BINARY(16);
+	DECLARE @_parallel_job_step_name nvarchar(125);
+	DECLARE @_parallel_job_database nvarchar(125) = DB_NAME();
+	DECLARE @_tbl_parallel_jobs table (job_name nvarchar(125));
+	DECLARE @_is_job_running bit = 0;
+
 	set @_caller_program = case when HOST_NAME() like '(dba) Get-AllServerCollectedData%'
 								then HOST_NAME()
 								else PROGRAM_NAME()
@@ -84,7 +96,7 @@ BEGIN
 
 	IF @step_name NOT IN ('dbo.sql_agent_jobs_all_servers','dbo.disk_space_all_servers','dbo.log_space_consumers_all_servers',
 						'dbo.tempdb_space_usage_all_servers','dbo.ag_health_state_all_servers','dbo.backups_all_servers',
-						'dbo.services_all_servers')
+						'dbo.services_all_servers','dbo.alert_history_all_servers')
 		THROW 50001, '''step_name'' Parameter value is invalid.', 1;		
 
 	-- Variables for Try/Catch Block
@@ -246,6 +258,200 @@ else
 				PRINT @_sql;
 			EXEC sp_executesql @_sql, @_params, @verbose, @truncate_table, @has_staging_table, @schedule_minutes;
 		END
+
+		IF @step_name = 'dbo.alert_history_all_servers'
+		BEGIN
+			SET @_parallelize_collection = 0;
+			SET @_parallel_threads = 1;
+			SET @_thread_counter = 1;
+			SET @_parallel_job_command = NULL;
+			SET @_parallel_job_name = NULL;
+			SET @_parallel_job_id = NULL;
+			SET @_parallel_job_step_name = NULL;
+			SET @_parallel_job_database = DB_NAME();
+			DELETE FROM @_tbl_parallel_jobs;
+			SET @_is_job_running = 0;
+
+			-- Fetch params related to parallelization of jobs
+			select @_parallelize_collection = convert(bit, case when param_value = 'yes' then 1 else 0 end) 
+			from dbo.sma_params p where p.param_key = 'alert_history_all_servers-parallelize';
+			if @_parallelize_collection = 1
+				select @_parallel_threads = convert(int, param_value) from dbo.sma_params p where p.param_key = 'alert_history_all_servers-parallel-threads';
+
+			IF @_parallelize_collection = 0
+			BEGIN
+				IF @verbose > 0
+					PRINT 'Populate dbo.alert_history_all_servers in serial manner.';
+				SET @_sql = N'-- Collect Latest Alert details from All Servers Every 2 Minutes
+	if	( (select isnull(max(collection_time_utc),''2023-01-01 00:00'') from dbo.alert_history_all_servers) < dateadd(minute, -@schedule_minutes, getutcdate()) )
+	begin
+		exec dbo.usp_GetAllServerCollectedData 
+						@result_to_table = ''dbo.alert_history_all_servers'',
+						@verbose = @verbose,
+						@truncate_table = @truncate_table,
+						@has_staging_table = @has_staging_table
+	end
+	else
+		print ''Did not meet schedule requirement.''+char(13);';
+				IF @verbose > 0
+					PRINT @_sql;
+				EXEC sp_executesql @_sql, @_params, @verbose, @truncate_table, @has_staging_table, @schedule_minutes;
+			END
+			ELSE
+			BEGIN -- Parallelize
+				IF @verbose > 0
+					PRINT 'Populate dbo.alert_history_all_servers in Parallel threads';
+
+				WHILE @_thread_counter <= @_parallel_threads
+				BEGIN
+					IF @verbose > 0
+							PRINT 'Loop '+convert(varchar,@_thread_counter)+' of '+convert(varchar,@_parallel_threads)+'..';
+
+					SET @_parallel_job_id = NULL;
+					SET @_parallel_job_name = '(dba) Get-AllServerAlertHistory - '+convert(varchar,@_parallel_threads)+'-Threaded-Job-'+convert(varchar,@_thread_counter);
+					SET @_parallel_job_step_name = 'Get-AllServerAlertHistory - '+convert(varchar,@_parallel_threads)+'-Threaded-Job-'+convert(varchar,@_thread_counter);
+					
+					BEGIN TRY
+						-- Create temporary parallel jobs if required
+						IF NOT EXISTS (SELECT * FROM msdb.dbo.sysjobs_view WHERE name = @_parallel_job_name)
+						BEGIN
+							IF @verbose > 0
+								PRINT 'Creating temp job '+QUOTENAME(@_parallel_job_name)+'..'
+							SET @_parallel_job_command = N'EXEC dbo.usp_GetAllServerCollectedData @result_to_table = ''dbo.alert_history_all_servers'', @has_staging_table = 0, @truncate_table = 0, @verbose = 0,
+												@paginate = 1, @page_count = '+convert(varchar,@_parallel_threads)+', @page_no = '+convert(varchar,@_thread_counter)+';';
+
+							EXEC msdb.dbo.sp_add_job @job_name=@_parallel_job_name, @category_name=N'(dba) SQLMonitor', @enabled=1, @job_id = @_parallel_job_id OUTPUT, @notify_level_eventlog=0,
+										@description=N'Job created as part of [(dba) Get-AllServerAlertHistory] to collect VolatileInfo in parallel threads. https://ajaydwivedi.com/github/sqlmonitor';
+							
+							IF @verbose > 0
+								PRINT 'adding step to job '+QUOTENAME(@_parallel_job_name)+'..'
+							EXEC  msdb.dbo.sp_add_jobstep @job_id=@_parallel_job_id, @step_name=@_parallel_job_step_name, @step_id=1, @subsystem=N'TSQL', @command=@_parallel_job_command, @database_name=@_parallel_job_database, @flags=12;
+
+							IF @verbose > 0
+								PRINT 'set starting step for job '+QUOTENAME(@_parallel_job_name)+'..'
+							EXEC msdb.dbo.sp_update_job @job_id = @_parallel_job_id, @start_step_id = 1;
+							IF @verbose > 0
+								PRINT 'set jobserver for job '+QUOTENAME(@_parallel_job_name)+'..'
+							EXEC msdb.dbo.sp_add_jobserver @job_id = @_parallel_job_id, @server_name = N'(local)';
+						END
+
+						-- Start job if not running
+						set @_is_job_running = dbo.fn_IsJobRunning(@_parallel_job_name);
+						insert @_tbl_parallel_jobs select @_parallel_job_name;
+						if @_is_job_running = 0
+							exec msdb.dbo.sp_start_job @job_name = @_parallel_job_name;
+					END TRY
+					BEGIN CATCH
+						IF @verbose > 0
+							PRINT 'Start Catch Block of dbo.alert_history_all_servers in Parallel threads.'
+
+						SELECT @_errorNumber	 = Error_Number()
+								,@_errorSeverity = Error_Severity()
+								,@_errorState	 = Error_State()
+								,@_errorLine	 = Error_Line()
+								,@_errorMessage	 = Error_Message();						
+
+						IF @verbose >= 1
+						BEGIN
+							PRINT CHAR(13);
+							PRINT '@_errorNumber => '+convert(varchar,@_errorNumber);
+							PRINT '@_errorState => '+convert(varchar,@_errorState);
+							PRINT '@_errorMessage => '+@_errorMessage;
+							PRINT CHAR(13);
+						END
+
+						set @_errorMessage = 'Error Details => Severity: '+convert(varchar,isnull(@_errorSeverity,''))+
+											'. State: '+convert(varchar,isnull(@_errorState,'')) +
+											'. Error Line: '+convert(varchar,isnull(@_errorLine,'')) + 
+											'. Error Message::: '+ @_errorMessage;
+						insert [dbo].[sma_errorlog]
+						([collection_time], [function_name], [function_call_arguments], [server], [error], [remark], [executed_by], [executor_program_name])
+						select	[collection_time] = @_collection_time, [function_name] = 'usp_wrapper_GetAllServerCollectedData', 
+								[function_call_arguments] = @step_name+'-Parallel', [server] = null, [error] = @_errorMessage, 
+								[remark] = null, [executed_by] = SUSER_NAME(), [executor_program_name] = @_caller_program;
+					END CATCH
+
+					SET @_thread_counter += 1;
+				END
+
+				-- Once parallel jobs are started, then wait for them to finish
+				if @verbose >= 2
+					select [RunningQuery] = '@_tbl_parallel_jobs', job_name from @_tbl_parallel_jobs;
+					print 'Wait for 5 seconds before checking status';
+				
+				WAITFOR DELAY '00:00:10';
+
+				SELECT j.name AS job_name, 
+					   ja.start_execution_date AS StartTime,
+					   COALESCE(CONVERT(VARCHAR(5),ABS(DATEDIFF(DAY,(GETDATE()-ja.start_execution_date),'1900-01-01'))) + ' '
+							   +CONVERT(VARCHAR(10),(GETDATE()-ja.start_execution_date),108),'00 00:00:00') AS [Duration] 
+				FROM msdb.dbo.sysjobactivity ja 
+				LEFT JOIN msdb.dbo.sysjobhistory jh ON ja.job_history_id = jh.instance_id
+				JOIN msdb.dbo.sysjobs j ON ja.job_id = j.job_id
+				WHERE ja.session_id = (SELECT TOP 1 session_id FROM msdb.dbo.syssessions ORDER BY session_id DESC)
+				  AND start_execution_date is not null
+				  AND stop_execution_date is null;
+
+				while 1=1
+				begin
+					-- Get one job & check its running status
+					set @_parallel_job_name = null;
+					set @_is_job_running = 0;
+					select top 1 @_parallel_job_name = job_name from @_tbl_parallel_jobs;
+
+					-- If no jobs to process, then exit loop
+					if @_parallel_job_name is null
+					begin
+						if @verbose > 0
+							print '@_parallel_job_name is null is null. So exit loop'
+						break;
+					end
+					else
+					begin -- if job to process is found, then check its running status
+						if @verbose > 0
+							print '  Checking running status for job '+quotename(@_parallel_job_name);
+						--exec dbo.usp_get_job_running_status @job_name = @_parallel_job_name, @is_running_OUTPUT = @_is_job_running;
+						set @_is_job_running = dbo.fn_IsJobRunning(@_parallel_job_name);
+						if @_is_job_running = 0 -- if job is not running, then delete its entry, and proceed for next job
+						begin
+							if @verbose > 0
+								print '  Job '+quotename(@_parallel_job_name)+' is not running. So delete its entry from @_tbl_parallel_jobs';
+							delete from @_tbl_parallel_jobs where job_name = @_parallel_job_name;
+							continue;
+						end
+						else
+						begin
+							if @verbose > 0
+								print '  Job '+quotename(@_parallel_job_name)+' is running. So wait for another 2 seconds';
+							waitfor delay '00:00:02';
+						end
+					end
+				end
+
+				/*
+				BEGIN TRAN
+					if exists (select * from sys.tables where name = 'all_server_volatile_info' and is_memory_optimized = 0)
+						exec ('truncate table dbo.all_server_volatile_info');
+					else
+						delete from dbo.all_server_volatile_info;
+					
+					set @_sql = N'
+	;with cte_volatile_info as (
+		select '+@_output_columns+', row_id = row_number()over(partition by srv_name order by srv_name)
+		from dbo.all_server_volatile_info__staging
+	)
+	insert dbo.all_server_volatile_info
+	('+@_output_columns+')
+	select '+@_output_columns+' from cte_volatile_info where row_id = 1;
+					';
+					if @verbose > 0
+						print @_sql;
+					exec (@_sql);
+				COMMIT TRAN
+				*/
+			END
+		END
+
 
 	END TRY  -- Perform main logic inside Try/Catch
 	BEGIN CATCH

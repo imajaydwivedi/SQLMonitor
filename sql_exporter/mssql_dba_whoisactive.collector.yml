@@ -1,0 +1,259 @@
+# A collector defining standard metrics for Microsoft SQL Server.
+#
+# It is required that the SQL Server user has the following permissions:
+#
+#   GRANT VIEW ANY DEFINITION TO
+#   GRANT VIEW SERVER STATE TO
+#
+collector_name: mssql_dba_whoisactive
+
+# Similar to global.min_interval, but applies to the queries defined by this collector only.
+min_interval: 2m
+
+metrics:
+
+  #
+  # Collected using sp_WhoIsActive
+  #
+  - metric_name: mssql_whoisactive__start_time
+    type: gauge
+    help: 'Start time of the session along with other session details.'
+    key_labels:
+      - unique_key
+      - session_id
+      - program_name
+      - login_name
+      - database_name
+      - status
+      - wait_info
+      - sql_command
+      - blocked_session_count
+      - blocking_session_id
+      - sql_text
+      - avg_elapsed_time
+      - context_switches
+      - tran_start_time
+      - tran_log_writes
+      - implicit_tran
+      - query_plan
+      - host_name
+      - additional_info
+      - memory_info
+      - login_time
+      - request_id
+    values: [start_time]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__reads
+    type: gauge
+    help: 'Number of reads for the session.'
+    key_labels:
+      - unique_key
+    values: [reads]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__used_memory
+    type: gauge
+    help: 'Used memory for the session.'
+    key_labels:
+      - unique_key
+    values: [used_memory]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__cpu
+    type: gauge
+    help: 'CPU used by the session.'
+    key_labels:
+      - unique_key
+    values: [CPU]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__open_tran_count
+    type: gauge
+    help: 'Open transaction count for the session.'
+    key_labels:
+      - unique_key
+    values: [open_tran_count]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__writes
+    type: gauge
+    help: 'Number of writes for the session.'
+    key_labels:
+      - unique_key
+    values: [writes]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__tempdb_allocations
+    type: gauge
+    help: 'Tempdb allocations for the session.'
+    key_labels:
+      - unique_key
+    values: [tempdb_allocations]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__percent_complete
+    type: gauge
+    help: 'Percent complete for the session.'
+    key_labels:
+      - unique_key
+    values: [percent_complete]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__collection_time_utc
+    type: gauge
+    help: 'Collection time for the session snapshot.'
+    key_labels:
+      - unique_key
+    values: [collection_time_utc]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__tasks
+    type: gauge
+    help: 'Number of tasks for the session.'
+    key_labels:
+      - unique_key
+    values: [tasks]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__physical_reads
+    type: gauge
+    help: 'Physical reads performed by the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [physical_reads]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__physical_io
+    type: gauge
+    help: 'Physical I/O (reads + writes) for the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [physical_io]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__tempdb_current
+    type: gauge
+    help: 'Current tempdb pages held by the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [tempdb_current]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__granted_memory
+    type: gauge
+    help: 'Memory grant given to the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [granted_memory]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__requested_memory
+    type: gauge
+    help: 'Memory grant requested by the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [requested_memory]
+    query_ref: mssql_sp_whoisactive
+
+  - metric_name: mssql_whoisactive__max_used_memory
+    type: gauge
+    help: 'Maximum memory used by the session, in KB (8 KB pages).'
+    key_labels:
+      - unique_key
+    values: [max_used_memory]
+    query_ref: mssql_sp_whoisactive
+
+queries:
+  - query_name: mssql_sp_whoisactive
+    query: |
+      SET NOCOUNT ON;
+      EXEC(N'
+      CREATE TABLE #whoisactive (
+        [collection_time] datetime NOT NULL,
+        [session_id] smallint NOT NULL,
+        [program_name] nvarchar(128) NULL,
+        [login_name] nvarchar(128) NOT NULL,
+        [database_name] nvarchar(128) NULL,
+        [CPU] bigint NULL,
+        [used_memory] bigint NOT NULL,
+        [open_tran_count] smallint NULL,
+        [status] varchar(30) NOT NULL,
+        [wait_info] nvarchar(4000) NULL,
+        [sql_command] nvarchar(max) NULL,
+        [blocked_session_count] smallint NULL,
+        [blocking_session_id] smallint NULL,
+        [sql_text] nvarchar(max) NULL,
+        [avg_elapsed_time] int NULL,
+        [physical_io] bigint NULL,
+        [reads] bigint NULL,
+        [physical_reads] bigint NULL,
+        [writes] bigint NULL,
+        [tempdb_allocations] bigint NULL,
+        [tempdb_current] bigint NULL,
+        [context_switches] bigint NULL,
+        [max_used_memory] bigint NULL,
+        [requested_memory] bigint NULL,
+        [granted_memory] bigint NULL,
+        [tasks] smallint NULL,
+        [tran_start_time] datetime NULL,
+        [tran_log_writes] nvarchar(4000) NULL,
+        [implicit_tran] nvarchar(3) NULL,
+        [query_plan] xml NULL,
+        [percent_complete] real NULL,
+        [host_name] nvarchar(128) NULL,
+        [additional_info] xml NULL,
+        [memory_info] xml NULL,
+        [start_time] datetime NOT NULL,
+        [login_time] datetime NULL,
+        [request_id] int NULL
+      );
+
+      EXEC dbo.sp_WhoIsActive
+            @get_outer_command=1, @get_task_info=2, @find_block_leaders=1, @get_plans=1, @get_avg_time=1,
+            @get_additional_info=1, @get_transaction_info=1, @get_memory_info = 1, @format_output = 0,
+            @output_column_list = ''[collection_time][session_id][program_name][login_name][database_name][CPU][used_memory][open_tran_count][status][wait_info][sql_command][blocked_session_count][blocking_session_id][sql_text][avg_elapsed_time][physical_io][reads][physical_reads][writes][tempdb_allocations][tempdb_current][context_switches][max_used_memory][requested_memory][granted_memory][tasks][tran_start_time][tran_log_writes][implicit_tran][query_plan][percent_complete][host_name][additional_info][memory_info][start_time][login_time][request_id]'',
+            @destination_table = ''#whoisactive'';
+
+      SELECT
+        [unique_key] = convert(varchar(30),getdate(),121) + '' | '' + convert(varchar(10),[session_id]),
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), getutcdate()) AS bigint) AS [collection_time_utc],
+        [session_id],
+        COALESCE([program_name], '''') AS [program_name],
+        [login_name],
+        COALESCE([database_name], '''') AS [database_name],
+        [status],
+        COALESCE([wait_info], '''') AS [wait_info],
+        COALESCE([sql_command], '''') AS [sql_command],
+        COALESCE([blocked_session_count], 0) AS [blocked_session_count],
+        COALESCE([blocking_session_id],'''') AS [blocking_session_id],
+        COALESCE([sql_text], '''') AS [sql_text],
+        COALESCE([avg_elapsed_time], 0) AS [avg_elapsed_time],
+        COALESCE([physical_io], 0) AS [physical_io],
+        COALESCE([physical_reads], 0) AS [physical_reads],
+        COALESCE([tempdb_current], 0) AS [tempdb_current],
+        COALESCE([context_switches], 0) AS [context_switches],
+        COALESCE([max_used_memory], 0) AS [max_used_memory],
+        COALESCE([requested_memory], 0) AS [requested_memory],
+        COALESCE([granted_memory], 0) AS [granted_memory],
+        COALESCE([tasks], 0) AS [tasks],
+        COALESCE(CONVERT(nvarchar(33), [tran_start_time], 126), '''') AS [tran_start_time],
+        COALESCE([tran_log_writes], '''') AS [tran_log_writes],
+        COALESCE([implicit_tran], '''') AS [implicit_tran],
+        COALESCE(CONVERT(nvarchar(max), [query_plan]), '''') AS [query_plan],
+        COALESCE([host_name], '''') AS [host_name],
+        COALESCE(CONVERT(nvarchar(max), [additional_info]), '''') AS [additional_info],
+        COALESCE(CONVERT(nvarchar(max), [memory_info]), '''') AS [memory_info],
+        COALESCE(CONVERT(nvarchar(33), [login_time], 126), '''') AS [login_time],
+        COALESCE([request_id], 0) AS [request_id],
+        COALESCE([reads], 0) AS [reads],
+        [used_memory],
+        COALESCE([CPU], 0) AS [CPU],
+        COALESCE([open_tran_count], 0) AS [open_tran_count],
+        COALESCE([writes], 0) AS [writes],
+        COALESCE([tempdb_allocations], 0) AS [tempdb_allocations],
+        COALESCE([percent_complete], 0) AS [percent_complete],
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), [start_time]) AS bigint) AS [start_time]
+      FROM #whoisactive;
+      ');
+

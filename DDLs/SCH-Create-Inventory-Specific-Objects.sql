@@ -426,7 +426,6 @@ CREATE TABLE [dbo].[all_server_collection_latency_info]
 	[performance_counters__latency_minutes] int null,
 	[xevent_metrics__latency_minutes] int null,
 	[WhoIsActive__latency_minutes] int null,
-	[os_task_list__latency_minutes] int null,
 	[disk_space__latency_minutes] int null,
 	[file_io_stats__latency_minutes] int null,
 	[sql_agent_job_stats__latency_minutes] int null,
@@ -1551,6 +1550,8 @@ begin
 			('send_sqlmonitor_job_failure_mail','1','When enabled, then job failure mail is send to DBA team'),
 			('all_server_volatile_info-parallelize','no','When enabled, then volatile info is collected in parallel threads'),
 			('all_server_volatile_info-parallel-threads',convert(varchar,(select case when cpu_count > 4 then 4 else cpu_count end from sys.dm_os_sys_info as osi)),'parallel threads/jobs for Volatile Info collection'),
+			('alert_history_all_servers-parallelize','no','When enabled, then volatile info is collected in parallel threads'),
+			('alert_history_all_servers-parallel-threads',convert(varchar,(select case when cpu_count > 4 then 4 else cpu_count end from sys.dm_os_sys_info as osi)),'parallel threads/jobs for Alert History collection'),
 			('usp_wrapper_GetAllServerInfo-enable-LOCK_TIMEOUT','0','Enable/Disable LOCK_TIMEOUT in procedure dbo.usp_wrapper_GetAllServerInfo'),
 			('usp_GetAllServerInfo-enable-LOCK_TIMEOUT','0','Enable/Disable LOCK_TIMEOUT in procedure dbo.usp_GetAllServerInfo')
 		) my_keys (param_key, param_value, remarks)

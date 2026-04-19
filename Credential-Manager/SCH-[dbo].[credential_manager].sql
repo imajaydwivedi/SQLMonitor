@@ -29,8 +29,9 @@ create table dbo.credential_manager
     ,valid_to datetime2 generated always as row end hidden NOT NULL
     ,period for system_time (valid_from,valid_to)
 )
-with (system_versioning = on (HISTORY_TABLE = dbo.credential_manager_history))
+with (system_versioning = on (HISTORY_TABLE = dbo.credential_manager_history, HISTORY_RETENTION_PERIOD = 2 YEARS));
 go
+--alter table dbo.credential_manager set (system_versioning = on (HISTORY_RETENTION_PERIOD = 2 YEARS));
 create nonclustered index uq__server_name__user_name on dbo.credential_manager (server_name, [user_name])
 go
 

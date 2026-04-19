@@ -87,11 +87,6 @@ from dbo.vw_performance_counters pc with (nolock)
 order by pc.collection_time_utc desc
 go
 
-select top 1 'vw_os_task_list' as QueryData, getutcdate() as current_time_utc, collection_time_utc, pc.host_name
-from dbo.vw_os_task_list pc with (nolock)
-order by pc.collection_time_utc desc
-go
-
 select top 1 'dbo.xevent_metrics' as QueryDate, getdate() as [getdate()], rc.*
 from dbo.xevent_metrics rc
 order by event_time desc

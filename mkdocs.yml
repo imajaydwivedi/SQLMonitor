@@ -1,0 +1,130 @@
+site_name: SQLMonitor
+site_description: Open-source SQL Server monitoring & alerting built on SQL Agent jobs, Grafana, Prometheus and Python.
+site_url: https://imajaydwivedi.github.io/SQLMonitor/
+site_author: Ajay Kumar Dwivedi
+repo_url: https://github.com/imajaydwivedi/SQLMonitor
+repo_name: imajaydwivedi/SQLMonitor
+edit_uri: edit/dev/docs/
+copyright: Copyright &copy; Ajay Kumar Dwivedi
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+    - content.tabs.link
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+plugins:
+  - search
+  - glightbox:
+      touchNavigation: true
+      zoomable: true
+  - minify:
+      minify_html: true
+
+hooks:
+  - hooks/external_links.py
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/imajaydwivedi/SQLMonitor
+    - icon: fontawesome/brands/youtube
+      link: https://ajaydwivedi.com/youtube/sqlmonitor
+    - icon: fontawesome/brands/slack
+      link: https://ajaydwivedi.com/sqlmonitor/slack
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/imajaydwivedi/
+  generator: false
+
+nav:
+  - Home: index.md
+  - Why SQLMonitor: why.md
+  - Architecture:
+      - architecture/index.md
+      - Topology: architecture/topology.md
+      - Data Flow: architecture/data-flow.md
+      - Components: architecture/components.md
+      - Data Model: architecture/data-model.md
+  - Deployment:
+      - deployment/index.md
+      - Prerequisites: deployment/prerequisites.md
+      - Install Walkthrough: deployment/install.md
+      - Install-SQLMonitor Parameters: deployment/parameters.md
+      - Install Steps: deployment/steps.md
+      - Upgrade: deployment/upgrade.md
+      - Remove: deployment/remove.md
+      - Troubleshooting: deployment/troubleshooting.md
+  - Dashboards:
+      - dashboards/index.md
+      - Variables & Conventions: dashboards/variables.md
+      - Live Demo: dashboards/live-demo.md
+  - Jobs & Collectors: jobs.md
+  - Alerting: alerting.md
+  - Prometheus / sql_exporter: prometheus.md
+  - AI Agent: ai-agent.md
+  - Support & FAQ: support.md

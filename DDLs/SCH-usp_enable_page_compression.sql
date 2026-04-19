@@ -45,11 +45,6 @@ BEGIN
 	select table_name, index_name
 	from (values ('dbo.performance_counters',NULL),
 				 ('dbo.performance_counters','nci_counter_collection_time_utc'),
-				 ('dbo.os_task_list',NULL),
-				 ('dbo.os_task_list','nci_cpu_time_seconds'),
-				  ('dbo.os_task_list','nci_memory_kb'),
-				 ('dbo.os_task_list','nci_user_name'),
-				 ('dbo.os_task_list','nci_window_title'),
 				 ('dbo.wait_stats',NULL),
 				 ('dbo.xevent_metrics', NULL),
 				 ('dbo.xevent_metrics','uq_xevent_metrics'),

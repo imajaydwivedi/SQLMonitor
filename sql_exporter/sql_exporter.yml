@@ -1,0 +1,63 @@
+# Global defaults.
+global:
+  # If scrape_timeout <= 0, no timeout is set unless Prometheus provides one. The default is 10s.
+  scrape_timeout: 120s
+  # Subtracted from Prometheus' scrape_timeout to give us some headroom and prevent Prometheus from timing out first.
+  scrape_timeout_offset: 500ms
+  # Minimum interval between collector runs: by default (0s) collectors are executed on every scrape.
+  min_interval: 0s
+  # Maximum number of open connections to any one target. Metric queries will run concurrently on multiple connections,
+  # as will concurrent scrapes.
+  max_connections: 4
+  # Maximum number of idle connections to any one target. Unless you use very long collection intervals, this should
+  # always be the same as max_connections.
+  max_idle_connections: 3
+  # Maximum number of maximum amount of time a connection may be reused. Expired connections may be closed lazily before reuse.
+  # If 0, connections are not closed due to a connection's age.
+  max_connection_lifetime: 5m
+
+# Multiple target groups.
+jobs:
+  - job_name: mssql_common
+    collectors:
+      - mssql_dba_cached
+      - mssql_dba_regular
+      - mssql_dba_stableinfo
+      - mssql_standard
+    static_configs:
+      - targets:
+          localhost: 'sqlserver://localhost:1433/master?trusted_connection=yes&encrypt=true&TrustServerCertificate=true'
+
+  - job_name: mssql_ag
+    collectors:
+      - mssql_dba_aghealth
+    static_configs:
+      - targets:
+          localhost: 'sqlserver://localhost:1433/master?trusted_connection=yes&encrypt=true&TrustServerCertificate=true'
+
+  - job_name: mssql_long_running
+    collectors:
+      - mssql_dba_whoisactive
+    static_configs:
+      - targets:
+          localhost: 'sqlserver://localhost:1433/master?trusted_connection=yes&encrypt=true&TrustServerCertificate=true'
+
+  - job_name: mssql_msdb
+    collectors:
+      - mssql_sqlagent_jobs
+      - mssql_backup_history
+    static_configs:
+      - targets:
+          localhost: 'sqlserver://localhost:1433/master?trusted_connection=yes&encrypt=true&TrustServerCertificate=true'
+
+  - job_name: mssql_xevent
+    collectors:
+      - mssql_xevent
+    static_configs:
+      - targets:
+          localhost: 'sqlserver://localhost:1433/master?trusted_connection=yes&encrypt=true&TrustServerCertificate=true'
+
+# Collector files specifies a list of globs. One collector definition is read from each matching file.
+# Glob patterns are supported (see <https://pkg.go.dev/path/filepath#Match> for syntax).
+collector_files: 
+  - "*.collector.yml"
