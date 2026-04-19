@@ -135,6 +135,30 @@ scrape_configs:
 ```
 
 
+# Collectors
+
+`sql_exporter.yml` binds each collector file (`mssql_*.collector.yml`) to a
+job; every target in the job runs every metric definition in the named
+collectors.
+
+| Collector file | Job | Scrape interval | What it publishes |
+|---|---|---|---|
+| `mssql_standard.collector.yml` | `mssql_common` | default | Upstream [sql_exporter](https://github.com/burningalchemist/sql_exporter/tree/master/examples/mssql_standard) baseline &mdash; `mssql_perfmon__*`, `mssql_up`, `mssql_sqlserver_*`. |
+| `mssql_dba_cached.collector.yml` | `mssql_common` | 1m | `mssql_virtualfilestats__*`, `mssql_waits__*`, `mssql_cpu_utilization__*`. |
+| `mssql_dba_regular.collector.yml` | `mssql_common` | default | `mssql_service_info`, `mssql_db_state`, registry/config snapshot. |
+| `mssql_dba_stableinfo.collector.yml` | `mssql_common` | 10m | Low-churn info (CPU count, version, clustering). |
+| `mssql_dba_aghealth.collector.yml` | `mssql_ag` | 1m | `mssql_aghealth__*` (AG sync_health / latency / queues). |
+| `mssql_dba_whoisactive.collector.yml` | `mssql_long_running` | 2m | `mssql_whoisactive__*` &mdash; current sp_WhoIsActive snapshot. |
+| `mssql_sqlagent_jobs.collector.yml` | `mssql_msdb` | 1m | `mssql_sqlagent_job__*` &mdash; job enabled / outcome / duration / next run / 24h step failures. |
+| `mssql_backup_history.collector.yml` | `mssql_msdb` | 5m | `mssql_backup__*` &mdash; per-(db, backup_type) last-time / size / duration / age. |
+| `mssql_xevent.collector.yml` | `mssql_xevent` | 1m | `mssql_xevent__*` &mdash; 5-minute aggregates of `DBA.dbo.xevent_metrics` (guarded; no-op where the XEvent proc isn't installed). |
+
+The three **msdb / xevent** collectors are new in Phase 1 of the Prometheus
+dashboard rollout and feed the new Grafana dashboards under
+`sql_exporter/Prometheus-Dashboards/`. See [`Prometheus-Dashboards/README.md`](Prometheus-Dashboards/README.md)
+for the generator / spec workflow and the per-dashboard panel inventory.
+
+
 # Refresh Collectors
 ```
 # E:\Github\SQLMonitor\sql_exporter\sql_exporter.exe --config.file E:\Github\SQLMonitor\sql_exporter\sql_exporter.yml

@@ -610,18 +610,36 @@ metrics:
 queries:
   - query_name: mssql_sys_databases
     query: |
+      -- Dynamic SQL: substitute CAST(0 AS bigint) for columns that do not
+      -- exist on the running SQL Server version so the same metric schema
+      -- is emitted on SQL 2016 through SQL 2025. The following columns are
+      -- present only on SQL Server 2022 (16.x) or later.
+      DECLARE @c_tempdb_spill_to_remote_store nvarchar(200) = IIF(
+        COL_LENGTH('sys.databases','is_tempdb_spill_to_remote_store') IS NOT NULL,
+        N'CAST(d.is_tempdb_spill_to_remote_store AS bigint)', N'CAST(0 AS bigint)');
+      DECLARE @c_stale_page_detection_on nvarchar(200) = IIF(
+        COL_LENGTH('sys.databases','is_stale_page_detection_on') IS NOT NULL,
+        N'CAST(d.is_stale_page_detection_on AS bigint)', N'CAST(0 AS bigint)');
+      DECLARE @c_memory_optimized_enabled nvarchar(200) = IIF(
+        COL_LENGTH('sys.databases','is_memory_optimized_enabled') IS NOT NULL,
+        N'CAST(d.is_memory_optimized_enabled AS bigint)', N'CAST(0 AS bigint)');
+      DECLARE @c_data_retention_enabled nvarchar(200) = IIF(
+        COL_LENGTH('sys.databases','is_data_retention_enabled') IS NOT NULL,
+        N'CAST(d.is_data_retention_enabled AS bigint)', N'CAST(0 AS bigint)');
+
+      DECLARE @sql nvarchar(max) = N'
       SELECT
-        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), GETUTCDATE()) AS bigint) as collection_time_utc,
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), GETUTCDATE()) AS bigint) as collection_time_utc,
         d.name AS db_name,
-        COALESCE(sys.fn_varbintohexstr(d.owner_sid), N'') AS owner_sid,
-        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, '19700101'), d.create_date) AS bigint) AS create_date,
-        COALESCE(d.collation_name, N'') AS collation_name,
-        COALESCE(CONVERT(nvarchar(36), d.service_broker_guid), N'') AS service_broker_guid,
-        COALESCE(CONVERT(nvarchar(36), d.replica_id), N'') AS replica_id,
-        COALESCE(CONVERT(nvarchar(36), d.group_database_id), N'') AS group_database_id,
-        COALESCE(d.default_language_name, N'') AS default_language_name,
-        COALESCE(d.default_fulltext_language_name, N'') AS default_fulltext_language_name,
-        COALESCE(d.physical_database_name, N'') AS physical_database_name,
+        COALESCE(sys.fn_varbintohexstr(d.owner_sid), N'''') AS owner_sid,
+        CAST(DATEDIFF_BIG(second, CONVERT(datetime2, ''19700101''), d.create_date) AS bigint) AS create_date,
+        COALESCE(d.collation_name, N'''') AS collation_name,
+        COALESCE(CONVERT(nvarchar(36), d.service_broker_guid), N'''') AS service_broker_guid,
+        COALESCE(CONVERT(nvarchar(36), d.replica_id), N'''') AS replica_id,
+        COALESCE(CONVERT(nvarchar(36), d.group_database_id), N'''') AS group_database_id,
+        COALESCE(d.default_language_name, N'''') AS default_language_name,
+        COALESCE(d.default_fulltext_language_name, N'''') AS default_fulltext_language_name,
+        COALESCE(d.physical_database_name, N'''') AS physical_database_name,
         d.database_id AS database_id,
         d.source_database_id AS source_database_id,
         d.compatibility_level AS compatibility_level,
@@ -685,20 +703,22 @@ queries:
         d.catalog_collation_type AS catalog_collation_type,
         CAST(d.is_result_set_caching_on AS bigint) AS is_result_set_caching_on,
         CAST(d.is_accelerated_database_recovery_on AS bigint) AS is_accelerated_database_recovery_on,
-        CAST(d.is_tempdb_spill_to_remote_store AS bigint) AS is_tempdb_spill_to_remote_store,
-        CAST(d.is_stale_page_detection_on AS bigint) AS is_stale_page_detection_on,
-        CAST(d.is_memory_optimized_enabled AS bigint) AS is_memory_optimized_enabled,
-        CAST(d.is_data_retention_enabled AS bigint) AS is_data_retention_enabled,
-        COALESCE(d.user_access_desc, N'') AS user_access_desc,
-        COALESCE(d.state_desc, N'') AS state_desc,
-        COALESCE(d.snapshot_isolation_state_desc, N'') AS snapshot_isolation_state_desc,
-        COALESCE(d.recovery_model_desc, N'') AS recovery_model_desc,
-        COALESCE(d.page_verify_option_desc, N'') AS page_verify_option_desc,
-        COALESCE(d.containment_desc, N'') AS containment_desc,
-        COALESCE(d.delayed_durability_desc, N'') AS delayed_durability_desc,
-        COALESCE(d.catalog_collation_type_desc, N'') AS catalog_collation_type_desc
+        ' + @c_tempdb_spill_to_remote_store + N' AS is_tempdb_spill_to_remote_store,
+        ' + @c_stale_page_detection_on       + N' AS is_stale_page_detection_on,
+        ' + @c_memory_optimized_enabled      + N' AS is_memory_optimized_enabled,
+        ' + @c_data_retention_enabled        + N' AS is_data_retention_enabled,
+        COALESCE(d.user_access_desc, N'''') AS user_access_desc,
+        COALESCE(d.state_desc, N'''') AS state_desc,
+        COALESCE(d.snapshot_isolation_state_desc, N'''') AS snapshot_isolation_state_desc,
+        COALESCE(d.recovery_model_desc, N'''') AS recovery_model_desc,
+        COALESCE(d.page_verify_option_desc, N'''') AS page_verify_option_desc,
+        COALESCE(d.containment_desc, N'''') AS containment_desc,
+        COALESCE(d.delayed_durability_desc, N'''') AS delayed_durability_desc,
+        COALESCE(d.catalog_collation_type_desc, N'''') AS catalog_collation_type_desc
       FROM sys.databases AS d
-      ORDER BY d.name
+      ORDER BY d.name';
+
+      EXEC sp_executesql @sql;
 
   - query_name: mssql_sys_configurations
     query: |

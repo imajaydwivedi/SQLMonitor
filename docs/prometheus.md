@@ -24,6 +24,9 @@ The two paths are **complementary**, not mutually exclusive. Most of the Grafana
 | `mssql_dba_stableinfo.collector.yml` | Instance- and host-level stable facts (SQL version, core count, RAM). |
 | `mssql_dba_aghealth.collector.yml` | AG primary/secondary state, redo/log-send queue. |
 | `mssql_dba_whoisactive.collector.yml` | Top concurrent queries &mdash; higher cardinality. |
+| `mssql_sqlagent_jobs.collector.yml` | SQL Agent job status / outcome / duration / next-run / 24h-failure count from `msdb`. |
+| `mssql_backup_history.collector.yml` | Per-(database, backup_type) last-time / size / duration / age from `msdb.dbo.backupset`. |
+| `mssql_xevent.collector.yml` | 5-minute aggregates from `DBA.dbo.xevent_metrics` (guarded with an existence check; no-op where the XEvent collector proc isn't installed). |
 | `mssql_standard.collector.yml` | The upstream [sql_exporter](https://github.com/burningalchemist/sql_exporter/tree/master/examples/mssql_standard) stock collector. |
 | `windows_exporter_config.yml` | Matching config for [windows_exporter](https://github.com/prometheus-community/windows_exporter) &mdash; host-level CPU, disk, network. |
 | `tessell-metrics.collector.yml` | Managed-instance variant (no `xp_cmdshell`). |
@@ -94,6 +97,50 @@ For AGs add `sqlmonitor_ag` with `scrape_interval: 30s` pointing at the same tar
 1. Add a Prometheus datasource named **`Prometheus`** (the dashboards query it by that exact name).
 2. Import `sql_exporter/SQL-Exporter-Metrics-Dashboard-External.json` &mdash; this is the Prometheus counterpart of the SQL-backed distributed dashboard.
 3. Optionally import the unified-alerting YAMLs from `sql_exporter/alert-engine/` &mdash; they define the same CPU / memory / wait / blocking alerts the Python engine provides, but run inside Grafana Alerting instead.
+
+## Prometheus-backed dashboard pack
+
+The repo ships a parallel set of Grafana dashboards under [`sql_exporter/Prometheus-Dashboards/`](https://github.com/imajaydwivedi/SQLMonitor/tree/dev/sql_exporter/Prometheus-Dashboards) that mirror the SQL-backed dashboards in [`Grafana-Dashboards/`](https://github.com/imajaydwivedi/SQLMonitor/tree/dev/Grafana-Dashboards) but source every panel from Prometheus metrics.
+
+Phase 1 ships 12 dashboards covering the fleet's core signal set:
+
+| UID | Title | Data panels |
+|---|---|---:|
+| `prom_core_metrics_trend` | Core Metrics - Trend | 9 |
+| `prom_wait_stats` | Wait Stats | 4 |
+| `prom_disk_space` | Disk Space | 5 |
+| `prom_ag_health_state` | Ag Health State | 3 |
+| `prom_sql_agent_jobs` | SQL Agent Jobs | 6 |
+| `prom_backup_history` | Backup History | 6 |
+| `prom_xevent_trend` | XEvent - Trend | 4 |
+| `prom_database_file_io_stats` | Database File IO Stats | 12 |
+| `prom_dba_inventory` | DBA Inventory | 6 (+8 deep-links) |
+| `prom_monitoring_live_all_servers` | Monitoring - Live - All Servers | 15 (+6 deep-links) |
+| `prom_monitoring_live_distributed` | Monitoring - Live - Distributed | 52 (+6 deep-links) |
+| `prom_monitoring_perfmon_quest` | Monitoring - Perfmon Counters - Quest Softwares - Distributed | 51 (+4 deep-links) |
+
+Panels that depend on the SQLMonitor central inventory database (alert history, AG-vs-nonAG backup split, LAMA config-change deltas, `dm_os_memory_clerks` snapshot, tempdb/log_space cache tables, `sql_server_patching`) render as markdown **deep-link tiles** that jump back to the SQL-backed dashboard so every source section remains visible.
+
+### Regenerating the dashboards
+
+Each dashboard is built from a small Python spec:
+
+```bash
+cd sql_exporter/Prometheus-Dashboards
+python3 generate.py                  # rebuild every *.json
+python3 generate.py backup           # filter: rebuild only backup_history
+python3 _tools/validate.py           # structural + expr sanity check
+```
+
+High-fidelity PromQL patterns used across the specs:
+
+- `increase(metric[$__range])` &mdash; selective-duration deltas (File IO, Wait Stats).
+- `@ end() offset $__range` &mdash; prior-window comparison tables (day-over-day).
+- `quantile_over_time($percentile_q, (expr)[$trend_window:])` &mdash; percentile trends.
+- `topk($top_n, sum by (...) (...))` &mdash; XEvent / wait-type / memory-consumer trends.
+- `time() - timestamp(up == 1)` &mdash; data-collection-issue detection.
+
+See the folder's [`README.md`](https://github.com/imajaydwivedi/SQLMonitor/blob/dev/sql_exporter/Prometheus-Dashboards/README.md) for the full spec-driven workflow and Grafana API bulk-import snippet.
 
 ## Choosing between the two paths
 
