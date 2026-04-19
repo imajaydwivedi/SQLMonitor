@@ -1,0 +1,781 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "12.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": []
+  },
+  "description": "",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "id": 101,
+      "type": "table",
+      "title": "LIVE - AlwaysOn Availability Group Health Metrics - [$Server]",
+      "description": "Latest AG replica health joined by unique_key. Sync state / health / queue sizes / rates / latency from mssql_aghealth__*.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 14
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short",
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "filterable": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "reducer": [
+            "sum"
+          ],
+          "show": false,
+          "fields": ""
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__synchronization_health{instance=~\"$Server\",ag_name=~\"$ag_name\",ag_listener=~\"$ag_listener\",replica_server_name=~\"$replica_server_name\",database_name=~\"$database_name\",synchronization_state_desc=~\"$sync_state_desc\",synchronization_health_desc=~\"$sync_health_desc\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "Health"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__synchronization_state{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "State"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__is_primary_replica{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "Primary"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__is_local{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "Local"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__is_suspended{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "Suspended"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__latency_seconds{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "Latency"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__log_send_queue_size{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "LogSendQ"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__redo_queue_size{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "RedoQ"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__log_send_rate{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "LogRate"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__redo_rate{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "RedoRate"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__estimated_redo_completion_time_min{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "RedoEtaMin"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__last_redone_time{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "LastRedone"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__last_commit_time{instance=~\"$Server\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "LastCommit"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "job": true,
+              "target": true,
+              "exported_job": true
+            },
+            "renameByName": {
+              "replica_server_name": "Replica",
+              "database_name": "Database",
+              "ag_name": "AG",
+              "ag_listener": "Listener",
+              "synchronization_state_desc": "Sync State",
+              "synchronization_health_desc": "Sync Health",
+              "suspend_reason_desc": "Suspend Reason",
+              "Value #Health": "Health (code)",
+              "Value #State": "State (code)",
+              "Value #Primary": "Is Primary",
+              "Value #Local": "Is Local",
+              "Value #Suspended": "Is Suspended",
+              "Value #Latency": "Latency (s)",
+              "Value #LogSendQ": "Log Send Queue",
+              "Value #RedoQ": "Redo Queue",
+              "Value #LogRate": "Log Send Rate",
+              "Value #RedoRate": "Redo Rate",
+              "Value #RedoEtaMin": "Est. Redo (min)",
+              "Value #LastRedone": "Last Redone (epoch s)",
+              "Value #LastCommit": "Last Commit (epoch s)"
+            }
+          }
+        }
+      ],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 102,
+      "type": "table",
+      "title": "Latest - AlwaysOn Availability Groups - Status - FILTERED @ dashboard end",
+      "description": "SQL version anchors this at a cached collection timestamp. Prometheus serves the latest sample within the visible range instead.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 24,
+        "h": 11
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short",
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "filterable": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "reducer": [
+            "sum"
+          ],
+          "show": false,
+          "fields": ""
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "last_over_time(mssql_aghealth__latency_seconds{instance=~\"$Server\",ag_name=~\"$ag_name\",ag_listener=~\"$ag_listener\",replica_server_name=~\"$replica_server_name\",database_name=~\"$database_name\",synchronization_state_desc=~\"$sync_state_desc\",synchronization_health_desc=~\"$sync_health_desc\"}[$__range])",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 103,
+      "type": "timeseries",
+      "title": "Trend - AlwaysOn Latency (seconds)",
+      "description": "Per (replica, database) commit latency vs the primary, from mssql_aghealth__latency_seconds. -1 latency means the probe could not be evaluated.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 25,
+        "w": 24,
+        "h": 16
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_aghealth__latency_seconds{instance=~\"$Server\",ag_name=~\"$ag_name\",ag_listener=~\"$ag_listener\",replica_server_name=~\"$replica_server_name\",database_name=~\"$database_name\",synchronization_state_desc=~\"$sync_state_desc\",synchronization_health_desc=~\"$sync_health_desc\"}",
+          "legendFormat": "{{replica_server_name}} || {{database_name}}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 42,
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "Ag Health State",
+    "prometheus"
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "label": "Data Source",
+        "query": "prometheus",
+        "current": {
+          "text": "",
+          "value": "${DS_PROMETHEUS}",
+          "selected": true
+        },
+        "refresh": 1,
+        "hide": 0,
+        "regex": "",
+        "skipUrlSync": false
+      },
+      {
+        "name": "Server",
+        "type": "query",
+        "label": "SQL Instance",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(mssql_up, instance)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(mssql_up, instance)",
+          "refId": "PrometheusVariableQueryEditor-Server"
+        },
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "regex": "",
+        "current": {},
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "ag_name",
+        "type": "query",
+        "label": "AG Name",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, ag_name)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, ag_name)",
+          "refId": "PrometheusVariableQueryEditor-ag_name"
+        },
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "regex": "",
+        "current": {},
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "ag_listener",
+        "type": "query",
+        "label": "AG Listener",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, ag_listener)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, ag_listener)",
+          "refId": "PrometheusVariableQueryEditor-ag_listener"
+        },
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "regex": "",
+        "current": {},
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "replica_server_name",
+        "type": "query",
+        "label": "Replica Server",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, replica_server_name)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, replica_server_name)",
+          "refId": "PrometheusVariableQueryEditor-replica_server_name"
+        },
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "regex": "",
+        "current": {},
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "database_name",
+        "type": "query",
+        "label": "Database",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, database_name)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, database_name)",
+          "refId": "PrometheusVariableQueryEditor-database_name"
+        },
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "regex": "",
+        "current": {},
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "sync_state_desc",
+        "type": "query",
+        "label": "Sync State",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, synchronization_state_desc)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, synchronization_state_desc)",
+          "refId": "PrometheusVariableQueryEditor-sync_state_desc"
+        },
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "regex": "",
+        "current": {},
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "sync_health_desc",
+        "type": "query",
+        "label": "Sync Health",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, synchronization_health_desc)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(mssql_aghealth__synchronization_health{instance=~\"$Server\"}, synchronization_health_desc)",
+          "refId": "PrometheusVariableQueryEditor-sync_health_desc"
+        },
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "regex": "",
+        "current": {},
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "replica_type",
+        "type": "custom",
+        "label": "Replica Type",
+        "query": "__ALL__,Primary,Secondary,Local",
+        "options": [
+          {
+            "text": "__ALL__",
+            "value": "__ALL__",
+            "selected": true
+          },
+          {
+            "text": "Primary",
+            "value": "Primary",
+            "selected": false
+          },
+          {
+            "text": "Secondary",
+            "value": "Secondary",
+            "selected": false
+          },
+          {
+            "text": "Local",
+            "value": "Local",
+            "selected": false
+          }
+        ],
+        "current": {
+          "text": "__ALL__",
+          "value": "__ALL__",
+          "selected": true
+        },
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "latency_minutes",
+        "type": "custom",
+        "label": "Min Latency (min, -1=off)",
+        "query": "-1,0,1,5,15,30,60",
+        "options": [
+          {
+            "text": "-1",
+            "value": "-1",
+            "selected": true
+          },
+          {
+            "text": "0",
+            "value": "0",
+            "selected": false
+          },
+          {
+            "text": "1",
+            "value": "1",
+            "selected": false
+          },
+          {
+            "text": "5",
+            "value": "5",
+            "selected": false
+          },
+          {
+            "text": "15",
+            "value": "15",
+            "selected": false
+          },
+          {
+            "text": "30",
+            "value": "30",
+            "selected": false
+          },
+          {
+            "text": "60",
+            "value": "60",
+            "selected": false
+          }
+        ],
+        "current": {
+          "text": "-1",
+          "value": "-1",
+          "selected": true
+        },
+        "hide": 0,
+        "skipUrlSync": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Ag Health State",
+  "uid": "prom_ag_health_state",
+  "version": 1,
+  "weekStart": ""
+}

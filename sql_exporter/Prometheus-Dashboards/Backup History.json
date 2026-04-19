@@ -1,0 +1,869 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "12.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": []
+  },
+  "description": "",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "id": 101,
+      "type": "stat",
+      "title": "Databases - Covered",
+      "description": "Number of databases reporting backup history.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "count(count by (instance, database_name) (mssql_backup__last_time_utc{instance=~\"$Server\",database_name=~\"$database_name\",backup_type=~\"$backup_type\"}))",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 102,
+      "type": "stat",
+      "title": "Full Backups older than $full_threshold_days days",
+      "description": "Databases whose most recent Full (D) backup is older than the configured threshold.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "count(mssql_backup__age_seconds{instance=~\"$Server\",database_name=~\"$database_name\",backup_type=\"D\"} > ($full_threshold_days * 86400))",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 103,
+      "type": "stat",
+      "title": "Diff Backups older than $diff_threshold_hours hours",
+      "description": "Databases whose most recent Differential (I) backup is older than the configured threshold.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "count(mssql_backup__age_seconds{instance=~\"$Server\",database_name=~\"$database_name\",backup_type=\"I\"} > ($diff_threshold_hours * 3600))",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 104,
+      "type": "stat",
+      "title": "Log Backups older than $tlog_threshold_minutes minutes",
+      "description": "Databases whose most recent Log (L) backup is older than the configured threshold.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "count(mssql_backup__age_seconds{instance=~\"$Server\",database_name=~\"$database_name\",backup_type=\"L\"} > ($tlog_threshold_minutes * 60))",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 105,
+      "type": "table",
+      "title": "Backup History - [$Server] - [$database_name]",
+      "description": "Latest backup per (database, type): age / duration / size / compressed size / 24h count, joined by the backup_type label.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 24,
+        "h": 16
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short",
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false,
+            "filterable": true
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "reducer": [
+            "sum"
+          ],
+          "show": false,
+          "fields": ""
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_backup__last_time_utc{instance=~\"$Server\",database_name=~\"$database_name\",backup_type=~\"$backup_type\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "When"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_backup__age_seconds{instance=~\"$Server\",database_name=~\"$database_name\",backup_type=~\"$backup_type\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "AgeS"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_backup__last_duration_seconds{instance=~\"$Server\",database_name=~\"$database_name\",backup_type=~\"$backup_type\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "DurS"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_backup__last_size_bytes{instance=~\"$Server\",database_name=~\"$database_name\",backup_type=~\"$backup_type\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "Size"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_backup__last_compressed_size_bytes{instance=~\"$Server\",database_name=~\"$database_name\",backup_type=~\"$backup_type\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "CompSize"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_backup__count_last_24h{instance=~\"$Server\",database_name=~\"$database_name\",backup_type=~\"$backup_type\"}",
+          "legendFormat": "",
+          "range": false,
+          "instant": true,
+          "format": "table",
+          "refId": "Cnt24h"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "job": true,
+              "target": true,
+              "exported_job": true
+            },
+            "renameByName": {
+              "instance": "Server",
+              "database_name": "Database",
+              "backup_type": "Type",
+              "backup_type_desc": "Type Description",
+              "recovery_model": "Recovery Model",
+              "Value #When": "Last Backup (UTC epoch)",
+              "Value #AgeS": "Age (s)",
+              "Value #DurS": "Duration (s)",
+              "Value #Size": "Size (bytes)",
+              "Value #CompSize": "Compressed (bytes)",
+              "Value #Cnt24h": "Count (24h)"
+            }
+          }
+        }
+      ],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 106,
+      "type": "timeseries",
+      "title": "Backup Size Trend - [$Server] - [$database_name]",
+      "description": "Per-(database, backup_type) backup size over time.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 24,
+        "h": 12
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "mssql_backup__last_size_bytes{instance=~\"$Server\",database_name=~\"$database_name\",backup_type=~\"$backup_type\"}",
+          "legendFormat": "{{database_name}} / {{backup_type}}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 42,
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "Backup",
+    "prometheus"
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "label": "Data Source",
+        "query": "prometheus",
+        "current": {
+          "text": "",
+          "value": "${DS_PROMETHEUS}",
+          "selected": true
+        },
+        "refresh": 1,
+        "hide": 0,
+        "regex": "",
+        "skipUrlSync": false
+      },
+      {
+        "name": "Server",
+        "type": "query",
+        "label": "SQL Instance",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(mssql_up, instance)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(mssql_up, instance)",
+          "refId": "PrometheusVariableQueryEditor-Server"
+        },
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "regex": "",
+        "current": {},
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "database_name",
+        "type": "query",
+        "label": "Database",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(mssql_backup__last_time_utc{instance=~\"$Server\"}, database_name)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(mssql_backup__last_time_utc{instance=~\"$Server\"}, database_name)",
+          "refId": "PrometheusVariableQueryEditor-database_name"
+        },
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "regex": "",
+        "current": {},
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "backup_type",
+        "type": "custom",
+        "label": "Backup Type (D=Full, I=Diff, L=Log)",
+        "query": "__ALL__,D,I,L,F,G,P,Q",
+        "options": [
+          {
+            "text": "__ALL__",
+            "value": "__ALL__",
+            "selected": true
+          },
+          {
+            "text": "D",
+            "value": "D",
+            "selected": false
+          },
+          {
+            "text": "I",
+            "value": "I",
+            "selected": false
+          },
+          {
+            "text": "L",
+            "value": "L",
+            "selected": false
+          },
+          {
+            "text": "F",
+            "value": "F",
+            "selected": false
+          },
+          {
+            "text": "G",
+            "value": "G",
+            "selected": false
+          },
+          {
+            "text": "P",
+            "value": "P",
+            "selected": false
+          },
+          {
+            "text": "Q",
+            "value": "Q",
+            "selected": false
+          }
+        ],
+        "current": {
+          "text": "__ALL__",
+          "value": "__ALL__",
+          "selected": true
+        },
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "full_threshold_days",
+        "type": "custom",
+        "label": "Full age warn (days)",
+        "query": "1,2,3,7,14,30",
+        "options": [
+          {
+            "text": "1",
+            "value": "1",
+            "selected": false
+          },
+          {
+            "text": "2",
+            "value": "2",
+            "selected": false
+          },
+          {
+            "text": "3",
+            "value": "3",
+            "selected": false
+          },
+          {
+            "text": "7",
+            "value": "7",
+            "selected": true
+          },
+          {
+            "text": "14",
+            "value": "14",
+            "selected": false
+          },
+          {
+            "text": "30",
+            "value": "30",
+            "selected": false
+          }
+        ],
+        "current": {
+          "text": "7",
+          "value": "7",
+          "selected": true
+        },
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "diff_threshold_hours",
+        "type": "custom",
+        "label": "Diff age warn (hours)",
+        "query": "4,8,12,24,48",
+        "options": [
+          {
+            "text": "4",
+            "value": "4",
+            "selected": false
+          },
+          {
+            "text": "8",
+            "value": "8",
+            "selected": false
+          },
+          {
+            "text": "12",
+            "value": "12",
+            "selected": false
+          },
+          {
+            "text": "24",
+            "value": "24",
+            "selected": true
+          },
+          {
+            "text": "48",
+            "value": "48",
+            "selected": false
+          }
+        ],
+        "current": {
+          "text": "24",
+          "value": "24",
+          "selected": true
+        },
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "tlog_threshold_minutes",
+        "type": "custom",
+        "label": "Log age warn (minutes)",
+        "query": "5,15,30,60,120,240",
+        "options": [
+          {
+            "text": "5",
+            "value": "5",
+            "selected": false
+          },
+          {
+            "text": "15",
+            "value": "15",
+            "selected": false
+          },
+          {
+            "text": "30",
+            "value": "30",
+            "selected": true
+          },
+          {
+            "text": "60",
+            "value": "60",
+            "selected": false
+          },
+          {
+            "text": "120",
+            "value": "120",
+            "selected": false
+          },
+          {
+            "text": "240",
+            "value": "240",
+            "selected": false
+          }
+        ],
+        "current": {
+          "text": "30",
+          "value": "30",
+          "selected": true
+        },
+        "hide": 0,
+        "skipUrlSync": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Backup History",
+  "uid": "prom_backup_history",
+  "version": 1,
+  "weekStart": ""
+}

@@ -1,0 +1,1312 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "12.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": []
+  },
+  "description": "",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "id": 101,
+      "type": "timeseries",
+      "title": "Core Metrics - ${trend_by} TREND - Database IO Latency - Server ___[${Server}]___",
+      "description": "Per-database read/write latency in ms/IO. Aggregated at the $trend_by window using $percentile quantile_over_time.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "quantile_over_time($percentile_q, (avg by (instance, database_name) (rate(mssql_virtualfilestats__io_stall_read_ms{instance=~\"$Server\"}[$__rate_interval]) / clamp_min(rate(mssql_virtualfilestats__num_of_reads{instance=~\"$Server\"}[$__rate_interval]), 1)))[$trend_window:])",
+          "legendFormat": "{{instance}} - {{database_name}} - read",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "quantile_over_time($percentile_q, (avg by (instance, database_name) (rate(mssql_virtualfilestats__io_stall_write_ms{instance=~\"$Server\"}[$__rate_interval]) / clamp_min(rate(mssql_virtualfilestats__num_of_writes{instance=~\"$Server\"}[$__rate_interval]), 1)))[$trend_window:])",
+          "legendFormat": "{{instance}} - {{database_name}} - write",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "B"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 102,
+      "type": "timeseries",
+      "title": "Core Metrics - ${trend_by} TREND - Database IO - Server ___[${Server}]___",
+      "description": "Per-database throughput in MB/s at the $trend_by window.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 24,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "MBs",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "quantile_over_time($percentile_q, (sum by (instance, database_name) (rate(mssql_virtualfilestats__num_of_bytes_read{instance=~\"$Server\"}[$__rate_interval])) / (1024*1024))[$trend_window:])",
+          "legendFormat": "{{instance}} - {{database_name}} - read",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "quantile_over_time($percentile_q, (sum by (instance, database_name) (rate(mssql_virtualfilestats__num_of_bytes_written{instance=~\"$Server\"}[$__rate_interval])) / (1024*1024))[$trend_window:])",
+          "legendFormat": "{{instance}} - {{database_name}} - write",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "B"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 103,
+      "type": "timeseries",
+      "title": "Core Metrics - ${trend_by} TREND - Database IOPS - Server ___[${Server}]___",
+      "description": "Per-database reads/writes per second at the $trend_by window.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 24,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "iops",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "quantile_over_time($percentile_q, (sum by (instance, database_name) (rate(mssql_virtualfilestats__num_of_reads{instance=~\"$Server\"}[$__rate_interval])))[$trend_window:])",
+          "legendFormat": "{{instance}} - {{database_name}} - reads",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "quantile_over_time($percentile_q, (sum by (instance, database_name) (rate(mssql_virtualfilestats__num_of_writes{instance=~\"$Server\"}[$__rate_interval])))[$trend_window:])",
+          "legendFormat": "{{instance}} - {{database_name}} - writes",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "B"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 104,
+      "type": "timeseries",
+      "title": "Core Metrics - ${trend_by} TREND - OS CPU - Max ${max_servers} Servers",
+      "description": "OS CPU % per server, top-N by $percentile at $trend_by window.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "topk($max_servers, quantile_over_time($percentile_q, (100 - (avg by (instance) (rate(windows_cpu_time_total{mode=\"idle\",instance=~\"$Server\"}[$__rate_interval])) * 100))[$trend_window:]))",
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 105,
+      "type": "timeseries",
+      "title": "Core Metrics - ${trend_by} TREND - SQL CPU - Max ${max_servers} Servers",
+      "description": "SQL CPU % per server, top-N by $percentile at $trend_by window.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "topk($max_servers, quantile_over_time($percentile_q, (avg by (instance) (mssql_cpu_utilization_percentage{instance=~\"$Server\"}))[$trend_window:]))",
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 106,
+      "type": "timeseries",
+      "title": "Core Metrics - ${trend_by} TREND - Disk Latency - Max ${max_servers} Servers",
+      "description": "OS-level disk latency (s/IO) per volume. top-N by $percentile.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 32,
+        "w": 24,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "topk($max_servers, quantile_over_time($percentile_q, (avg by (instance, volume) (rate(windows_logical_disk_read_latency_seconds_total{instance=~\"$Server\"}[$__rate_interval]) / clamp_min(rate(windows_logical_disk_reads_total{instance=~\"$Server\"}[$__rate_interval]), 1)))[$trend_window:]))",
+          "legendFormat": "{{instance}} {{volume}} read",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "topk($max_servers, quantile_over_time($percentile_q, (avg by (instance, volume) (rate(windows_logical_disk_write_latency_seconds_total{instance=~\"$Server\"}[$__rate_interval]) / clamp_min(rate(windows_logical_disk_writes_total{instance=~\"$Server\"}[$__rate_interval]), 1)))[$trend_window:]))",
+          "legendFormat": "{{instance}} {{volume}} write",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "B"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 107,
+      "type": "timeseries",
+      "title": "Core Metrics - ${trend_by} TREND - Requests - Max ${max_servers} Servers",
+      "description": "Batch requests/sec per server, top-N by $percentile.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 40,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "topk($max_servers, quantile_over_time($percentile_q, (sum by (instance) (rate(mssql_batch_requests{instance=~\"$Server\"}[$__rate_interval])))[$trend_window:]))",
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 108,
+      "type": "timeseries",
+      "title": "Core Metrics - ${trend_by} TREND - Available Memory - Max ${max_servers} Servers",
+      "description": "OS available memory per server, bottom-N (smallest) at $percentile quantile over $trend_by window.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 40,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "bottomk($max_servers, quantile_over_time($percentile_q, (avg by (instance) (windows_memory_available_bytes{instance=~\"$Server\"}))[$trend_window:]))",
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    },
+    {
+      "id": 109,
+      "type": "timeseries",
+      "title": "Core Metrics - ${trend_by} TREND - Connections - Max ${max_servers} Servers",
+      "description": "SQL connection count per server, top-N by $percentile.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 48,
+        "w": 24,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "never",
+            "pointSize": 5,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "topk($max_servers, quantile_over_time($percentile_q, (sum by (instance) (mssql_connections{instance=~\"$Server\"}))[$trend_window:]))",
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "transformations": [],
+      "pluginVersion": "12.4.1"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 42,
+  "tags": [
+    "mssql",
+    "sqlmonitor",
+    "core-metrics",
+    "prometheus"
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "label": "Data Source",
+        "query": "prometheus",
+        "current": {
+          "text": "",
+          "value": "${DS_PROMETHEUS}",
+          "selected": true
+        },
+        "refresh": 1,
+        "hide": 0,
+        "regex": "",
+        "skipUrlSync": false
+      },
+      {
+        "name": "Server",
+        "type": "query",
+        "label": "SQL Instance",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(mssql_up, instance)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(mssql_up, instance)",
+          "refId": "PrometheusVariableQueryEditor-Server"
+        },
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "regex": "",
+        "current": {},
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "trend_by",
+        "type": "custom",
+        "label": "Trend By",
+        "query": "Hourly,Daily",
+        "options": [
+          {
+            "text": "Hourly",
+            "value": "Hourly",
+            "selected": true
+          },
+          {
+            "text": "Daily",
+            "value": "Daily",
+            "selected": false
+          }
+        ],
+        "current": {
+          "text": "Hourly",
+          "value": "Hourly",
+          "selected": true
+        },
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "trend_window",
+        "type": "custom",
+        "label": "Trend Window",
+        "query": "1h,1d",
+        "options": [
+          {
+            "text": "1h",
+            "value": "1h",
+            "selected": true
+          },
+          {
+            "text": "1d",
+            "value": "1d",
+            "selected": false
+          }
+        ],
+        "current": {
+          "text": "1h",
+          "value": "1h",
+          "selected": true
+        },
+        "hide": 2,
+        "skipUrlSync": false
+      },
+      {
+        "name": "percentile",
+        "type": "custom",
+        "label": "Percentile",
+        "query": "p50,p75,p95,p99,max",
+        "options": [
+          {
+            "text": "p50",
+            "value": "p50",
+            "selected": false
+          },
+          {
+            "text": "p75",
+            "value": "p75",
+            "selected": false
+          },
+          {
+            "text": "p95",
+            "value": "p95",
+            "selected": true
+          },
+          {
+            "text": "p99",
+            "value": "p99",
+            "selected": false
+          },
+          {
+            "text": "max",
+            "value": "max",
+            "selected": false
+          }
+        ],
+        "current": {
+          "text": "p95",
+          "value": "p95",
+          "selected": true
+        },
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "percentile_q",
+        "type": "custom",
+        "label": "Percentile Q",
+        "query": "0.5,0.75,0.95,0.99,1.0",
+        "options": [
+          {
+            "text": "0.5",
+            "value": "0.5",
+            "selected": false
+          },
+          {
+            "text": "0.75",
+            "value": "0.75",
+            "selected": false
+          },
+          {
+            "text": "0.95",
+            "value": "0.95",
+            "selected": true
+          },
+          {
+            "text": "0.99",
+            "value": "0.99",
+            "selected": false
+          },
+          {
+            "text": "1.0",
+            "value": "1.0",
+            "selected": false
+          }
+        ],
+        "current": {
+          "text": "0.95",
+          "value": "0.95",
+          "selected": true
+        },
+        "hide": 2,
+        "skipUrlSync": false
+      },
+      {
+        "name": "hour_of_day",
+        "type": "custom",
+        "label": "Hour of Day (-1 = any)",
+        "query": "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,-1",
+        "options": [
+          {
+            "text": "0",
+            "value": "0",
+            "selected": false
+          },
+          {
+            "text": "1",
+            "value": "1",
+            "selected": false
+          },
+          {
+            "text": "2",
+            "value": "2",
+            "selected": false
+          },
+          {
+            "text": "3",
+            "value": "3",
+            "selected": false
+          },
+          {
+            "text": "4",
+            "value": "4",
+            "selected": false
+          },
+          {
+            "text": "5",
+            "value": "5",
+            "selected": false
+          },
+          {
+            "text": "6",
+            "value": "6",
+            "selected": false
+          },
+          {
+            "text": "7",
+            "value": "7",
+            "selected": false
+          },
+          {
+            "text": "8",
+            "value": "8",
+            "selected": false
+          },
+          {
+            "text": "9",
+            "value": "9",
+            "selected": false
+          },
+          {
+            "text": "10",
+            "value": "10",
+            "selected": false
+          },
+          {
+            "text": "11",
+            "value": "11",
+            "selected": false
+          },
+          {
+            "text": "12",
+            "value": "12",
+            "selected": false
+          },
+          {
+            "text": "13",
+            "value": "13",
+            "selected": false
+          },
+          {
+            "text": "14",
+            "value": "14",
+            "selected": false
+          },
+          {
+            "text": "15",
+            "value": "15",
+            "selected": false
+          },
+          {
+            "text": "16",
+            "value": "16",
+            "selected": false
+          },
+          {
+            "text": "17",
+            "value": "17",
+            "selected": false
+          },
+          {
+            "text": "18",
+            "value": "18",
+            "selected": false
+          },
+          {
+            "text": "19",
+            "value": "19",
+            "selected": false
+          },
+          {
+            "text": "20",
+            "value": "20",
+            "selected": false
+          },
+          {
+            "text": "21",
+            "value": "21",
+            "selected": false
+          },
+          {
+            "text": "22",
+            "value": "22",
+            "selected": false
+          },
+          {
+            "text": "23",
+            "value": "23",
+            "selected": false
+          },
+          {
+            "text": "-1",
+            "value": "-1",
+            "selected": true
+          }
+        ],
+        "current": {
+          "text": "-1",
+          "value": "-1",
+          "selected": true
+        },
+        "hide": 0,
+        "skipUrlSync": false
+      },
+      {
+        "name": "max_servers",
+        "type": "constant",
+        "label": "Max Servers",
+        "query": "10",
+        "current": {
+          "text": "10",
+          "value": "10",
+          "selected": false
+        },
+        "hide": 2,
+        "skipUrlSync": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Core Metrics - Trend",
+  "uid": "prom_core_metrics_trend",
+  "version": 1,
+  "weekStart": ""
+}
