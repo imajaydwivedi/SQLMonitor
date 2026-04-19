@@ -1,0 +1,124 @@
+# Extended Event (xevent_metrics) aggregates for SQLMonitor.
+#
+# Source table: [DBA].[dbo].[xevent_metrics] populated by
+# dbo.usp_collect_xevent_metrics (file target) or
+# usp_collect_xevent_metrics_ringbuffer (ring buffer target). See
+# SCH-Create-XEvents.sql / SCH-Create-XEvents-RingBuffer.sql.
+#
+# Cardinality strategy: aggregate per (event_name, database_name, result,
+# client_app_name) over the most recent 5 minutes. Top 500 rows by event
+# count to cap label combos even on busy workloads. Use PromQL rate() on
+# the *_total counters to render the XEvent Trend dashboard.
+#
+# Required permissions:
+#
+#   USE [DBA]; GRANT SELECT ON OBJECT::dbo.xevent_metrics TO <login>;
+#
+collector_name: mssql_xevent
+
+min_interval: 1m
+
+metrics:
+  - metric_name: mssql_xevent__events_last_5m
+    type: gauge
+    help: 'Count of extended events in the last 5 minutes, grouped by event/database/result/app.'
+    key_labels: [event_name, database_name, result, client_app_name]
+    values: [events_count]
+    query_ref: mssql_xevent_recent
+
+  - metric_name: mssql_xevent__cpu_time_ms_last_5m
+    type: gauge
+    help: 'Sum of cpu_time_ms over extended events in the last 5 minutes.'
+    key_labels: [event_name, database_name, result, client_app_name]
+    values: [cpu_time_ms_sum]
+    query_ref: mssql_xevent_recent
+
+  - metric_name: mssql_xevent__duration_seconds_last_5m
+    type: gauge
+    help: 'Sum of duration_seconds over extended events in the last 5 minutes.'
+    key_labels: [event_name, database_name, result, client_app_name]
+    values: [duration_seconds_sum]
+    query_ref: mssql_xevent_recent
+
+  - metric_name: mssql_xevent__logical_reads_last_5m
+    type: gauge
+    help: 'Sum of logical_reads over extended events in the last 5 minutes.'
+    key_labels: [event_name, database_name, result, client_app_name]
+    values: [logical_reads_sum]
+    query_ref: mssql_xevent_recent
+
+  - metric_name: mssql_xevent__physical_reads_last_5m
+    type: gauge
+    help: 'Sum of physical_reads over extended events in the last 5 minutes.'
+    key_labels: [event_name, database_name, result, client_app_name]
+    values: [physical_reads_sum]
+    query_ref: mssql_xevent_recent
+
+  - metric_name: mssql_xevent__writes_last_5m
+    type: gauge
+    help: 'Sum of writes over extended events in the last 5 minutes.'
+    key_labels: [event_name, database_name, result, client_app_name]
+    values: [writes_sum]
+    query_ref: mssql_xevent_recent
+
+  - metric_name: mssql_xevent__collection_time_utc
+    type: gauge
+    help: 'Unix epoch seconds when this 5-minute window was aggregated.'
+    key_labels: [event_name, database_name, result, client_app_name]
+    values: [collection_time_utc]
+    query_ref: mssql_xevent_recent
+
+queries:
+  - query_name: mssql_xevent_recent
+    query: |
+      SET NOCOUNT ON;
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+      IF DB_ID('DBA') IS NULL
+        OR OBJECT_ID('DBA.dbo.xevent_metrics') IS NULL
+      BEGIN
+        -- Emit an empty result set so the exporter marks the query OK
+        -- but publishes no samples on instances that do not run the
+        -- xevent_metrics collector.
+        SELECT TOP 0
+          CAST(N'' AS nvarchar(128))  AS event_name,
+          CAST(N'' AS nvarchar(128))  AS database_name,
+          CAST(N'' AS nvarchar(32))   AS result,
+          CAST(N'' AS nvarchar(256))  AS client_app_name,
+          CAST(0 AS bigint)           AS events_count,
+          CAST(0 AS bigint)           AS cpu_time_ms_sum,
+          CAST(0 AS bigint)           AS duration_seconds_sum,
+          CAST(0 AS bigint)           AS logical_reads_sum,
+          CAST(0 AS bigint)           AS physical_reads_sum,
+          CAST(0 AS bigint)           AS writes_sum,
+          CAST(0 AS bigint)           AS collection_time_utc;
+        RETURN;
+      END;
+
+      DECLARE @now  datetime2 = SYSDATETIME();
+      DECLARE @from datetime2 = DATEADD(minute, -5, @now);
+      DECLARE @now_utc bigint = DATEDIFF_BIG(second,
+        CONVERT(datetime2, '19700101'), SYSUTCDATETIME());
+
+      DECLARE @sql nvarchar(max) = N'
+        SELECT TOP 500
+          event_name       = CAST(COALESCE(x.event_name, N'''') AS nvarchar(128)),
+          database_name    = CAST(COALESCE(x.database_name, N'''') AS nvarchar(128)),
+          result           = CAST(COALESCE(x.result, N'''') AS nvarchar(32)),
+          client_app_name  = CAST(COALESCE(x.client_app_name, N'''') AS nvarchar(256)),
+          events_count         = CAST(COUNT_BIG(*) AS bigint),
+          cpu_time_ms_sum      = CAST(SUM(CAST(x.cpu_time_ms AS bigint)) AS bigint),
+          duration_seconds_sum = CAST(SUM(CAST(x.duration_seconds AS bigint)) AS bigint),
+          logical_reads_sum    = CAST(SUM(CAST(x.logical_reads AS bigint)) AS bigint),
+          physical_reads_sum   = CAST(SUM(CAST(x.physical_reads AS bigint)) AS bigint),
+          writes_sum           = CAST(SUM(CAST(x.writes AS bigint)) AS bigint),
+          collection_time_utc  = @now_utc
+        FROM [DBA].[dbo].[xevent_metrics] AS x WITH (NOLOCK)
+        WHERE x.event_time >= @from AND x.event_time <= @now
+        GROUP BY x.event_name, x.database_name, x.result, x.client_app_name
+        ORDER BY events_count DESC';
+
+      EXEC sp_executesql
+        @sql,
+        N'@from datetime2, @now datetime2, @now_utc bigint',
+        @from = @from, @now = @now, @now_utc = @now_utc;

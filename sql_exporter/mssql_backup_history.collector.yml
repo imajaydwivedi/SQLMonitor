@@ -1,0 +1,118 @@
+# Backup history metrics for SQLMonitor.
+#
+# Required permissions (on msdb):
+#
+#   GRANT SELECT ON OBJECT::msdb.dbo.backupset          TO <login>;
+#   GRANT SELECT ON OBJECT::msdb.dbo.backupmediafamily  TO <login>;
+#
+# One sample per (database_name, backup_type) so cardinality is bounded:
+# SQL Server itself exposes at most ~8 backup_type values per database.
+#
+collector_name: mssql_backup_history
+
+min_interval: 5m
+
+metrics:
+  - metric_name: mssql_backup__last_time_utc
+    type: gauge
+    help: 'Unix epoch seconds when the last backup of the given type finished. 0 if no history.'
+    key_labels: [database_name, backup_type, backup_type_desc, recovery_model]
+    values: [last_backup_time_utc]
+    query_ref: mssql_backup_history_latest
+
+  - metric_name: mssql_backup__last_duration_seconds
+    type: gauge
+    help: 'Duration (seconds) of the last backup of the given type.'
+    key_labels: [database_name, backup_type]
+    values: [last_backup_duration_seconds]
+    query_ref: mssql_backup_history_latest
+
+  - metric_name: mssql_backup__last_size_bytes
+    type: gauge
+    help: 'Size (bytes) of the last backup of the given type.'
+    key_labels: [database_name, backup_type]
+    values: [last_backup_size_bytes]
+    query_ref: mssql_backup_history_latest
+
+  - metric_name: mssql_backup__last_compressed_size_bytes
+    type: gauge
+    help: 'Compressed size (bytes) of the last backup of the given type.'
+    key_labels: [database_name, backup_type]
+    values: [last_backup_compressed_size_bytes]
+    query_ref: mssql_backup_history_latest
+
+  - metric_name: mssql_backup__age_seconds
+    type: gauge
+    help: 'Age (seconds) of the last backup of the given type relative to server time.'
+    key_labels: [database_name, backup_type]
+    values: [backup_age_seconds]
+    query_ref: mssql_backup_history_latest
+
+  - metric_name: mssql_backup__count_last_24h
+    type: gauge
+    help: 'Count of successful backups of the given type that finished within the last 24 hours.'
+    key_labels: [database_name, backup_type]
+    values: [count_last_24h]
+    query_ref: mssql_backup_history_latest
+
+queries:
+  - query_name: mssql_backup_history_latest
+    query: |
+      SET NOCOUNT ON;
+
+      IF OBJECT_ID('tempdb..#latest') IS NOT NULL DROP TABLE #latest;
+      IF OBJECT_ID('tempdb..#count_24h') IS NOT NULL DROP TABLE #count_24h;
+
+      -- Latest row per (database_name, type) from backupset.
+      WITH b AS (
+        SELECT database_name, type,
+               backup_finish_date, backup_start_date,
+               backup_size, compressed_backup_size, recovery_model,
+               rn = ROW_NUMBER() OVER (
+                      PARTITION BY database_name, type
+                      ORDER BY backup_finish_date DESC, backup_set_id DESC)
+        FROM msdb.dbo.backupset
+        WHERE backup_finish_date IS NOT NULL
+      )
+      SELECT database_name, type, backup_finish_date, backup_start_date,
+             backup_size, compressed_backup_size, recovery_model
+        INTO #latest
+      FROM b WHERE rn = 1;
+
+      -- 24-hour count per (database_name, type).
+      SELECT database_name, type, c = COUNT(*)
+        INTO #count_24h
+      FROM msdb.dbo.backupset
+      WHERE backup_finish_date IS NOT NULL
+        AND backup_finish_date >= DATEADD(hour, -24, GETDATE())
+      GROUP BY database_name, type;
+
+      SELECT database_name   = CAST(COALESCE(l.database_name, N'') AS nvarchar(256)),
+             backup_type     = CAST(l.type AS nvarchar(4)),
+             backup_type_desc = CASE l.type
+                                 WHEN 'D' THEN N'Database (Full)'
+                                 WHEN 'I' THEN N'Differential'
+                                 WHEN 'L' THEN N'Log'
+                                 WHEN 'F' THEN N'File or Filegroup'
+                                 WHEN 'G' THEN N'File Differential'
+                                 WHEN 'P' THEN N'Partial'
+                                 WHEN 'Q' THEN N'Partial Differential'
+                                 ELSE N'Unknown' END,
+             recovery_model  = CAST(COALESCE(l.recovery_model, N'') AS nvarchar(64)),
+             last_backup_time_utc = CAST(
+               DATEDIFF_BIG(second,
+                 CONVERT(datetime2, '19700101'),
+                 DATEADD(mi, DATEDIFF(mi, GETDATE(), GETUTCDATE()),
+                   l.backup_finish_date)) AS bigint),
+             last_backup_duration_seconds = CAST(
+               DATEDIFF(second, l.backup_start_date, l.backup_finish_date)
+               AS bigint),
+             last_backup_size_bytes = CAST(COALESCE(l.backup_size, 0) AS bigint),
+             last_backup_compressed_size_bytes = CAST(
+               COALESCE(l.compressed_backup_size, l.backup_size, 0) AS bigint),
+             backup_age_seconds = CAST(
+               DATEDIFF_BIG(second, l.backup_finish_date, GETDATE()) AS bigint),
+             count_last_24h = CAST(COALESCE(c24.c, 0) AS bigint)
+      FROM #latest l
+      LEFT JOIN #count_24h c24
+        ON c24.database_name = l.database_name AND c24.type = l.type;

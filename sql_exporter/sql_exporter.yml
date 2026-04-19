@@ -42,6 +42,21 @@ jobs:
       - targets:
           localhost: 'sqlserver://localhost:1433/master?trusted_connection=yes&encrypt=true&TrustServerCertificate=true'
 
+  - job_name: mssql_msdb
+    collectors:
+      - mssql_sqlagent_jobs
+      - mssql_backup_history
+    static_configs:
+      - targets:
+          localhost: 'sqlserver://localhost:1433/master?trusted_connection=yes&encrypt=true&TrustServerCertificate=true'
+
+  - job_name: mssql_xevent
+    collectors:
+      - mssql_xevent
+    static_configs:
+      - targets:
+          localhost: 'sqlserver://localhost:1433/master?trusted_connection=yes&encrypt=true&TrustServerCertificate=true'
+
 # Collector files specifies a list of globs. One collector definition is read from each matching file.
 # Glob patterns are supported (see <https://pkg.go.dev/path/filepath#Match> for syntax).
 collector_files: 
