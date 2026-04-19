@@ -64,62 +64,13 @@ metrics:
     query_ref: mssql_sqlagent_jobs_latest
 
 queries:
+  # NOTE: sql_exporter (go-mssqldb) only reads the FIRST result-set from a
+  # batch and treats `SELECT INTO #tmp` statements as zero-column resultsets
+  # that interleave with the final SELECT -- which causes silent scrape
+  # failures. So this query is deliberately a SINGLE SELECT using derived
+  # tables instead of temp tables.
   - query_name: mssql_sqlagent_jobs_latest
     query: |
-      SET NOCOUNT ON;
-
-      IF OBJECT_ID('tempdb..#latest_outcome') IS NOT NULL DROP TABLE #latest_outcome;
-      IF OBJECT_ID('tempdb..#step_fails_24h') IS NOT NULL DROP TABLE #step_fails_24h;
-      IF OBJECT_ID('tempdb..#running') IS NOT NULL DROP TABLE #running;
-      IF OBJECT_ID('tempdb..#next_run') IS NOT NULL DROP TABLE #next_run;
-
-      -- Latest outcome-row per job (step_id = 0 in sysjobhistory).
-      WITH h AS (
-        SELECT job_id, run_status, run_duration,
-               run_end_dt = msdb.dbo.agent_datetime(run_date, run_time),
-               run_seconds = (run_duration / 10000) * 3600
-                           + ((run_duration / 100) % 100) * 60
-                           + (run_duration % 100),
-               rn = ROW_NUMBER() OVER (PARTITION BY job_id
-                                        ORDER BY run_date DESC, run_time DESC,
-                                                  instance_id DESC)
-        FROM msdb.dbo.sysjobhistory
-        WHERE step_id = 0
-      )
-      SELECT job_id, run_status, run_seconds, run_end_dt
-        INTO #latest_outcome
-      FROM h WHERE rn = 1;
-
-      -- Step failures in the last 24 hours.
-      SELECT h.job_id, failures_24h = COUNT(*)
-        INTO #step_fails_24h
-      FROM msdb.dbo.sysjobhistory h
-      WHERE h.step_id > 0 AND h.run_status = 0
-        AND msdb.dbo.agent_datetime(h.run_date, h.run_time)
-            >= DATEADD(hour, -24, GETDATE())
-      GROUP BY h.job_id;
-
-      -- Currently running (sysjobactivity row with start_execution_date set and stop_execution_date NULL).
-      SELECT a.job_id, is_running = 1
-        INTO #running
-      FROM msdb.dbo.sysjobactivity a
-      INNER JOIN (
-        SELECT job_id, max_ts = MAX(session_id)
-        FROM msdb.dbo.sysjobactivity GROUP BY job_id
-      ) m ON m.job_id = a.job_id AND m.max_ts = a.session_id
-      WHERE a.start_execution_date IS NOT NULL
-        AND a.stop_execution_date IS NULL;
-
-      -- Earliest next-run time per job across active schedules.
-      SELECT js.job_id,
-             next_run_dt = MIN(msdb.dbo.agent_datetime(
-               NULLIF(js.next_run_date, 0), NULLIF(js.next_run_time, 0)))
-        INTO #next_run
-      FROM msdb.dbo.sysjobschedules js
-      INNER JOIN msdb.dbo.sysschedules s ON s.schedule_id = js.schedule_id
-      WHERE s.enabled = 1 AND js.next_run_date > 0
-      GROUP BY js.job_id;
-
       SELECT job_name      = CAST(j.name AS nvarchar(256)),
              job_id        = CONVERT(nvarchar(36), j.job_id),
              category_name = ISNULL(c.name, N''),
@@ -133,19 +84,61 @@ queries:
                                        WHEN 3 THEN N'Canceled'
                                        ELSE N'Unknown' END,
              last_run_duration_seconds = ISNULL(lo.run_seconds, 0),
-             last_run_end_time_utc     = CAST(ISNULL(
+             last_run_end_time_utc = CAST(ISNULL(
                DATEDIFF_BIG(second,
                  CONVERT(datetime2, '19700101'),
                  DATEADD(mi, DATEDIFF(mi, GETDATE(), GETUTCDATE()), lo.run_end_dt)), 0) AS bigint),
-             next_run_time_utc         = CAST(ISNULL(
+             next_run_time_utc     = CAST(ISNULL(
                DATEDIFF_BIG(second,
                  CONVERT(datetime2, '19700101'),
                  DATEADD(mi, DATEDIFF(mi, GETDATE(), GETUTCDATE()), nr.next_run_dt)), 0) AS bigint),
-             is_running                = ISNULL(r.is_running, 0),
-             step_failures_last_24h    = ISNULL(sf.failures_24h, 0)
+             is_running            = ISNULL(r.is_running, 0),
+             step_failures_last_24h = ISNULL(sf.failures_24h, 0)
       FROM msdb.dbo.sysjobs j
-      LEFT JOIN msdb.dbo.syscategories c ON c.category_id = j.category_id
-      LEFT JOIN #latest_outcome lo ON lo.job_id = j.job_id
-      LEFT JOIN #step_fails_24h sf ON sf.job_id = j.job_id
-      LEFT JOIN #running         r  ON r.job_id = j.job_id
-      LEFT JOIN #next_run        nr ON nr.job_id = j.job_id;
+      LEFT JOIN msdb.dbo.syscategories c
+             ON c.category_id = j.category_id
+      LEFT JOIN (
+             SELECT job_id, run_status, run_end_dt, run_seconds
+             FROM (
+               SELECT job_id, run_status,
+                      run_end_dt = msdb.dbo.agent_datetime(run_date, run_time),
+                      run_seconds = (run_duration / 10000) * 3600
+                                  + ((run_duration / 100) % 100) * 60
+                                  + (run_duration % 100),
+                      rn = ROW_NUMBER() OVER (
+                             PARTITION BY job_id
+                             ORDER BY run_date DESC, run_time DESC, instance_id DESC)
+               FROM msdb.dbo.sysjobhistory
+               WHERE step_id = 0
+             ) x
+             WHERE rn = 1
+           ) lo ON lo.job_id = j.job_id
+      LEFT JOIN (
+             SELECT h.job_id, failures_24h = COUNT(*)
+             FROM msdb.dbo.sysjobhistory h
+             WHERE h.step_id > 0 AND h.run_status = 0
+               AND msdb.dbo.agent_datetime(h.run_date, h.run_time)
+                   >= DATEADD(hour, -24, GETDATE())
+             GROUP BY h.job_id
+           ) sf ON sf.job_id = j.job_id
+      LEFT JOIN (
+             SELECT a.job_id, is_running = 1
+             FROM msdb.dbo.sysjobactivity a
+             INNER JOIN (
+               SELECT job_id, max_ts = MAX(session_id)
+               FROM msdb.dbo.sysjobactivity GROUP BY job_id
+             ) m ON m.job_id = a.job_id AND m.max_ts = a.session_id
+             WHERE a.start_execution_date IS NOT NULL
+               AND a.stop_execution_date IS NULL
+           ) r ON r.job_id = j.job_id
+      LEFT JOIN (
+             SELECT js.job_id,
+                    next_run_dt = MIN(msdb.dbo.agent_datetime(
+                                    NULLIF(js.next_run_date, 0),
+                                    NULLIF(js.next_run_time, 0)))
+             FROM msdb.dbo.sysjobschedules js
+             INNER JOIN msdb.dbo.sysschedules s
+                     ON s.schedule_id = js.schedule_id
+             WHERE s.enabled = 1 AND js.next_run_date > 0
+             GROUP BY js.job_id
+           ) nr ON nr.job_id = j.job_id;
