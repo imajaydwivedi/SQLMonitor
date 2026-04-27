@@ -200,3 +200,37 @@ Get-ChildItem "$($env:USERPROFILE)" -Recurse -File | Unblock-File -Verbose
 2) Performance Log Users
 3) Performance Monitor Users
 #>
+
+<#
+### Incase of Error: Package 'PoshRSJob' failed to be installed because: End of Central Directory record could not be found.
+
+### Step 1 — Download via curl
+cd ~/Downloads
+curl -L "https://www.powershellgallery.com/api/v2/package/PoshRSJob/1.7.4.4" -o ~/Downloads/PoshRSJob.1.7.4.4.nupkg
+
+### Step 2 — Extract & Install (in PowerShell)
+$moduleName  = "PoshRSJob"
+$nupkg       = "$HOME/Downloads/PoshRSJob.1.7.4.4.nupkg"
+$extractPath = "$HOME/Downloads/PoshRSJob_extracted"
+$modulePath  = "$HOME/.local/share/powershell/Modules/$moduleName"
+
+# Rename to .zip and extract
+Copy-Item $nupkg "$nupkg.zip" -Force
+Expand-Archive -Path "$nupkg.zip" -DestinationPath $extractPath -Force
+
+# Create module folder and copy files
+New-Item -ItemType Directory -Path $modulePath -Force
+Copy-Item "$extractPath/*" -Destination $modulePath -Recurse -Force
+
+# Remove nupkg metadata (not needed for the module)
+Remove-Item "$modulePath/_rels"              -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$modulePath/package"            -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$modulePath/[Content_Types].xml" -Force  -ErrorAction SilentlyContinue
+Remove-Item "$modulePath/*.nuspec"           -Force   -ErrorAction SilentlyContinue
+
+### Step 3 — Verify
+Get-Module -ListAvailable PoshRSJob
+Import-Module PoshRSJob
+Get-Command -Module PoshRSJob
+
+#>
