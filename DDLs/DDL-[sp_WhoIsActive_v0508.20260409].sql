@@ -15,12 +15,16 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_NAME = 's
 GO
 
 /*********************************************************************************************
-Who Is Active? v12.00 (2021-11-10)
-(C) 2007-2021, Adam Machanic
+Who Is Active? v0508.20260409
+(C) 2007-2026, Adam Machanic
 
 Feedback: https://github.com/amachanic/sp_whoisactive/issues
 Releases: https://github.com/amachanic/sp_whoisactive/releases
 Docs: http://whoisactive.com
+
+Compatibility: SQL Server 2005 - 2008
+    This version avoids features unavailable before SQL Server 2012 (e.g. TRY_CAST).
+    For SQL Server 2012+, use the /2019 folder or the current version in the root folder.
 
 License:
     https://github.com/amachanic/sp_whoisactive/blob/master/LICENSE
@@ -117,7 +121,7 @@ ALTER PROC dbo.sp_WhoIsActive
     --Each element in this list must be one of the valid output column names. Names must be
     --delimited by square brackets. White space, formatting, and additional characters are
     --allowed, as long as the list contains exact matches of delimited valid column names.
-    @output_column_list VARCHAR(8000) = '[dd%][session_id][sql_text][sql_command][login_name][wait_info][tasks][tran_log%][cpu%][temp%][block%][reads%][writes%][context%][physical%][query_plan][locks][%]',
+    @output_column_list VARCHAR(8000) = '[dd%][session_id][sql_text][sql_command][login_name][wait_info][tasks][tran_log%][CPU%][temp%][block%][reads%][writes%][context%][physical%][query_plan][locks][%]',
 
     --Column(s) by which to sort output, optionally with sort directions.
         --Valid column choices:
@@ -423,6 +427,7 @@ BEGIN;
     SET ANSI_WARNINGS ON;
     SET NUMERIC_ROUNDABORT OFF;
     SET ARITHABORT ON;
+    SET STATISTICS XML OFF;
 
     IF
         @filter IS NULL
@@ -1410,10 +1415,12 @@ BEGIN;
                     sp.spid AS session_id,
                     CASE sp.status
                         WHEN 'sleeping' THEN CONVERT(INT, 0)
+                        WHEN 'dormant' THEN CONVERT(INT, 0)
                         ELSE sp.request_id
                     END AS request_id,
                     CASE sp.status
                         WHEN 'sleeping' THEN sp.last_batch
+                        WHEN 'dormant' THEN sp.last_batch
                         ELSE COALESCE(req.start_time, sp.last_batch)
                     END AS start_time,
                     sp.dbid
@@ -1621,7 +1628,7 @@ BEGIN;
                             END
                         ) AS page_no,
                         CASE
-                            WHEN tl.resource_type IN ('PAGE', 'KEY', 'RID', 'HOBT') THEN tl.resource_associated_entity_id
+                            WHEN tl.resource_type IN ('PAGE', 'KEY', 'RID', 'HOBT', 'XACT') THEN tl.resource_associated_entity_id
                             ELSE NULL
                         END AS hobt_id,
                         CASE
@@ -1809,7 +1816,7 @@ BEGIN;
                     s.session_id = sp.session_id
                     AND s.login_time = sp.login_time
                 LEFT OUTER LOOP JOIN sys.dm_exec_requests AS r ON
-                    sp.status <> ''sleeping''
+                    sp.status NOT IN (''sleeping'', ''dormant'')
                     AND r.session_id = sp.session_id
                     AND r.request_id = sp.request_id
                     AND
@@ -1920,16 +1927,8 @@ BEGIN;
                 spy.sql_handle,
                 spy.host_name,
                 spy.login_name,
-                --spy.program_name,
-				CASE LEFT(spy.program_name,15)
-            WHEN ''SQLAgent - TSQL'' THEN 
-            (     select top 1 ''SQL Job = ''+j.name from msdb.dbo.sysjobs (nolock) j
-                  inner join msdb.dbo.sysjobsteps (nolock) s on j.job_id=s.job_id
-                  where right(cast(s.job_id as nvarchar(50)),10) = RIGHT(substring(spy.program_name,30,34),10) )
-            WHEN ''SQL Server Prof'' THEN ''SQL Server Profiler''
-            ELSE spy.program_name
-            END as Program_name,
-				spy.database_id,
+                spy.program_name,
+                spy.database_id,
                 spy.memory_usage,
                 spy.open_tran_count,
                 ' +
@@ -2170,6 +2169,8 @@ BEGIN;
                                     CASE sp2.status
                                         WHEN ''sleeping'' THEN
                                             CONVERT(INT, 0)
+                                        WHEN ''dormant'' THEN
+                                            CONVERT(INT, 0)
                                         ELSE
                                             sp2.request_id
                                     END AS request_id,
@@ -2284,12 +2285,12 @@ BEGIN;
                             END +
                             CASE @show_sleeping_spids
                                 WHEN 0 THEN
-                                    'AND sp0.status <> ''sleeping''
+                                    'AND sp0.status NOT IN (''sleeping'', ''dormant'')
                                     '
                                 WHEN 1 THEN
                                     'AND
                                     (
-                                        sp0.status <> ''sleeping''
+                                        sp0.status NOT IN (''sleeping'', ''dormant'')
                                         OR sp0.open_tran_count > 0
                                     )
                                     '
@@ -3396,7 +3397,7 @@ BEGIN;
                                                     WHERE
                                                         sp2.session_id = t.session_id
                                                         AND sp2.request_id = t.request_id
-                                                        AND sp2.status <> ''sleeping''
+                                                        AND sp2.status NOT IN (''sleeping'', ''dormant'')
                                                 ) AS sp20
                                                 LEFT OUTER HASH JOIN
                                                 (
@@ -3714,7 +3715,7 @@ BEGIN;
                     tempdb_info.session_id = y.session_id
                     AND tempdb_info.request_id =
                         CASE
-                            WHEN y.status = N''sleeping'' THEN
+                            WHEN y.status IN (N''sleeping'', N''dormant'') THEN
                                 -1
                             ELSE
                                 y.request_id
@@ -4051,6 +4052,7 @@ BEGIN;
                         s.sql_text =
                         (
                             SELECT
+                                REPLACE(REPLACE(
                                 REPLACE
                                 (
                                     REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
@@ -4084,7 +4086,7 @@ BEGIN;
                                         NCHAR(11),N'?'),NCHAR(8),N'?'),NCHAR(7),N'?'),NCHAR(6),N'?'),NCHAR(5),N'?'),NCHAR(4),N'?'),NCHAR(3),N'?'),NCHAR(2),N'?'),NCHAR(1),N'?'),
                                     NCHAR(0),
                                     N''
-                                ) AS [processing-instruction(query)]
+                                ), N'<?', N'??'), N'?>', N'??') AS [processing-instruction(query)]
                             FOR XML
                                 PATH(''),
                                 TYPE
@@ -4245,7 +4247,7 @@ BEGIN;
                                 CONVERT
                                 (
                                     NVARCHAR(MAX),
-                                    N'--' + NCHAR(13) + NCHAR(10) + br.EventInfo + NCHAR(13) + NCHAR(10) + N'--' COLLATE Latin1_General_Bin2
+                                    N'--' + NCHAR(13) + NCHAR(10) + REPLACE(REPLACE(br.EventInfo, N'<?', N'??'), N'?>', N'??') + NCHAR(13) + NCHAR(10) + N'--' COLLATE Latin1_General_Bin2
                                 ),
                                 NCHAR(31),N'?'),NCHAR(30),N'?'),NCHAR(29),N'?'),NCHAR(28),N'?'),NCHAR(27),N'?'),NCHAR(26),N'?'),NCHAR(25),N'?'),NCHAR(24),N'?'),NCHAR(23),N'?'),NCHAR(22),N'?'),
                                 NCHAR(21),N'?'),NCHAR(20),N'?'),NCHAR(19),N'?'),NCHAR(18),N'?'),NCHAR(17),N'?'),NCHAR(16),N'?'),NCHAR(15),N'?'),NCHAR(14),N'?'),NCHAR(12),N'?'),
@@ -4421,7 +4423,7 @@ BEGIN;
                                         N'-- Could not render showplan due to XML data type limitations. ' + NCHAR(13) + NCHAR(10) +
                                         N'-- To see the graphical plan save the XML below as a .SQLPLAN file and re-open in SSMS.' + NCHAR(13) + NCHAR(10) +
                                         N'--' + NCHAR(13) + NCHAR(10) +
-                                            REPLACE(qp.query_plan, N'<RelOp', NCHAR(13)+NCHAR(10)+N'<RelOp') +
+                                            REPLACE(REPLACE(REPLACE(qp.query_plan, N'<RelOp', NCHAR(13)+NCHAR(10)+N'<RelOp'), N'<?', N'??'), N'?>', N'??') +
                                             NCHAR(13) + NCHAR(10) + N'--' COLLATE Latin1_General_Bin2 AS [processing-instruction(query_plan)]
                                     FROM sys.dm_exec_text_query_plan
                                     (
@@ -5370,7 +5372,7 @@ BEGIN;
                 start_time,
                 login_time,
                 CASE
-                    WHEN status = N''sleeping'' THEN NULL
+                    WHEN status IN (N''sleeping'', N''dormant'') THEN NULL
                     ELSE request_id
                 END AS request_id,
                 GETDATE() AS collection_time '
