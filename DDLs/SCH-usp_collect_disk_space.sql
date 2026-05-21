@@ -19,8 +19,9 @@ alter procedure [dbo].[usp_collect_disk_space]
 as
 begin
 /*	Created By:		Ajay Dwivedi (https://ajaydwivedi.com/go/sqlmonitor)
-	Version:		1.0
-	Modification:	2025-Jan-26 - First Draft
+	Version:		2026-05-31
+	Modification:	2026-05-31 - Issue#60 - Add support for Linux
+					2025-Jan-26 - First Draft
 
 	exec dbo.[usp_collect_disk_space]
 */
@@ -33,7 +34,7 @@ begin
 	select	distinct
 			[collection_time_utc] = SYSUTCDATETIME(),
 			[host_name] = convert(varchar(225),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))),
-			[disk_volume] = vs.volume_mount_point,
+			[disk_volume] = coalesce(vs.volume_mount_point,'/'),
 			[label] = null,
 			[capacity_mb] = vs.total_bytes / 1048576,
 			[free_mb] = vs.available_bytes / 1048576,
