@@ -34,7 +34,8 @@ begin
 	select	distinct
 			[collection_time_utc] = SYSUTCDATETIME(),
 			[host_name] = convert(varchar(225),COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName'))),
-			[disk_volume] = coalesce(vs.volume_mount_point,'/'),
+			[disk_volume] = coalesce ( vs.volume_mount_point, pn.mount_point_linux, '/'),
+			--pn.mount_point_linux,
 			[label] = null,
 			[capacity_mb] = vs.total_bytes / 1048576,
 			[free_mb] = vs.available_bytes / 1048576,
@@ -42,7 +43,8 @@ begin
 			[filesystem] = file_system_type
 	from sys.master_files as mf
 	cross apply sys.dm_os_volume_stats(mf.database_id, mf.file_id) as vs
-	join sys.databases as db on db.database_id = mf.database_id;
+	join sys.databases as db on db.database_id = mf.database_id
+	outer apply (select mount_point_linux = substring(mf.physical_name, 1, len(mf.physical_name) - charindex('/',reverse(mf.physical_name))) ) as pn;
 
 end
 GO
