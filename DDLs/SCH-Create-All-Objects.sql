@@ -635,7 +635,7 @@ WITH /* lag func & cross apply based */ RowDates as (
 	GROUP BY [collection_time_utc]
 )
 ,collection_time_utcs as (
-	select rd.*, Previouscollection_time_utc = LAG(collection_time_utc) over(order by collection_time_utc)
+	select rd.[collection_time_utc], Previouscollection_time_utc = LAG(collection_time_utc) over(order by collection_time_utc)
 	from RowDates rd
 )
 SELECT	Dates.collection_time_utc, w.wait_type, 
@@ -651,11 +651,13 @@ SELECT	Dates.collection_time_utc, w.wait_type,
 		,(w.waiting_tasks_count - wPrior.waiting_tasks_count) AS waiting_tasks_count_delta
 FROM collection_time_utcs Dates
 CROSS APPLY (
-	SELECT w.* FROM [dbo].[wait_stats] w
+	SELECT w.collection_time_utc, w.wait_type, w.waiting_tasks_count, w.wait_time_ms, w.max_wait_time_ms, w.signal_wait_time_ms
+	FROM [dbo].[wait_stats] w
 	WHERE w.collection_time_utc = Dates.collection_time_utc
 ) w
 CROSS APPLY (
-	SELECT wPrior.* FROM [dbo].[wait_stats] wPrior
+	SELECT wPrior.collection_time_utc, wPrior.wait_type, wPrior.waiting_tasks_count, wPrior.wait_time_ms, wPrior.max_wait_time_ms, wPrior.signal_wait_time_ms
+	FROM [dbo].[wait_stats] wPrior
 	WHERE wPrior.collection_time_utc = Dates.Previouscollection_time_utc and w.wait_type = wPrior.wait_type
 ) wPrior
 LEFT OUTER JOIN [dbo].[BlitzFirst_WaitStats_Categories] wc ON w.wait_type = wc.WaitType
