@@ -26,7 +26,8 @@ BEGIN
 		https://learn.microsoft.com/en-us/sql/ssms/agent/use-tokens-in-job-steps?view=sql-server-ver16
 		Pre-requisites:	dbo.alert_categories, dbo.alert_history, dbo.usp_capture_alert_messages, job [(dba) Capture-AlertMessages]
 
-		Version -> 2026-01-31
+		Version -> 2026-06-30
+		2026-06-04 - #60 - Add Support for SQLServer on Linux
 		2026-01-31 - #3 - Infra to Track Server and Database Configuration Changes
 		2024-05-23 - Updated to include Sev 19-25
 
@@ -40,9 +41,11 @@ BEGIN
 	DECLARE @_sql NVARCHAR(MAX);
 	DECLARE @_collection_time datetime = GETDATE();
 	DECLARE @_job_name nvarchar(500);
+	DECLARE @_version_string nvarchar(500);
 	DECLARE @c_alert_name varchar(255);
 	DECLARE @c_alert_error_number int;
 	DECLARE @c_error_severity int;
+	DECLARE @c_row_id_string varchar(15);
 
 	-- Variables for Try/Catch Block
 	DECLARE	@_errorNumber int,
@@ -56,9 +59,19 @@ BEGIN
 		IF @verbose > 0
 			PRINT 'Start Try Block..';
 
-		if @verbose > 0
-			print 'Enable Replace Token in SQLAgent Jobs'
-		EXEC msdb.dbo.sp_set_sqlagent_properties @alert_replace_runtime_tokens=1
+		SET @_version_string = CONVERT(NVARCHAR(500),@@VERSION);
+
+		IF @_version_string like '% on Windows%'
+		BEGIN
+			if @verbose > 0
+				print 'Enable Replace Token in SQLAgent Jobs on Windows based SQLServer.'
+			EXEC msdb.dbo.sp_set_sqlagent_properties @alert_replace_runtime_tokens=1;
+		END
+		ELSE
+		BEGIN
+			if @verbose > 0
+				print 'Skipped - Enable Replace Token in SQLAgent Jobs on Non-Windows based SQLServer.'
+		END
 
 		if not (@alert_operator_name is not null and exists (select * from msdb.dbo.sysoperators where name = @alert_operator_name))
 		begin
@@ -67,11 +80,17 @@ BEGIN
 		end
 
 		DECLARE cur_ForEachErrorNumber CURSOR LOCAL FAST_FORWARD FOR
-			SELECT ac.error_number, ac.error_severity, ac.alert_name
-			FROM dbo.alert_categories ac;
+			with alertCategories as (
+				SELECT ac.error_number, ac.error_severity, ac.alert_name, 
+						row_id = ROW_NUMBER() over (order by 1/0)
+				FROM dbo.alert_categories ac
+			)
+			select ac.error_number, ac.error_severity, ac.alert_name, s.row_id_string
+			from alertCategories ac
+			cross apply (select row_id_string = convert(varchar(2), ac.row_id)+'/'+(select convert(char(2),count(*)) from alertCategories)) s;
 
 		OPEN cur_ForEachErrorNumber;
-		FETCH NEXT FROM cur_ForEachErrorNumber INTO @c_alert_error_number, @c_error_severity, @c_alert_name;
+		FETCH NEXT FROM cur_ForEachErrorNumber INTO @c_alert_error_number, @c_error_severity, @c_alert_name, @c_row_id_string;
 
 		WHILE @@fetch_status = 0
 		BEGIN
@@ -90,18 +109,21 @@ BEGIN
 				if @alert_operator_name is  not null
 					EXECUTE msdb.dbo.sp_add_notification @alert_name = @c_alert_name, @operator_name = @alert_operator_name, @notification_method = 1;
 
-				print 'Alert ['+@c_alert_name+'] created.'
+				print 'Alert ['+@c_alert_name+'] created.';
 			END
 			ELSE
-				print 'Alert ['+@c_alert_name+'] already exists.'
+				print 'Alert ['+@c_alert_name+'] already exists.';
 
-			FETCH NEXT FROM cur_ForEachErrorNumber INTO @c_alert_error_number, @c_error_severity, @c_alert_name;
+			print 'Processed '+@c_row_id_string+' => Alert Name: ['+@c_alert_name+'], Error Number: ['+convert(varchar, @c_alert_error_number)+'], Severity: ['+convert(varchar, @c_error_severity)+']';
+			FETCH NEXT FROM cur_ForEachErrorNumber INTO @c_alert_error_number, @c_error_severity, @c_alert_name, @c_row_id_string;
 		END
 
 		--==== Close/Deallocate cursor
 		CLOSE cur_ForEachErrorNumber;
-
 		DEALLOCATE cur_ForEachErrorNumber;
+
+		IF @verbose > 0
+			PRINT 'End Try Block..';
 
 	END TRY  -- Perform main logic inside Try/Catch
 	BEGIN CATCH
@@ -117,3 +139,4 @@ BEGIN
 	END CATCH
 END
 GO
+
