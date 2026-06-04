@@ -628,20 +628,17 @@ go
 ALTER VIEW [dbo].[vw_wait_stats_deltas]
 WITH SCHEMABINDING 
 AS
-WITH RowDates as ( 
-	SELECT ROW_NUMBER() OVER (ORDER BY [collection_time_utc]) ID, [collection_time_utc]
-	FROM [dbo].[wait_stats] 
-	--WHERE [collection_time_utc] between @start_time and @end_time
+WITH /* lag func & cross apply based */ RowDates as ( 
+	SELECT [collection_time_utc]
+	FROM [dbo].[wait_stats]
+	--where [collection_time_utc] >= dateadd(DAY, -2, getutcdate())
 	GROUP BY [collection_time_utc]
 )
-, collection_time_utcs as
-(	SELECT ThisDate.collection_time_utc, LastDate.collection_time_utc as Previouscollection_time_utc
-    FROM RowDates ThisDate
-    JOIN RowDates LastDate
-    ON ThisDate.ID = LastDate.ID + 1
+,collection_time_utcs as (
+	select rd.*, Previouscollection_time_utc = LAG(collection_time_utc) over(order by collection_time_utc)
+	from RowDates rd
 )
---select * from collection_time_utcs
-SELECT	w.collection_time_utc, w.wait_type, 
+SELECT	Dates.collection_time_utc, w.wait_type, 
 		COALESCE(wc.WaitCategory, 'Other') AS WaitCategory, 
 		COALESCE(wc.Ignorable,0) AS Ignorable,
 		COALESCE(wc.IgnorableOnPerCoreMetric,wc.Ignorable,0) AS IgnorableOnPerCoreMetric,
@@ -649,17 +646,20 @@ SELECT	w.collection_time_utc, w.wait_type,
 		,DATEDIFF(ss, wPrior.collection_time_utc, w.collection_time_utc) AS ElapsedSeconds
 		,(w.wait_time_ms - wPrior.wait_time_ms) AS wait_time_ms_delta
 		,(w.wait_time_ms - wPrior.wait_time_ms) / 60000.0 AS wait_time_minutes_delta
-		,(w.wait_time_ms - wPrior.wait_time_ms) / 1000.0 / DATEDIFF(ss, wPrior.collection_time_utc, w.collection_time_utc) AS wait_time_minutes_per_minute
+		,(w.wait_time_ms - wPrior.wait_time_ms) / 1000.0 / DATEDIFF(ss, wPrior.collection_time_utc, Dates.collection_time_utc) AS wait_time_minutes_per_minute
 		,(w.signal_wait_time_ms - wPrior.signal_wait_time_ms) AS signal_wait_time_ms_delta
 		,(w.waiting_tasks_count - wPrior.waiting_tasks_count) AS waiting_tasks_count_delta
-FROM [dbo].[wait_stats] w
---INNER HASH JOIN collection_time_utcs Dates
-INNER JOIN collection_time_utcs Dates
-ON Dates.collection_time_utc = w.collection_time_utc
-INNER JOIN [dbo].[wait_stats] wPrior ON w.wait_type = wPrior.wait_type AND Dates.Previouscollection_time_utc = wPrior.collection_time_utc
+FROM collection_time_utcs Dates
+CROSS APPLY (
+	SELECT w.* FROM [dbo].[wait_stats] w
+	WHERE w.collection_time_utc = Dates.collection_time_utc
+) w
+CROSS APPLY (
+	SELECT wPrior.* FROM [dbo].[wait_stats] wPrior
+	WHERE wPrior.collection_time_utc = Dates.Previouscollection_time_utc and w.wait_type = wPrior.wait_type
+) wPrior
 LEFT OUTER JOIN [dbo].[BlitzFirst_WaitStats_Categories] wc ON w.wait_type = wc.WaitType
 WHERE [w].[wait_time_ms] >= [wPrior].[wait_time_ms]
---ORDER BY w.collection_time_utc, wait_time_ms_delta desc
 GO
 
 
