@@ -101,6 +101,20 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="SqlPractice:LAB\adwivedi">
+          <Created>2026-06-04T11:50:53.9970029+05:30</Created>
+          <Type>SQL</Type>
+          <Server>SqlPractice</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="Workstation:LAB\adwivedi">
           <Created>2025-01-27T12:39:31.8092764+05:30</Created>
           <Type>SQL</Type>
@@ -145,11 +159,29 @@
           <AssociatedConnUserName />
           <FullPath>DDL-[DatabaseMail_Using_GMail].sql</FullPath>
         </FileNode>
+        <FileNode Name="DDL-[sp_WhoIsActive_v0508.20260409].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SqlPractice:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>SqlPractice</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DDL-[sp_WhoIsActive_v0508.20260409].sql</FullPath>
+        </FileNode>
         <FileNode Name="DDL-[sp_WhoIsActive_v12_00(Modified)].sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>DDL-[sp_WhoIsActive_v12_00(Modified)].sql</FullPath>
+        </FileNode>
+        <FileNode Name="DDL-[sp_WhoIsActive_v1219.20260409].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SqlPractice:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>SqlPractice</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DDL-[sp_WhoIsActive_v1219.20260409].sql</FullPath>
+        </FileNode>
+        <FileNode Name="DDL-[sp_WhoIsActive_v2200.20260409].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SqlPractice:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>SqlPractice</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DDL-[sp_WhoIsActive_v2200.20260409].sql</FullPath>
         </FileNode>
         <FileNode Name="QRY-DDL-[FirstResponderKit-Install-All-Scripts].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
