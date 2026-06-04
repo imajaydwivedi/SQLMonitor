@@ -47,6 +47,7 @@ select	[domain] = DEFAULT_DOMAIN(),
 		[ServerName] = serverproperty('ServerName'),
 		[host_name] = COALESCE(SERVERPROPERTY('ComputerNamePhysicalNetBIOS'),SERVERPROPERTY('ServerName')),
 		[sql_version] = @@VERSION,
+		[ProductMajorVersion] = convert(int, SERVERPROPERTY('ProductMajorVersion')),
 		[service_name_str] = servicename,
 		[service_name] = case	when @@servicename is null then 'MSSQLSERVER'
 								when @@servicename = 'MSSQLSERVER' and servicename like 'SQL Server (%)' then 'MSSQLSERVER'
