@@ -77,6 +77,7 @@ $params = @{
     #UpdateSQLAgentJobsThreshold = $false
     #XEventDirectory = 'D:\MSSQL15.MSSQLSERVER\XEvents\'
     #JobsExecutionWaitTimeoutMinutes = 15
+    #AllServerInfoTimeOutSeconds = 600
     #MemoryOptimizedObjectsUsage = $false
     #ReturnInlineErrorMessage = $true
     #ForceTSQLStepType4TsqlJobs = $true

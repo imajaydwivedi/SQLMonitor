@@ -32,6 +32,20 @@ BEGIN
 		2024-05-23 - Updated to include Sev 19-25
 
 		EXEC dbo.usp_create_agent_alerts
+
+		-- Generate sev 17 error for testing on Windows based SQLServer
+		EXEC xp_readerrorlog 0, 1, 'Generating a Sev 17';
+
+
+		-- Add sev 17 message for testing
+		EXEC sys.sp_addmessage
+			@msgnum = 60000,
+			@severity = 17,
+			@msgtext = N'This is a test message with one numeric parameter (%d), one string parameter (%s), and another string parameter (%s).',
+			@lang = 'us_english';
+		
+		-- Raise alert using added message
+		RAISERROR(60000, 17, 1, 500, N'First string', N'second string') WITH LOG;
 	*/
 	SET NOCOUNT ON; 
 	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
