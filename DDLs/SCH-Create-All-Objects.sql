@@ -1634,6 +1634,7 @@ BEGIN
 			('PARALLEL_REDO_WORKER_SYNC','Replication',1,1,1),
 			('PARALLEL_REDO_WORKER_WAIT_WORK','Replication',1,1,1),
 			('POOL_LOG_RATE_GOVERNOR','Log Rate Governor',0,0,0),
+			('POPULATE_LOCK_ORDINALS','Idle',1,1,1),
 			('PREEMPTIVE_ABR','Preemptive',0,0,0),
 			('PREEMPTIVE_CLOSEBACKUPMEDIA','Preemptive',0,0,0),
 			('PREEMPTIVE_CLOSEBACKUPTAPE','Preemptive',0,0,0),
