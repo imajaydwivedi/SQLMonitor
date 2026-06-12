@@ -43,6 +43,7 @@ SQL-Exporter-Metrics-Dashboard-POC.json
 /Venv/*
 /venv/*
 .mac
+*/.augment/*
 
 
 # Byte-compiled / optimized / DLL files
