@@ -1,8 +1,7 @@
 --	https://www.sqlskills.com/blogs/jonathan/identifying-external-memory-pressure-with-dm_os_ring_buffers-and-ring_buffer_resource_monitor/
 USE master;
 
-/*	Version:			v0.3
-	Update Date:		10-Jan-2026
+/*	Update Date:		2026-June-13
 */
 
 SET NOCOUNT ON; 
@@ -13,9 +12,12 @@ DECLARE @cpu_trend_minutes INT = 120;
 DECLARE @top_x_program_rows SMALLINT = 10;
 DECLARE @top_x_query_rows SMALLINT = 10;
 DECLARE @long_running_query_threshold_minutes INT = 10;
-DECLARE @get_blitz_analysis BIT = 0;
+DECLARE @get_BlitzFirst BIT = 0;
+DECLARE @get_BlitzWho BIT = 0;
+DECLARE @get_WhoIsActive BIT = 1;
 DECLARE @only_X_resultset smallint = -1;
-DECLARE @show_plan TINYINT = 0; /* 0 = no plan, 1 = query plan, 2 = batch plan */
+DECLARE @show_plan TINYINT = 1; /* 0 = no plan, 1 = query plan, 2 = batch plan */
+declare @show_scheduler_workload BIT = 1;
 DECLARE @all_requests TINYINT = 1;
 DECLARE @granted_memory_threshold_mb decimal(20,2) = 500.00;
 DECLARE @show_io_latency BIT = 1;
@@ -29,16 +31,17 @@ DECLARE @current_time_UTC datetime = sysutcdatetime();
 -- Capture running sessions for Blocking
 IF OBJECT_ID('tempdb..#SysProcesses') IS NOT NULL
 	DROP TABLE #SysProcesses;
-select  Concat
-        (
-            RIGHT('00'+CAST(ISNULL((datediff(second,er.start_time,GETDATE()) / 3600 / 24), 0) AS VARCHAR(2)),2)
-            ,' '
-            ,RIGHT('00'+CAST(ISNULL(datediff(second,er.start_time,GETDATE()) / 3600  % 24, 0) AS VARCHAR(2)),2)
-            ,':'
-            ,RIGHT('00'+CAST(ISNULL(datediff(second,er.start_time,GETDATE()) / 60 % 60, 0) AS VARCHAR(2)),2)
-            ,':'
-            ,RIGHT('00'+CAST(ISNULL(datediff(second,er.start_time,GETDATE()) % 3600 % 60, 0) AS VARCHAR(2)),2)
-        ) as [dd hh:mm:ss]
+select  dtn.[dd hh:mm:ss.mss]
+		--Concat
+  --      (
+  --          RIGHT('00'+CAST(ISNULL((datediff(second,er.start_time,GETDATE()) / 3600 / 24), 0) AS VARCHAR(2)),2)
+  --          ,' '
+  --          ,RIGHT('00'+CAST(ISNULL(datediff(second,er.start_time,GETDATE()) / 3600  % 24, 0) AS VARCHAR(2)),2)
+  --          ,':'
+  --          ,RIGHT('00'+CAST(ISNULL(datediff(second,er.start_time,GETDATE()) / 60 % 60, 0) AS VARCHAR(2)),2)
+  --          ,':'
+  --          ,RIGHT('00'+CAST(ISNULL(datediff(second,er.start_time,GETDATE()) % 3600 % 60, 0) AS VARCHAR(2)),2)
+  --      ) as [dd hh:mm:ss]
 		--,datediff(MILLISECOND,er.start_time,GETDATE()) as elapsed_time_ms
 		,s.session_id as session_id
 		,t.text as sql_command
@@ -91,23 +94,33 @@ select  Concat
 										END
 		,granted_query_memory_kb = er.granted_query_memory*8.0
 		,[host_name] = s.host_name
-		,er.start_time as start_time
+		--,er.start_time as start_time
+		,st.start_time
 		,s.login_time as login_time
 		,rp.Pool
 		,er.sql_handle
 		,er.plan_handle
 		,[request_cpu_time] = er.cpu_time
-		,[request_start_time] = er.start_time
+		--,[request_start_time] = er.start_time
 		,er.query_hash
 		,er.query_plan_hash
 		,[BatchQueryPlan] = case when @show_plan >= 2 then bqp.query_plan else 'set @show_plan = 2 to get plans' end
 		,[SqlQueryPlan] = case when @show_plan >= 1 then convert(xml,sqp.query_plan) else 'set @show_plan = 1 to get plans' end
 		,er.request_id
-		,[elapsed_time_sec] = DATEDIFF(second,start_time,GETDATE())
+		,[elapsed_time_sec] = DATEDIFF(second,st.start_time,GETDATE())
 		,GETDATE() as collection_time
 INTO #SysProcesses
 FROM	sys.dm_exec_sessions AS s
 LEFT JOIN sys.dm_exec_requests AS er ON er.session_id = s.session_id
+OUTER APPLY (SELECT [start_time] = COALESCE(er.start_time, s.last_request_start_time), [days_threshold_ms] = 24, [days_gap] = DATEDIFF(DAY,COALESCE(er.start_time, s.last_request_start_time),GETDATE()) ) st
+OUTER APPLY (SELECT [elapsed_time_s] = datediff(SECOND, st.start_time, GETDATE()) ) ets
+OUTER APPLY (select [elapsed_time_ms] = case when st.days_gap >= st.days_threshold_ms then ets.elapsed_time_s*1000 else datediff(MILLISECOND, st.start_time, GETDATE()) end ) etms
+OUTER APPLY (select [dd hh:mm:ss.mss] = case when st.days_gap >= st.days_threshold_ms
+                                            then right('   0'+convert(varchar, elapsed_time_s/86400),4)+ ' '+convert(varchar,dateadd(SECOND,elapsed_time_s,'1900-01-01 00:00:00'),114)
+                                            else right('   0'+convert(varchar, elapsed_time_s/86400),4)+ ' '+convert(varchar,dateadd(MILLISECOND,elapsed_time_ms,'1900-01-01 00:00:00'),114)
+                                            end
+
+            ) dtn
 OUTER APPLY (select top 1 dec.most_recent_sql_handle as [sql_handle] from sys.dm_exec_connections dec where dec.most_recent_session_id = s.session_id and dec.most_recent_sql_handle is not null) AS dec
 OUTER APPLY sys.dm_exec_sql_text(COALESCE(er.sql_handle,dec.sql_handle)) AS t
 OUTER APPLY sys.dm_exec_query_plan(er.plan_handle) AS bqp
@@ -209,7 +222,7 @@ SELECT [Info] = LEFT('SQL CPU'+REPLICATE('_',20),10 ) + ' = ' + @sql_cpu_utiliza
 
 if (convert(int,left(@system_cpu_utilization, charindex('<',@system_cpu_utilization)-2)) > 50)
 begin
-	select [RunningQuery] = 'Schedulers', parent_node_id, count(*) as scheduler_count, sum(convert(int,is_idle)) as idle_scheduler_count, sum(current_tasks_count) as current_tasks_count,
+	select [RunningQuery] = 'NUMA-Schedulers-Distribution', parent_node_id, count(*) as scheduler_count, sum(convert(int,is_idle)) as idle_scheduler_count, sum(current_tasks_count) as current_tasks_count,
 			sum(runnable_tasks_count) as runnable_tasks_count, sum(current_workers_count) as workers_count, sum(active_workers_count) as active_workers_count, 
 			sum(pending_disk_io_count) as pending_disk_io_count		
 	from sys.dm_os_schedulers
@@ -332,6 +345,23 @@ BEGIN
 	ORDER BY [% CPU @SqlInstance-Level] desc, [% CPU @Server-Level] desc;
 END
 
+
+IF @show_scheduler_workload = 1
+BEGIN
+	SELECT RunningQuery = 'schedulers-workload-distribution',
+		scheduler_id,
+		cpu_id,
+		is_online,
+		current_tasks_count AS TotalTasks,
+		runnable_tasks_count AS TasksInRunnableQueue,
+		active_workers_count AS ActiveWorkers,
+		work_queue_count AS PendingWorkQueue
+	FROM sys.dm_os_schedulers
+	WHERE scheduler_id < 255 -- Filter out hidden system schedulers
+	ORDER BY scheduler_id;
+END
+
+
 --SELECT scheduler_id,count(*) FROM #resource_pool AS rp group by scheduler_id
 
 IF (SELECT count(distinct rpoolname) FROM #resource_pool) < 2
@@ -386,9 +416,32 @@ ORDER  BY [Pool], [num_tasks] desc, active_request_counts desc, [scheduler_perce
 OFFSET 0 ROWS FETCH NEXT @top_x_program_rows ROWS ONLY; 
 
 
+IF @get_WhoIsActive = 1
+BEGIN
+	EXEC sp_WhoIsActive @get_outer_command = 1, @get_task_info=2, @get_additional_info=1, @get_memory_info = 1 --,@get_avg_time=1,
+					,@find_block_leaders=1
+					,@get_transaction_info=1
+					--,@show_system_spids=1
+					--,@get_full_inner_text=1
+					--,@get_locks=1
+					,@get_plans=@show_plan
+					--,@sort_order = '[CPU] DESC'
+					--,@filter = 156
+					--,@filter_type = 'login' ,@filter = 'grafana'
+					--,@filter_type = 'program' ,@filter = 'sqlcmd'
+					--,@filter_type = 'database' ,@filter = 'tempdb'
+					--,@filter_type = 'host', @filter = 'SqlPractice'
+					--,@sort_order = '[tran_log_writes], [start_time]'
+					--,@sort_order = '[tempdb_allocations] desc, [tempdb_current] desc'
+					--,@sort_order = '[used_memory] desc, [start_time]'
+					--,@sort_order = '[blocked_session_count] desc, [granted_memory] desc, [start_time]'
+					,@output_column_list = '[dd hh:mm:ss.mss][session_id][sql_text][query_plan][sql_command][login_name][wait_info][status][blocked_session_count][blocking_session_id][tasks][CPU][reads][used_memory][granted_memory][host_name][database_name][program_name][open_tran_count][start_time][%]'
+END
+
+
 --	Query to find what's running on server (Similar to sp_WhoIsActive)
 SELECT RunningQuery = 'Concurrent-Session-Queries',
-		[Pool], [dd hh:mm:ss], [program_name], [login_name], [database_name], [command], [host_name], 
+		[Pool], [dd hh:mm:ss.mss], [program_name], [login_name], [database_name], [command], [host_name], 
 		[query_count] = COUNT(*) OVER(PARTITION BY LEFT([sql_text],100)), 
 		[tasks_count] = SUM(tasks) OVER(PARTITION BY LEFT([sql_text],100)), 
 		--[tasks_count] = SUM(tasks) OVER(PARTITION BY Pool, LEFT(program_name,15), [DBName], LEFT(statement_text,100)), 
@@ -396,7 +449,7 @@ SELECT RunningQuery = 'Concurrent-Session-Queries',
 		[sql_text], [sql_command], [wait_time], [elapsed_time(S)] = DATEDIFF(SECOND,start_time,collection_time), [login_time], 
 		granted_query_memory, granted_query_memory_kb, [memusage], 
 		[writes], [reads], [is_user_process], [session_row_count], [request_row_count], 
-		[sql_handle], [plan_handle], [request_cpu_time], [request_start_time], [query_hash], [query_plan_hash]
+		[sql_handle], [plan_handle], [request_cpu_time], [start_time], [query_hash], [query_plan_hash]
 		,[BatchQueryPlan] = CASE WHEN @show_plan = 2 THEN [BatchQueryPlan] ELSE NULL END
 		,[SqlQueryPlan] = CASE WHEN @show_plan >= 1 THEN [SqlQueryPlan] ELSE NULL END
 		,collection_time_utc = @current_time_UTC
@@ -405,7 +458,7 @@ WHERE @pool_name IS NULL -- No pool filter applied
 	-- All sessions of Pool, or blockers of Pool session
 	OR (ar.Pool = @pool_name OR ar.session_id IN (SELECT bl.[blocking_session_id] FROM #SysProcesses bl WHERE bl.Pool = @pool_name and ISNULL(bl.[blocking_session_id],0) <> 0)
 			)
-ORDER BY [tasks_count] desc, query_count desc, LEFT([sql_text],100), [request_start_time]
+ORDER BY [tasks_count] desc, query_count desc, LEFT([sql_text],100), [start_time]
 OFFSET 0 ROWS FETCH NEXT @top_x_query_rows ROWS ONLY;
 
 
@@ -418,7 +471,7 @@ IF (	(	(SELECT cntr_value FROM sys.dm_os_performance_counters WITH (NOLOCK)
 BEGIN
 	--	Query to find what's running on server (Similar to sp_WhoIsActive)
 	SELECT RunningQuery = 'Memory-Consumers (>='+convert(varchar,@granted_memory_threshold_mb)+'MB)',
-			[Pool], [dd hh:mm:ss], [session_id], request_id, [command], granted_query_memory, 
+			[Pool], [dd hh:mm:ss.mss], [session_id], request_id, [command], granted_query_memory, 
 			[program_name], [login_name], [database_name], [host_name], 
 			[query_count] = COUNT(*) OVER(PARTITION BY LEFT([sql_text],100)), 
 			[tasks_count] = SUM(tasks) OVER(PARTITION BY LEFT([sql_text],100)), 
@@ -427,7 +480,7 @@ BEGIN
 			[sql_text], [sql_command], [wait_time], [elapsed_time(S)] = DATEDIFF(SECOND,start_time,collection_time), [login_time], 
 			granted_query_memory_kb, [memusage], 
 			[writes], [reads], [is_user_process], [session_row_count], [request_row_count], 
-			[sql_handle], [plan_handle], [request_cpu_time], [request_start_time], [query_hash], [query_plan_hash]
+			[sql_handle], [plan_handle], [request_cpu_time], [start_time], [query_hash], [query_plan_hash]
 			,[BatchQueryPlan] = CASE WHEN @show_plan = 2 THEN [BatchQueryPlan] ELSE NULL END
 			,[SqlQueryPlan] = CASE WHEN @show_plan >= 1 THEN [SqlQueryPlan] ELSE NULL END
 			,collection_time_utc = @current_time_UTC
@@ -439,7 +492,7 @@ BEGIN
 			AND
 			(	(ar.granted_query_memory_kb/1024.0) >= @granted_memory_threshold_mb )
 		
-	ORDER BY [granted_query_memory_kb] desc, [tasks_count] desc, query_count desc, LEFT([sql_text],100), [request_start_time]
+	ORDER BY [granted_query_memory_kb] desc, [tasks_count] desc, query_count desc, LEFT([sql_text],100), [start_time]
 	OFFSET 0 ROWS FETCH NEXT @top_x_query_rows ROWS ONLY;
 END
 
@@ -450,7 +503,7 @@ begin
 	;WITH T_BLOCKERS AS
 	(
 		-- Find block Leaders
-		SELECT	[dd hh:mm:ss], [collection_time], [session_id], 
+		SELECT	[dd hh:mm:ss.mss], [collection_time], [session_id], 
 				[sql_text] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE([sql_command],[sql_text]) AS VARCHAR(MAX)),char(13),''),CHAR(10),''),'<?query --',''),'--?>',''), 
 				command, [login_name], wait_type, r.wait_time, r.wait_resource_type, [blocking_session_id], null as [blocked_session_count],
 				[status], open_tran, [host_name], [database_name], [program_name], Pool, tasks,
@@ -463,7 +516,7 @@ begin
 		--	
 		UNION ALL
 		--
-		SELECT	r.[dd hh:mm:ss], r.[collection_time], r.[session_id], 
+		SELECT	r.[dd hh:mm:ss.mss], r.[collection_time], r.[session_id], 
 				[sql_text] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE(r.[sql_command],r.[sql_text]) AS VARCHAR(MAX)),char(13),''),CHAR(10),''),'<?query --',''),'--?>',''), 
 				r.command, r.[login_name], r.wait_type, r.wait_time, r.wait_resource_type, r.[blocking_session_id], null as [blocked_session_count],
 				r.[status], r.open_tran, r.[host_name], r.[database_name], r.[program_name], r.Pool, r.tasks,
@@ -479,7 +532,7 @@ begin
 	)
 	,T_BlockingTree AS
 	(
-		SELECT	[dd hh:mm:ss], 
+		SELECT	[dd hh:mm:ss.mss], 
 				[BLOCKING_TREE] = N'    ' + REPLICATE (N'|         ', LEN (LEVEL)/4 - 1) 
 								+	CASE	WHEN (LEN(LEVEL)/4 - 1) = 0
 											THEN 'HEAD -  '
@@ -500,7 +553,7 @@ begin
 				,LEVEL
 		FROM	T_BLOCKERS AS r
 	)
-	SELECT Pool, [dd hh:mm:ss], [BLOCKING_TREE], [blocked_count] = case when session_id = [head_blocker] then [blocked_session_count] else null end, [sql_commad], [command], [login_name], [program_name], [database_name], [wait_type], 
+	SELECT Pool, [dd hh:mm:ss.mss], [BLOCKING_TREE], [blocked_count] = case when session_id = [head_blocker] then [blocked_session_count] else null end, [sql_commad], [command], [login_name], [program_name], [database_name], [wait_type], 
 			--[wait_time], 
 			Concat
 				(
@@ -538,12 +591,16 @@ begin
 	OFFSET 0 ROWS FETCH NEXT @top_x_query_rows ROWS ONLY; 
 end
 
-if @get_blitz_analysis = 1
+if @get_BlitzFirst = 1
 begin
 	if object_id('dbo.sp_BlitzFirst') is not null
-		exec sp_BlitzFirst --@Seconds = 10, @ExpertMode = 1
+		exec sp_BlitzFirst @ExpertMode = 2 --,@Seconds = 10
+end
+
+if @get_BlitzWho = 1
+begin
 	if object_id('dbo.sp_BlitzWho') is not null
-		exec sp_BlitzWho
+		exec sp_BlitzWho @GetLiveQueryPlan=1, @ShowActualParameters = 1;
 end
 
 IF @all_requests = 1
@@ -641,4 +698,4 @@ begin
 	ORDER BY ([Avg Read Stall]+[Avg Write Stall]) desc
 	OPTION (RECOMPILE);
 END
-go
+GO
