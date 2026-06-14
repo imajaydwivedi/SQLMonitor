@@ -91,7 +91,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent"
+                    "color": "transparent",
+                    "value": null
                   },
                   {
                     "color": "orange",
@@ -216,7 +217,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -232,7 +234,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 18292
+            "y": 8
           },
           "id": 64,
           "options": {
@@ -282,6 +284,134 @@
             }
           ],
           "title": "System: Processor Queue Length",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "mssql",
+            "uid": "${sqlmonitor_datasource}"
+          },
+          "description": "Validate that CPU Utilization Across Cores is Synchronous",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "axisSoftMax": 100,
+                "axisSoftMin": 0,
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 5,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "line+area"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 70
+                  },
+                  {
+                    "color": "red",
+                    "value": 90
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 13
+          },
+          "id": 159,
+          "options": {
+            "legend": {
+              "calcs": [
+                "last",
+                "p99",
+                "mean"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "99th %",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "alias": "",
+              "datasource": {
+                "type": "mssql",
+                "uid": "${sqlmonitor_datasource}"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "declare @sql nvarchar(max);\ndeclare @params nvarchar(max);\ndeclare @sql_instance varchar(255);\ndeclare @perfmon_host_name varchar(255);\ndeclare @start_time_utc datetime2;\ndeclare @end_time_utc datetime2;\n\nset @sql_instance = '$server';\nset @perfmon_host_name = '$perfmon_host_name';\nset @start_time_utc = $__timeFrom();\nset @end_time_utc = $__timeTo();\nset @params = N'@perfmon_host_name varchar(255), @start_time_utc datetime2, @end_time_utc datetime2';\n\nset quoted_identifier off;\nset @sql = \"\nselect pc.collection_time_utc as time, pc.instance as metric,\n\t\t\t\tpc.value\nfrom $perfmon_table_name pc with (nolock)\nwhere collection_time_utc between @start_time_utc and @end_time_utc\nand pc.host_name = @perfmon_host_name\nand (pc.object = 'processor' and pc.counter in ('% processor time') and pc.instance <> '_total')\n\t--and pc.value > 0\norder by time\n\"\nset quoted_identifier on;\n\n--if (@sql_instance = SERVERPROPERTY('SERVERNAME'))\nif ($is_local = 1)\n  exec dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;\nelse\n  exec [$server].[$dba_db].dbo.sp_executesql @sql , @params, @perfmon_host_name, @start_time_utc, @end_time_utc;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "%Processor Time (CPU Cores)",
           "type": "timeseries"
         }
       ],
@@ -364,7 +494,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 90314
+            "y": 108641
           },
           "id": 26,
           "options": {
@@ -465,7 +595,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 102391
+            "y": 120718
           },
           "id": 58,
           "options": {
@@ -587,7 +717,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 102402
+            "y": 120729
           },
           "id": 60,
           "options": {
@@ -709,8 +839,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               },
@@ -722,7 +851,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 3
+            "y": 18330
           },
           "id": 156,
           "options": {
@@ -827,8 +956,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               },
@@ -840,7 +968,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 18341
           },
           "id": 30,
           "options": {
@@ -946,8 +1074,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -963,7 +1090,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 25
+            "y": 18352
           },
           "id": 66,
           "options": {
@@ -1099,7 +1226,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 46903
+            "y": 65230
           },
           "id": 105,
           "options": {
@@ -1221,7 +1348,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 55347
+            "y": 73674
           },
           "id": 106,
           "options": {
@@ -1358,7 +1485,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 18211
+            "y": 36538
           },
           "id": 110,
           "options": {
@@ -1479,7 +1606,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 18216
+            "y": 36543
           },
           "id": 112,
           "options": {
@@ -1595,7 +1722,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 18222
+            "y": 36549
           },
           "id": 157,
           "options": {
@@ -1715,7 +1842,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 18230
+            "y": 36557
           },
           "id": 114,
           "options": {
@@ -1850,7 +1977,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 51137
+            "y": 69464
           },
           "id": 34,
           "options": {
@@ -1972,7 +2099,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 51142
+            "y": 69469
           },
           "id": 68,
           "options": {
@@ -2093,7 +2220,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 51148
+            "y": 69475
           },
           "id": 69,
           "options": {
@@ -2211,7 +2338,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 51155
+            "y": 69482
           },
           "id": 158,
           "options": {
@@ -2347,7 +2474,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 95152
+            "y": 113479
           },
           "id": 71,
           "options": {
@@ -2484,7 +2611,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 95160
+            "y": 113487
           },
           "id": 38,
           "options": {
@@ -2612,7 +2739,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 95175
+            "y": 113502
           },
           "id": 115,
           "options": {
@@ -2755,7 +2882,7 @@
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 97042
+            "y": 115369
           },
           "id": 119,
           "options": {
@@ -2881,7 +3008,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 97051
+            "y": 115378
           },
           "id": 121,
           "options": {
@@ -3004,7 +3131,7 @@
             "h": 15,
             "w": 24,
             "x": 0,
-            "y": 97061
+            "y": 115388
           },
           "id": 123,
           "options": {
@@ -3140,7 +3267,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 97811
+            "y": 116138
           },
           "id": 22,
           "options": {
@@ -3274,7 +3401,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 97822
+            "y": 116149
           },
           "id": 126,
           "options": {
@@ -3395,7 +3522,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 97828
+            "y": 116155
           },
           "id": 14,
           "options": {
@@ -3517,7 +3644,7 @@
             "h": 17,
             "w": 24,
             "x": 0,
-            "y": 97835
+            "y": 116162
           },
           "id": 124,
           "options": {
@@ -3651,7 +3778,7 @@
             "h": 13,
             "w": 24,
             "x": 0,
-            "y": 98101
+            "y": 116428
           },
           "id": 153,
           "options": {
@@ -3786,7 +3913,7 @@
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 98115
+            "y": 116442
           },
           "id": 77,
           "options": {
@@ -3907,7 +4034,7 @@
             "h": 12,
             "w": 24,
             "x": 0,
-            "y": 98124
+            "y": 116451
           },
           "id": 128,
           "options": {
@@ -4044,7 +4171,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 98261
+            "y": 116588
           },
           "id": 46,
           "options": {
@@ -4165,7 +4292,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 98267
+            "y": 116594
           },
           "id": 129,
           "options": {
@@ -4286,7 +4413,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 98275
+            "y": 116602
           },
           "id": 78,
           "options": {
@@ -4408,7 +4535,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 98282
+            "y": 116609
           },
           "id": 130,
           "options": {
@@ -4545,7 +4672,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 114785
+            "y": 133112
           },
           "id": 134,
           "options": {
@@ -4666,7 +4793,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 114863
+            "y": 133190
           },
           "id": 137,
           "options": {
@@ -4787,7 +4914,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 114869
+            "y": 133196
           },
           "id": 135,
           "options": {
@@ -4908,7 +5035,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 114875
+            "y": 133202
           },
           "id": 136,
           "options": {
@@ -5043,7 +5170,7 @@
             "h": 5,
             "w": 11,
             "x": 0,
-            "y": 98387
+            "y": 116714
           },
           "id": 85,
           "options": {
@@ -5157,7 +5284,7 @@
             "h": 5,
             "w": 13,
             "x": 11,
-            "y": 98387
+            "y": 116714
           },
           "id": 89,
           "options": {
@@ -5275,7 +5402,7 @@
             "h": 5,
             "w": 11,
             "x": 0,
-            "y": 98392
+            "y": 116719
           },
           "id": 88,
           "options": {
@@ -5389,7 +5516,7 @@
             "h": 5,
             "w": 13,
             "x": 11,
-            "y": 98392
+            "y": 116719
           },
           "id": 90,
           "options": {
@@ -5524,7 +5651,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 98398
+            "y": 116725
           },
           "id": 151,
           "options": {
@@ -5644,7 +5771,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 98406
+            "y": 116733
           },
           "id": 16,
           "options": {
@@ -5780,7 +5907,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 98515
+            "y": 116842
           },
           "id": 80,
           "options": {
@@ -5902,7 +6029,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 98523
+            "y": 116850
           },
           "id": 79,
           "options": {
@@ -6024,7 +6151,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 98531
+            "y": 116858
           },
           "id": 82,
           "options": {
@@ -6160,7 +6287,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 114789
+            "y": 133116
           },
           "id": 102,
           "options": {
@@ -6281,7 +6408,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 114795
+            "y": 133122
           },
           "id": 100,
           "options": {
@@ -6413,7 +6540,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 117445
+            "y": 135772
           },
           "id": 148,
           "options": {
@@ -6509,7 +6636,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 117453
+            "y": 135780
           },
           "id": 147,
           "options": {
@@ -6620,7 +6747,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 117446
+            "y": 135773
           },
           "id": 149,
           "options": {
@@ -6839,8 +6966,8 @@
       },
       {
         "current": {
-          "text": "1768969085762",
-          "value": "1768969085762"
+          "text": "1781443325069",
+          "value": "1781443325069"
         },
         "datasource": {
           "type": "mssql",
@@ -7088,6 +7215,6 @@
   "timezone": "",
   "title": "Monitoring - Perfmon Counters - Quest Softwares - Distributed",
   "uid": "distributed_perfmon",
-  "version": 34,
+  "version": 36,
   "weekStart": ""
 }
