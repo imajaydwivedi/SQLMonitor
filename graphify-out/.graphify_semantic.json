@@ -1,0 +1,2084 @@
+{
+  "nodes": [
+    {
+      "id": "readme_sqlmonitor",
+      "label": "SQLMonitor",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_grafana",
+      "label": "Grafana",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 32",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_prometheus",
+      "label": "Prometheus",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 36",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_python_alert_engine",
+      "label": "Python Alert Engine",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 35",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_slack",
+      "label": "Slack",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 35",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_pagerduty",
+      "label": "PagerDuty",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 35",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_sql_agent_jobs",
+      "label": "SQL Agent Jobs",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 33",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_dba_database",
+      "label": "DBA Database",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 34",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_first_responder_kit",
+      "label": "First-Responder-Kit",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 38",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_sp_whoisactive",
+      "label": "sp_WhoIsActive",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 38",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_ola_hallengren",
+      "label": "Ola Hallengren Scripts",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 38",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_darling_data",
+      "label": "Darling Data Scripts",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 38",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_streamlit",
+      "label": "Streamlit",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 37",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_langchain",
+      "label": "LangChain",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 37",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_ollama",
+      "label": "Ollama",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 37",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_monitoring_live_distributed",
+      "label": "Monitoring - Live - Distributed Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 16",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_monitoring_live_all_servers",
+      "label": "Monitoring - Live - All Servers Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 17",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_job_activity_monitor",
+      "label": "Monitoring - Live - Job Activity Monitor Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 18",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_perfmon_counters",
+      "label": "Monitoring - Perfmon Counters Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 19",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_core_metrics_trend",
+      "label": "Core Metrics - Trend Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 20",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_whoisactive_workload",
+      "label": "WhoIsActive - SQL Server Queries - Workload Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 26",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_xevent_workload",
+      "label": "XEvent - Workload Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 27",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_xevent_trend",
+      "label": "XEvent - Trend Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 28",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_wait_stats",
+      "label": "Wait Stats Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 29",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_blitz_server_health",
+      "label": "t___Blitz_Server_Health_Analysis Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 35",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_blitzindex_analysis",
+      "label": "t___BlitzIndex_Analysis Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 36",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_ag_health_state",
+      "label": "t___Ag Health State Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 42",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_backup_history",
+      "label": "t___Backup_History Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 43",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_disk_space",
+      "label": "t___Disk Space Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 44",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_database_file_io_stats",
+      "label": "t___Database File IO Stats Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 45",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_dba_inventory",
+      "label": "t__DBA_Inventory Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 46",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_sqlmonitor_alerts",
+      "label": "SQLMonitor-Alerts Dashboard",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 52",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_index_data_source",
+      "label": "SQLMonitor Data Source",
+      "file_type": "document",
+      "source_file": "dashboards/index.md",
+      "source_location": "line 5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_variables_variable_contract",
+      "label": "Dashboard Variable Contract",
+      "file_type": "rationale",
+      "source_file": "dashboards/variables.md",
+      "source_location": "line 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_variables_server_variable",
+      "label": "$server Variable",
+      "file_type": "document",
+      "source_file": "dashboards/variables.md",
+      "source_location": "line 16",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dashboards_variables_time_filtering",
+      "label": "Time Filtering Pattern",
+      "file_type": "rationale",
+      "source_file": "dashboards/variables.md",
+      "source_location": "line 42",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_index_collection_tier",
+      "label": "Collection Tier",
+      "file_type": "document",
+      "source_file": "architecture/index.md",
+      "source_location": "line 5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_index_storage_tier",
+      "label": "Storage Tier",
+      "file_type": "document",
+      "source_file": "architecture/index.md",
+      "source_location": "line 6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_index_consumption_tier",
+      "label": "Consumption Tier",
+      "file_type": "document",
+      "source_file": "architecture/index.md",
+      "source_location": "line 7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_topology_distributed_topology",
+      "label": "Distributed Topology",
+      "file_type": "document",
+      "source_file": "architecture/topology.md",
+      "source_location": "line 5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_topology_central_topology",
+      "label": "Central Topology",
+      "file_type": "document",
+      "source_file": "architecture/topology.md",
+      "source_location": "line 52",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_topology_hybrid_variants",
+      "label": "Hybrid Topology Variants",
+      "file_type": "rationale",
+      "source_file": "architecture/topology.md",
+      "source_location": "line 90",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_data_flow_perfmon_collection",
+      "label": "Perfmon Collection Pattern",
+      "file_type": "document",
+      "source_file": "architecture/data-flow.md",
+      "source_location": "line 35",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_data_flow_tsql_capture",
+      "label": "T-SQL Capture Pattern",
+      "file_type": "document",
+      "source_file": "architecture/data-flow.md",
+      "source_location": "line 45",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_data_flow_inventory_aggregation",
+      "label": "Inventory Aggregation Pattern",
+      "file_type": "document",
+      "source_file": "architecture/data-flow.md",
+      "source_location": "line 61",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_data_flow_lifecycle",
+      "label": "Partition-Compress-Purge Lifecycle",
+      "file_type": "rationale",
+      "source_file": "architecture/data-flow.md",
+      "source_location": "line 80",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_data_flow_alert_path",
+      "label": "Alert Engine Path",
+      "file_type": "document",
+      "source_file": "architecture/data-flow.md",
+      "source_location": "line 93",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_sqlmonitor_folder",
+      "label": "SQLMonitor Folder",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 9",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_ddls_folder",
+      "label": "DDLs Folder",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_grafana_dashboards_folder",
+      "label": "Grafana-Dashboards Folder",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_alerting_folder",
+      "label": "Alerting Folder",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 12",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_sql_exporter_folder",
+      "label": "sql_exporter Folder",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 13",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_tsql_normalizer",
+      "label": "TSQLTextNormalizer Assembly",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_install_script",
+      "label": "Install-SQLMonitor.ps1",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 29",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_remove_script",
+      "label": "Remove-SQLMonitor.ps1",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 33",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_alert_engine_app",
+      "label": "SQLMonitorAlertEngineApp.py",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 41",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_wait_stats_table",
+      "label": "dbo.wait_stats Table",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 50",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_file_io_stats_table",
+      "label": "dbo.file_io_stats Table",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 50",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_xevent_metrics_table",
+      "label": "dbo.xevent_metrics Table",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 50",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "architecture_components_all_server_volatile_info",
+      "label": "dbo.all_server_volatile_info Table",
+      "file_type": "document",
+      "source_file": "architecture/components.md",
+      "source_location": "line 50",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_inventory_server",
+      "label": "Inventory Server",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 34",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_sql_exporter",
+      "label": "sql_exporter",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 36",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_windows_exporter",
+      "label": "windows_exporter",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 36",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sql_exporter_alert_rules_sqlmonitor",
+      "label": "Alert Rules SQLMonitor",
+      "file_type": "document",
+      "source_file": "sql_exporter/alert-engine/Alert-Rules-SQLMonitor.yaml",
+      "source_location": null
+    },
+    {
+      "id": "sql_exporter_alert_rules_cpu_high",
+      "label": "CPU > 80% for 5m Alert",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Alert-Rules-SQLMonitor.yaml",
+      "source_location": "lines 10-90"
+    },
+    {
+      "id": "sql_exporter_alert_rules_memory_low",
+      "label": "Available Memory Below Min Alert",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Alert-Rules-SQLMonitor.yaml",
+      "source_location": "lines 92-178"
+    },
+    {
+      "id": "sql_exporter_alert_rules_disk_high",
+      "label": "Disk Utilization > 70% Alert",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Alert-Rules-SQLMonitor.yaml",
+      "source_location": "lines 180-264"
+    },
+    {
+      "id": "sql_exporter_contact_points_sqlmonitor",
+      "label": "Contact Points SQLMonitor",
+      "file_type": "document",
+      "source_file": "sql_exporter/alert-engine/Contact-Points-SQLMonitor.yaml"
+    },
+    {
+      "id": "sql_exporter_contact_point_email",
+      "label": "Email Contact Point",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Contact-Points-SQLMonitor.yaml",
+      "source_location": "lines 3-11"
+    },
+    {
+      "id": "sql_exporter_contact_point_slack",
+      "label": "Slack Contact Point",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Contact-Points-SQLMonitor.yaml",
+      "source_location": "lines 13-21"
+    },
+    {
+      "id": "sql_exporter_contact_point_teams",
+      "label": "Teams Contact Point",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Contact-Points-SQLMonitor.yaml",
+      "source_location": "lines 23-30"
+    },
+    {
+      "id": "sql_exporter_notification_policies_sqlmonitor",
+      "label": "Notification Policies SQLMonitor",
+      "file_type": "document",
+      "source_file": "sql_exporter/alert-engine/Notification-Policies-SQLMonitor.yaml"
+    },
+    {
+      "id": "sql_exporter_mssql_backup_history_collector",
+      "label": "MSSQL Backup History Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_backup_history.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_backup_last_time",
+      "label": "mssql_backup__last_time_utc Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_backup_history.collector.yml",
+      "source_location": "lines 16-20"
+    },
+    {
+      "id": "sql_exporter_metric_backup_duration",
+      "label": "mssql_backup__last_duration_seconds Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_backup_history.collector.yml",
+      "source_location": "lines 23-27"
+    },
+    {
+      "id": "sql_exporter_query_backup_history",
+      "label": "mssql_backup_history_latest Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_backup_history.collector.yml",
+      "source_location": "lines 59-118"
+    },
+    {
+      "id": "sql_exporter_mssql_dba_aghealth_collector",
+      "label": "MSSQL DBA AG Health Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_dba_aghealth.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_aghealth_sync_state",
+      "label": "mssql_aghealth__synchronization_state Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_aghealth.collector.yml",
+      "source_location": "lines 35-40"
+    },
+    {
+      "id": "sql_exporter_metric_aghealth_latency",
+      "label": "mssql_aghealth__latency_seconds Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_aghealth.collector.yml",
+      "source_location": "lines 49-54"
+    },
+    {
+      "id": "sql_exporter_query_aghealth",
+      "label": "mssql_aghealth Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_aghealth.collector.yml",
+      "source_location": "lines 113-200"
+    },
+    {
+      "id": "sql_exporter_mssql_dba_cached_collector",
+      "label": "MSSQL DBA Cached Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_waits_time",
+      "label": "mssql_waits__wait_time_seconds Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml",
+      "source_location": "lines 26-34"
+    },
+    {
+      "id": "sql_exporter_metric_virtualfilestats",
+      "label": "mssql_virtualfilestats__* Metrics",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml",
+      "source_location": "lines 119-222"
+    },
+    {
+      "id": "sql_exporter_metric_tempdb_usage",
+      "label": "mssql_tempdb_usage__* Metrics",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml",
+      "source_location": "lines 227-279"
+    },
+    {
+      "id": "sql_exporter_query_os_wait_stats",
+      "label": "mssql_os_wait_stats Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml",
+      "source_location": "lines 391-421"
+    },
+    {
+      "id": "sql_exporter_query_tempdb_consumers",
+      "label": "mssql_tempdb_consumers Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml",
+      "source_location": "lines 492-1550"
+    },
+    {
+      "id": "sql_exporter_mssql_dba_regular_collector",
+      "label": "MSSQL DBA Regular Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_service_info",
+      "label": "mssql_service_info Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml",
+      "source_location": "lines 14-83"
+    },
+    {
+      "id": "sql_exporter_metric_host_memory",
+      "label": "mssql_host_physical_memory_bytes Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml",
+      "source_location": "lines 85-90"
+    },
+    {
+      "id": "sql_exporter_metric_database_space",
+      "label": "mssql_database_file_size_bytes Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml",
+      "source_location": "lines 119-126"
+    },
+    {
+      "id": "sql_exporter_metric_logsaver",
+      "label": "mssql_logsaver__* Metrics",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml",
+      "source_location": "lines 557-637"
+    },
+    {
+      "id": "sql_exporter_query_logsaver",
+      "label": "mssql_logsaver Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml",
+      "source_location": "lines 1091-1549"
+    },
+    {
+      "id": "sql_exporter_mssql_dba_stableinfo_collector",
+      "label": "MSSQL DBA Stable Info Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_dba_stableinfo.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_db_create_date",
+      "label": "mssql_db__create_date Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_stableinfo.collector.yml",
+      "source_location": "lines 25-39"
+    },
+    {
+      "id": "sql_exporter_metric_db_config",
+      "label": "mssql_db__* Configuration Metrics",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_stableinfo.collector.yml",
+      "source_location": "lines 65-551"
+    },
+    {
+      "id": "sql_exporter_query_sys_databases",
+      "label": "mssql_sys_databases Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_stableinfo.collector.yml",
+      "source_location": "lines 611-721"
+    },
+    {
+      "id": "sql_exporter_mssql_dba_whoisactive_collector",
+      "label": "MSSQL DBA WhoIsActive Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_dba_whoisactive.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_whoisactive_start_time",
+      "label": "mssql_whoisactive__start_time Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_whoisactive.collector.yml",
+      "source_location": "lines 18-44"
+    },
+    {
+      "id": "sql_exporter_metric_whoisactive_io",
+      "label": "mssql_whoisactive__physical_io Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_whoisactive.collector.yml",
+      "source_location": "lines 127-133"
+    },
+    {
+      "id": "sql_exporter_query_sp_whoisactive",
+      "label": "mssql_sp_whoisactive Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_whoisactive.collector.yml",
+      "source_location": "lines 168-258"
+    },
+    {
+      "id": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "label": "MSSQL SQL Agent Jobs Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_sqlagent_jobs.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_sqlagent_job_enabled",
+      "label": "mssql_sqlagent_job__enabled Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_sqlagent_jobs.collector.yml",
+      "source_location": "lines 17-21"
+    },
+    {
+      "id": "sql_exporter_metric_sqlagent_job_outcome",
+      "label": "mssql_sqlagent_job__last_run_outcome Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_sqlagent_jobs.collector.yml",
+      "source_location": "lines 24-28"
+    },
+    {
+      "id": "sql_exporter_metric_sqlagent_failures",
+      "label": "mssql_sqlagent_job__step_failures_last_24h Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_sqlagent_jobs.collector.yml",
+      "source_location": "lines 59-64"
+    },
+    {
+      "id": "sql_exporter_query_sqlagent_jobs_latest",
+      "label": "mssql_sqlagent_jobs_latest Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_sqlagent_jobs.collector.yml",
+      "source_location": "lines 72-144"
+    },
+    {
+      "id": "sql_exporter_mssql_standard_collector",
+      "label": "MSSQL Standard Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_standard.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_mssql_up",
+      "label": "mssql_up Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_standard.collector.yml",
+      "source_location": "lines 14-19"
+    },
+    {
+      "id": "sql_exporter_metric_deadlocks",
+      "label": "mssql_deadlocks Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_standard.collector.yml",
+      "source_location": "lines 74-81"
+    },
+    {
+      "id": "sql_exporter_metric_buffer_cache_hit_ratio",
+      "label": "mssql_buffer_cache_hit_ratio Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_standard.collector.yml",
+      "source_location": "lines 130-137"
+    },
+    {
+      "id": "sql_exporter_metric_io_stall",
+      "label": "mssql_io_stall_seconds Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_standard.collector.yml",
+      "source_location": "lines 151-168"
+    },
+    {
+      "id": "sql_exporter_mssql_xevent_collector",
+      "label": "MSSQL Extended Events Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_xevent.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_xevent_events",
+      "label": "mssql_xevent__events_last_5m Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_xevent.collector.yml",
+      "source_location": "lines 22-27"
+    },
+    {
+      "id": "sql_exporter_metric_xevent_cpu_time",
+      "label": "mssql_xevent__cpu_time_ms_last_5m Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_xevent.collector.yml",
+      "source_location": "lines 29-34"
+    },
+    {
+      "id": "sql_exporter_query_xevent_recent",
+      "label": "mssql_xevent_recent Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_xevent.collector.yml",
+      "source_location": "lines 78-124"
+    },
+    {
+      "id": "sql_exporter_yml_main_config",
+      "label": "SQL Exporter Main Configuration",
+      "file_type": "document",
+      "source_file": "sql_exporter/sql_exporter.yml"
+    },
+    {
+      "id": "sql_exporter_job_mssql_common",
+      "label": "mssql_common Job",
+      "file_type": "concept",
+      "source_file": "sql_exporter/sql_exporter.yml",
+      "source_location": "lines 21-29"
+    },
+    {
+      "id": "sql_exporter_job_mssql_ag",
+      "label": "mssql_ag Job",
+      "file_type": "concept",
+      "source_file": "sql_exporter/sql_exporter.yml",
+      "source_location": "lines 31-36"
+    },
+    {
+      "id": "sql_exporter_job_mssql_long_running",
+      "label": "mssql_long_running Job",
+      "file_type": "concept",
+      "source_file": "sql_exporter/sql_exporter.yml",
+      "source_location": "lines 38-43"
+    },
+    {
+      "id": "sql_exporter_job_mssql_msdb",
+      "label": "mssql_msdb Job",
+      "file_type": "concept",
+      "source_file": "sql_exporter/sql_exporter.yml",
+      "source_location": "lines 45-51"
+    },
+    {
+      "id": "sql_exporter_job_mssql_xevent",
+      "label": "mssql_xevent Job",
+      "file_type": "concept",
+      "source_file": "sql_exporter/sql_exporter.yml",
+      "source_location": "lines 53-58"
+    },
+    {
+      "id": "windows_exporter_config_yml",
+      "label": "Windows Exporter Configuration",
+      "file_type": "document",
+      "source_file": "sql_exporter/windows_exporter_config.yml"
+    },
+    {
+      "id": "windows_exporter_collector_cpu",
+      "label": "CPU Collector",
+      "file_type": "concept",
+      "source_file": "sql_exporter/windows_exporter_config.yml",
+      "source_location": "lines 2"
+    },
+    {
+      "id": "windows_exporter_collector_disk",
+      "label": "Disk Drive Collector",
+      "file_type": "concept",
+      "source_file": "sql_exporter/windows_exporter_config.yml",
+      "source_location": "lines 2"
+    },
+    {
+      "id": "python_scripts_slack_token_scopes",
+      "label": "Slack Token Scopes Screenshot",
+      "file_type": "image",
+      "source_file": "Python-Scripts/Slack-SQLMonitor-App-User-Token-Scopes.png"
+    },
+    {
+      "id": "docs_assets_favicon",
+      "label": "SQLMonitor Favicon",
+      "file_type": "image",
+      "source_file": "docs/assets/favicon.svg"
+    },
+    {
+      "id": "docs_assets_logo",
+      "label": "SQLMonitor Logo",
+      "file_type": "image",
+      "source_file": "docs/assets/logo.svg"
+    }
+  ],
+  "edges": [
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_grafana",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 32",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_prometheus",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 36",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_python_alert_engine",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 35",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_python_alert_engine",
+      "target": "readme_slack",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 35",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_python_alert_engine",
+      "target": "readme_pagerduty",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 35",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_sql_agent_jobs",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 33",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_dba_database",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 34",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_inventory_server",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 34",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_first_responder_kit",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 38",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_sp_whoisactive",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 38",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_ola_hallengren",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 38",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_darling_data",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 38",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_streamlit",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 37",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_langchain",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 37",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_ollama",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 37",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_sql_exporter",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 36",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "readme_windows_exporter",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 36",
+      "weight": 1.0
+    },
+    {
+      "source": "dashboards_index_data_source",
+      "target": "readme_dba_database",
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "dashboards/index.md",
+      "source_location": "line 5",
+      "weight": 1.0
+    },
+    {
+      "source": "dashboards_index_monitoring_live_distributed",
+      "target": "dashboards_index_data_source",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "dashboards/index.md",
+      "source_location": "line 16",
+      "weight": 1.0
+    },
+    {
+      "source": "dashboards_index_monitoring_live_all_servers",
+      "target": "dashboards_index_data_source",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "dashboards/index.md",
+      "source_location": "line 17",
+      "weight": 1.0
+    },
+    {
+      "source": "dashboards_index_core_metrics_trend",
+      "target": "dashboards_index_monitoring_live_distributed",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "dashboards/index.md",
+      "source_location": "lines 16-20",
+      "weight": 1.0
+    },
+    {
+      "source": "dashboards_index_xevent_trend",
+      "target": "dashboards_index_xevent_workload",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "dashboards/index.md",
+      "source_location": "lines 27-28",
+      "weight": 1.0
+    },
+    {
+      "source": "dashboards_variables_server_variable",
+      "target": "dashboards_index_monitoring_live_distributed",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "dashboards/variables.md",
+      "source_location": "line 16",
+      "weight": 1.0
+    },
+    {
+      "source": "dashboards_variables_time_filtering",
+      "target": "dashboards_index_data_source",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "dashboards/variables.md",
+      "source_location": "line 42",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_index_collection_tier",
+      "target": "architecture_index_storage_tier",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "architecture/index.md",
+      "source_location": "lines 5-7",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_index_storage_tier",
+      "target": "architecture_index_consumption_tier",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "architecture/index.md",
+      "source_location": "lines 5-7",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_index_consumption_tier",
+      "target": "readme_grafana",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "architecture/index.md",
+      "source_location": "line 7",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_index_consumption_tier",
+      "target": "readme_prometheus",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "architecture/index.md",
+      "source_location": "line 7",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_index_consumption_tier",
+      "target": "readme_python_alert_engine",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "architecture/index.md",
+      "source_location": "line 7",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_topology_distributed_topology",
+      "target": "architecture_topology_central_topology",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "architecture/topology.md",
+      "source_location": "lines 5-89",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_topology_hybrid_variants",
+      "target": "architecture_topology_distributed_topology",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "architecture/topology.md",
+      "source_location": "line 90",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_data_flow_perfmon_collection",
+      "target": "architecture_index_collection_tier",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "architecture/data-flow.md",
+      "source_location": "line 35",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_data_flow_tsql_capture",
+      "target": "architecture_index_collection_tier",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "architecture/data-flow.md",
+      "source_location": "line 45",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_data_flow_inventory_aggregation",
+      "target": "architecture_index_storage_tier",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "architecture/data-flow.md",
+      "source_location": "line 61",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_data_flow_alert_path",
+      "target": "readme_python_alert_engine",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "architecture/data-flow.md",
+      "source_location": "line 93",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_components_ddls_folder",
+      "target": "architecture_components_wait_stats_table",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "architecture/components.md",
+      "source_location": "line 10",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_components_ddls_folder",
+      "target": "architecture_components_file_io_stats_table",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "architecture/components.md",
+      "source_location": "line 10",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_components_ddls_folder",
+      "target": "architecture_components_xevent_metrics_table",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "architecture/components.md",
+      "source_location": "line 10",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_components_grafana_dashboards_folder",
+      "target": "readme_grafana",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "architecture/components.md",
+      "source_location": "line 11",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_components_alerting_folder",
+      "target": "readme_python_alert_engine",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "architecture/components.md",
+      "source_location": "line 12",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_components_sql_exporter_folder",
+      "target": "readme_sql_exporter",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "architecture/components.md",
+      "source_location": "line 13",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_components_tsql_normalizer",
+      "target": "architecture_components_xevent_metrics_table",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "architecture/components.md",
+      "source_location": "line 55",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_components_install_script",
+      "target": "architecture_components_alerting_folder",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "architecture/components.md",
+      "source_location": "line 31",
+      "weight": 1.0
+    },
+    {
+      "source": "architecture_components_remove_script",
+      "target": "architecture_components_install_script",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "architecture/components.md",
+      "source_location": "lines 29-35",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "architecture_index_collection_tier",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "README.md",
+      "source_location": "line 3",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "architecture_index_storage_tier",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "README.md",
+      "source_location": "line 3",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sqlmonitor",
+      "target": "architecture_index_consumption_tier",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "README.md",
+      "source_location": "line 3",
+      "weight": 1.0
+    },
+    {
+      "source": "sql_exporter_alert_rules_sqlmonitor",
+      "target": "sql_exporter_alert_rules_cpu_high",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_alert_rules_sqlmonitor",
+      "target": "sql_exporter_alert_rules_memory_low",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_alert_rules_sqlmonitor",
+      "target": "sql_exporter_alert_rules_disk_high",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_backup_history_collector",
+      "target": "sql_exporter_metric_backup_last_time",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_backup_history_collector",
+      "target": "sql_exporter_metric_backup_duration",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_backup_history_collector",
+      "target": "sql_exporter_query_backup_history",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_aghealth_collector",
+      "target": "sql_exporter_metric_aghealth_sync_state",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_aghealth_collector",
+      "target": "sql_exporter_metric_aghealth_latency",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_aghealth_collector",
+      "target": "sql_exporter_query_aghealth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_cached_collector",
+      "target": "sql_exporter_metric_waits_time",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_cached_collector",
+      "target": "sql_exporter_metric_virtualfilestats",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_cached_collector",
+      "target": "sql_exporter_metric_tempdb_usage",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_cached_collector",
+      "target": "sql_exporter_query_os_wait_stats",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_cached_collector",
+      "target": "sql_exporter_query_tempdb_consumers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_regular_collector",
+      "target": "sql_exporter_metric_service_info",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_regular_collector",
+      "target": "sql_exporter_metric_host_memory",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_regular_collector",
+      "target": "sql_exporter_metric_database_space",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_regular_collector",
+      "target": "sql_exporter_metric_logsaver",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_regular_collector",
+      "target": "sql_exporter_query_logsaver",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_stableinfo_collector",
+      "target": "sql_exporter_metric_db_create_date",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_stableinfo_collector",
+      "target": "sql_exporter_metric_db_config",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_stableinfo_collector",
+      "target": "sql_exporter_query_sys_databases",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_whoisactive_collector",
+      "target": "sql_exporter_metric_whoisactive_start_time",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_whoisactive_collector",
+      "target": "sql_exporter_metric_whoisactive_io",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_whoisactive_collector",
+      "target": "sql_exporter_query_sp_whoisactive",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "target": "sql_exporter_metric_sqlagent_job_enabled",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "target": "sql_exporter_metric_sqlagent_job_outcome",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "target": "sql_exporter_metric_sqlagent_failures",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "target": "sql_exporter_query_sqlagent_jobs_latest",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_standard_collector",
+      "target": "sql_exporter_metric_mssql_up",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_standard_collector",
+      "target": "sql_exporter_metric_deadlocks",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_standard_collector",
+      "target": "sql_exporter_metric_buffer_cache_hit_ratio",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_standard_collector",
+      "target": "sql_exporter_metric_io_stall",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_xevent_collector",
+      "target": "sql_exporter_metric_xevent_events",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_xevent_collector",
+      "target": "sql_exporter_metric_xevent_cpu_time",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_xevent_collector",
+      "target": "sql_exporter_query_xevent_recent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_yml_main_config",
+      "target": "sql_exporter_job_mssql_common",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_yml_main_config",
+      "target": "sql_exporter_job_mssql_ag",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_yml_main_config",
+      "target": "sql_exporter_job_mssql_long_running",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_yml_main_config",
+      "target": "sql_exporter_job_mssql_msdb",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_yml_main_config",
+      "target": "sql_exporter_job_mssql_xevent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_common",
+      "target": "sql_exporter_mssql_dba_cached_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_common",
+      "target": "sql_exporter_mssql_dba_regular_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_common",
+      "target": "sql_exporter_mssql_dba_stableinfo_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_common",
+      "target": "sql_exporter_mssql_standard_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_ag",
+      "target": "sql_exporter_mssql_dba_aghealth_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_long_running",
+      "target": "sql_exporter_mssql_dba_whoisactive_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_msdb",
+      "target": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_msdb",
+      "target": "sql_exporter_mssql_backup_history_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_xevent",
+      "target": "sql_exporter_mssql_xevent_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "windows_exporter_config_yml",
+      "target": "windows_exporter_collector_cpu",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "windows_exporter_config_yml",
+      "target": "windows_exporter_collector_disk",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_metric_waits_time",
+      "target": "sql_exporter_query_os_wait_stats",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85
+    },
+    {
+      "source": "sql_exporter_metric_tempdb_usage",
+      "target": "sql_exporter_query_tempdb_consumers",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85
+    },
+    {
+      "source": "sql_exporter_metric_logsaver",
+      "target": "sql_exporter_query_logsaver",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85
+    },
+    {
+      "source": "sql_exporter_alert_rules_cpu_high",
+      "target": "sql_exporter_contact_point_email",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75
+    },
+    {
+      "source": "sql_exporter_alert_rules_cpu_high",
+      "target": "sql_exporter_contact_point_slack",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "dashboards_collection",
+      "label": "Production Dashboards",
+      "nodes": [
+        "dashboards_index_monitoring_live_distributed",
+        "dashboards_index_monitoring_live_all_servers",
+        "dashboards_index_whoisactive_workload",
+        "dashboards_index_xevent_workload",
+        "dashboards_index_wait_stats"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "dashboards/index.md"
+    },
+    {
+      "id": "collection_patterns",
+      "label": "Collection Patterns",
+      "nodes": [
+        "architecture_data_flow_perfmon_collection",
+        "architecture_data_flow_tsql_capture",
+        "architecture_data_flow_inventory_aggregation"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "architecture/data-flow.md"
+    },
+    {
+      "id": "repository_components",
+      "label": "Repository Folder Structure",
+      "nodes": [
+        "architecture_components_sqlmonitor_folder",
+        "architecture_components_ddls_folder",
+        "architecture_components_grafana_dashboards_folder",
+        "architecture_components_alerting_folder",
+        "architecture_components_sql_exporter_folder"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "architecture/components.md"
+    },
+    {
+      "id": "sql_exporter_collector_ecosystem",
+      "label": "SQL Exporter Collectors Ecosystem",
+      "nodes": [
+        "sql_exporter_mssql_dba_cached_collector",
+        "sql_exporter_mssql_dba_regular_collector",
+        "sql_exporter_mssql_dba_stableinfo_collector",
+        "sql_exporter_mssql_dba_aghealth_collector",
+        "sql_exporter_mssql_standard_collector",
+        "sql_exporter_mssql_dba_whoisactive_collector",
+        "sql_exporter_mssql_sqlagent_jobs_collector",
+        "sql_exporter_mssql_backup_history_collector",
+        "sql_exporter_mssql_xevent_collector"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85
+    },
+    {
+      "id": "sql_exporter_alert_delivery_chain",
+      "label": "Alert Delivery Chain",
+      "nodes": [
+        "sql_exporter_alert_rules_sqlmonitor",
+        "sql_exporter_contact_points_sqlmonitor",
+        "sql_exporter_notification_policies_sqlmonitor"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85
+    },
+    {
+      "id": "sql_exporter_job_configuration",
+      "label": "SQL Exporter Job Configuration",
+      "nodes": [
+        "sql_exporter_job_mssql_common",
+        "sql_exporter_job_mssql_ag",
+        "sql_exporter_job_mssql_long_running",
+        "sql_exporter_job_mssql_msdb",
+        "sql_exporter_job_mssql_xevent"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

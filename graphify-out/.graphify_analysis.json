@@ -1,0 +1,1370 @@
+{
+  "communities": {
+    "0": [
+      "alertclasses_smaalert",
+      "alertclasses_smaalert_rationale_15",
+      "alertclasses_smaalert_rationale_20",
+      "alertclasses_smaalert_rationale_391",
+      "alertclasses_smaalert_rationale_408",
+      "alertclasses_smaalert_rationale_436",
+      "alertclasses_smaalert_smaalert",
+      "alertclasses_smaalert_smaalert_call_usp_insert_sma_alert",
+      "alertclasses_smaalert_smaalert_compute_action_to_take",
+      "alertclasses_smaalert_smaalert_get_alert_dict",
+      "alertclasses_smaalert_smaalert_get_pretty_alert",
+      "alertclasses_smaalert_smaalert_get_pretty_data_size",
+      "alertclasses_smaalert_smaalert_get_pretty_date",
+      "alertclasses_smaalert_smaalert_get_pretty_time",
+      "alertclasses_smaalert_smaalert_init",
+      "alertclasses_smaalert_smaalert_initialize_derived_attributes",
+      "alertclasses_smaalert_smaalert_send_alert_notification",
+      "alertclasses_smaalert_smaalert_send_email_alert_notification",
+      "alertclasses_smaalert_smaalert_send_pagerduty_alert_notification",
+      "alertclasses_smaalert_smaalert_send_slack_alert_notification",
+      "alertclasses_smaalert_smaalert_state_colorizer",
+      "alertclasses_smaalert_smaalert_take_required_action",
+      "alerting_sqlmonitoralertengineapp",
+      "alerting_sqlmonitoralertengineapp_alert_action",
+      "alerting_sqlmonitoralertengineapp_auto_resolve_cleared_alerts",
+      "alerting_sqlmonitoralertengineapp_call_1_minute_job_script",
+      "alerting_sqlmonitoralertengineapp_call_2_minute_job_script",
+      "alerting_sqlmonitoralertengineapp_call_5_minute_job_script",
+      "alerting_sqlmonitoralertengineapp_get_alert",
+      "alerting_sqlmonitoralertengineapp_handle_message",
+      "alerting_sqlmonitoralertengineapp_root_redirect",
+      "alerting_sqlmonitoralertengineapp_slack_interactive_action",
+      "alerting_sqlmonitoralertengineapp_verify_webserver",
+      "commonfunctions_call_usp_insert_sma_alert",
+      "commonfunctions_call_usp_insert_sma_alert_call_usp_insert_sma_alert",
+      "commonfunctions_call_usp_update_alert_slack_ts_value",
+      "commonfunctions_call_usp_update_alert_slack_ts_value_call_usp_update_alert_slack_ts_value",
+      "commonfunctions_get_pretty_dictionary",
+      "commonfunctions_get_pretty_dictionary_get_pretty_dictionary",
+      "commonfunctions_send_email_alert_notification",
+      "commonfunctions_send_email_alert_notification_send_email_alert_notification",
+      "commonfunctions_send_slack_alert_notification",
+      "commonfunctions_send_slack_alert_notification_send_slack_alert_notification",
+      "python_scripts_run_multiserver_parallel_thread_python",
+      "python_scripts_run_multiserver_parallel_thread_python_databaseworker",
+      "python_scripts_run_multiserver_parallel_thread_python_databaseworker_init",
+      "python_scripts_run_multiserver_parallel_thread_python_databaseworker_run",
+      "thread"
+    ],
+    "1": [
+      "architecture_components_alerting_folder",
+      "architecture_components_grafana_dashboards_folder",
+      "architecture_components_install_script",
+      "architecture_components_remove_script",
+      "architecture_components_sql_exporter_folder",
+      "architecture_data_flow_alert_path",
+      "architecture_data_flow_inventory_aggregation",
+      "architecture_data_flow_perfmon_collection",
+      "architecture_data_flow_tsql_capture",
+      "architecture_index_collection_tier",
+      "architecture_index_consumption_tier",
+      "architecture_index_storage_tier",
+      "dashboards_index_core_metrics_trend",
+      "dashboards_index_data_source",
+      "dashboards_index_monitoring_live_all_servers",
+      "dashboards_index_monitoring_live_distributed",
+      "dashboards_variables_server_variable",
+      "dashboards_variables_time_filtering",
+      "readme_darling_data",
+      "readme_dba_database",
+      "readme_first_responder_kit",
+      "readme_grafana",
+      "readme_inventory_server",
+      "readme_langchain",
+      "readme_ola_hallengren",
+      "readme_ollama",
+      "readme_pagerduty",
+      "readme_prometheus",
+      "readme_python_alert_engine",
+      "readme_slack",
+      "readme_sp_whoisactive",
+      "readme_sql_agent_jobs",
+      "readme_sql_exporter",
+      "readme_sqlmonitor",
+      "readme_streamlit",
+      "readme_windows_exporter"
+    ],
+    "2": [
+      "alertclasses_smaalert_smaalert_fetch_data_from_db",
+      "alertclasses_smaalert_smaalert_fetch_owner_team_details",
+      "alertclasses_smaalert_smaalert_initialize_data_from_db",
+      "alertclasses_smaavailablememoryalert",
+      "alertclasses_smaavailablememoryalert_rationale_12",
+      "alertclasses_smaavailablememoryalert_rationale_32",
+      "alertclasses_smaavailablememoryalert_rationale_7",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_compute_affected_servers",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_compute_alert_mail_body",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_compute_alert_mail_subject",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_compute_description",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_compute_header",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_compute_header_slack_markdown",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_compute_severity",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_compute_state",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_init",
+      "alertclasses_smaavailablememoryalert_smaavailablememoryalert_initialize_derived_attributes",
+      "commonfunctions_get_oncall_teams",
+      "commonfunctions_get_oncall_teams_get_oncall_teams",
+      "commonfunctions_get_pretty_table",
+      "commonfunctions_get_pretty_table_get_pretty_data_size",
+      "commonfunctions_get_pretty_table_get_pretty_table",
+      "commonfunctions_get_sma_params",
+      "commonfunctions_get_sma_params_get_sma_params"
+    ],
+    "3": [
+      "sql_exporter_job_mssql_ag",
+      "sql_exporter_job_mssql_long_running",
+      "sql_exporter_job_mssql_msdb",
+      "sql_exporter_job_mssql_xevent",
+      "sql_exporter_metric_aghealth_latency",
+      "sql_exporter_metric_aghealth_sync_state",
+      "sql_exporter_metric_backup_duration",
+      "sql_exporter_metric_backup_last_time",
+      "sql_exporter_metric_sqlagent_failures",
+      "sql_exporter_metric_sqlagent_job_enabled",
+      "sql_exporter_metric_sqlagent_job_outcome",
+      "sql_exporter_metric_whoisactive_io",
+      "sql_exporter_metric_whoisactive_start_time",
+      "sql_exporter_metric_xevent_cpu_time",
+      "sql_exporter_metric_xevent_events",
+      "sql_exporter_mssql_backup_history_collector",
+      "sql_exporter_mssql_dba_aghealth_collector",
+      "sql_exporter_mssql_dba_whoisactive_collector",
+      "sql_exporter_mssql_sqlagent_jobs_collector",
+      "sql_exporter_mssql_xevent_collector",
+      "sql_exporter_query_aghealth",
+      "sql_exporter_query_backup_history",
+      "sql_exporter_query_sp_whoisactive",
+      "sql_exporter_query_sqlagent_jobs_latest",
+      "sql_exporter_query_xevent_recent",
+      "sql_exporter_yml_main_config"
+    ],
+    "4": [
+      "sql_exporter_job_mssql_common",
+      "sql_exporter_metric_buffer_cache_hit_ratio",
+      "sql_exporter_metric_database_space",
+      "sql_exporter_metric_db_config",
+      "sql_exporter_metric_db_create_date",
+      "sql_exporter_metric_deadlocks",
+      "sql_exporter_metric_host_memory",
+      "sql_exporter_metric_io_stall",
+      "sql_exporter_metric_logsaver",
+      "sql_exporter_metric_mssql_up",
+      "sql_exporter_metric_service_info",
+      "sql_exporter_metric_tempdb_usage",
+      "sql_exporter_metric_virtualfilestats",
+      "sql_exporter_metric_waits_time",
+      "sql_exporter_mssql_dba_cached_collector",
+      "sql_exporter_mssql_dba_regular_collector",
+      "sql_exporter_mssql_dba_stableinfo_collector",
+      "sql_exporter_mssql_standard_collector",
+      "sql_exporter_query_logsaver",
+      "sql_exporter_query_os_wait_stats",
+      "sql_exporter_query_sys_databases",
+      "sql_exporter_query_tempdb_consumers"
+    ],
+    "5": [
+      "alertclasses_smaagdbbackupissuealert",
+      "alertclasses_smaagdbbackupissuealert_rationale_12",
+      "alertclasses_smaagdbbackupissuealert_rationale_31",
+      "alertclasses_smaagdbbackupissuealert_rationale_7",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_compute_affected_servers",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_compute_alert_mail_body",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_compute_alert_mail_subject",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_compute_description",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_compute_header",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_compute_header_slack_markdown",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_compute_severity",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_compute_state",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_init",
+      "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert_initialize_derived_attributes",
+      "commonfunctions_get_pandas_dataframe",
+      "commonfunctions_get_pandas_dataframe_get_pandas_dataframe"
+    ],
+    "6": [
+      "alertclasses_smaaglatencyalert",
+      "alertclasses_smaaglatencyalert_rationale_12",
+      "alertclasses_smaaglatencyalert_rationale_32",
+      "alertclasses_smaaglatencyalert_rationale_7",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_compute_affected_servers",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_compute_alert_mail_body",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_compute_alert_mail_subject",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_compute_description",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_compute_header",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_compute_header_slack_markdown",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_compute_severity",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_compute_state",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_init",
+      "alertclasses_smaaglatencyalert_smaaglatencyalert_initialize_derived_attributes"
+    ],
+    "7": [
+      "alertclasses_smacpualert",
+      "alertclasses_smacpualert_rationale_12",
+      "alertclasses_smacpualert_rationale_31",
+      "alertclasses_smacpualert_rationale_7",
+      "alertclasses_smacpualert_smacpualert",
+      "alertclasses_smacpualert_smacpualert_compute_affected_servers",
+      "alertclasses_smacpualert_smacpualert_compute_alert_mail_body",
+      "alertclasses_smacpualert_smacpualert_compute_alert_mail_subject",
+      "alertclasses_smacpualert_smacpualert_compute_description",
+      "alertclasses_smacpualert_smacpualert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smacpualert_smacpualert_compute_header",
+      "alertclasses_smacpualert_smacpualert_compute_header_slack_markdown",
+      "alertclasses_smacpualert_smacpualert_compute_severity",
+      "alertclasses_smacpualert_smacpualert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smacpualert_smacpualert_compute_state",
+      "alertclasses_smacpualert_smacpualert_init",
+      "alertclasses_smacpualert_smacpualert_initialize_derived_attributes"
+    ],
+    "8": [
+      "alertclasses_smadisklatencyalert",
+      "alertclasses_smadisklatencyalert_rationale_12",
+      "alertclasses_smadisklatencyalert_rationale_32",
+      "alertclasses_smadisklatencyalert_rationale_7",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_compute_affected_servers",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_compute_alert_mail_body",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_compute_alert_mail_subject",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_compute_description",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_compute_header",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_compute_header_slack_markdown",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_compute_severity",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_compute_state",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_init",
+      "alertclasses_smadisklatencyalert_smadisklatencyalert_initialize_derived_attributes"
+    ],
+    "9": [
+      "alertclasses_smadiskspacealert",
+      "alertclasses_smadiskspacealert_rationale_12",
+      "alertclasses_smadiskspacealert_rationale_32",
+      "alertclasses_smadiskspacealert_rationale_7",
+      "alertclasses_smadiskspacealert_smadiskspacealert",
+      "alertclasses_smadiskspacealert_smadiskspacealert_compute_affected_servers",
+      "alertclasses_smadiskspacealert_smadiskspacealert_compute_alert_mail_body",
+      "alertclasses_smadiskspacealert_smadiskspacealert_compute_alert_mail_subject",
+      "alertclasses_smadiskspacealert_smadiskspacealert_compute_description",
+      "alertclasses_smadiskspacealert_smadiskspacealert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smadiskspacealert_smadiskspacealert_compute_header",
+      "alertclasses_smadiskspacealert_smadiskspacealert_compute_header_slack_markdown",
+      "alertclasses_smadiskspacealert_smadiskspacealert_compute_severity",
+      "alertclasses_smadiskspacealert_smadiskspacealert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smadiskspacealert_smadiskspacealert_compute_state",
+      "alertclasses_smadiskspacealert_smadiskspacealert_init",
+      "alertclasses_smadiskspacealert_smadiskspacealert_initialize_derived_attributes"
+    ],
+    "10": [
+      "alertclasses_smalogspacealert",
+      "alertclasses_smalogspacealert_rationale_12",
+      "alertclasses_smalogspacealert_rationale_32",
+      "alertclasses_smalogspacealert_rationale_7",
+      "alertclasses_smalogspacealert_smalogspacealert",
+      "alertclasses_smalogspacealert_smalogspacealert_compute_affected_servers",
+      "alertclasses_smalogspacealert_smalogspacealert_compute_alert_mail_body",
+      "alertclasses_smalogspacealert_smalogspacealert_compute_alert_mail_subject",
+      "alertclasses_smalogspacealert_smalogspacealert_compute_description",
+      "alertclasses_smalogspacealert_smalogspacealert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smalogspacealert_smalogspacealert_compute_header",
+      "alertclasses_smalogspacealert_smalogspacealert_compute_header_slack_markdown",
+      "alertclasses_smalogspacealert_smalogspacealert_compute_severity",
+      "alertclasses_smalogspacealert_smalogspacealert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smalogspacealert_smalogspacealert_compute_state",
+      "alertclasses_smalogspacealert_smalogspacealert_init",
+      "alertclasses_smalogspacealert_smalogspacealert_initialize_derived_attributes"
+    ],
+    "11": [
+      "alertclasses_smamemorygrantspendingalert",
+      "alertclasses_smamemorygrantspendingalert_rationale_12",
+      "alertclasses_smamemorygrantspendingalert_rationale_31",
+      "alertclasses_smamemorygrantspendingalert_rationale_7",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_compute_affected_servers",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_compute_alert_mail_body",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_compute_alert_mail_subject",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_compute_description",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_compute_header",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_compute_header_slack_markdown",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_compute_severity",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_compute_state",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_init",
+      "alertclasses_smamemorygrantspendingalert_smamemorygrantspendingalert_initialize_derived_attributes"
+    ],
+    "12": [
+      "alertclasses_smanonagdbbackupissuealert",
+      "alertclasses_smanonagdbbackupissuealert_rationale_12",
+      "alertclasses_smanonagdbbackupissuealert_rationale_31",
+      "alertclasses_smanonagdbbackupissuealert_rationale_7",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_compute_affected_servers",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_compute_alert_mail_body",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_compute_alert_mail_subject",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_compute_description",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_compute_header",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_compute_header_slack_markdown",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_compute_severity",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_compute_state",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_init",
+      "alertclasses_smanonagdbbackupissuealert_smanonagdbbackupissuealert_initialize_derived_attributes"
+    ],
+    "13": [
+      "alertclasses_smaofflineagentalert",
+      "alertclasses_smaofflineagentalert_rationale_12",
+      "alertclasses_smaofflineagentalert_rationale_28",
+      "alertclasses_smaofflineagentalert_rationale_7",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_compute_affected_servers",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_compute_alert_mail_body",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_compute_alert_mail_subject",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_compute_description",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_compute_header",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_compute_header_slack_markdown",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_compute_severity",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_compute_state",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_init",
+      "alertclasses_smaofflineagentalert_smaofflineagentalert_initialize_derived_attributes"
+    ],
+    "14": [
+      "alertclasses_smaofflineserveralert",
+      "alertclasses_smaofflineserveralert_rationale_12",
+      "alertclasses_smaofflineserveralert_rationale_28",
+      "alertclasses_smaofflineserveralert_rationale_7",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_compute_affected_servers",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_compute_alert_mail_body",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_compute_alert_mail_subject",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_compute_description",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_compute_header",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_compute_header_slack_markdown",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_compute_severity",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_compute_state",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_init",
+      "alertclasses_smaofflineserveralert_smaofflineserveralert_initialize_derived_attributes"
+    ],
+    "15": [
+      "alertclasses_smasqlblockingalert",
+      "alertclasses_smasqlblockingalert_rationale_12",
+      "alertclasses_smasqlblockingalert_rationale_30",
+      "alertclasses_smasqlblockingalert_rationale_7",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_compute_affected_servers",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_compute_alert_mail_body",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_compute_alert_mail_subject",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_compute_description",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_compute_header",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_compute_header_slack_markdown",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_compute_severity",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_compute_state",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_init",
+      "alertclasses_smasqlblockingalert_smasqlblockingalert_initialize_derived_attributes"
+    ],
+    "16": [
+      "alertclasses_smasqlmonitorjobsalert",
+      "alertclasses_smasqlmonitorjobsalert_rationale_12",
+      "alertclasses_smasqlmonitorjobsalert_rationale_30",
+      "alertclasses_smasqlmonitorjobsalert_rationale_7",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_compute_affected_servers",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_compute_alert_mail_body",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_compute_alert_mail_subject",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_compute_description",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_compute_header",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_compute_header_slack_markdown",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_compute_severity",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_compute_state",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_init",
+      "alertclasses_smasqlmonitorjobsalert_smasqlmonitorjobsalert_initialize_derived_attributes"
+    ],
+    "17": [
+      "alertclasses_smatempdbalert",
+      "alertclasses_smatempdbalert_rationale_12",
+      "alertclasses_smatempdbalert_rationale_31",
+      "alertclasses_smatempdbalert_rationale_7",
+      "alertclasses_smatempdbalert_smatempdbalert",
+      "alertclasses_smatempdbalert_smatempdbalert_compute_affected_servers",
+      "alertclasses_smatempdbalert_smatempdbalert_compute_alert_mail_body",
+      "alertclasses_smatempdbalert_smatempdbalert_compute_alert_mail_subject",
+      "alertclasses_smatempdbalert_smatempdbalert_compute_description",
+      "alertclasses_smatempdbalert_smatempdbalert_compute_df_alert_pyodbc_resultset",
+      "alertclasses_smatempdbalert_smatempdbalert_compute_header",
+      "alertclasses_smatempdbalert_smatempdbalert_compute_header_slack_markdown",
+      "alertclasses_smatempdbalert_smatempdbalert_compute_severity",
+      "alertclasses_smatempdbalert_smatempdbalert_compute_sqlmonitor_dashboard_url",
+      "alertclasses_smatempdbalert_smatempdbalert_compute_state",
+      "alertclasses_smatempdbalert_smatempdbalert_init",
+      "alertclasses_smatempdbalert_smatempdbalert_initialize_derived_attributes"
+    ],
+    "18": [
+      "path",
+      "sql_exporter_generate_sql_exporter_dashboard",
+      "sql_exporter_generate_sql_exporter_dashboard_build_dashboard",
+      "sql_exporter_generate_sql_exporter_dashboard_dashboardbuilder",
+      "sql_exporter_generate_sql_exporter_dashboard_dashboardbuilder_desc",
+      "sql_exporter_generate_sql_exporter_dashboard_dashboardbuilder_gap",
+      "sql_exporter_generate_sql_exporter_dashboard_dashboardbuilder_id",
+      "sql_exporter_generate_sql_exporter_dashboard_dashboardbuilder_init",
+      "sql_exporter_generate_sql_exporter_dashboard_dashboardbuilder_row",
+      "sql_exporter_generate_sql_exporter_dashboard_dashboardbuilder_stat",
+      "sql_exporter_generate_sql_exporter_dashboard_dashboardbuilder_table",
+      "sql_exporter_generate_sql_exporter_dashboard_dashboardbuilder_timeseries",
+      "sql_exporter_generate_sql_exporter_dashboard_dashboardbuilder_unit",
+      "sql_exporter_generate_sql_exporter_dashboard_parse_metric_meta",
+      "sql_exporter_generate_sql_exporter_dashboard_q"
+    ],
+    "19": [
+      "sqlmonitor",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_ai_agent_ai_agent_ssmssqlproj",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_alerting_alerting_ssmssqlproj",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_credential_manager_credential_manager_ssmssqlproj",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_ddls_ddls_ssmssqlproj",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_grafana_dashboards_grafana_dashboards_ssmssqlproj",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_notebooks_notebooks_ssmssqlproj",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_private_private_ssmssqlproj",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_sql_queries_sql_queries_ssmssqlproj",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_tsqltextnormalizer_tsqltextnormalizer_ssmssqlproj",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_volatile_volatile_ssmssqlproj",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_work_tom_gm_dr_replication_work_tom_gm_dr_replication_ssmssqlproj",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_work_work_ssmssqlproj"
+    ],
+    "20": [
+      "binaryliteral",
+      "inpredicate",
+      "integerliteral",
+      "moneyliteral",
+      "numericliteral",
+      "realliteral",
+      "stringliteral",
+      "tsqlfragmentvisitor",
+      "tsqltextnormalizer_tsqlvisitor",
+      "tsqltextnormalizer_tsqlvisitor_myvisitor",
+      "tsqltextnormalizer_tsqlvisitor_myvisitor_explicitvisit",
+      "tsqltextnormalizer_tsqlvisitor_tsqltextnormalizer"
+    ],
+    "21": [
+      "sqlboolean",
+      "sqlfunction",
+      "sqlint32",
+      "sqlstring",
+      "tsqltextnormalizer_stringop",
+      "tsqltextnormalizer_stringop_stringop",
+      "tsqltextnormalizer_stringop_stringop_sqlsig",
+      "tsqltextnormalizer_stringop_tsqltextnormalizer"
+    ],
+    "22": [
+      "int",
+      "string",
+      "tsqltextnormalizer_tsqlnormalizer",
+      "tsqltextnormalizer_tsqlnormalizer_batch",
+      "tsqltextnormalizer_tsqlnormalizer_tsqlnormalizer",
+      "tsqltextnormalizer_tsqlnormalizer_tsqlnormalizer_normalize",
+      "tsqltextnormalizer_tsqlnormalizer_tsqltextnormalizer"
+    ],
+    "23": [
+      "powershell_learnings_argument_completers",
+      "powershell_learnings_argument_completers_get_city",
+      "powershell_learnings_argument_completers_get_color",
+      "powershell_learnings_argument_completers_get_myprocess",
+      "powershell_learnings_argument_completers_get_myservice",
+      "powershell_learnings_argument_completers_get_pizza",
+      "powershell_learnings_argument_completers_get_vegetable"
+    ],
+    "24": [
+      "sql_exporter_alert_rules_cpu_high",
+      "sql_exporter_alert_rules_disk_high",
+      "sql_exporter_alert_rules_memory_low",
+      "sql_exporter_alert_rules_sqlmonitor",
+      "sql_exporter_contact_point_email",
+      "sql_exporter_contact_point_slack"
+    ],
+    "25": [
+      "sqlmonitor_collect_all_server_alert_messages",
+      "sqlmonitor_collect_all_server_alert_messages_decode_sql_type_timestamp",
+      "sqlmonitor_collect_all_server_alert_messages_get_servers_list",
+      "sqlmonitor_collect_all_server_alert_messages_pool_handler",
+      "sqlmonitor_collect_all_server_alert_messages_query_server",
+      "sqlmonitor_collect_all_server_alert_messages_update_inventory"
+    ],
+    "26": [
+      "alerting_test_flask_app",
+      "alerting_test_flask_app_consume_event",
+      "alerting_test_flask_app_health_check",
+      "alerting_test_flask_app_message_secure",
+      "alerting_test_flask_app_welcome"
+    ],
+    "27": [
+      "architecture_components_ddls_folder",
+      "architecture_components_file_io_stats_table",
+      "architecture_components_tsql_normalizer",
+      "architecture_components_wait_stats_table",
+      "architecture_components_xevent_metrics_table"
+    ],
+    "28": [
+      "hooks_external_links",
+      "hooks_external_links_is_external",
+      "hooks_external_links_on_page_content",
+      "hooks_external_links_rationale_1",
+      "hooks_external_links_rewrite"
+    ],
+    "29": [
+      "sql_exporter_pastetheplan_proxy",
+      "sql_exporter_pastetheplan_proxy_ptphandler",
+      "sql_exporter_pastetheplan_proxy_ptphandler_do_get",
+      "sql_exporter_pastetheplan_proxy_ptphandler_html",
+      "sql_exporter_pastetheplan_proxy_ptphandler_log_message"
+    ],
+    "30": [
+      "sqlmonitor_check_instance_availability_log_result",
+      "sqlmonitor_check_instance_availability_pool_handler",
+      "sqlmonitor_check_instance_availability_py_sqlmonitor_check_instance_availability",
+      "sqlmonitor_check_instance_availability_query_server",
+      "sqlmonitor_check_instance_availability_update_inventory"
+    ],
+    "31": [
+      "ai_agent_first_agent_using_ollama",
+      "ai_agent_first_agent_using_ollama_first_agent",
+      "ai_agent_first_agent_using_ollama_run_agent"
+    ],
+    "32": [
+      "ai_agent_first_agent_using_openai",
+      "ai_agent_first_agent_using_openai_first_agent",
+      "ai_agent_first_agent_using_openai_run_agent"
+    ],
+    "33": [
+      "architecture_topology_central_topology",
+      "architecture_topology_distributed_topology",
+      "architecture_topology_hybrid_variants"
+    ],
+    "34": [
+      "deployment_instructions_flask_app_print_scheduled_message_using_apscheduler",
+      "deployment_instructions_flask_app_print_scheduled_message_using_apscheduler_create_app",
+      "deployment_instructions_flask_app_print_scheduled_message_using_apscheduler_rationale_9"
+    ],
+    "35": [
+      "python_scripts_run_multiserver_parallel_pool",
+      "python_scripts_run_multiserver_parallel_pool_pool_handler",
+      "python_scripts_run_multiserver_parallel_pool_query_server"
+    ],
+    "36": [
+      "python_scripts_run_multiserver_parallel_pool_sample",
+      "python_scripts_run_multiserver_parallel_pool_sample_pool_handler",
+      "python_scripts_run_multiserver_parallel_pool_sample_work_log"
+    ],
+    "37": [
+      "tsqltextnormalizer_parameter",
+      "tsqltextnormalizer_parameter_creatingwebapiservice_models",
+      "tsqltextnormalizer_parameter_parameter"
+    ],
+    "38": [
+      "windows_exporter_collector_cpu",
+      "windows_exporter_collector_disk",
+      "windows_exporter_config_yml"
+    ],
+    "39": [
+      "commonfunctions_bindparams",
+      "commonfunctions_bindparams_bindparams"
+    ],
+    "40": [
+      "commonfunctions_connect_dba_instance",
+      "commonfunctions_connect_dba_instance_connect_dba_instance"
+    ],
+    "41": [
+      "commonfunctions_get_script_logger",
+      "commonfunctions_get_script_logger_get_script_logger"
+    ],
+    "42": [
+      "commonfunctions_send_slack_allinone_notification",
+      "commonfunctions_send_slack_allinone_notification_send_slack_allinone_notification"
+    ],
+    "43": [
+      "commonfunctions_send_slack_incremental_notification",
+      "commonfunctions_send_slack_incremental_notification_send_slack_incremental_notification"
+    ],
+    "44": [
+      "customfunctions_extra_code",
+      "customfunctions_extra_code_rationale_1"
+    ],
+    "45": [
+      "customfunctions_get_ag_db_backup_issue",
+      "customfunctions_get_ag_db_backup_issue_get_ag_db_backup_issue"
+    ],
+    "46": [
+      "customfunctions_get_ag_latency",
+      "customfunctions_get_ag_latency_get_ag_latency"
+    ],
+    "47": [
+      "customfunctions_get_available_memory",
+      "customfunctions_get_available_memory_get_available_memory"
+    ],
+    "48": [
+      "customfunctions_get_cpu",
+      "customfunctions_get_cpu_get_cpu"
+    ],
+    "49": [
+      "customfunctions_get_disk_latency",
+      "customfunctions_get_disk_latency_get_disk_latency"
+    ],
+    "50": [
+      "customfunctions_get_disk_space",
+      "customfunctions_get_disk_space_get_disk_space"
+    ],
+    "51": [
+      "customfunctions_get_log_space",
+      "customfunctions_get_log_space_get_log_space"
+    ],
+    "52": [
+      "customfunctions_get_memory_grants_pending",
+      "customfunctions_get_memory_grants_pending_get_memory_grants_pending"
+    ],
+    "53": [
+      "customfunctions_get_nonag_db_backup_issue",
+      "customfunctions_get_nonag_db_backup_issue_get_nonag_db_backup_issue"
+    ],
+    "54": [
+      "customfunctions_get_offline_agent",
+      "customfunctions_get_offline_agent_get_offline_agent"
+    ],
+    "55": [
+      "customfunctions_get_offline_server",
+      "customfunctions_get_offline_server_get_offline_server"
+    ],
+    "56": [
+      "customfunctions_get_sql_blocking",
+      "customfunctions_get_sql_blocking_get_sql_blocking"
+    ],
+    "57": [
+      "customfunctions_get_sqlmonitor_jobs",
+      "customfunctions_get_sqlmonitor_jobs_get_sqlmonitor_jobs"
+    ],
+    "58": [
+      "customfunctions_get_tempdb",
+      "customfunctions_get_tempdb_get_tempdb"
+    ],
+    "59": [
+      "dashboards_index_xevent_trend",
+      "dashboards_index_xevent_workload"
+    ],
+    "60": [
+      "deployment_instructions_alertengine_on_podman",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_alerting_deployment_instructions_alertengine_on_podman_sh__entry"
+    ],
+    "61": [
+      "deployment_instructions_install_ms_odbc_drivers_18_sqlserver",
+      "users_ajaydwivedi_documents_github_personal_sqlmonitor_alerting_deployment_instructions_install_ms_odbc_drivers_18_sqlserver_sh__entry"
+    ],
+    "62": [
+      "powershell_scripts_miscellaneous_test_port",
+      "powershell_scripts_miscellaneous_test_port_test_port"
+    ],
+    "63": [
+      "ai_agent_csv_agent_using_ollama"
+    ],
+    "64": [
+      "ai_agent_sql_db_agent_4_sqlmonitor_using_ollama"
+    ],
+    "65": [
+      "ai_agent_sql_db_agent_using_ollama"
+    ],
+    "66": [
+      "alertclasses_init"
+    ],
+    "67": [
+      "alerting_alertengineapp"
+    ],
+    "68": [
+      "alerting_init"
+    ],
+    "69": [
+      "architecture_components_alert_engine_app"
+    ],
+    "70": [
+      "architecture_components_all_server_volatile_info"
+    ],
+    "71": [
+      "architecture_components_sqlmonitor_folder"
+    ],
+    "72": [
+      "architecture_data_flow_lifecycle"
+    ],
+    "73": [
+      "commonfunctions_init"
+    ],
+    "74": [
+      "customfunctions_init"
+    ],
+    "75": [
+      "dashboards_index_ag_health_state"
+    ],
+    "76": [
+      "dashboards_index_backup_history"
+    ],
+    "77": [
+      "dashboards_index_blitz_server_health"
+    ],
+    "78": [
+      "dashboards_index_blitzindex_analysis"
+    ],
+    "79": [
+      "dashboards_index_database_file_io_stats"
+    ],
+    "80": [
+      "dashboards_index_dba_inventory"
+    ],
+    "81": [
+      "dashboards_index_disk_space"
+    ],
+    "82": [
+      "dashboards_index_job_activity_monitor"
+    ],
+    "83": [
+      "dashboards_index_perfmon_counters"
+    ],
+    "84": [
+      "dashboards_index_sqlmonitor_alerts"
+    ],
+    "85": [
+      "dashboards_index_wait_stats"
+    ],
+    "86": [
+      "dashboards_index_whoisactive_workload"
+    ],
+    "87": [
+      "dashboards_variables_variable_contract"
+    ],
+    "88": [
+      "debug_netframework_version_v4_7_2_assemblyattributes"
+    ],
+    "89": [
+      "debug_temporarygeneratedfile_036c0b5b_1481_4323_8d20_8f5adcb23d92"
+    ],
+    "90": [
+      "debug_temporarygeneratedfile_5937a670_0e60_4077_877b_f7221da3dda1"
+    ],
+    "91": [
+      "debug_temporarygeneratedfile_e7a71f73_0f8d_4b9b_b56e_8e70b10bc5d3"
+    ],
+    "92": [
+      "deployment_instructions_help"
+    ],
+    "93": [
+      "deployment_instructions_install_winget_on_windows"
+    ],
+    "94": [
+      "docs_assets_favicon"
+    ],
+    "95": [
+      "docs_assets_logo"
+    ],
+    "96": [
+      "powershell_scripts_miscellaneous_combine_perfmon_blg_files"
+    ],
+    "97": [
+      "powershell_scripts_miscellaneous_cpu_memory_os_processes_perfmon"
+    ],
+    "98": [
+      "powershell_scripts_miscellaneous_disable_expiredlogins"
+    ],
+    "99": [
+      "powershell_scripts_miscellaneous_disable_screenlock"
+    ],
+    "100": [
+      "powershell_scripts_miscellaneous_disk_subsystem_throughput_test_diskspd"
+    ],
+    "101": [
+      "powershell_scripts_miscellaneous_encrypt_sqldatabases"
+    ],
+    "102": [
+      "powershell_scripts_miscellaneous_powerplan"
+    ],
+    "103": [
+      "powershell_scripts_miscellaneous_run_multiserverscript"
+    ],
+    "104": [
+      "powershell_scripts_miscellaneous_wrapper_installdbafirstresponderkit"
+    ],
+    "105": [
+      "powershell_scripts_miscellaneous_wrapper_testnetworkusingbcp"
+    ],
+    "106": [
+      "powershell_scripts_miscellaneous_wrapper_updatesqlagentjobsthreshold"
+    ],
+    "107": [
+      "properties_assemblyinfo"
+    ],
+    "108": [
+      "python_scripts_cloudflare_ddns_update_python"
+    ],
+    "109": [
+      "python_scripts_connect_2_sqlserver"
+    ],
+    "110": [
+      "python_scripts_failover_aosqlavailabilitygroup"
+    ],
+    "111": [
+      "python_scripts_grafana_dashboard"
+    ],
+    "112": [
+      "python_scripts_html_to_image"
+    ],
+    "113": [
+      "python_scripts_python_import_excel_data"
+    ],
+    "114": [
+      "python_scripts_raise_aghealthstatealert_pagerduty"
+    ],
+    "115": [
+      "python_scripts_raise_aghealthstatealert_python"
+    ],
+    "116": [
+      "python_scripts_raise_allserveralertmessages_pagerduty"
+    ],
+    "117": [
+      "python_scripts_raise_corehealthmetricsalert_python"
+    ],
+    "118": [
+      "python_scripts_raise_diskspacealert_pagerduty"
+    ],
+    "119": [
+      "python_scripts_raise_diskspacealert_python"
+    ],
+    "120": [
+      "python_scripts_run_multiserver_serial_python"
+    ],
+    "121": [
+      "python_scripts_send_slackalert"
+    ],
+    "122": [
+      "python_scripts_slack_token_scopes"
+    ],
+    "123": [
+      "smaalertpackage_init"
+    ],
+    "124": [
+      "smaalerts_alert_agdbbackupissue"
+    ],
+    "125": [
+      "smaalerts_alert_aglatency"
+    ],
+    "126": [
+      "smaalerts_alert_availablememory"
+    ],
+    "127": [
+      "smaalerts_alert_cpu"
+    ],
+    "128": [
+      "smaalerts_alert_disklatency"
+    ],
+    "129": [
+      "smaalerts_alert_diskspace"
+    ],
+    "130": [
+      "smaalerts_alert_loginexpiry"
+    ],
+    "131": [
+      "smaalerts_alert_logspace"
+    ],
+    "132": [
+      "smaalerts_alert_memorygrantspending"
+    ],
+    "133": [
+      "smaalerts_alert_nonagdbbackupissue"
+    ],
+    "134": [
+      "smaalerts_alert_nonsupportedserver"
+    ],
+    "135": [
+      "smaalerts_alert_offlineagent"
+    ],
+    "136": [
+      "smaalerts_alert_offlineserver"
+    ],
+    "137": [
+      "smaalerts_alert_sqlblocking"
+    ],
+    "138": [
+      "smaalerts_alert_sqlmemory"
+    ],
+    "139": [
+      "smaalerts_alert_sqlmonitordatacollection"
+    ],
+    "140": [
+      "smaalerts_alert_sqlmonitorjobs"
+    ],
+    "141": [
+      "smaalerts_alert_tempdb"
+    ],
+    "142": [
+      "smaalerts_alert_waitspercoreperminute"
+    ],
+    "143": [
+      "smaalerts_init"
+    ],
+    "144": [
+      "sql_exporter_contact_point_teams"
+    ],
+    "145": [
+      "sql_exporter_contact_points_sqlmonitor"
+    ],
+    "146": [
+      "sql_exporter_notification_policies_sqlmonitor"
+    ],
+    "147": [
+      "sqlmonitor_add_sqlmonitoraliasentry"
+    ],
+    "148": [
+      "sqlmonitor_check_instance_availability_ps1_sqlmonitor_check_instance_availability"
+    ],
+    "149": [
+      "sqlmonitor_cleanup_sqlmonitor_baseline"
+    ],
+    "150": [
+      "sqlmonitor_disk_space_collector"
+    ],
+    "151": [
+      "sqlmonitor_install_sqlmonitor"
+    ],
+    "152": [
+      "sqlmonitor_invoke_blockingalert"
+    ],
+    "153": [
+      "sqlmonitor_loop_through_all_sqlmonitor_servers"
+    ],
+    "154": [
+      "sqlmonitor_new_pssessionenhanced"
+    ],
+    "155": [
+      "sqlmonitor_perfmon_collector_logman"
+    ],
+    "156": [
+      "sqlmonitor_perfmon_collector_push_to_sqlserver"
+    ],
+    "157": [
+      "sqlmonitor_perfmon_remove_imported_files"
+    ],
+    "158": [
+      "sqlmonitor_remove_sqlmonitor"
+    ],
+    "159": [
+      "sqlmonitor_say_hello"
+    ],
+    "160": [
+      "sqlmonitor_setup_scheduledtask"
+    ],
+    "161": [
+      "sqlmonitor_sqlserver_versions_update"
+    ],
+    "162": [
+      "sqlmonitor_steps_addition_n_removal_4_installsqlmonitor"
+    ],
+    "163": [
+      "sqlmonitor_steps_addition_n_removal_4_removesqlmonitor"
+    ],
+    "164": [
+      "sqlmonitor_stop_sqlmonitorjobs_on_allservers_with_issues"
+    ],
+    "165": [
+      "sqlmonitor_tasklist_push_to_sqlserver"
+    ],
+    "166": [
+      "sqlmonitor_tempcoderunnerfile"
+    ],
+    "167": [
+      "sqlmonitor_update_sqlmonitorip"
+    ],
+    "168": [
+      "sqlmonitor_wrapper_changeloginpasswordallservers"
+    ],
+    "169": [
+      "sqlmonitor_wrapper_gethostipaddresses"
+    ],
+    "170": [
+      "sqlmonitor_wrapper_updatesqlagentjobsthreshold"
+    ],
+    "171": [
+      "sqlmonitor_xevents_remove_processed_files"
+    ],
+    "172": [
+      "tsqltextnormalizer_tsqltextnormalizer"
+    ],
+    "173": [
+      "wrapper_samples_execute_wrapper_installmonitor_on_allservers"
+    ],
+    "174": [
+      "wrapper_samples_wrapper_addsqlmonitoraliasentry"
+    ],
+    "175": [
+      "wrapper_samples_wrapper_alertdiskspace"
+    ],
+    "176": [
+      "wrapper_samples_wrapper_alertofflineserver"
+    ],
+    "177": [
+      "wrapper_samples_wrapper_all_servers_update_retention_pwsh"
+    ],
+    "178": [
+      "wrapper_samples_wrapper_all_servers_update_sqlmonitor_objects"
+    ],
+    "179": [
+      "wrapper_samples_wrapper_installsqlmonitor"
+    ],
+    "180": [
+      "wrapper_samples_wrapper_removesqlmonitor"
+    ],
+    "181": [
+      "wrapper_samples_wrapper_sqlmonitoralertengineapp"
+    ]
+  },
+  "cohesion": {
+    "0": 0.05319148936170213,
+    "1": 0.06349206349206349,
+    "2": 0.10826210826210826,
+    "3": 0.07692307692307693,
+    "4": 0.1038961038961039,
+    "5": 0.16374269005847952,
+    "6": 0.19117647058823528,
+    "7": 0.19117647058823528,
+    "8": 0.19117647058823528,
+    "9": 0.19117647058823528,
+    "10": 0.19117647058823528,
+    "11": 0.19117647058823528,
+    "12": 0.19117647058823528,
+    "13": 0.19117647058823528,
+    "14": 0.19117647058823528,
+    "15": 0.19117647058823528,
+    "16": 0.19117647058823528,
+    "17": 0.19117647058823528,
+    "18": 0.2761904761904762,
+    "19": 0.15384615384615385,
+    "20": 0.16666666666666666,
+    "21": 0.25,
+    "22": 0.3333333333333333,
+    "23": 0.2857142857142857,
+    "24": 0.3333333333333333,
+    "25": 0.3333333333333333,
+    "26": 0.5,
+    "27": 0.4,
+    "28": 0.6,
+    "29": 0.5,
+    "30": 0.4,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 0.6666666666666666,
+    "34": 0.6666666666666666,
+    "35": 0.6666666666666666,
+    "36": 0.6666666666666666,
+    "37": 0.6666666666666666,
+    "38": 0.6666666666666666,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0,
+    "116": 1.0,
+    "117": 1.0,
+    "118": 1.0,
+    "119": 1.0,
+    "120": 1.0,
+    "121": 1.0,
+    "122": 1.0,
+    "123": 1.0,
+    "124": 1.0,
+    "125": 1.0,
+    "126": 1.0,
+    "127": 1.0,
+    "128": 1.0,
+    "129": 1.0,
+    "130": 1.0,
+    "131": 1.0,
+    "132": 1.0,
+    "133": 1.0,
+    "134": 1.0,
+    "135": 1.0,
+    "136": 1.0,
+    "137": 1.0,
+    "138": 1.0,
+    "139": 1.0,
+    "140": 1.0,
+    "141": 1.0,
+    "142": 1.0,
+    "143": 1.0,
+    "144": 1.0,
+    "145": 1.0,
+    "146": 1.0,
+    "147": 1.0,
+    "148": 1.0,
+    "149": 1.0,
+    "150": 1.0,
+    "151": 1.0,
+    "152": 1.0,
+    "153": 1.0,
+    "154": 1.0,
+    "155": 1.0,
+    "156": 1.0,
+    "157": 1.0,
+    "158": 1.0,
+    "159": 1.0,
+    "160": 1.0,
+    "161": 1.0,
+    "162": 1.0,
+    "163": 1.0,
+    "164": 1.0,
+    "165": 1.0,
+    "166": 1.0,
+    "167": 1.0,
+    "168": 1.0,
+    "169": 1.0,
+    "170": 1.0,
+    "171": 1.0,
+    "172": 1.0,
+    "173": 1.0,
+    "174": 1.0,
+    "175": 1.0,
+    "176": 1.0,
+    "177": 1.0,
+    "178": 1.0,
+    "179": 1.0,
+    "180": 1.0,
+    "181": 1.0
+  },
+  "gods": [
+    {
+      "id": "alertclasses_smaalert_smaalert",
+      "label": "SmaAlert",
+      "degree": 37
+    },
+    {
+      "id": "readme_sqlmonitor",
+      "label": "SQLMonitor",
+      "degree": 18
+    },
+    {
+      "id": "commonfunctions_get_pretty_table_get_pretty_table",
+      "label": "get_pretty_table()",
+      "degree": 17
+    },
+    {
+      "id": "commonfunctions_get_sma_params_get_sma_params",
+      "label": "get_sma_params()",
+      "degree": 16
+    },
+    {
+      "id": "alertclasses_smaagdbbackupissuealert_smaagdbbackupissuealert",
+      "label": "SmaAgDbBackupIssueAlert",
+      "degree": 15
+    },
+    {
+      "id": "alertclasses_smaaglatencyalert_smaaglatencyalert",
+      "label": "SmaAgLatencyAlert",
+      "degree": 15
+    },
+    {
+      "id": "alertclasses_smaavailablememoryalert_smaavailablememoryalert",
+      "label": "SmaAvailableMemoryAlert",
+      "degree": 15
+    },
+    {
+      "id": "alertclasses_smacpualert_smacpualert",
+      "label": "SmaCpuAlert",
+      "degree": 15
+    },
+    {
+      "id": "alertclasses_smadisklatencyalert_smadisklatencyalert",
+      "label": "SmaDiskLatencyAlert",
+      "degree": 15
+    },
+    {
+      "id": "alertclasses_smadiskspacealert_smadiskspacealert",
+      "label": "SmaDiskSpaceAlert",
+      "degree": 15
+    }
+  ],
+  "surprises": [
+    {
+      "source": "SQLMonitor",
+      "target": "Collection Tier",
+      "source_files": [
+        "README.md",
+        "architecture/index.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "SQLMonitor",
+      "target": "Consumption Tier",
+      "source_files": [
+        "README.md",
+        "architecture/index.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "SQLMonitor",
+      "target": "Storage Tier",
+      "source_files": [
+        "README.md",
+        "architecture/index.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "Consumption Tier",
+      "target": "Prometheus",
+      "source_files": [
+        "architecture/index.md",
+        "README.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `Prometheus` unexpectedly reaches hub `Consumption Tier`"
+    },
+    {
+      "source": "Alerting Folder",
+      "target": "Python Alert Engine",
+      "source_files": [
+        "architecture/components.md",
+        "README.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `Alerting Folder` unexpectedly reaches hub `Python Alert Engine`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `SmaAlert` connect `Community 0` to `Community 2`, `Community 5`, `Community 6`, `Community 7`, `Community 8`, `Community 9`, `Community 10`, `Community 11`, `Community 12`, `Community 13`, `Community 14`, `Community 15`, `Community 16`, `Community 17`?",
+      "why": "High betweenness centrality (0.151) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `SmaTempdbAlert` connect `Community 17` to `Community 0`?",
+      "why": "High betweenness centrality (0.017) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `SmaSqlMonitorJobsAlert` connect `Community 16` to `Community 0`?",
+      "why": "High betweenness centrality (0.017) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 17 inferred relationships involving `SmaAlert` (e.g. with `SmaAgDbBackupIssueAlert` and `SmaAgLatencyAlert`) actually correct?",
+      "why": "`SmaAlert` has 17 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 3 inferred relationships involving `SQLMonitor` (e.g. with `Collection Tier` and `Consumption Tier`) actually correct?",
+      "why": "`SQLMonitor` has 3 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 15 inferred relationships involving `get_pretty_table()` (e.g. with `.__compute_description()` and `.__compute_description()`) actually correct?",
+      "why": "`get_pretty_table()` has 15 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 15 inferred relationships involving `get_sma_params()` (e.g. with `.__compute_sqlmonitor_dashboard_url()` and `.__compute_sqlmonitor_dashboard_url()`) actually correct?",
+      "why": "`get_sma_params()` has 15 INFERRED edges - model-reasoned connections that need verification."
+    }
+  ]
+}

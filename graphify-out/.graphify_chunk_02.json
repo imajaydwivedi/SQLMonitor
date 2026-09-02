@@ -1,0 +1,878 @@
+{
+  "nodes": [
+    {
+      "id": "sql_exporter_alert_rules_sqlmonitor",
+      "label": "Alert Rules SQLMonitor",
+      "file_type": "document",
+      "source_file": "sql_exporter/alert-engine/Alert-Rules-SQLMonitor.yaml",
+      "source_location": null
+    },
+    {
+      "id": "sql_exporter_alert_rules_cpu_high",
+      "label": "CPU > 80% for 5m Alert",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Alert-Rules-SQLMonitor.yaml",
+      "source_location": "lines 10-90"
+    },
+    {
+      "id": "sql_exporter_alert_rules_memory_low",
+      "label": "Available Memory Below Min Alert",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Alert-Rules-SQLMonitor.yaml",
+      "source_location": "lines 92-178"
+    },
+    {
+      "id": "sql_exporter_alert_rules_disk_high",
+      "label": "Disk Utilization > 70% Alert",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Alert-Rules-SQLMonitor.yaml",
+      "source_location": "lines 180-264"
+    },
+    {
+      "id": "sql_exporter_contact_points_sqlmonitor",
+      "label": "Contact Points SQLMonitor",
+      "file_type": "document",
+      "source_file": "sql_exporter/alert-engine/Contact-Points-SQLMonitor.yaml"
+    },
+    {
+      "id": "sql_exporter_contact_point_email",
+      "label": "Email Contact Point",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Contact-Points-SQLMonitor.yaml",
+      "source_location": "lines 3-11"
+    },
+    {
+      "id": "sql_exporter_contact_point_slack",
+      "label": "Slack Contact Point",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Contact-Points-SQLMonitor.yaml",
+      "source_location": "lines 13-21"
+    },
+    {
+      "id": "sql_exporter_contact_point_teams",
+      "label": "Teams Contact Point",
+      "file_type": "concept",
+      "source_file": "sql_exporter/alert-engine/Contact-Points-SQLMonitor.yaml",
+      "source_location": "lines 23-30"
+    },
+    {
+      "id": "sql_exporter_notification_policies_sqlmonitor",
+      "label": "Notification Policies SQLMonitor",
+      "file_type": "document",
+      "source_file": "sql_exporter/alert-engine/Notification-Policies-SQLMonitor.yaml"
+    },
+    {
+      "id": "sql_exporter_mssql_backup_history_collector",
+      "label": "MSSQL Backup History Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_backup_history.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_backup_last_time",
+      "label": "mssql_backup__last_time_utc Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_backup_history.collector.yml",
+      "source_location": "lines 16-20"
+    },
+    {
+      "id": "sql_exporter_metric_backup_duration",
+      "label": "mssql_backup__last_duration_seconds Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_backup_history.collector.yml",
+      "source_location": "lines 23-27"
+    },
+    {
+      "id": "sql_exporter_query_backup_history",
+      "label": "mssql_backup_history_latest Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_backup_history.collector.yml",
+      "source_location": "lines 59-118"
+    },
+    {
+      "id": "sql_exporter_mssql_dba_aghealth_collector",
+      "label": "MSSQL DBA AG Health Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_dba_aghealth.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_aghealth_sync_state",
+      "label": "mssql_aghealth__synchronization_state Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_aghealth.collector.yml",
+      "source_location": "lines 35-40"
+    },
+    {
+      "id": "sql_exporter_metric_aghealth_latency",
+      "label": "mssql_aghealth__latency_seconds Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_aghealth.collector.yml",
+      "source_location": "lines 49-54"
+    },
+    {
+      "id": "sql_exporter_query_aghealth",
+      "label": "mssql_aghealth Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_aghealth.collector.yml",
+      "source_location": "lines 113-200"
+    },
+    {
+      "id": "sql_exporter_mssql_dba_cached_collector",
+      "label": "MSSQL DBA Cached Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_waits_time",
+      "label": "mssql_waits__wait_time_seconds Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml",
+      "source_location": "lines 26-34"
+    },
+    {
+      "id": "sql_exporter_metric_virtualfilestats",
+      "label": "mssql_virtualfilestats__* Metrics",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml",
+      "source_location": "lines 119-222"
+    },
+    {
+      "id": "sql_exporter_metric_tempdb_usage",
+      "label": "mssql_tempdb_usage__* Metrics",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml",
+      "source_location": "lines 227-279"
+    },
+    {
+      "id": "sql_exporter_query_os_wait_stats",
+      "label": "mssql_os_wait_stats Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml",
+      "source_location": "lines 391-421"
+    },
+    {
+      "id": "sql_exporter_query_tempdb_consumers",
+      "label": "mssql_tempdb_consumers Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_cached.collector.yml",
+      "source_location": "lines 492-1550"
+    },
+    {
+      "id": "sql_exporter_mssql_dba_regular_collector",
+      "label": "MSSQL DBA Regular Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_service_info",
+      "label": "mssql_service_info Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml",
+      "source_location": "lines 14-83"
+    },
+    {
+      "id": "sql_exporter_metric_host_memory",
+      "label": "mssql_host_physical_memory_bytes Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml",
+      "source_location": "lines 85-90"
+    },
+    {
+      "id": "sql_exporter_metric_database_space",
+      "label": "mssql_database_file_size_bytes Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml",
+      "source_location": "lines 119-126"
+    },
+    {
+      "id": "sql_exporter_metric_logsaver",
+      "label": "mssql_logsaver__* Metrics",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml",
+      "source_location": "lines 557-637"
+    },
+    {
+      "id": "sql_exporter_query_logsaver",
+      "label": "mssql_logsaver Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_regular.collector.yml",
+      "source_location": "lines 1091-1549"
+    },
+    {
+      "id": "sql_exporter_mssql_dba_stableinfo_collector",
+      "label": "MSSQL DBA Stable Info Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_dba_stableinfo.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_db_create_date",
+      "label": "mssql_db__create_date Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_stableinfo.collector.yml",
+      "source_location": "lines 25-39"
+    },
+    {
+      "id": "sql_exporter_metric_db_config",
+      "label": "mssql_db__* Configuration Metrics",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_stableinfo.collector.yml",
+      "source_location": "lines 65-551"
+    },
+    {
+      "id": "sql_exporter_query_sys_databases",
+      "label": "mssql_sys_databases Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_stableinfo.collector.yml",
+      "source_location": "lines 611-721"
+    },
+    {
+      "id": "sql_exporter_mssql_dba_whoisactive_collector",
+      "label": "MSSQL DBA WhoIsActive Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_dba_whoisactive.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_whoisactive_start_time",
+      "label": "mssql_whoisactive__start_time Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_whoisactive.collector.yml",
+      "source_location": "lines 18-44"
+    },
+    {
+      "id": "sql_exporter_metric_whoisactive_io",
+      "label": "mssql_whoisactive__physical_io Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_whoisactive.collector.yml",
+      "source_location": "lines 127-133"
+    },
+    {
+      "id": "sql_exporter_query_sp_whoisactive",
+      "label": "mssql_sp_whoisactive Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_dba_whoisactive.collector.yml",
+      "source_location": "lines 168-258"
+    },
+    {
+      "id": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "label": "MSSQL SQL Agent Jobs Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_sqlagent_jobs.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_sqlagent_job_enabled",
+      "label": "mssql_sqlagent_job__enabled Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_sqlagent_jobs.collector.yml",
+      "source_location": "lines 17-21"
+    },
+    {
+      "id": "sql_exporter_metric_sqlagent_job_outcome",
+      "label": "mssql_sqlagent_job__last_run_outcome Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_sqlagent_jobs.collector.yml",
+      "source_location": "lines 24-28"
+    },
+    {
+      "id": "sql_exporter_metric_sqlagent_failures",
+      "label": "mssql_sqlagent_job__step_failures_last_24h Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_sqlagent_jobs.collector.yml",
+      "source_location": "lines 59-64"
+    },
+    {
+      "id": "sql_exporter_query_sqlagent_jobs_latest",
+      "label": "mssql_sqlagent_jobs_latest Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_sqlagent_jobs.collector.yml",
+      "source_location": "lines 72-144"
+    },
+    {
+      "id": "sql_exporter_mssql_standard_collector",
+      "label": "MSSQL Standard Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_standard.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_mssql_up",
+      "label": "mssql_up Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_standard.collector.yml",
+      "source_location": "lines 14-19"
+    },
+    {
+      "id": "sql_exporter_metric_deadlocks",
+      "label": "mssql_deadlocks Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_standard.collector.yml",
+      "source_location": "lines 74-81"
+    },
+    {
+      "id": "sql_exporter_metric_buffer_cache_hit_ratio",
+      "label": "mssql_buffer_cache_hit_ratio Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_standard.collector.yml",
+      "source_location": "lines 130-137"
+    },
+    {
+      "id": "sql_exporter_metric_io_stall",
+      "label": "mssql_io_stall_seconds Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_standard.collector.yml",
+      "source_location": "lines 151-168"
+    },
+    {
+      "id": "sql_exporter_mssql_xevent_collector",
+      "label": "MSSQL Extended Events Collector",
+      "file_type": "document",
+      "source_file": "sql_exporter/mssql_xevent.collector.yml"
+    },
+    {
+      "id": "sql_exporter_metric_xevent_events",
+      "label": "mssql_xevent__events_last_5m Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_xevent.collector.yml",
+      "source_location": "lines 22-27"
+    },
+    {
+      "id": "sql_exporter_metric_xevent_cpu_time",
+      "label": "mssql_xevent__cpu_time_ms_last_5m Metric",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_xevent.collector.yml",
+      "source_location": "lines 29-34"
+    },
+    {
+      "id": "sql_exporter_query_xevent_recent",
+      "label": "mssql_xevent_recent Query",
+      "file_type": "concept",
+      "source_file": "sql_exporter/mssql_xevent.collector.yml",
+      "source_location": "lines 78-124"
+    },
+    {
+      "id": "sql_exporter_yml_main_config",
+      "label": "SQL Exporter Main Configuration",
+      "file_type": "document",
+      "source_file": "sql_exporter/sql_exporter.yml"
+    },
+    {
+      "id": "sql_exporter_job_mssql_common",
+      "label": "mssql_common Job",
+      "file_type": "concept",
+      "source_file": "sql_exporter/sql_exporter.yml",
+      "source_location": "lines 21-29"
+    },
+    {
+      "id": "sql_exporter_job_mssql_ag",
+      "label": "mssql_ag Job",
+      "file_type": "concept",
+      "source_file": "sql_exporter/sql_exporter.yml",
+      "source_location": "lines 31-36"
+    },
+    {
+      "id": "sql_exporter_job_mssql_long_running",
+      "label": "mssql_long_running Job",
+      "file_type": "concept",
+      "source_file": "sql_exporter/sql_exporter.yml",
+      "source_location": "lines 38-43"
+    },
+    {
+      "id": "sql_exporter_job_mssql_msdb",
+      "label": "mssql_msdb Job",
+      "file_type": "concept",
+      "source_file": "sql_exporter/sql_exporter.yml",
+      "source_location": "lines 45-51"
+    },
+    {
+      "id": "sql_exporter_job_mssql_xevent",
+      "label": "mssql_xevent Job",
+      "file_type": "concept",
+      "source_file": "sql_exporter/sql_exporter.yml",
+      "source_location": "lines 53-58"
+    },
+    {
+      "id": "windows_exporter_config_yml",
+      "label": "Windows Exporter Configuration",
+      "file_type": "document",
+      "source_file": "sql_exporter/windows_exporter_config.yml"
+    },
+    {
+      "id": "windows_exporter_collector_cpu",
+      "label": "CPU Collector",
+      "file_type": "concept",
+      "source_file": "sql_exporter/windows_exporter_config.yml",
+      "source_location": "lines 2"
+    },
+    {
+      "id": "windows_exporter_collector_disk",
+      "label": "Disk Drive Collector",
+      "file_type": "concept",
+      "source_file": "sql_exporter/windows_exporter_config.yml",
+      "source_location": "lines 2"
+    },
+    {
+      "id": "python_scripts_slack_token_scopes",
+      "label": "Slack Token Scopes Screenshot",
+      "file_type": "image",
+      "source_file": "Python-Scripts/Slack-SQLMonitor-App-User-Token-Scopes.png"
+    },
+    {
+      "id": "docs_assets_favicon",
+      "label": "SQLMonitor Favicon",
+      "file_type": "image",
+      "source_file": "docs/assets/favicon.svg"
+    },
+    {
+      "id": "docs_assets_logo",
+      "label": "SQLMonitor Logo",
+      "file_type": "image",
+      "source_file": "docs/assets/logo.svg"
+    }
+  ],
+  "edges": [
+    {
+      "source": "sql_exporter_alert_rules_sqlmonitor",
+      "target": "sql_exporter_alert_rules_cpu_high",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_alert_rules_sqlmonitor",
+      "target": "sql_exporter_alert_rules_memory_low",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_alert_rules_sqlmonitor",
+      "target": "sql_exporter_alert_rules_disk_high",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_backup_history_collector",
+      "target": "sql_exporter_metric_backup_last_time",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_backup_history_collector",
+      "target": "sql_exporter_metric_backup_duration",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_backup_history_collector",
+      "target": "sql_exporter_query_backup_history",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_aghealth_collector",
+      "target": "sql_exporter_metric_aghealth_sync_state",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_aghealth_collector",
+      "target": "sql_exporter_metric_aghealth_latency",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_aghealth_collector",
+      "target": "sql_exporter_query_aghealth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_cached_collector",
+      "target": "sql_exporter_metric_waits_time",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_cached_collector",
+      "target": "sql_exporter_metric_virtualfilestats",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_cached_collector",
+      "target": "sql_exporter_metric_tempdb_usage",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_cached_collector",
+      "target": "sql_exporter_query_os_wait_stats",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_cached_collector",
+      "target": "sql_exporter_query_tempdb_consumers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_regular_collector",
+      "target": "sql_exporter_metric_service_info",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_regular_collector",
+      "target": "sql_exporter_metric_host_memory",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_regular_collector",
+      "target": "sql_exporter_metric_database_space",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_regular_collector",
+      "target": "sql_exporter_metric_logsaver",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_regular_collector",
+      "target": "sql_exporter_query_logsaver",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_stableinfo_collector",
+      "target": "sql_exporter_metric_db_create_date",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_stableinfo_collector",
+      "target": "sql_exporter_metric_db_config",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_stableinfo_collector",
+      "target": "sql_exporter_query_sys_databases",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_whoisactive_collector",
+      "target": "sql_exporter_metric_whoisactive_start_time",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_whoisactive_collector",
+      "target": "sql_exporter_metric_whoisactive_io",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_dba_whoisactive_collector",
+      "target": "sql_exporter_query_sp_whoisactive",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "target": "sql_exporter_metric_sqlagent_job_enabled",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "target": "sql_exporter_metric_sqlagent_job_outcome",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "target": "sql_exporter_metric_sqlagent_failures",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "target": "sql_exporter_query_sqlagent_jobs_latest",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_standard_collector",
+      "target": "sql_exporter_metric_mssql_up",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_standard_collector",
+      "target": "sql_exporter_metric_deadlocks",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_standard_collector",
+      "target": "sql_exporter_metric_buffer_cache_hit_ratio",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_standard_collector",
+      "target": "sql_exporter_metric_io_stall",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_xevent_collector",
+      "target": "sql_exporter_metric_xevent_events",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_xevent_collector",
+      "target": "sql_exporter_metric_xevent_cpu_time",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_mssql_xevent_collector",
+      "target": "sql_exporter_query_xevent_recent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_yml_main_config",
+      "target": "sql_exporter_job_mssql_common",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_yml_main_config",
+      "target": "sql_exporter_job_mssql_ag",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_yml_main_config",
+      "target": "sql_exporter_job_mssql_long_running",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_yml_main_config",
+      "target": "sql_exporter_job_mssql_msdb",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_yml_main_config",
+      "target": "sql_exporter_job_mssql_xevent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_common",
+      "target": "sql_exporter_mssql_dba_cached_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_common",
+      "target": "sql_exporter_mssql_dba_regular_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_common",
+      "target": "sql_exporter_mssql_dba_stableinfo_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_common",
+      "target": "sql_exporter_mssql_standard_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_ag",
+      "target": "sql_exporter_mssql_dba_aghealth_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_long_running",
+      "target": "sql_exporter_mssql_dba_whoisactive_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_msdb",
+      "target": "sql_exporter_mssql_sqlagent_jobs_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_msdb",
+      "target": "sql_exporter_mssql_backup_history_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_job_mssql_xevent",
+      "target": "sql_exporter_mssql_xevent_collector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "windows_exporter_config_yml",
+      "target": "windows_exporter_collector_cpu",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "windows_exporter_config_yml",
+      "target": "windows_exporter_collector_disk",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "sql_exporter_metric_waits_time",
+      "target": "sql_exporter_query_os_wait_stats",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85
+    },
+    {
+      "source": "sql_exporter_metric_tempdb_usage",
+      "target": "sql_exporter_query_tempdb_consumers",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85
+    },
+    {
+      "source": "sql_exporter_metric_logsaver",
+      "target": "sql_exporter_query_logsaver",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85
+    },
+    {
+      "source": "sql_exporter_alert_rules_cpu_high",
+      "target": "sql_exporter_contact_point_email",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75
+    },
+    {
+      "source": "sql_exporter_alert_rules_cpu_high",
+      "target": "sql_exporter_contact_point_slack",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "sql_exporter_collector_ecosystem",
+      "label": "SQL Exporter Collectors Ecosystem",
+      "nodes": [
+        "sql_exporter_mssql_dba_cached_collector",
+        "sql_exporter_mssql_dba_regular_collector",
+        "sql_exporter_mssql_dba_stableinfo_collector",
+        "sql_exporter_mssql_dba_aghealth_collector",
+        "sql_exporter_mssql_standard_collector",
+        "sql_exporter_mssql_dba_whoisactive_collector",
+        "sql_exporter_mssql_sqlagent_jobs_collector",
+        "sql_exporter_mssql_backup_history_collector",
+        "sql_exporter_mssql_xevent_collector"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85
+    },
+    {
+      "id": "sql_exporter_alert_delivery_chain",
+      "label": "Alert Delivery Chain",
+      "nodes": [
+        "sql_exporter_alert_rules_sqlmonitor",
+        "sql_exporter_contact_points_sqlmonitor",
+        "sql_exporter_notification_policies_sqlmonitor"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85
+    },
+    {
+      "id": "sql_exporter_job_configuration",
+      "label": "SQL Exporter Job Configuration",
+      "nodes": [
+        "sql_exporter_job_mssql_common",
+        "sql_exporter_job_mssql_ag",
+        "sql_exporter_job_mssql_long_running",
+        "sql_exporter_job_mssql_msdb",
+        "sql_exporter_job_mssql_xevent"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}
