@@ -1,0 +1,2192 @@
+{
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/AI-Agent/csv_agent_using_ollama.py": {
+    "mtime": 1771928099.9041636,
+    "ast_hash": "25f92f3560b8e61feeb34e469f0e98eb",
+    "semantic_hash": "25f92f3560b8e61feeb34e469f0e98eb"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/AI-Agent/first_agent_using_ollama.py": {
+    "mtime": 1771928099.9061663,
+    "ast_hash": "8a350537c9ed3bde999f5d3ed6a95140",
+    "semantic_hash": "8a350537c9ed3bde999f5d3ed6a95140"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/AI-Agent/first_agent_using_openai.py": {
+    "mtime": 1771928099.9062243,
+    "ast_hash": "7480f0d7680e038c09400764fea8894a",
+    "semantic_hash": "7480f0d7680e038c09400764fea8894a"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/AI-Agent/sql_db_agent_4_sqlmonitor_using_ollama.py": {
+    "mtime": 1771928099.906479,
+    "ast_hash": "1a6549b0dc38553235cae701c7471d4b",
+    "semantic_hash": "1a6549b0dc38553235cae701c7471d4b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/AI-Agent/sql_db_agent_using_ollama.py": {
+    "mtime": 1771928099.9065447,
+    "ast_hash": "1655cab4a7fc6bc7ed24da11ee048d0c",
+    "semantic_hash": "1655cab4a7fc6bc7ed24da11ee048d0c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/AlertEngineApp.py": {
+    "mtime": 1771928099.906666,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/DML-Populate-Inventory-Tables.sql": {
+    "mtime": 1771928099.9068632,
+    "ast_hash": "9d8aaa45d7a602f6c1c9cdae05b1ef29",
+    "semantic_hash": "9d8aaa45d7a602f6c1c9cdae05b1ef29"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/QRY-Debug-Failures-XEvent.sql": {
+    "mtime": 1771928099.9069254,
+    "ast_hash": "85cee489145941a370de95509490c820",
+    "semantic_hash": "85cee489145941a370de95509490c820"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/QRY-Manager-Alerts.sql": {
+    "mtime": 1771928099.9069786,
+    "ast_hash": "586f162f1b40a866f776e215ccb7efbb",
+    "semantic_hash": "586f162f1b40a866f776e215ccb7efbb"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/SCH-Create-Alert-Objects.sql": {
+    "mtime": 1771928099.9070754,
+    "ast_hash": "bd22d03f887f52ca6c61fdd0c46d7af8",
+    "semantic_hash": "bd22d03f887f52ca6c61fdd0c46d7af8"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/SCH-[usp_get_active_alert_by_key].sql": {
+    "mtime": 1771928099.907138,
+    "ast_hash": "2c30b50c011884726e882dda3a8f0071",
+    "semantic_hash": "2c30b50c011884726e882dda3a8f0071"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/SCH-[usp_get_active_alert_by_state].sql": {
+    "mtime": 1771928099.9071975,
+    "ast_hash": "0ca29a7758ab150160f645572c765f43",
+    "semantic_hash": "0ca29a7758ab150160f645572c765f43"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/SCH-[usp_get_alert_by_id].sql": {
+    "mtime": 1771928099.9072647,
+    "ast_hash": "cc003baa91e4866042a4f8d36182ae61",
+    "semantic_hash": "cc003baa91e4866042a4f8d36182ae61"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/SCH-[usp_insert_sma_alert].sql": {
+    "mtime": 1771928099.9073286,
+    "ast_hash": "647a5f0fe8f1c7aeab0f660d1c610755",
+    "semantic_hash": "647a5f0fe8f1c7aeab0f660d1c610755"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/SCH-[usp_update_alert_slack_ts_value].sql": {
+    "mtime": 1771928099.9073942,
+    "ast_hash": "0dd5546845ed24b945dcc0bd29688c8b",
+    "semantic_hash": "0dd5546845ed24b945dcc0bd29688c8b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/__Help__.py": {
+    "mtime": 1771928099.907497,
+    "ast_hash": "9d905f02fe6839e06c8caf83f73bcf4c",
+    "semantic_hash": "9d905f02fe6839e06c8caf83f73bcf4c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/alertengine-on-podman.sh": {
+    "mtime": 1771928099.907558,
+    "ast_hash": "1863dabe0bb5a97605bdc05d4e18e2f5",
+    "semantic_hash": "1863dabe0bb5a97605bdc05d4e18e2f5"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/flask-app-print-scheduled-message-using-apscheduler.py": {
+    "mtime": 1771928099.907625,
+    "ast_hash": "2a85eb7fb1e0be17fb68a20526b23a28",
+    "semantic_hash": "2a85eb7fb1e0be17fb68a20526b23a28"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/install-ms-odbc-drivers-18-sqlserver.sh": {
+    "mtime": 1771928099.9076989,
+    "ast_hash": "ee04c0f9e2eba54f6e4bb13568c5435e",
+    "semantic_hash": "ee04c0f9e2eba54f6e4bb13568c5435e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/install-winget-on-windows.ps1": {
+    "mtime": 1771928099.90776,
+    "ast_hash": "3fdb52c087b83b5a27ccc77bf821f0ff",
+    "semantic_hash": "3fdb52c087b83b5a27ccc77bf821f0ff"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SQLMonitorAlertEngineApp.py": {
+    "mtime": 1771928099.908047,
+    "ast_hash": "80823574245fd27371d0c71629bf1269",
+    "semantic_hash": "80823574245fd27371d0c71629bf1269"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaAgDbBackupIssueAlert.py": {
+    "mtime": 1771928099.9082267,
+    "ast_hash": "72beadfe98918321defe8cc74da0c08e",
+    "semantic_hash": "72beadfe98918321defe8cc74da0c08e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaAgLatencyAlert.py": {
+    "mtime": 1771928099.908305,
+    "ast_hash": "92f1dc0bd068a1393b92c215a872f65a",
+    "semantic_hash": "92f1dc0bd068a1393b92c215a872f65a"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaAlert.py": {
+    "mtime": 1771928099.9083931,
+    "ast_hash": "d2020422216ed89b8dee6daf4f703c79",
+    "semantic_hash": "d2020422216ed89b8dee6daf4f703c79"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaAvailableMemoryAlert.py": {
+    "mtime": 1771928099.9084594,
+    "ast_hash": "2438588848c13acc04d01a32bfba835d",
+    "semantic_hash": "2438588848c13acc04d01a32bfba835d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaCpuAlert.py": {
+    "mtime": 1771928099.908533,
+    "ast_hash": "28209236f2809e4f7a22279ff79d1ded",
+    "semantic_hash": "28209236f2809e4f7a22279ff79d1ded"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaDiskLatencyAlert.py": {
+    "mtime": 1771928099.9086106,
+    "ast_hash": "ca0e905fb07eaacb0fac1911144070a7",
+    "semantic_hash": "ca0e905fb07eaacb0fac1911144070a7"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaDiskSpaceAlert.py": {
+    "mtime": 1771928099.9086852,
+    "ast_hash": "4d6af0e219871480622f52df1a1e2e3f",
+    "semantic_hash": "4d6af0e219871480622f52df1a1e2e3f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaLogSpaceAlert.py": {
+    "mtime": 1771928099.9087737,
+    "ast_hash": "4a3adcce3713333659978515803bee9d",
+    "semantic_hash": "4a3adcce3713333659978515803bee9d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaMemoryGrantsPendingAlert.py": {
+    "mtime": 1771928099.9088526,
+    "ast_hash": "94da04b4d77f4e224e4f3641133caa80",
+    "semantic_hash": "94da04b4d77f4e224e4f3641133caa80"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaNonAgDbBackupIssueAlert.py": {
+    "mtime": 1771928099.9089172,
+    "ast_hash": "9ce1a5ca974e86110ba4bb1019c145c2",
+    "semantic_hash": "9ce1a5ca974e86110ba4bb1019c145c2"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaOfflineAgentAlert.py": {
+    "mtime": 1771928099.9089897,
+    "ast_hash": "24311afff7383c1ce2acf773c44e21e0",
+    "semantic_hash": "24311afff7383c1ce2acf773c44e21e0"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaOfflineServerAlert.py": {
+    "mtime": 1771928099.9090595,
+    "ast_hash": "9a3a4364fd280a838ab2b1543ec317ce",
+    "semantic_hash": "9a3a4364fd280a838ab2b1543ec317ce"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaSqlBlockingAlert.py": {
+    "mtime": 1771928099.9091265,
+    "ast_hash": "394c8933a880e4575bb7cad2b886f76a",
+    "semantic_hash": "394c8933a880e4575bb7cad2b886f76a"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaSqlMonitorJobsAlert.py": {
+    "mtime": 1771928099.909195,
+    "ast_hash": "a6a3cda4c9bb56f7b530b67e71bacdc5",
+    "semantic_hash": "a6a3cda4c9bb56f7b530b67e71bacdc5"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/SmaTempdbAlert.py": {
+    "mtime": 1771928099.9092605,
+    "ast_hash": "2475b007ce11861e42eb82d0f6c3338b",
+    "semantic_hash": "2475b007ce11861e42eb82d0f6c3338b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/AlertClasses/__init__.py": {
+    "mtime": 1771928099.909286,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/__init__.py": {
+    "mtime": 1771928099.909363,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/bindParams.py": {
+    "mtime": 1771928099.9094346,
+    "ast_hash": "e6c3d6725ce85ec5b13d798dfbd387b6",
+    "semantic_hash": "e6c3d6725ce85ec5b13d798dfbd387b6"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/call_usp_insert_sma_alert.py": {
+    "mtime": 1771928099.9094937,
+    "ast_hash": "fb239f8e01ebbe0ca607050422e5f1d8",
+    "semantic_hash": "fb239f8e01ebbe0ca607050422e5f1d8"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/call_usp_update_alert_slack_ts_value.py": {
+    "mtime": 1771928099.909555,
+    "ast_hash": "813270ee257ead1d8f6a31e847e88538",
+    "semantic_hash": "813270ee257ead1d8f6a31e847e88538"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/connect_dba_instance.py": {
+    "mtime": 1771928099.9096158,
+    "ast_hash": "5190341808da5ae90ba1304fba220e7f",
+    "semantic_hash": "5190341808da5ae90ba1304fba220e7f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/get_oncall_teams.py": {
+    "mtime": 1771928099.9096746,
+    "ast_hash": "935fa03488cfb03ef4f3986d8e6fed54",
+    "semantic_hash": "935fa03488cfb03ef4f3986d8e6fed54"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/get_pandas_dataframe.py": {
+    "mtime": 1771928099.9097323,
+    "ast_hash": "0f85c77f14905aeafbc749251a3ed2fa",
+    "semantic_hash": "0f85c77f14905aeafbc749251a3ed2fa"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/get_pretty_dictionary.py": {
+    "mtime": 1771928099.9097922,
+    "ast_hash": "7ce2a0a4cd1f226730210c359050be7f",
+    "semantic_hash": "7ce2a0a4cd1f226730210c359050be7f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/get_pretty_table.py": {
+    "mtime": 1771928099.9098513,
+    "ast_hash": "8ddeab1b414b760f5833527123a0cca8",
+    "semantic_hash": "8ddeab1b414b760f5833527123a0cca8"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/get_script_logger.py": {
+    "mtime": 1771928099.9099102,
+    "ast_hash": "018f9a283ddc6ad8834c93404cf5668f",
+    "semantic_hash": "018f9a283ddc6ad8834c93404cf5668f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/get_sma_params.py": {
+    "mtime": 1771928099.910023,
+    "ast_hash": "5d01c4683f28a9e4345ef89768b72022",
+    "semantic_hash": "5d01c4683f28a9e4345ef89768b72022"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/send_email_alert_notification.py": {
+    "mtime": 1771928099.910082,
+    "ast_hash": "0f68d7dbe3198a887a30546518c7f3f2",
+    "semantic_hash": "0f68d7dbe3198a887a30546518c7f3f2"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/send_slack_alert_notification.py": {
+    "mtime": 1771928099.9101422,
+    "ast_hash": "1df826d302cb50c4f105f1807994a7c9",
+    "semantic_hash": "1df826d302cb50c4f105f1807994a7c9"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/send_slack_allinone_notification.py": {
+    "mtime": 1771928099.9102123,
+    "ast_hash": "6ccace9cf8319373b3f7862f3b331a92",
+    "semantic_hash": "6ccace9cf8319373b3f7862f3b331a92"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CommonFunctions/send_slack_incremental_notification.py": {
+    "mtime": 1771928099.9102721,
+    "ast_hash": "4515ca15c8ffa9905e18bef423a2b498",
+    "semantic_hash": "4515ca15c8ffa9905e18bef423a2b498"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/__init__.py": {
+    "mtime": 1771928099.9103374,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/extra-code.py": {
+    "mtime": 1771928099.9104142,
+    "ast_hash": "11a0845110be270a03583f038d8f8d52",
+    "semantic_hash": "11a0845110be270a03583f038d8f8d52"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_ag_db_backup_issue.py": {
+    "mtime": 1771928099.9104822,
+    "ast_hash": "97c1d5662aeecddc95eba9da89470f3f",
+    "semantic_hash": "97c1d5662aeecddc95eba9da89470f3f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_ag_latency.py": {
+    "mtime": 1771928099.9105525,
+    "ast_hash": "88e9cceb0e3e664941f8a55c3c4f7af1",
+    "semantic_hash": "88e9cceb0e3e664941f8a55c3c4f7af1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_available_memory.py": {
+    "mtime": 1771928099.9106102,
+    "ast_hash": "5f5cf669687ecc6511878c1ace265187",
+    "semantic_hash": "5f5cf669687ecc6511878c1ace265187"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_cpu.py": {
+    "mtime": 1771928099.9106758,
+    "ast_hash": "d27b7b923eb97bc7881cfabda32616c6",
+    "semantic_hash": "d27b7b923eb97bc7881cfabda32616c6"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_disk_latency.py": {
+    "mtime": 1771928099.9107256,
+    "ast_hash": "c21aff0c567790e917f4c23c75d7a462",
+    "semantic_hash": "c21aff0c567790e917f4c23c75d7a462"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_disk_space.py": {
+    "mtime": 1771928099.9107807,
+    "ast_hash": "fc4535a4af95c26ef1d99a2e7c0a9510",
+    "semantic_hash": "fc4535a4af95c26ef1d99a2e7c0a9510"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_log_space.py": {
+    "mtime": 1771928099.9108377,
+    "ast_hash": "a6fa1b73de2e5b00350188649d9a5dcc",
+    "semantic_hash": "a6fa1b73de2e5b00350188649d9a5dcc"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_memory_grants_pending.py": {
+    "mtime": 1771928099.9108975,
+    "ast_hash": "d9589c9c1d5578afc4ffb2fdfb367993",
+    "semantic_hash": "d9589c9c1d5578afc4ffb2fdfb367993"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_nonag_db_backup_issue.py": {
+    "mtime": 1771928099.9109643,
+    "ast_hash": "cdea332251b6e37031ae1552ba9b9e40",
+    "semantic_hash": "cdea332251b6e37031ae1552ba9b9e40"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_offline_agent.py": {
+    "mtime": 1771928099.911035,
+    "ast_hash": "943c8d8439bc8e49da8a260ef9f290e5",
+    "semantic_hash": "943c8d8439bc8e49da8a260ef9f290e5"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_offline_server.py": {
+    "mtime": 1771928099.9111037,
+    "ast_hash": "5399302218f0287dc0569d5c768db745",
+    "semantic_hash": "5399302218f0287dc0569d5c768db745"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_sql_blocking.py": {
+    "mtime": 1771928099.9111764,
+    "ast_hash": "3504d941f9dc7733f01e4470e5798022",
+    "semantic_hash": "3504d941f9dc7733f01e4470e5798022"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_sqlmonitor_jobs.py": {
+    "mtime": 1771928099.9112575,
+    "ast_hash": "321dfadb8aeaa437e10767b045ad0d97",
+    "semantic_hash": "321dfadb8aeaa437e10767b045ad0d97"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/CustomFunctions/get_tempdb.py": {
+    "mtime": 1771928099.9113374,
+    "ast_hash": "3a269f512c1f11199b16c4e1e1e8bc4b",
+    "semantic_hash": "3a269f512c1f11199b16c4e1e1e8bc4b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlertPackage/__init__.py": {
+    "mtime": 1771928099.9113739,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-AgDbBackupIssue.py": {
+    "mtime": 1771928099.9115396,
+    "ast_hash": "2352476c902211428f7d9d084864b636",
+    "semantic_hash": "2352476c902211428f7d9d084864b636"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-AgLatency.py": {
+    "mtime": 1771928099.9116068,
+    "ast_hash": "e73df5744662c80a0fdc8d4c4d18b7bd",
+    "semantic_hash": "e73df5744662c80a0fdc8d4c4d18b7bd"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-AvailableMemory.py": {
+    "mtime": 1771928099.9116678,
+    "ast_hash": "8d83842d586d81638046a248d44fbdff",
+    "semantic_hash": "8d83842d586d81638046a248d44fbdff"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-Cpu.py": {
+    "mtime": 1771928099.911733,
+    "ast_hash": "1f63de2b3175c1cb212a6b61a20f4b3e",
+    "semantic_hash": "1f63de2b3175c1cb212a6b61a20f4b3e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-DiskLatency.py": {
+    "mtime": 1771928099.9118087,
+    "ast_hash": "b35c80e9c594f096346247a7040bc48f",
+    "semantic_hash": "b35c80e9c594f096346247a7040bc48f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-DiskSpace.py": {
+    "mtime": 1771928099.9119322,
+    "ast_hash": "c702d6008361da60abf314e4edf41a8e",
+    "semantic_hash": "c702d6008361da60abf314e4edf41a8e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-LogSpace.py": {
+    "mtime": 1771928099.9120052,
+    "ast_hash": "771a693fe898d98d2510680d34e240ca",
+    "semantic_hash": "771a693fe898d98d2510680d34e240ca"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-LoginExpiry.py": {
+    "mtime": 1771928099.9120362,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-MemoryGrantsPending.py": {
+    "mtime": 1771928099.9121203,
+    "ast_hash": "df1f3f8b3d3ac2eb2d00f2c4f6ec582d",
+    "semantic_hash": "df1f3f8b3d3ac2eb2d00f2c4f6ec582d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-NonAgDbBackupIssue.py": {
+    "mtime": 1771928099.9121857,
+    "ast_hash": "712691f0abfcf8f624d5d7caa68fec9d",
+    "semantic_hash": "712691f0abfcf8f624d5d7caa68fec9d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-NonSupportedServer.py": {
+    "mtime": 1771928099.9122183,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-OfflineAgent.py": {
+    "mtime": 1771928099.91231,
+    "ast_hash": "e20fbab343e5ff59a8944c5d4b14f6f7",
+    "semantic_hash": "e20fbab343e5ff59a8944c5d4b14f6f7"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-OfflineServer.py": {
+    "mtime": 1771928099.9123812,
+    "ast_hash": "999dd8e8f768056e4015a4ed827b58ed",
+    "semantic_hash": "999dd8e8f768056e4015a4ed827b58ed"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-SqlBlocking.py": {
+    "mtime": 1771928099.912453,
+    "ast_hash": "4a5112646739752d1898b1bef24cec70",
+    "semantic_hash": "4a5112646739752d1898b1bef24cec70"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-SqlMemory.py": {
+    "mtime": 1771928099.9124932,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-SqlMonitorDataCollection.py": {
+    "mtime": 1771928099.9125435,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-SqlMonitorJobs.py": {
+    "mtime": 1771928099.912615,
+    "ast_hash": "f0b49238b7ff8f2694f243eabd0360c3",
+    "semantic_hash": "f0b49238b7ff8f2694f243eabd0360c3"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-Tempdb.py": {
+    "mtime": 1771928099.912667,
+    "ast_hash": "ccbd7addbb0f5b59818f6f4a26fb4843",
+    "semantic_hash": "ccbd7addbb0f5b59818f6f4a26fb4843"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/Alert-WaitsPerCorePerMinute.py": {
+    "mtime": 1771928099.912695,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/SmaAlerts/__init__.py": {
+    "mtime": 1771928099.9127328,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/__init__.py": {
+    "mtime": 1771928099.9127784,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/test_flask_app.py": {
+    "mtime": 1771928099.9129286,
+    "ast_hash": "4c69b8cf84020e6f7df552e89d103abb",
+    "semantic_hash": "4c69b8cf84020e6f7df552e89d103abb"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Credential-Manager/QRY-Usages-CredentialManager.sql": {
+    "mtime": 1771928099.9131668,
+    "ast_hash": "1303e7e48adac3d8c4667c3614c81ed3",
+    "semantic_hash": "1303e7e48adac3d8c4667c3614c81ed3"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Credential-Manager/SCH-Permissions.sql": {
+    "mtime": 1771928099.913231,
+    "ast_hash": "8216e27ef1a009c16f4bb0fcdf65fc6f",
+    "semantic_hash": "8216e27ef1a009c16f4bb0fcdf65fc6f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Credential-Manager/SCH-[dbo].[credential_manager].sql": {
+    "mtime": 1771928099.9132972,
+    "ast_hash": "6e94b654bcbaef5a6f8d0af9e9826106",
+    "semantic_hash": "6e94b654bcbaef5a6f8d0af9e9826106"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Credential-Manager/SCH-[dbo].[usp_add_credential].sql": {
+    "mtime": 1771928099.913355,
+    "ast_hash": "5d0fe23a504125a9239ad7b89d32460c",
+    "semantic_hash": "5d0fe23a504125a9239ad7b89d32460c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Credential-Manager/SCH-[dbo].[usp_delete_credential].sql": {
+    "mtime": 1771928099.9134214,
+    "ast_hash": "bc3ec71335214bdf29affaa008bafd87",
+    "semantic_hash": "bc3ec71335214bdf29affaa008bafd87"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Credential-Manager/SCH-[dbo].[usp_get_credential].sql": {
+    "mtime": 1771928099.9134998,
+    "ast_hash": "e799a56b9b1207843c06a8d97de683b1",
+    "semantic_hash": "e799a56b9b1207843c06a8d97de683b1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Credential-Manager/SCH-[dbo].[usp_update_credential].sql": {
+    "mtime": 1771928099.9135687,
+    "ast_hash": "3cc42424c1dc5e85fc8ef4373989fac4",
+    "semantic_hash": "3cc42424c1dc5e85fc8ef4373989fac4"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/DCL-[grafana-login].sql": {
+    "mtime": 1771928099.913693,
+    "ast_hash": "4eb31610804a952ed677430649d9b4da",
+    "semantic_hash": "4eb31610804a952ed677430649d9b4da"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/DDL-[DatabaseMail_Using_GMail].sql": {
+    "mtime": 1771928099.913755,
+    "ast_hash": "1933ac875bcc8ecf732f68734a17e9e2",
+    "semantic_hash": "1933ac875bcc8ecf732f68734a17e9e2"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/DDL-[sp_WhoIsActive_v0508.20260409].sql": {
+    "mtime": 1779160560.876137,
+    "ast_hash": "3d3d7a0583a73cb09b00c17d9146ac4c",
+    "semantic_hash": "3d3d7a0583a73cb09b00c17d9146ac4c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/DDL-[sp_WhoIsActive_v1219.20260409].sql": {
+    "mtime": 1780912920.9955118,
+    "ast_hash": "e772010a2482c6a0076503309a77ec2e",
+    "semantic_hash": "e772010a2482c6a0076503309a77ec2e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/DDL-[sp_WhoIsActive_v12_00(Modified)].sql": {
+    "mtime": 1779160329.5341866,
+    "ast_hash": "9c7307b0ad0bdeadb70d13893d8fa492",
+    "semantic_hash": "9c7307b0ad0bdeadb70d13893d8fa492"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/DDL-[sp_WhoIsActive_v2200.20260409].sql": {
+    "mtime": 1779160595.9698813,
+    "ast_hash": "8f40fa81d067447ef692bc437520d0d0",
+    "semantic_hash": "8f40fa81d067447ef692bc437520d0d0"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/FirstResponderKit-Install-All-Scripts.sql": {
+    "mtime": 1771928099.915814,
+    "ast_hash": "fa5dbbe6108f4a28f609aea1189967fb",
+    "semantic_hash": "fa5dbbe6108f4a28f609aea1189967fb"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/QRY-DDL-[FirstResponderKit-Install-All-Scripts].sql": {
+    "mtime": 1771928099.916059,
+    "ast_hash": "fa5dbbe6108f4a28f609aea1189967fb",
+    "semantic_hash": "fa5dbbe6108f4a28f609aea1189967fb"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/QRY-SELECT-[Find-Missing-Tables-For-Purging].sql": {
+    "mtime": 1771928099.9161496,
+    "ast_hash": "7052a7353728abef095c87daaa59fbf4",
+    "semantic_hash": "7052a7353728abef095c87daaa59fbf4"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/QRY-UPDATE-[SQLAgentJobsThreshold].sql": {
+    "mtime": 1771928099.916218,
+    "ast_hash": "4a053e1089c0a42f853231edd5879028",
+    "semantic_hash": "4a053e1089c0a42f853231edd5879028"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Blitz-Partitioning.sql": {
+    "mtime": 1771928099.9162748,
+    "ast_hash": "3e48637d4d26a28e3cc33e5b32c3eeea",
+    "semantic_hash": "3e48637d4d26a28e3cc33e5b32c3eeea"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-BlitzIndex-Partitioning.sql": {
+    "mtime": 1771928099.916331,
+    "ast_hash": "5b64d11cbe9bdeb6f5c43effa634c4cf",
+    "semantic_hash": "5b64d11cbe9bdeb6f5c43effa634c4cf"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-BlitzIndex_Mode0-Partitioning.sql": {
+    "mtime": 1771928099.9163852,
+    "ast_hash": "2e4b3d979b69d025c8339cc5a7e05703",
+    "semantic_hash": "2e4b3d979b69d025c8339cc5a7e05703"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-BlitzIndex_Mode1-Partitioning.sql": {
+    "mtime": 1771928099.9164364,
+    "ast_hash": "86a045ce83d23f95a90dcfa60ffcf863",
+    "semantic_hash": "86a045ce83d23f95a90dcfa60ffcf863"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-BlitzIndex_Mode4-Partitioning.sql": {
+    "mtime": 1771928099.9164934,
+    "ast_hash": "eb6f917e513c3e3bf45e65e18348c1fa",
+    "semantic_hash": "eb6f917e513c3e3bf45e65e18348c1fa"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Create-All-Objects.sql": {
+    "mtime": 1780912920.996919,
+    "ast_hash": "58b195c6ddf8059e1496e04b5b742f7d",
+    "semantic_hash": "58b195c6ddf8059e1496e04b5b742f7d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Create-Inventory-Specific-Objects.sql": {
+    "mtime": 1771928099.9167588,
+    "ast_hash": "c5cfc6ab72050b8b77172f6848a268b0",
+    "semantic_hash": "c5cfc6ab72050b8b77172f6848a268b0"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Create-XEvents-RingBuffer.sql": {
+    "mtime": 1771928099.9168205,
+    "ast_hash": "2c96648cbc32d6b54b68941b20da8b9f",
+    "semantic_hash": "2c96648cbc32d6b54b68941b20da8b9f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Create-XEvents.sql": {
+    "mtime": 1771928099.9168692,
+    "ast_hash": "1d70d451d4d6e1086b523192532cb805",
+    "semantic_hash": "1d70d451d4d6e1086b523192532cb805"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Capture-AlertMessages].sql": {
+    "mtime": 1771928099.9169502,
+    "ast_hash": "8949d045bce91a6f0d1a0665116b4e9b",
+    "semantic_hash": "8949d045bce91a6f0d1a0665116b4e9b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Check-InstanceAvailability].sql": {
+    "mtime": 1771928099.9170063,
+    "ast_hash": "028be6d478afee007b898746232d1148",
+    "semantic_hash": "028be6d478afee007b898746232d1148"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Check-SQLAgentJobs].sql": {
+    "mtime": 1771928099.917078,
+    "ast_hash": "041d009a18a6c4d67fadd132a7864b95",
+    "semantic_hash": "041d009a18a6c4d67fadd132a7864b95"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect Login Expiration Info].sql": {
+    "mtime": 1771928099.9171333,
+    "ast_hash": "0945048e8919b9f67b053a2a70bd14bb",
+    "semantic_hash": "0945048e8919b9f67b053a2a70bd14bb"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-AgHealthState].sql": {
+    "mtime": 1771928099.9171896,
+    "ast_hash": "600e2d64a6bf1ac02884814142814b55",
+    "semantic_hash": "600e2d64a6bf1ac02884814142814b55"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-AllServerAlertMessages].sql": {
+    "mtime": 1771928099.917247,
+    "ast_hash": "ed408aa22470ef12b5790435d1d77cd6",
+    "semantic_hash": "ed408aa22470ef12b5790435d1d77cd6"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-DiskSpace-ManagedInstance].sql": {
+    "mtime": 1771928099.9173045,
+    "ast_hash": "a7ec15db996b361a14eec6f70bc74eb3",
+    "semantic_hash": "a7ec15db996b361a14eec6f70bc74eb3"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-DiskSpace].sql": {
+    "mtime": 1771928099.917367,
+    "ast_hash": "3ecf6cc5665f5143a414abfed4b7a130",
+    "semantic_hash": "3ecf6cc5665f5143a414abfed4b7a130"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-FileIOStats].sql": {
+    "mtime": 1771928099.9174178,
+    "ast_hash": "90c4635399097bbbd57c5e642221239e",
+    "semantic_hash": "90c4635399097bbbd57c5e642221239e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-MemoryClerks].sql": {
+    "mtime": 1771928099.9174712,
+    "ast_hash": "4aa76f486afe6954b76344bc422d8963",
+    "semantic_hash": "4aa76f486afe6954b76344bc422d8963"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-OSProcesses].sql": {
+    "mtime": 1771928099.9175231,
+    "ast_hash": "5809779885afad46ca266bdffa007d66",
+    "semantic_hash": "5809779885afad46ca266bdffa007d66"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-PerfmonData-ManagedInstance].sql": {
+    "mtime": 1771928099.917575,
+    "ast_hash": "257d7a2997f5944e9d6ec3170e88d535",
+    "semantic_hash": "257d7a2997f5944e9d6ec3170e88d535"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-PerfmonData].sql": {
+    "mtime": 1771928099.9176314,
+    "ast_hash": "2413c12c9f0c2dd4a96c3ede50d892ee",
+    "semantic_hash": "2413c12c9f0c2dd4a96c3ede50d892ee"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-PrivilegedInfo].sql": {
+    "mtime": 1771928099.9176934,
+    "ast_hash": "ceeafed11cb45849f58b37321f1462a0",
+    "semantic_hash": "ceeafed11cb45849f58b37321f1462a0"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-WaitStats].sql": {
+    "mtime": 1771928099.9177415,
+    "ast_hash": "6aac5eed3de9eb965e99e51ac2032719",
+    "semantic_hash": "6aac5eed3de9eb965e99e51ac2032719"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Collect-XEvents].sql": {
+    "mtime": 1771928099.9177895,
+    "ast_hash": "7f7bbe9ec071be61fcc756bf41143bff",
+    "semantic_hash": "7f7bbe9ec071be61fcc756bf41143bff"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Compute-AllServerVolatileInfoHistoryHourly].sql": {
+    "mtime": 1771928099.9178467,
+    "ast_hash": "1f297ee3798d17106ca322231e20e640",
+    "semantic_hash": "1f297ee3798d17106ca322231e20e640"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Enable-PageCompression].sql": {
+    "mtime": 1771928099.9178991,
+    "ast_hash": "c95209766d872d7b4e9b36eadcb5bcef",
+    "semantic_hash": "c95209766d872d7b4e9b36eadcb5bcef"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerAgHealthState].sql": {
+    "mtime": 1771928099.9179747,
+    "ast_hash": "45c100978b4ce3123534b715545e186c",
+    "semantic_hash": "45c100978b4ce3123534b715545e186c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerAlertHistory].sql": {
+    "mtime": 1771928099.9180272,
+    "ast_hash": "ac6b1e02b5dbeae5d2748662cc54e79e",
+    "semantic_hash": "ac6b1e02b5dbeae5d2748662cc54e79e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerBackups].sql": {
+    "mtime": 1771928099.918082,
+    "ast_hash": "5e1a76d5e218968eac91b0993c5d32c8",
+    "semantic_hash": "5e1a76d5e218968eac91b0993c5d32c8"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerCollectionLatencyInfo].sql": {
+    "mtime": 1771928099.9181387,
+    "ast_hash": "e5ed8ed8c9a07a7392059ccb0865af80",
+    "semantic_hash": "e5ed8ed8c9a07a7392059ccb0865af80"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerDashboardMail].sql": {
+    "mtime": 1771928099.9182003,
+    "ast_hash": "093fb6a5d608c64bce4647fee2a89ba6",
+    "semantic_hash": "093fb6a5d608c64bce4647fee2a89ba6"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerDiskSpace].sql": {
+    "mtime": 1771928099.9182503,
+    "ast_hash": "9d2958c426c889d568a0ff6eac1ed2fe",
+    "semantic_hash": "9d2958c426c889d568a0ff6eac1ed2fe"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerLogSpaceConsumers].sql": {
+    "mtime": 1771928099.9183075,
+    "ast_hash": "ead705569dfd16174b72a6e6dd189cdf",
+    "semantic_hash": "ead705569dfd16174b72a6e6dd189cdf"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerServices].sql": {
+    "mtime": 1771928099.9183645,
+    "ast_hash": "ae3c6a9134296bae9badbf62569cfa67",
+    "semantic_hash": "ae3c6a9134296bae9badbf62569cfa67"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerSqlAgentJobs].sql": {
+    "mtime": 1771928099.9184177,
+    "ast_hash": "9d2c68e3683610455357dc7032b87166",
+    "semantic_hash": "9d2c68e3683610455357dc7032b87166"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerStableInfo].sql": {
+    "mtime": 1771928099.9184701,
+    "ast_hash": "4b6721a33ce745c3a469ad0ecd331756",
+    "semantic_hash": "4b6721a33ce745c3a469ad0ecd331756"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerTempdbSpaceUsage].sql": {
+    "mtime": 1771928099.9185238,
+    "ast_hash": "a82d99d5c35c43992eea93f782dd4fda",
+    "semantic_hash": "a82d99d5c35c43992eea93f782dd4fda"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Get-AllServerVolatileInfo].sql": {
+    "mtime": 1771928099.9185767,
+    "ast_hash": "8f659d4346a2059b092166a690db698e",
+    "semantic_hash": "8f659d4346a2059b092166a690db698e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Partitions-Maintenance].sql": {
+    "mtime": 1771928099.9186318,
+    "ast_hash": "af3a91dd9d76c61f733c91fe5a3bf14d",
+    "semantic_hash": "af3a91dd9d76c61f733c91fe5a3bf14d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Populate Inventory Tables].sql": {
+    "mtime": 1771928099.9187012,
+    "ast_hash": "72f58b5785597ea93293f21162fbd92d",
+    "semantic_hash": "72f58b5785597ea93293f21162fbd92d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Purge-Tables].sql": {
+    "mtime": 1771928099.9187505,
+    "ast_hash": "918f8dbae17ff02d2455193ec1d95ded",
+    "semantic_hash": "918f8dbae17ff02d2455193ec1d95ded"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Remove-XEventFiles].sql": {
+    "mtime": 1771928099.9188073,
+    "ast_hash": "3d45cb307d1f75efff25e940ac27542e",
+    "semantic_hash": "3d45cb307d1f75efff25e940ac27542e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Run-BlitzIndex - Weekly].sql": {
+    "mtime": 1771928099.9188685,
+    "ast_hash": "a70ba954901bc030784627c7a2dcfd4a",
+    "semantic_hash": "a70ba954901bc030784627c7a2dcfd4a"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Run-BlitzIndex].sql": {
+    "mtime": 1771928099.9189243,
+    "ast_hash": "cb593dd4ffcc036e448cb854c8fb8d9d",
+    "semantic_hash": "cb593dd4ffcc036e448cb854c8fb8d9d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Run-Blitz].sql": {
+    "mtime": 1771928099.91902,
+    "ast_hash": "ab78903172887494b0297b6a2cab01d9",
+    "semantic_hash": "ab78903172887494b0297b6a2cab01d9"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Run-LogSaver].sql": {
+    "mtime": 1771928099.919098,
+    "ast_hash": "f74bc7f85034136a84502c33f0679bb1",
+    "semantic_hash": "f74bc7f85034136a84502c33f0679bb1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Run-TempDbSaver].sql": {
+    "mtime": 1771928099.9191563,
+    "ast_hash": "7cb50008883948ebb5aeb2fb884a67f0",
+    "semantic_hash": "7cb50008883948ebb5aeb2fb884a67f0"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Run-WhoIsActive].sql": {
+    "mtime": 1771928099.9192169,
+    "ast_hash": "8dee974e76c3cae4988f40074215b74f",
+    "semantic_hash": "8dee974e76c3cae4988f40074215b74f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Send Login Expiry EMails].sql": {
+    "mtime": 1771928099.9192743,
+    "ast_hash": "370022afe0781402f9400c96403b9f67",
+    "semantic_hash": "370022afe0781402f9400c96403b9f67"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Stop-StuckSQLMonitorJobs].sql": {
+    "mtime": 1771928099.9193313,
+    "ast_hash": "dbc5daa22029b3f3aace443d6f731064",
+    "semantic_hash": "dbc5daa22029b3f3aace443d6f731064"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Test-WindowsAdminAccess].sql": {
+    "mtime": 1771928099.9193988,
+    "ast_hash": "1cc329f53be70afc3a1ab08e08b2cb96",
+    "semantic_hash": "1cc329f53be70afc3a1ab08e08b2cb96"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Update-SQLMonitorIP].sql": {
+    "mtime": 1771928099.9194787,
+    "ast_hash": "15643f97a6d87642d82a6ae5f06a9619",
+    "semantic_hash": "15643f97a6d87642d82a6ae5f06a9619"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[(dba) Update-SqlServerVersions].sql": {
+    "mtime": 1771928099.9195378,
+    "ast_hash": "85c77ad3806b63008a35a79e161c9eb6",
+    "semantic_hash": "85c77ad3806b63008a35a79e161c9eb6"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Job-[Update-SQLMonitorIPAddress].sql": {
+    "mtime": 1771928099.9196038,
+    "ast_hash": "b63dc6b9a54e39342fa9e663ad6f0f16",
+    "semantic_hash": "b63dc6b9a54e39342fa9e663ad6f0f16"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-Linked-Servers-Sample.sql": {
+    "mtime": 1774436069.9135442,
+    "ast_hash": "f26b85c5d2408c89b7244e9c66a292f1",
+    "semantic_hash": "f26b85c5d2408c89b7244e9c66a292f1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-WhoIsActive-Partitioning.sql": {
+    "mtime": 1771928099.9197547,
+    "ast_hash": "266fc955933ea54872bfdcdf53c649b3",
+    "semantic_hash": "266fc955933ea54872bfdcdf53c649b3"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-fn_get_hash_for_string.sql": {
+    "mtime": 1771928099.919822,
+    "ast_hash": "dde3c502e87ccf0188d18ab32058b173",
+    "semantic_hash": "dde3c502e87ccf0188d18ab32058b173"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-sp_WhatIsRunning.sql": {
+    "mtime": 1771928099.9199054,
+    "ast_hash": "54a2635205c2bab8fdc0323885240843",
+    "semantic_hash": "54a2635205c2bab8fdc0323885240843"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_GetAllServerCollectedData.sql": {
+    "mtime": 1771928099.9200277,
+    "ast_hash": "3e7d09e9c88d6615c5d67b419972901e",
+    "semantic_hash": "3e7d09e9c88d6615c5d67b419972901e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_GetAllServerDashboardMail.sql": {
+    "mtime": 1771928099.9201996,
+    "ast_hash": "41ae0e772207325d36a377500ec4f3c0",
+    "semantic_hash": "41ae0e772207325d36a377500ec4f3c0"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_GetAllServerInfo.sql": {
+    "mtime": 1771928099.920318,
+    "ast_hash": "79d0f3d3c1d2acc2253f3a14e8db70d1",
+    "semantic_hash": "79d0f3d3c1d2acc2253f3a14e8db70d1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_LogSaver.sql": {
+    "mtime": 1771928099.9204185,
+    "ast_hash": "0b2be8331f98e3a7ee369dd471314fee",
+    "semantic_hash": "0b2be8331f98e3a7ee369dd471314fee"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_TempDbSaver.sql": {
+    "mtime": 1771928099.9205158,
+    "ast_hash": "595cf14df331feedfe09c896362ab520",
+    "semantic_hash": "595cf14df331feedfe09c896362ab520"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_active_requests_count.sql": {
+    "mtime": 1771928099.9205863,
+    "ast_hash": "33c1a1d4ad9f647bd51592ac72560939",
+    "semantic_hash": "33c1a1d4ad9f647bd51592ac72560939"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_avg_disk_latency_ms.sql": {
+    "mtime": 1771928099.9206457,
+    "ast_hash": "24901639242ae06f85c65883860ccc35",
+    "semantic_hash": "24901639242ae06f85c65883860ccc35"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_avg_disk_wait_ms.sql": {
+    "mtime": 1771928099.920712,
+    "ast_hash": "650a337c89d2e22e30a129dc97af3ff5",
+    "semantic_hash": "650a337c89d2e22e30a129dc97af3ff5"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_capture_alert_messages.sql": {
+    "mtime": 1771928099.920807,
+    "ast_hash": "7bf4020c87cf648a0cf4b18dc2a451e5",
+    "semantic_hash": "7bf4020c87cf648a0cf4b18dc2a451e5"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_check_instance_availability.sql": {
+    "mtime": 1771928099.9208908,
+    "ast_hash": "33722fa1056978fa1b885c28d9757a49",
+    "semantic_hash": "33722fa1056978fa1b885c28d9757a49"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_check_sql_agent_jobs.sql": {
+    "mtime": 1771928099.9209964,
+    "ast_hash": "e32d4ec4134b416087bffde133cc62fd",
+    "semantic_hash": "e32d4ec4134b416087bffde133cc62fd"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_collect_ag_health_state.sql": {
+    "mtime": 1771928099.9211075,
+    "ast_hash": "13264ba8fd0edfc949b95cef0d76febb",
+    "semantic_hash": "13264ba8fd0edfc949b95cef0d76febb"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_collect_all_server_login_expiration_info.sql": {
+    "mtime": 1771928099.921175,
+    "ast_hash": "6afa00e409a2f447d09129456313caa5",
+    "semantic_hash": "6afa00e409a2f447d09129456313caa5"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_collect_disk_space.sql": {
+    "mtime": 1779465088.5410807,
+    "ast_hash": "f8d31e7a371a092fd9fb5779dd69f22a",
+    "semantic_hash": "f8d31e7a371a092fd9fb5779dd69f22a"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_collect_file_io_stats.sql": {
+    "mtime": 1771928099.9213445,
+    "ast_hash": "58d2358a7921f607eb3e8ff6a553cbf8",
+    "semantic_hash": "58d2358a7921f607eb3e8ff6a553cbf8"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_collect_memory_clerks.sql": {
+    "mtime": 1771928099.9214404,
+    "ast_hash": "0910bedffa91161724109d18b9550c16",
+    "semantic_hash": "0910bedffa91161724109d18b9550c16"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_collect_performance_metrics.sql": {
+    "mtime": 1771928099.9215407,
+    "ast_hash": "b0de884b21e77cdc9367c41939348613",
+    "semantic_hash": "b0de884b21e77cdc9367c41939348613"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_collect_privileged_info.sql": {
+    "mtime": 1771928099.9216099,
+    "ast_hash": "6b4dd47f1c6da180862fc518fabca861",
+    "semantic_hash": "6b4dd47f1c6da180862fc518fabca861"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_collect_wait_stats.sql": {
+    "mtime": 1771928099.921682,
+    "ast_hash": "42d6452dff717d7da10d7523278ea9a3",
+    "semantic_hash": "42d6452dff717d7da10d7523278ea9a3"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_collect_xevent_metrics.sql": {
+    "mtime": 1771928099.92178,
+    "ast_hash": "03f1954fdd43cd5ddbf4000c6d38cbc1",
+    "semantic_hash": "03f1954fdd43cd5ddbf4000c6d38cbc1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_collect_xevent_metrics_hashed.sql": {
+    "mtime": 1771928099.921873,
+    "ast_hash": "5d88fe022251b124c7c042cb7559c15f",
+    "semantic_hash": "5d88fe022251b124c7c042cb7559c15f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_collect_xevent_metrics_ringbuffer.sql": {
+    "mtime": 1771928099.921948,
+    "ast_hash": "7a91735db727a929650b3526e250e738",
+    "semantic_hash": "7a91735db727a929650b3526e250e738"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_compute_LAMA_targets.sql": {
+    "mtime": 1771928099.9220426,
+    "ast_hash": "be0769161517e8a99ea3483786eb616e",
+    "semantic_hash": "be0769161517e8a99ea3483786eb616e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_compute_all_server_volatile_info_history_hourly.sql": {
+    "mtime": 1771928099.922132,
+    "ast_hash": "0d9c04667f017bb229590697375da874",
+    "semantic_hash": "0d9c04667f017bb229590697375da874"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_create_agent_alerts.sql": {
+    "mtime": 1780912920.9974253,
+    "ast_hash": "6a98d350ada8cc86c02230cbcbae0996",
+    "semantic_hash": "6a98d350ada8cc86c02230cbcbae0996"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_enable_page_compression.sql": {
+    "mtime": 1771928099.9222858,
+    "ast_hash": "08f4a68e74a41dbbad93b42c34630a30",
+    "semantic_hash": "08f4a68e74a41dbbad93b42c34630a30"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_partition_maintenance.sql": {
+    "mtime": 1771928099.9223766,
+    "ast_hash": "cb3fc651a38886abdf4acebe2ed11ab1",
+    "semantic_hash": "cb3fc651a38886abdf4acebe2ed11ab1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_populate_sma_sql_instance.sql": {
+    "mtime": 1771928099.922475,
+    "ast_hash": "b9ba0387f07546f563c69dab5fbbb75f",
+    "semantic_hash": "b9ba0387f07546f563c69dab5fbbb75f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_purge_tables.sql": {
+    "mtime": 1771928099.9225605,
+    "ast_hash": "ff6f2012ef9a50bd452b65a77ea53749",
+    "semantic_hash": "ff6f2012ef9a50bd452b65a77ea53749"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_rebuilt_xevent_metrics.sql": {
+    "mtime": 1771928099.9226415,
+    "ast_hash": "3207d136bad1e599b4af6f56a56e7040",
+    "semantic_hash": "3207d136bad1e599b4af6f56a56e7040"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_run_WhoIsActive.sql": {
+    "mtime": 1771928099.9227402,
+    "ast_hash": "1d56b1714880d83ae7c4d2578efad86e",
+    "semantic_hash": "1d56b1714880d83ae7c4d2578efad86e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_send_login_expiry_emails.sql": {
+    "mtime": 1771928099.922846,
+    "ast_hash": "f8cd5b9019112b8298250e8b59b64d37",
+    "semantic_hash": "f8cd5b9019112b8298250e8b59b64d37"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_waits_per_core_per_minute.sql": {
+    "mtime": 1771928099.9229274,
+    "ast_hash": "5c33b02bc8566316957cb6b8668d97ad",
+    "semantic_hash": "5c33b02bc8566316957cb6b8668d97ad"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_wrapper_CollectPrivilegedInfo.sql": {
+    "mtime": 1771928099.9230251,
+    "ast_hash": "fe5530d38b8dc2d8df7aaa35d2616cf2",
+    "semantic_hash": "fe5530d38b8dc2d8df7aaa35d2616cf2"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_wrapper_GetAllServerCollectedData.sql": {
+    "mtime": 1771928099.9231617,
+    "ast_hash": "cdb6760477d46b25897df288cdb0c7eb",
+    "semantic_hash": "cdb6760477d46b25897df288cdb0c7eb"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_wrapper_GetAllServerInfo.sql": {
+    "mtime": 1771928099.9232452,
+    "ast_hash": "694fc09748ba96862e994a69d38257ce",
+    "semantic_hash": "694fc09748ba96862e994a69d38257ce"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/DDLs/SCH-usp_wrapper_populate_sma_sql_instance.sql": {
+    "mtime": 1771928099.9233546,
+    "ast_hash": "27fc74e2fca64dc5326aee66e5a68cb7",
+    "semantic_hash": "27fc74e2fca64dc5326aee66e5a68cb7"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/Core Metrics - Trend.json": {
+    "mtime": 1771928099.9238462,
+    "ast_hash": "93992799423facbc8dbbd4a49dc1031f",
+    "semantic_hash": "93992799423facbc8dbbd4a49dc1031f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/DBA Inventory.json": {
+    "mtime": 1771928099.923986,
+    "ast_hash": "d121192e1378b4ed23abb30ddc7bb7d0",
+    "semantic_hash": "d121192e1378b4ed23abb30ddc7bb7d0"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/Core Metrics - Trend - INTERNAL.json": {
+    "mtime": 1771928099.924162,
+    "ast_hash": "ed20da99f18de59aae5ae53e41415665",
+    "semantic_hash": "ed20da99f18de59aae5ae53e41415665"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/DBA Inventory - INTERNAL.json": {
+    "mtime": 1771928099.9245758,
+    "ast_hash": "45c61d1acc2f0588e3b07251db8e70b1",
+    "semantic_hash": "45c61d1acc2f0588e3b07251db8e70b1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/First Responder Kit.json": {
+    "mtime": 1771928099.9247332,
+    "ast_hash": "66819635fa826885578f3ac391324ec7",
+    "semantic_hash": "66819635fa826885578f3ac391324ec7"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/Monitoring - Live - All Servers - INTERNAL.json": {
+    "mtime": 1771928099.9250724,
+    "ast_hash": "cf47a80bdbe476d9d1080e2d85ee06b5",
+    "semantic_hash": "cf47a80bdbe476d9d1080e2d85ee06b5"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/Monitoring - Live - All Servers - Job Activity Monitor - INTERNAL.json": {
+    "mtime": 1771928099.9253948,
+    "ast_hash": "cc02112fd011ec8fbbbe8fb0f7f25771",
+    "semantic_hash": "cc02112fd011ec8fbbbe8fb0f7f25771"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/Monitoring - Live - Distributed - INTERNAL.json": {
+    "mtime": 1788313563.1525142,
+    "ast_hash": "0460a7992585289f4469430582650410",
+    "semantic_hash": "0460a7992585289f4469430582650410"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/Monitoring - Perfmon Counters - Quest Softwares - Distributed - INTERNAL.json": {
+    "mtime": 1788313563.153087,
+    "ast_hash": "b2c227b360daedca38b056547a2b448e",
+    "semantic_hash": "b2c227b360daedca38b056547a2b448e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/SQLMonitor-Alerts - INTERNAL.json": {
+    "mtime": 1771928099.9261353,
+    "ast_hash": "2fd34628536eb2e73a6b43061f686ed4",
+    "semantic_hash": "2fd34628536eb2e73a6b43061f686ed4"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/Wait Stats - INTERNAL.json": {
+    "mtime": 1788313563.1535347,
+    "ast_hash": "4ea0d190c0047ca58d9c31a26f86b64c",
+    "semantic_hash": "4ea0d190c0047ca58d9c31a26f86b64c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/WhoIsActive - SQL Server Queries - Workload - INTERNAL.json": {
+    "mtime": 1771928099.926629,
+    "ast_hash": "4decfafa5e5f5cf1a5c6f7d9e9cc4250",
+    "semantic_hash": "4decfafa5e5f5cf1a5c6f7d9e9cc4250"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/XEvent - Trend - INTERNAL.json": {
+    "mtime": 1771928099.9267511,
+    "ast_hash": "a6feae9361c52a02a235df62216e8226",
+    "semantic_hash": "a6feae9361c52a02a235df62216e8226"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/XEvent - Workload - INTERNAL.json": {
+    "mtime": 1771928099.9268444,
+    "ast_hash": "6f7783a6078ab63b286894a12970e90b",
+    "semantic_hash": "6f7783a6078ab63b286894a12970e90b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/t___Ag Health State - INTERNAL.json": {
+    "mtime": 1771928099.9269576,
+    "ast_hash": "9a36d4d05967f4e902982af16cdf031f",
+    "semantic_hash": "9a36d4d05967f4e902982af16cdf031f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/t___Backup_History - INTERNAL.json": {
+    "mtime": 1771928099.9271185,
+    "ast_hash": "78a76c3dbf691f6d9ddfce846f498e4b",
+    "semantic_hash": "78a76c3dbf691f6d9ddfce846f498e4b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/t___BlitzIndex_Analysis - INTERNAL.json": {
+    "mtime": 1771928099.9272494,
+    "ast_hash": "627730f135fff23c29affadfd9c240ba",
+    "semantic_hash": "627730f135fff23c29affadfd9c240ba"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/t___Blitz_Server_Health_Analysis - INTERNAL.json": {
+    "mtime": 1771928099.927317,
+    "ast_hash": "e263e58e4d8430746399ee96e5867d7d",
+    "semantic_hash": "e263e58e4d8430746399ee96e5867d7d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/t___Database File IO Stats - INTERNAL.json": {
+    "mtime": 1771928099.927688,
+    "ast_hash": "dcf15a41c8560214056c436c805084f4",
+    "semantic_hash": "dcf15a41c8560214056c436c805084f4"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/For-Internal-Use-Only/t___Disk Space - INTERNAL.json": {
+    "mtime": 1771928099.9277945,
+    "ast_hash": "76c2ac712d487218a7d6c1caa17e677f",
+    "semantic_hash": "76c2ac712d487218a7d6c1caa17e677f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/Grafana-IFrame-HTML.sql": {
+    "mtime": 1771928099.9279325,
+    "ast_hash": "fdfabed57a61c4354d6ffdd65d26c061",
+    "semantic_hash": "fdfabed57a61c4354d6ffdd65d26c061"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/Long Running Queries - [sp_WhoIsActive --Panel-Query.sql": {
+    "mtime": 1771928099.927997,
+    "ast_hash": "53c069483a9859efa55e6cd01b22f988",
+    "semantic_hash": "53c069483a9859efa55e6cd01b22f988"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/Monitoring - Live - All Servers - Job Activity Monitor.json": {
+    "mtime": 1771928099.9280984,
+    "ast_hash": "64b268ffe2896a0d36ae55c79ff782a2",
+    "semantic_hash": "64b268ffe2896a0d36ae55c79ff782a2"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/Monitoring - Live - All Servers.json": {
+    "mtime": 1771928099.9281898,
+    "ast_hash": "a3bbf1fcd98a2a2de11b6d336cfae1f8",
+    "semantic_hash": "a3bbf1fcd98a2a2de11b6d336cfae1f8"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/Monitoring - Live - Distributed.json": {
+    "mtime": 1788313563.1540375,
+    "ast_hash": "1a923ee9e531a16d39afbcf7cf565093",
+    "semantic_hash": "1a923ee9e531a16d39afbcf7cf565093"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/Monitoring - Perfmon Counters - Quest Softwares - Distributed.json": {
+    "mtime": 1788313563.154603,
+    "ast_hash": "96ce68b05fd16af00b82603049c32243",
+    "semantic_hash": "96ce68b05fd16af00b82603049c32243"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/SQLMonitor-Alerts.json": {
+    "mtime": 1771928099.9285228,
+    "ast_hash": "a1c16d42d3c95d8afd04501bb7b7eaac",
+    "semantic_hash": "a1c16d42d3c95d8afd04501bb7b7eaac"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/Wait Stats.json": {
+    "mtime": 1788313563.1550264,
+    "ast_hash": "535f6d4a909940e4d2418a7e40d2f940",
+    "semantic_hash": "535f6d4a909940e4d2418a7e40d2f940"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/What's Running - [sp_WhoIsActive] --Panel-Query.sql": {
+    "mtime": 1771928099.9286962,
+    "ast_hash": "f46cfed4caf1e0f95b780ff66b319c20",
+    "semantic_hash": "f46cfed4caf1e0f95b780ff66b319c20"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/WhoIsActive - SQL Server Queries - Workload.json": {
+    "mtime": 1771928099.9287632,
+    "ast_hash": "72cebe0312a2828dee8f4063c2ed9e23",
+    "semantic_hash": "72cebe0312a2828dee8f4063c2ed9e23"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/XEvent - Trend.json": {
+    "mtime": 1771928099.928913,
+    "ast_hash": "57798d57834c06558b36c0bacb3c0bbc",
+    "semantic_hash": "57798d57834c06558b36c0bacb3c0bbc"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/XEvent - Workload.json": {
+    "mtime": 1771928099.9289885,
+    "ast_hash": "2d4124f1c3abb40ea22b1b4ace417f8a",
+    "semantic_hash": "2d4124f1c3abb40ea22b1b4ace417f8a"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/_README-Grafana-Variables.sql": {
+    "mtime": 1771928099.92907,
+    "ast_hash": "e32e614d56bdefe997ee9d7fb335363a",
+    "semantic_hash": "e32e614d56bdefe997ee9d7fb335363a"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/t___Ag Health State.json": {
+    "mtime": 1771928099.9291904,
+    "ast_hash": "3b5136c027e7c379984196cf580fe806",
+    "semantic_hash": "3b5136c027e7c379984196cf580fe806"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/t___Backup_History.json": {
+    "mtime": 1771928099.9292905,
+    "ast_hash": "c55757cfa3c243844dd7d2ee50b58f24",
+    "semantic_hash": "c55757cfa3c243844dd7d2ee50b58f24"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/t___BlitzIndex_Analysis.json": {
+    "mtime": 1771928099.9293542,
+    "ast_hash": "5263e13470c38c5f9d6dd2f58216167c",
+    "semantic_hash": "5263e13470c38c5f9d6dd2f58216167c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/t___Blitz_Server_Health_Analysis.json": {
+    "mtime": 1771928099.9294734,
+    "ast_hash": "598ba37b7ccae40fbab56885f039fff3",
+    "semantic_hash": "598ba37b7ccae40fbab56885f039fff3"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/t___Database File IO Stats.json": {
+    "mtime": 1771928099.9295785,
+    "ast_hash": "1ba96513a744953beffe1c5a979dba86",
+    "semantic_hash": "1ba96513a744953beffe1c5a979dba86"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Grafana-Dashboards/t___Disk Space.json": {
+    "mtime": 1771928099.9296927,
+    "ast_hash": "5fd2f0003f659bdb8d365b92d785bc09",
+    "semantic_hash": "5fd2f0003f659bdb8d365b92d785bc09"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Partition-Table-Demo-Scripts/Add-Merge-Partition-Boundaries.sql": {
+    "mtime": 1771928099.9299746,
+    "ast_hash": "1a269e053234da1b85cedc9625dcb6ec",
+    "semantic_hash": "1a269e053234da1b85cedc9625dcb6ec"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Partition-Table-Demo-Scripts/Create-Partition-Function-Scheme-n-SampleTable-SampleData.sql": {
+    "mtime": 1771928099.930106,
+    "ast_hash": "393b0e99bb131fe5db3c1045feb63c67",
+    "semantic_hash": "393b0e99bb131fe5db3c1045feb63c67"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Partition-Table-Demo-Scripts/Get-Partitions-Records-Counts-.sql": {
+    "mtime": 1771928099.930169,
+    "ast_hash": "6e67a8bd073cd76841d8b8a90e1c291c",
+    "semantic_hash": "6e67a8bd073cd76841d8b8a90e1c291c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Partition-Table-Demo-Scripts/dbo.usp_partition_maintenance.sql": {
+    "mtime": 1771928099.9302344,
+    "ast_hash": "a828ba3a387dfc55ae344af3c8e4a4f5",
+    "semantic_hash": "a828ba3a387dfc55ae344af3c8e4a4f5"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Learnings/Argument-Completers.ps1": {
+    "mtime": 1771928099.9304368,
+    "ast_hash": "8b1f5310d44935453dba243ac81d8d41",
+    "semantic_hash": "8b1f5310d44935453dba243ac81d8d41"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/CPU_Memory_OS_Processes_Perfmon.ps1": {
+    "mtime": 1771928099.9305491,
+    "ast_hash": "82eea2769571bd5fd37bb65b9ad0ce6d",
+    "semantic_hash": "82eea2769571bd5fd37bb65b9ad0ce6d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/Combine-Perfmon-BLG-Files.ps1": {
+    "mtime": 1771928099.9306111,
+    "ast_hash": "dbe3c4237a95ea0e84a8e85d40cb3fda",
+    "semantic_hash": "dbe3c4237a95ea0e84a8e85d40cb3fda"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/Disable-ExpiredLogins.ps1": {
+    "mtime": 1771928099.9306753,
+    "ast_hash": "be68610b9ba7b6a3138a9ea2a192bfba",
+    "semantic_hash": "be68610b9ba7b6a3138a9ea2a192bfba"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/Disable-ScreenLock.ps1": {
+    "mtime": 1771928099.9307287,
+    "ast_hash": "bca26a4f71145f313ab037a61fbeb440",
+    "semantic_hash": "bca26a4f71145f313ab037a61fbeb440"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/Disk-Subsystem-Throughput-Test-DiskSpd.ps1": {
+    "mtime": 1771928099.9307868,
+    "ast_hash": "99d730edd890f7a71d612539c0b120b8",
+    "semantic_hash": "99d730edd890f7a71d612539c0b120b8"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/Encrypt-SQLDatabases.ps1": {
+    "mtime": 1771928099.9309487,
+    "ast_hash": "fcae986149a3db48c304f64d5aeb03ff",
+    "semantic_hash": "fcae986149a3db48c304f64d5aeb03ff"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/PowerPlan.ps1": {
+    "mtime": 1771928099.9310048,
+    "ast_hash": "ff6b70497a8ce9de925e0352b7f35dbb",
+    "semantic_hash": "ff6b70497a8ce9de925e0352b7f35dbb"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/Run-MultiServerScript.ps1": {
+    "mtime": 1771928099.9310668,
+    "ast_hash": "c852209eb02085c861da292be0538aa8",
+    "semantic_hash": "c852209eb02085c861da292be0538aa8"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/Test-Port.ps1": {
+    "mtime": 1771928099.9312265,
+    "ast_hash": "b85caa6ed606f864645fb5e818b7f4cc",
+    "semantic_hash": "b85caa6ed606f864645fb5e818b7f4cc"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/Wrapper-InstallDbaFirstResponderKit.ps1": {
+    "mtime": 1771928099.9312935,
+    "ast_hash": "fc3c547cc35a609462094f9649c5a4f4",
+    "semantic_hash": "fc3c547cc35a609462094f9649c5a4f4"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/Wrapper-TestNetworkUsingBCP.ps1": {
+    "mtime": 1771928099.9313872,
+    "ast_hash": "c3f20153ca081c0c565098907a2f73b8",
+    "semantic_hash": "c3f20153ca081c0c565098907a2f73b8"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/PowerShell-Scripts-Miscellaneous/Wrapper-UpdateSQLAgentJobsThreshold.ps1": {
+    "mtime": 1771928099.931457,
+    "ast_hash": "71edf9fad94e3384176b6d7a5aa5a7f6",
+    "semantic_hash": "71edf9fad94e3384176b6d7a5aa5a7f6"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Failover-AoSqlAvailabilityGroup.py": {
+    "mtime": 1771928099.9315975,
+    "ast_hash": "49ddf1ac2f6fc81184470c27d86c17c3",
+    "semantic_hash": "49ddf1ac2f6fc81184470c27d86c17c3"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Python-Import-Excel-Data.py": {
+    "mtime": 1771928099.9316585,
+    "ast_hash": "35118631bd29c64d12c4e097337e6bba",
+    "semantic_hash": "35118631bd29c64d12c4e097337e6bba"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Raise-AgHealthStateAlert-PagerDuty.py": {
+    "mtime": 1771928099.9317212,
+    "ast_hash": "e632199508a54e8e0aec1bb5f14a7f54",
+    "semantic_hash": "e632199508a54e8e0aec1bb5f14a7f54"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Raise-AgHealthStateAlert-Python.py": {
+    "mtime": 1771928099.93177,
+    "ast_hash": "ed36aa1d7052f1f3c272f93868c7ed66",
+    "semantic_hash": "ed36aa1d7052f1f3c272f93868c7ed66"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Raise-AllServerAlertMessages-PagerDuty.py": {
+    "mtime": 1771928099.9318302,
+    "ast_hash": "7a2db03bbef19f435bc427859bbc577e",
+    "semantic_hash": "7a2db03bbef19f435bc427859bbc577e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Raise-CoreHealthMetricsAlert-Python.py": {
+    "mtime": 1771928099.9319003,
+    "ast_hash": "e890b2760b204702e48d3ae565faef1f",
+    "semantic_hash": "e890b2760b204702e48d3ae565faef1f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Raise-DiskSpaceAlert-PagerDuty.py": {
+    "mtime": 1771928099.9319553,
+    "ast_hash": "e776fc89ce67bc1c9d2699ae40c7287b",
+    "semantic_hash": "e776fc89ce67bc1c9d2699ae40c7287b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Raise-DiskSpaceAlert-Python.py": {
+    "mtime": 1771928099.9320052,
+    "ast_hash": "e776fc89ce67bc1c9d2699ae40c7287b",
+    "semantic_hash": "e776fc89ce67bc1c9d2699ae40c7287b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Run-MultiServer-Parallel-Pool-Sample.py": {
+    "mtime": 1771928099.9320571,
+    "ast_hash": "f9bf9afd6232237fd56a807e1cd6ee1b",
+    "semantic_hash": "f9bf9afd6232237fd56a807e1cd6ee1b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Run-MultiServer-Parallel-Pool.py": {
+    "mtime": 1771928099.9321237,
+    "ast_hash": "d556821a407f683b05b24aafa277cfc9",
+    "semantic_hash": "d556821a407f683b05b24aafa277cfc9"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Run-MultiServer-Parallel-thread-Python.py": {
+    "mtime": 1771928099.9321868,
+    "ast_hash": "22dce1174640bfd9206aa0e378b86fa3",
+    "semantic_hash": "22dce1174640bfd9206aa0e378b86fa3"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Run-MultiServer-Serial-Python.py": {
+    "mtime": 1771928099.9322581,
+    "ast_hash": "208f58ff474c458635c1aa352d9e4fef",
+    "semantic_hash": "208f58ff474c458635c1aa352d9e4fef"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Send-SlackAlert.py": {
+    "mtime": 1771928099.9323158,
+    "ast_hash": "f4edfe91c99724f169844a3156c3f7e1",
+    "semantic_hash": "f4edfe91c99724f169844a3156c3f7e1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/cloudflare-ddns-update-Python.py": {
+    "mtime": 1771928099.9325638,
+    "ast_hash": "6d78d2a561cf78856da5fe5b5b7c181f",
+    "semantic_hash": "6d78d2a561cf78856da5fe5b5b7c181f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/connect-2-sqlserver.py": {
+    "mtime": 1771928099.9326286,
+    "ast_hash": "efbd8da8b648aee213037448848c23a2",
+    "semantic_hash": "efbd8da8b648aee213037448848c23a2"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/grafana-dashboard.ps1": {
+    "mtime": 1771928099.932691,
+    "ast_hash": "2ca4d7400c833815ff84f22219964586",
+    "semantic_hash": "2ca4d7400c833815ff84f22219964586"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/html-to-image.py": {
+    "mtime": 1771928099.9327457,
+    "ast_hash": "651693ec5cfaa4b03ba41a6defe87094",
+    "semantic_hash": "651693ec5cfaa4b03ba41a6defe87094"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor.sln": {
+    "mtime": 1780912920.9979575,
+    "ast_hash": "5e032015bb6b7f5990339c708a2f3008",
+    "semantic_hash": "5e032015bb6b7f5990339c708a2f3008"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Add-SQLMonitorAliasEntry.ps1": {
+    "mtime": 1771928099.9331038,
+    "ast_hash": "3365cedaff373c2b60d6c0edf35a69e8",
+    "semantic_hash": "3365cedaff373c2b60d6c0edf35a69e8"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Install-SQLMonitor.ps1": {
+    "mtime": 1780987170.6058743,
+    "ast_hash": "988114ef1c2e1dda6325458eaf927473",
+    "semantic_hash": "988114ef1c2e1dda6325458eaf927473"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Invoke-BlockingAlert.ps1": {
+    "mtime": 1771928099.9339383,
+    "ast_hash": "6c0f1a86480e1acbae448683fc5f5857",
+    "semantic_hash": "6c0f1a86480e1acbae448683fc5f5857"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/New-PSSessionEnhanced.ps1": {
+    "mtime": 1771928099.9387505,
+    "ast_hash": "50773a845d18d372e661715ced821d51",
+    "semantic_hash": "50773a845d18d372e661715ced821d51"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Remove-SQLMonitor.ps1": {
+    "mtime": 1771928099.9392045,
+    "ast_hash": "130b2b8c2fc3dfd95467f4ddc2d31e44",
+    "semantic_hash": "130b2b8c2fc3dfd95467f4ddc2d31e44"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Say-Hello.ps1": {
+    "mtime": 1771928099.9393263,
+    "ast_hash": "eb2b1b78360364fbc52ef62a7a08de31",
+    "semantic_hash": "eb2b1b78360364fbc52ef62a7a08de31"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Setup-ScheduledTask.ps1": {
+    "mtime": 1771928099.9393816,
+    "ast_hash": "2a4755b1a350a4c660ddf2c9b2d3ee31",
+    "semantic_hash": "2a4755b1a350a4c660ddf2c9b2d3ee31"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Steps-Addition-N-Removal-4-InstallSQLMonitor.ps1": {
+    "mtime": 1771928099.9394672,
+    "ast_hash": "3d30b71743f53fbbd56dfaa894360976",
+    "semantic_hash": "3d30b71743f53fbbd56dfaa894360976"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Steps-Addition-N-Removal-4-RemoveSQLMonitor.ps1": {
+    "mtime": 1771928099.9395509,
+    "ast_hash": "5ce345c176bde67abc6a94b42f4b15bd",
+    "semantic_hash": "5ce345c176bde67abc6a94b42f4b15bd"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Stop-SQLMonitorJobs-On-AllServers-With-Issues.ps1": {
+    "mtime": 1771928099.9396334,
+    "ast_hash": "48c7da43c69da23e494f88aca3e36869",
+    "semantic_hash": "48c7da43c69da23e494f88aca3e36869"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Update-SQLMonitorIP.ps1": {
+    "mtime": 1771928099.9397852,
+    "ast_hash": "cd5ec7c25b692f9bcb59ce6602988bcd",
+    "semantic_hash": "cd5ec7c25b692f9bcb59ce6602988bcd"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Wrapper-ChangeLoginPasswordAllServers.ps1": {
+    "mtime": 1771928099.9398577,
+    "ast_hash": "10d7184bfd0e23b5fb326387b71faf91",
+    "semantic_hash": "10d7184bfd0e23b5fb326387b71faf91"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Wrapper-GetHostIpAddresses.ps1": {
+    "mtime": 1771928099.9399273,
+    "ast_hash": "736ca6221e085027071714c127a90d17",
+    "semantic_hash": "736ca6221e085027071714c127a90d17"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/Wrapper-UpdateSQLAgentJobsThreshold.ps1": {
+    "mtime": 1771928099.9399989,
+    "ast_hash": "90db336a7e0776288bd668a52dbbac39",
+    "semantic_hash": "90db336a7e0776288bd668a52dbbac39"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/check-instance-availability.ps1": {
+    "mtime": 1771928099.9400845,
+    "ast_hash": "622258a4fce86f8631ba274bb0119453",
+    "semantic_hash": "622258a4fce86f8631ba274bb0119453"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/check-instance-availability.py": {
+    "mtime": 1771928099.9401393,
+    "ast_hash": "288d63ba74467b6d13a296ea486fe76e",
+    "semantic_hash": "288d63ba74467b6d13a296ea486fe76e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/cleanup-sqlmonitor-baseline.ps1": {
+    "mtime": 1771928099.9401965,
+    "ast_hash": "ecaa88f7fa0bf610a5a26cf545dcd3aa",
+    "semantic_hash": "ecaa88f7fa0bf610a5a26cf545dcd3aa"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/collect_all_server_alert_messages.py": {
+    "mtime": 1771928099.9402788,
+    "ast_hash": "2b4b7ed3f8d6dc9037f2d7cbf7bf251f",
+    "semantic_hash": "2b4b7ed3f8d6dc9037f2d7cbf7bf251f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/disk-space-collector.ps1": {
+    "mtime": 1771928099.9403443,
+    "ast_hash": "8eee6e2c7fdf76c31d92c7b362402860",
+    "semantic_hash": "8eee6e2c7fdf76c31d92c7b362402860"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/loop-through-all-sqlmonitor-servers.ps1": {
+    "mtime": 1771928099.9404085,
+    "ast_hash": "92bf4a6abdfbac66c0039295e30f8cbc",
+    "semantic_hash": "92bf4a6abdfbac66c0039295e30f8cbc"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/perfmon-collector-logman.ps1": {
+    "mtime": 1771928099.9404664,
+    "ast_hash": "e44db2a4cbe5322b576b7f2dfa52e801",
+    "semantic_hash": "e44db2a4cbe5322b576b7f2dfa52e801"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/perfmon-collector-push-to-sqlserver.ps1": {
+    "mtime": 1771928099.940541,
+    "ast_hash": "1a15ab3187d0be2170b633d336d00a76",
+    "semantic_hash": "1a15ab3187d0be2170b633d336d00a76"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/perfmon-remove-imported-files.ps1": {
+    "mtime": 1771928099.9405932,
+    "ast_hash": "6a84dd39ac6fd2989680841206d20e38",
+    "semantic_hash": "6a84dd39ac6fd2989680841206d20e38"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/sqlserver-versions-update.ps1": {
+    "mtime": 1771928099.940719,
+    "ast_hash": "145552ca7f33e9ab230ce35d32e91c4e",
+    "semantic_hash": "145552ca7f33e9ab230ce35d32e91c4e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/tasklist-push-to-sqlserver.ps1": {
+    "mtime": 1771928099.9407759,
+    "ast_hash": "df39fdd4d5ed475aa0d2d51ddcad320e",
+    "semantic_hash": "df39fdd4d5ed475aa0d2d51ddcad320e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/tempCodeRunnerFile.py": {
+    "mtime": 1771928099.9408212,
+    "ast_hash": "0d8378cb3b684359b7991f0533a3b41f",
+    "semantic_hash": "0d8378cb3b684359b7991f0533a3b41f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/SQLMonitor/xevents-remove-processed-files.ps1": {
+    "mtime": 1771928099.9409764,
+    "ast_hash": "cd64b57b9ce21af54b2782a760bf8d7d",
+    "semantic_hash": "cd64b57b9ce21af54b2782a760bf8d7d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/(dba) ReSetup-PerfmonDataCollector.sql": {
+    "mtime": 1771928099.9411914,
+    "ast_hash": "f671891ab5da51a96c5925ad2cc213a6",
+    "semantic_hash": "f671891ab5da51a96c5925ad2cc213a6"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/POC-Capture-n-Retrieve-Server-Config-Changes.sql": {
+    "mtime": 1771928099.9412918,
+    "ast_hash": "646aae354acb1d81f8751bd4bdd89182",
+    "semantic_hash": "646aae354acb1d81f8751bd4bdd89182"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-AG-Status.sql": {
+    "mtime": 1771928099.941344,
+    "ast_hash": "7573a632f27fa90be1b06389bb51c3d0",
+    "semantic_hash": "7573a632f27fa90be1b06389bb51c3d0"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-Capture-Config-Changes.sql": {
+    "mtime": 1771928099.941391,
+    "ast_hash": "20aea74a8af861a65adace814a1eb130",
+    "semantic_hash": "20aea74a8af861a65adace814a1eb130"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-Common-Errors.sql": {
+    "mtime": 1771928099.941437,
+    "ast_hash": "bc841714e70eba19d0ace15d55f18dd9",
+    "semantic_hash": "bc841714e70eba19d0ace15d55f18dd9"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-Disk-IO-Queue-Depth.sql": {
+    "mtime": 1771928099.9414852,
+    "ast_hash": "b06b575a3f477cc8ee9feb91cdf658a1",
+    "semantic_hash": "b06b575a3f477cc8ee9feb91cdf658a1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-Forecast-Database-Growth.sql": {
+    "mtime": 1771928099.9415362,
+    "ast_hash": "54fe27d9270d4402a1641807b3b717b5",
+    "semantic_hash": "54fe27d9270d4402a1641807b3b717b5"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-Get-Database-Growth-Over-Time.sql": {
+    "mtime": 1771928099.9415894,
+    "ast_hash": "fb2fbc127d30e78c1784f2d8c3bf24ec",
+    "semantic_hash": "fb2fbc127d30e78c1784f2d8c3bf24ec"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-Get-Partitions-Record-Count-Metrics.sql": {
+    "mtime": 1771928099.9416542,
+    "ast_hash": "86cddff83b0c8e21168098808e69d50e",
+    "semantic_hash": "86cddff83b0c8e21168098808e69d50e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-Get-Statistics-Details-For-Database.sql": {
+    "mtime": 1771928099.9417155,
+    "ast_hash": "d82c1f143468cb2e6a3026f57c79df19",
+    "semantic_hash": "d82c1f143468cb2e6a3026f57c79df19"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-INDEXING-DEATH-Method-DeepDive.sql": {
+    "mtime": 1771928099.9417727,
+    "ast_hash": "6f60cff5bef44dd5a8f9f140a9ceb59c",
+    "semantic_hash": "6f60cff5bef44dd5a8f9f140a9ceb59c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-INDEXING-DEATH-Method-Extract-HighPriority-Mode0.sql": {
+    "mtime": 1771928099.9418247,
+    "ast_hash": "9a089d56ea82af61ca5a372d880f61f2",
+    "semantic_hash": "9a089d56ea82af61ca5a372d880f61f2"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-INDEXING-DEATH-Method-Extract-HighPriority.sql": {
+    "mtime": 1771928099.9418995,
+    "ast_hash": "976abeeb65eec19f558b16ce8767266a",
+    "semantic_hash": "976abeeb65eec19f558b16ce8767266a"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-SQLMonitor-Jobs-Execution-Performance-Metrics.sql": {
+    "mtime": 1771928099.9419515,
+    "ast_hash": "68335f3c8883ae6b8d758273f4e38df3",
+    "semantic_hash": "68335f3c8883ae6b8d758273f4e38df3"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-SQLMonitor-Table-Size-Estimate.sql": {
+    "mtime": 1771928099.9420025,
+    "ast_hash": "998c47032235c317518d2e5dc3de2f0f",
+    "semantic_hash": "998c47032235c317518d2e5dc3de2f0f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-Servers-With-Disk-Latency-Issues.sql": {
+    "mtime": 1771928099.9420557,
+    "ast_hash": "05a526f7bd34eaa0ed6075051cbf4f37",
+    "semantic_hash": "05a526f7bd34eaa0ed6075051cbf4f37"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-Servers-With-Disk-Latency.sql": {
+    "mtime": 1771928099.9421072,
+    "ast_hash": "c61c38f2741f1b8fd121588fa3acef21",
+    "semantic_hash": "c61c38f2741f1b8fd121588fa3acef21"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-TempDb-Consumers.sql": {
+    "mtime": 1771928099.942154,
+    "ast_hash": "ac589e25eaa6e367e87a6bd39233fbee",
+    "semantic_hash": "ac589e25eaa6e367e87a6bd39233fbee"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-Wait-Stats-Since-Startup.sql": {
+    "mtime": 1771928099.9422321,
+    "ast_hash": "0b0f6bcaf1cf2a5e88f136e7632b3ff6",
+    "semantic_hash": "0b0f6bcaf1cf2a5e88f136e7632b3ff6"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-WhoIsActive-Infra-ImplicitConversions.sql": {
+    "mtime": 1771928099.9422867,
+    "ast_hash": "ea5fb813ac16eeba322397a35ccba6c0",
+    "semantic_hash": "ea5fb813ac16eeba322397a35ccba6c0"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-WhoIsActive-Infra.sql": {
+    "mtime": 1771928099.9423645,
+    "ast_hash": "1506733a24b0e213cd0613e011574289",
+    "semantic_hash": "1506733a24b0e213cd0613e011574289"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-XEventMetrics-Infra-Normalized.sql": {
+    "mtime": 1771928099.9424224,
+    "ast_hash": "58c5473fc2dc3d48d6b8c49061bdd149",
+    "semantic_hash": "58c5473fc2dc3d48d6b8c49061bdd149"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-XEventMetrics-Infra-Raw.sql": {
+    "mtime": 1771928099.9424777,
+    "ast_hash": "c2d17a74e04521551c1417ff8208c794",
+    "semantic_hash": "c2d17a74e04521551c1417ff8208c794"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-XEventMetrics-Workload-Delta-By-CPU.sql": {
+    "mtime": 1771928099.942549,
+    "ast_hash": "204cd40bf4a9820aa7a5bac32e6b5780",
+    "semantic_hash": "204cd40bf4a9820aa7a5bac32e6b5780"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-XEventMetrics-Workload-Delta-By-Reads(cpu_time_ms).sql": {
+    "mtime": 1771928099.9426255,
+    "ast_hash": "2204a22272d0c543388e2a4f2bb36c12",
+    "semantic_hash": "2204a22272d0c543388e2a4f2bb36c12"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-XEventMetrics-Workload-Delta-By-Reads.sql": {
+    "mtime": 1771928099.9426968,
+    "ast_hash": "2204a22272d0c543388e2a4f2bb36c12",
+    "semantic_hash": "2204a22272d0c543388e2a4f2bb36c12"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-sp_BlitzCache-Specific.sql": {
+    "mtime": 1771928099.9427502,
+    "ast_hash": "96eb406e4dbceeb019cb43166c3f99ca",
+    "semantic_hash": "96eb406e4dbceeb019cb43166c3f99ca"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-sp_WhoIsActive-Usages.sql": {
+    "mtime": 1788313563.1555982,
+    "ast_hash": "002ad614081b9eb255cbbebf83a0f40a",
+    "semantic_hash": "002ad614081b9eb255cbbebf83a0f40a"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/QRY-sys.dm_io_virtual_file_stats.sql": {
+    "mtime": 1771928099.9428518,
+    "ast_hash": "2072f3c4fcfee8d6c34473a60aa9e28e",
+    "semantic_hash": "2072f3c4fcfee8d6c34473a60aa9e28e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/RingBuffer-PerfMon-CPU-Memory.sql": {
+    "mtime": 1788313563.1560142,
+    "ast_hash": "a222d1f177cd886ca7e12f08d0001de3",
+    "semantic_hash": "a222d1f177cd886ca7e12f08d0001de3"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/SCH-Change-Table-Partition-Scheme.sql": {
+    "mtime": 1771928099.942981,
+    "ast_hash": "6bbcc2bc2dd26e2ae93ee0accef93e85",
+    "semantic_hash": "6bbcc2bc2dd26e2ae93ee0accef93e85"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/SCH-Create-LinkedServers-4-AgListenerIP.sql": {
+    "mtime": 1771928099.9430325,
+    "ast_hash": "1bb444db2f7b68b71766f7f91f84a713",
+    "semantic_hash": "1bb444db2f7b68b71766f7f91f84a713"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/SCH-Create-LinkedServers-4-AgListenerName.sql": {
+    "mtime": 1771928099.9430933,
+    "ast_hash": "fe599fcfd0556f0734f677b1b91bc1d1",
+    "semantic_hash": "fe599fcfd0556f0734f677b1b91bc1d1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/SCH-Job-[(dba) __Add-ServiceAccountPriviledges].sql": {
+    "mtime": 1771928099.9431558,
+    "ast_hash": "01288d921d520dfc0ee573cbbc36271d",
+    "semantic_hash": "01288d921d520dfc0ee573cbbc36271d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/SCH-Job-[(dba) __ReSetup-PerfmonDataCollector].sql": {
+    "mtime": 1771928099.9432325,
+    "ast_hash": "71a7a3396cbdec1ce18bc76eae12c6aa",
+    "semantic_hash": "71a7a3396cbdec1ce18bc76eae12c6aa"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/SCH-Remove-Replication.sql": {
+    "mtime": 1774436069.914626,
+    "ast_hash": "a564e53cf553756c4033ae9846debbcf",
+    "semantic_hash": "a564e53cf553756c4033ae9846debbcf"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/SCH-Remove-ResourceConsumption.sql": {
+    "mtime": 1771928099.9432893,
+    "ast_hash": "79eca7613d5483791f9e3b7a3f0fec04",
+    "semantic_hash": "79eca7613d5483791f9e3b7a3f0fec04"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/SQLMonitor-Upgrade.sql": {
+    "mtime": 1771928099.9433475,
+    "ast_hash": "631de3bed4e1ac8ff1de0f387a55b477",
+    "semantic_hash": "631de3bed4e1ac8ff1de0f387a55b477"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/_Other-Scripts-Links.sql": {
+    "mtime": 1771928099.9434652,
+    "ast_hash": "98ad5f4d1052a41f45664ca92fc2a0ab",
+    "semantic_hash": "98ad5f4d1052a41f45664ca92fc2a0ab"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/__DEMO__Blocking-Test-2.sql": {
+    "mtime": 1771928099.9435217,
+    "ast_hash": "67f873d1792317c7a91768df3fe650a0",
+    "semantic_hash": "67f873d1792317c7a91768df3fe650a0"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/__DEMO__Blocking-Test.sql": {
+    "mtime": 1771928099.9435787,
+    "ast_hash": "5642203b7f75ad0b7b34a5d6be7df253",
+    "semantic_hash": "5642203b7f75ad0b7b34a5d6be7df253"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/__DEMO__LogSaver-Test-2.sql": {
+    "mtime": 1771928099.9436424,
+    "ast_hash": "2c1777c5605b75762cf293d27d7cf393",
+    "semantic_hash": "2c1777c5605b75762cf293d27d7cf393"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/__DEMO__LogSaver-Test.sql": {
+    "mtime": 1771928099.9437046,
+    "ast_hash": "20ed53f444f05ce8d394cc51ea00777d",
+    "semantic_hash": "20ed53f444f05ce8d394cc51ea00777d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/__DEMO__TempDbSaver-Test-2.sql": {
+    "mtime": 1771928099.9437807,
+    "ast_hash": "c67bd2c099b81b5ac8a3db493dd344ed",
+    "semantic_hash": "c67bd2c099b81b5ac8a3db493dd344ed"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/__DEMO__TempDbSaver-Test.sql": {
+    "mtime": 1771928099.9438534,
+    "ast_hash": "4f8c8bb120d27701ea2c4255235111e0",
+    "semantic_hash": "4f8c8bb120d27701ea2c4255235111e0"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/check-domain-ip-hostname.sql": {
+    "mtime": 1780912921.0002918,
+    "ast_hash": "7b7411f603a0333673a92c5f29ff127b",
+    "semantic_hash": "7b7411f603a0333673a92c5f29ff127b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/datetime-conversions.sql": {
+    "mtime": 1771928099.9439921,
+    "ast_hash": "e858e1aa682cc80085183b1055732e3b",
+    "semantic_hash": "e858e1aa682cc80085183b1055732e3b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/Parameter.cs": {
+    "mtime": 1771928099.9442024,
+    "ast_hash": "737c53d1222c6d4ed0cf74fafd34a796",
+    "semantic_hash": "737c53d1222c6d4ed0cf74fafd34a796"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/Properties/AssemblyInfo.cs": {
+    "mtime": 1771928099.944326,
+    "ast_hash": "a0a0f4d85151a45b51da6cf1f415bac9",
+    "semantic_hash": "a0a0f4d85151a45b51da6cf1f415bac9"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/QRY-Normalized-Hashed-SqlText.sql": {
+    "mtime": 1771928099.944407,
+    "ast_hash": "759262b76c55a137a4a7d850af257d61",
+    "semantic_hash": "759262b76c55a137a4a7d850af257d61"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/SCH-Assembly-[SQLMonitorAssembly].sql": {
+    "mtime": 1771928099.944482,
+    "ast_hash": "af18552e4654a5124c23d81f132ea6a1",
+    "semantic_hash": "af18552e4654a5124c23d81f132ea6a1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/StringOp.cs": {
+    "mtime": 1771928099.9445443,
+    "ast_hash": "547a0d38bedb8dbe992aeae21a0d1ba2",
+    "semantic_hash": "547a0d38bedb8dbe992aeae21a0d1ba2"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/TSQLTextNormalizer.csproj": {
+    "mtime": 1771928099.944602,
+    "ast_hash": "1b77c3b1cd598c8902bf51e3c3d980cc",
+    "semantic_hash": "1b77c3b1cd598c8902bf51e3c3d980cc"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/TSqlNormalizer.cs": {
+    "mtime": 1771928099.9447453,
+    "ast_hash": "88e417d3852e25723866a9d6111aaff2",
+    "semantic_hash": "88e417d3852e25723866a9d6111aaff2"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/TSqlVisitor.cs": {
+    "mtime": 1771928099.9448054,
+    "ast_hash": "3cb75874ae35089fcfa348043c7363ce",
+    "semantic_hash": "3cb75874ae35089fcfa348043c7363ce"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs": {
+    "mtime": 1771928099.9555428,
+    "ast_hash": "87571eb12a0f860f21329ad438ee673c",
+    "semantic_hash": "87571eb12a0f860f21329ad438ee673c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs": {
+    "mtime": 1771928099.9568722,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs": {
+    "mtime": 1771928099.9569316,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs": {
+    "mtime": 1771928099.9569824,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Wrapper-Samples/Execute-Wrapper-InstallMonitor-On-AllServers.ps1": {
+    "mtime": 1771928099.9799795,
+    "ast_hash": "e9556800d566b7e7ca9f53a2567c9827",
+    "semantic_hash": "e9556800d566b7e7ca9f53a2567c9827"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Wrapper-Samples/Wrapper-AddSQLMonitorAliasEntry.ps1": {
+    "mtime": 1771928099.9800336,
+    "ast_hash": "d4a0f169e5caa57bbd58685e7f511b9f",
+    "semantic_hash": "d4a0f169e5caa57bbd58685e7f511b9f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Wrapper-Samples/Wrapper-AlertDiskSpace.ps1": {
+    "mtime": 1771928099.9800875,
+    "ast_hash": "2c5719c2525fa3d180cfa8a67d68d17b",
+    "semantic_hash": "2c5719c2525fa3d180cfa8a67d68d17b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Wrapper-Samples/Wrapper-AlertOfflineServer.ps1": {
+    "mtime": 1771928099.9801378,
+    "ast_hash": "4f9d8161ad27ab65a6a2cac968b76582",
+    "semantic_hash": "4f9d8161ad27ab65a6a2cac968b76582"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Wrapper-Samples/Wrapper-All-Servers-Update-Retention-PWSH.ps1": {
+    "mtime": 1771928099.9802127,
+    "ast_hash": "dbb6c4886de0e9f073c0ae5aa7b64b15",
+    "semantic_hash": "dbb6c4886de0e9f073c0ae5aa7b64b15"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Wrapper-Samples/Wrapper-All-Servers-Update-SQLMonitor-Objects.ps1": {
+    "mtime": 1771928099.9802682,
+    "ast_hash": "b77fcd1258a6d64908a5039601757a4a",
+    "semantic_hash": "b77fcd1258a6d64908a5039601757a4a"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Wrapper-Samples/Wrapper-InstallSQLMonitor.ps1": {
+    "mtime": 1780912921.0011077,
+    "ast_hash": "99e468f0a5e63cf356e615f27b42993a",
+    "semantic_hash": "99e468f0a5e63cf356e615f27b42993a"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Wrapper-Samples/Wrapper-RemoveSQLMonitor.ps1": {
+    "mtime": 1771928099.980431,
+    "ast_hash": "26098f600774d91038cc548c5df3e9ce",
+    "semantic_hash": "26098f600774d91038cc548c5df3e9ce"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Wrapper-Samples/Wrapper-SQLMonitorAlertEngineApp.ps1": {
+    "mtime": 1771928099.980488,
+    "ast_hash": "7b64f6906655889fc7f4368cb0e81844",
+    "semantic_hash": "7b64f6906655889fc7f4368cb0e81844"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/XEvent/01) XEvent Definition.sql": {
+    "mtime": 1771928099.9805937,
+    "ast_hash": "e5ac4d54906ddb933dd24ea716adfe5b",
+    "semantic_hash": "e5ac4d54906ddb933dd24ea716adfe5b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/XEvent/02) XEvent Extraction.sql": {
+    "mtime": 1771928099.9806666,
+    "ast_hash": "ec04d1115ffb7034ee441d63d40434f1",
+    "semantic_hash": "ec04d1115ffb7034ee441d63d40434f1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/hooks/external_links.py": {
+    "mtime": 1777268805.425507,
+    "ast_hash": "a2d96f1548a5906cfb4b771885d3d539",
+    "semantic_hash": "a2d96f1548a5906cfb4b771885d3d539"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/CAdvisor-Container-Resource-Monitoring.json": {
+    "mtime": 1775364594.453157,
+    "ast_hash": "63302e8bfaab2a24bcbfd9903457b235",
+    "semantic_hash": "63302e8bfaab2a24bcbfd9903457b235"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/Prometheus-Dashboards/SQL-Exporter-Metrics-Dashboard-External.json": {
+    "mtime": 1777268805.426459,
+    "ast_hash": "6a8548b97d54293c94392f5f00526357",
+    "semantic_hash": "6a8548b97d54293c94392f5f00526357"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/generate_sql_exporter_dashboard.py": {
+    "mtime": 1774436069.9156923,
+    "ast_hash": "d3a06398244363049eea59fbddce8ba2",
+    "semantic_hash": "d3a06398244363049eea59fbddce8ba2"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/pastetheplan-proxy.py": {
+    "mtime": 1775048465.2835927,
+    "ast_hash": "bde6f055f5af2db9a94ce38060f596e2",
+    "semantic_hash": "bde6f055f5af2db9a94ce38060f596e2"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/.github/workflows/docs.yml": {
+    "mtime": 1777268805.4205773,
+    "ast_hash": "e55bf9c074085675ab7b79e95474cd8f",
+    "semantic_hash": "e55bf9c074085675ab7b79e95474cd8f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/AI-Agent/questions_sql_agent.md": {
+    "mtime": 1771928099.9062831,
+    "ast_hash": "5f17f06a8651becb2a493004e002034d",
+    "semantic_hash": "5f17f06a8651becb2a493004e002034d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/AI-Agent/requirements.txt": {
+    "mtime": 1771928099.906336,
+    "ast_hash": "1830d48e2ff292ac13b46153331e946b",
+    "semantic_hash": "1830d48e2ff292ac13b46153331e946b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/AI-Agent/setup-ai-agent.md": {
+    "mtime": 1771928099.9064014,
+    "ast_hash": "dc41c74e22a87c9adfae21a5c68a3064",
+    "semantic_hash": "dc41c74e22a87c9adfae21a5c68a3064"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/requirements_ubuntu.txt": {
+    "mtime": 1771928099.907818,
+    "ast_hash": "8d4e2c50b87aee63a881c939d8e07291",
+    "semantic_hash": "8d4e2c50b87aee63a881c939d8e07291"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/Deployment-Instructions/requirements_windows.txt": {
+    "mtime": 1771928099.9078803,
+    "ast_hash": "25d13046055af297071aa9ef909db8a1",
+    "semantic_hash": "25d13046055af297071aa9ef909db8a1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Alerting/requirements.txt": {
+    "mtime": 1771928099.9128625,
+    "ast_hash": "8d4e2c50b87aee63a881c939d8e07291",
+    "semantic_hash": "8d4e2c50b87aee63a881c939d8e07291"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/CODE_OF_CONDUCT.md": {
+    "mtime": 1771928099.9129984,
+    "ast_hash": "20ce03cbd82eeb43d911bb7b30b704ad",
+    "semantic_hash": "20ce03cbd82eeb43d911bb7b30b704ad"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/installation-instructions.md": {
+    "mtime": 1771928099.9327981,
+    "ast_hash": "e61637e8426deda6047725785eadc02b",
+    "semantic_hash": "e61637e8426deda6047725785eadc02b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/README.md": {
+    "mtime": 1777268805.4210489,
+    "ast_hash": "c00f31e020b52274ae79082d7f48685b",
+    "semantic_hash": "c00f31e020b52274ae79082d7f48685b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Sql-Queries/LinkedIn-Post.txt": {
+    "mtime": 1771928099.9412436,
+    "ast_hash": "699d3be14a308809e50ecd0e43a500ee",
+    "semantic_hash": "699d3be14a308809e50ecd0e43a500ee"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/obj/Debug/ClassLibrarySQL.csproj.FileListAbsolute.txt": {
+    "mtime": 1771928099.9557905,
+    "ast_hash": "884f0b7c1559b081b40935b817fd3b69",
+    "semantic_hash": "884f0b7c1559b081b40935b817fd3b69"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/obj/Debug/TSQLTextNormalizer.csproj.FileListAbsolute.txt": {
+    "mtime": 1771928099.9565964,
+    "ast_hash": "80507cbb0643264bc2d675329594fa92",
+    "semantic_hash": "80507cbb0643264bc2d675329594fa92"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/packages/Newtonsoft.Json.13.0.1/LICENSE.md": {
+    "mtime": 1771928099.9709423,
+    "ast_hash": "0d23a0ec09e205c621aeff189ee6edff",
+    "semantic_hash": "0d23a0ec09e205c621aeff189ee6edff"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/ai-agent.md": {
+    "mtime": 1777268805.4213126,
+    "ast_hash": "4a3cc84129d8d492f7590c8ea6cb111d",
+    "semantic_hash": "4a3cc84129d8d492f7590c8ea6cb111d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/alerting.md": {
+    "mtime": 1777268805.4215012,
+    "ast_hash": "113e54a7296a7b50c95a52dd05215d05",
+    "semantic_hash": "113e54a7296a7b50c95a52dd05215d05"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/architecture/components.md": {
+    "mtime": 1777268805.4217477,
+    "ast_hash": "46d9f958d6026b71f78958b4ac7bcb4d",
+    "semantic_hash": "46d9f958d6026b71f78958b4ac7bcb4d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/architecture/data-flow.md": {
+    "mtime": 1777268805.4219341,
+    "ast_hash": "f68beccfc850097f78806112729c450c",
+    "semantic_hash": "f68beccfc850097f78806112729c450c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/architecture/data-model.md": {
+    "mtime": 1777268805.4221275,
+    "ast_hash": "0cd6b4d74a44dd40ef7edf9adb23c194",
+    "semantic_hash": "0cd6b4d74a44dd40ef7edf9adb23c194"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/architecture/index.md": {
+    "mtime": 1777268805.422224,
+    "ast_hash": "c5b851e8b35a3e79244fa3454d814316",
+    "semantic_hash": "c5b851e8b35a3e79244fa3454d814316"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/architecture/topology.md": {
+    "mtime": 1777268805.4224179,
+    "ast_hash": "ce4c9327881ea7e4366cd374977e74de",
+    "semantic_hash": "ce4c9327881ea7e4366cd374977e74de"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/dashboards/index.md": {
+    "mtime": 1777268805.4229598,
+    "ast_hash": "fcc06fbc05a38af5b60178ea777fd6ef",
+    "semantic_hash": "fcc06fbc05a38af5b60178ea777fd6ef"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/dashboards/live-demo.md": {
+    "mtime": 1777268805.4231725,
+    "ast_hash": "1d202b5d43e54b71e174b9632ddb52f9",
+    "semantic_hash": "1d202b5d43e54b71e174b9632ddb52f9"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/dashboards/variables.md": {
+    "mtime": 1777268805.4233603,
+    "ast_hash": "4b3d904df830aa960068553e4e43c4ae",
+    "semantic_hash": "4b3d904df830aa960068553e4e43c4ae"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/deployment/index.md": {
+    "mtime": 1777268805.4235387,
+    "ast_hash": "0236a846885288623613fb735c95de47",
+    "semantic_hash": "0236a846885288623613fb735c95de47"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/deployment/install.md": {
+    "mtime": 1777268805.4237204,
+    "ast_hash": "4da73b84f48847b5b039edf2cc05688e",
+    "semantic_hash": "4da73b84f48847b5b039edf2cc05688e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/deployment/parameters.md": {
+    "mtime": 1777268805.4238157,
+    "ast_hash": "45b0655be4e2d05a19eb7680bba8b25c",
+    "semantic_hash": "45b0655be4e2d05a19eb7680bba8b25c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/deployment/prerequisites.md": {
+    "mtime": 1777268805.4239988,
+    "ast_hash": "ca7904a2d5a9997e16983a595fa9458c",
+    "semantic_hash": "ca7904a2d5a9997e16983a595fa9458c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/deployment/remove.md": {
+    "mtime": 1777268805.424087,
+    "ast_hash": "8ac6ab76594bd103b623011a4c798a53",
+    "semantic_hash": "8ac6ab76594bd103b623011a4c798a53"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/deployment/steps.md": {
+    "mtime": 1777268805.4242766,
+    "ast_hash": "31f200efab9607bd1b101c456b2ee242",
+    "semantic_hash": "31f200efab9607bd1b101c456b2ee242"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/deployment/troubleshooting.md": {
+    "mtime": 1777268805.424468,
+    "ast_hash": "0e2cdcf4fd18fd5c5139f41d5e896fce",
+    "semantic_hash": "0e2cdcf4fd18fd5c5139f41d5e896fce"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/deployment/upgrade.md": {
+    "mtime": 1777268805.42456,
+    "ast_hash": "cc0028152cd9cdee3a71e6f91e7039ee",
+    "semantic_hash": "cc0028152cd9cdee3a71e6f91e7039ee"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/index.md": {
+    "mtime": 1777268805.4247346,
+    "ast_hash": "84856176bba2e1881c6281e568aa8747",
+    "semantic_hash": "84856176bba2e1881c6281e568aa8747"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/jobs.md": {
+    "mtime": 1777268805.424869,
+    "ast_hash": "c15833c7028c0fbe84c1f52049493455",
+    "semantic_hash": "c15833c7028c0fbe84c1f52049493455"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/prometheus.md": {
+    "mtime": 1777268805.42498,
+    "ast_hash": "a4788403389bf4748a01ce42ba48f97b",
+    "semantic_hash": "a4788403389bf4748a01ce42ba48f97b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/support.md": {
+    "mtime": 1777268805.4251664,
+    "ast_hash": "7186fa301819fa8a72a9aa8105a67091",
+    "semantic_hash": "7186fa301819fa8a72a9aa8105a67091"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/why.md": {
+    "mtime": 1777268805.4253638,
+    "ast_hash": "ece726fb5f574d3119515a6bd7b8762c",
+    "semantic_hash": "ece726fb5f574d3119515a6bd7b8762c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/mkdocs.yml": {
+    "mtime": 1777268805.4256043,
+    "ast_hash": "8d96ffa8ad79bd8b81182890a7164ffa",
+    "semantic_hash": "8d96ffa8ad79bd8b81182890a7164ffa"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/README-sql_exporter.md": {
+    "mtime": 1777268805.4268827,
+    "ast_hash": "52b78455bc9075036faddb045efa46c3",
+    "semantic_hash": "52b78455bc9075036faddb045efa46c3"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/_README-PromQL-Querying.md": {
+    "mtime": 1774436069.915367,
+    "ast_hash": "0cae374627046b41b21e4aab42e2e78f",
+    "semantic_hash": "0cae374627046b41b21e4aab42e2e78f"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/alert-engine/Alert-Rules-SQLMonitor.yaml": {
+    "mtime": 1774436069.9154818,
+    "ast_hash": "f6032b81993da5f2673316cc227c6fc4",
+    "semantic_hash": "f6032b81993da5f2673316cc227c6fc4"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/alert-engine/Contact-Points-SQLMonitor.yaml": {
+    "mtime": 1774436069.9155455,
+    "ast_hash": "c907220a1544dd5c425f3d4396d9af1b",
+    "semantic_hash": "c907220a1544dd5c425f3d4396d9af1b"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/alert-engine/Notification-Policies-SQLMonitor.yaml": {
+    "mtime": 1774436069.9156053,
+    "ast_hash": "7028da2a2e5909cf10eb992dabd7588d",
+    "semantic_hash": "7028da2a2e5909cf10eb992dabd7588d"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/mssql_backup_history.collector.yml": {
+    "mtime": 1777268805.4270592,
+    "ast_hash": "87b882b5ea13fbf76997c2bf44117aca",
+    "semantic_hash": "87b882b5ea13fbf76997c2bf44117aca"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/mssql_dba_aghealth.collector.yml": {
+    "mtime": 1774854425.4148903,
+    "ast_hash": "37a1d5c9af721012ea51f309551cc43e",
+    "semantic_hash": "37a1d5c9af721012ea51f309551cc43e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/mssql_dba_cached.collector.yml": {
+    "mtime": 1774854425.4150865,
+    "ast_hash": "946325180d4b48dc3ec2c5080cca8886",
+    "semantic_hash": "946325180d4b48dc3ec2c5080cca8886"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/mssql_dba_regular.collector.yml": {
+    "mtime": 1775814061.946232,
+    "ast_hash": "fd0e27e85ed3346139c90341fb5c40ac",
+    "semantic_hash": "fd0e27e85ed3346139c90341fb5c40ac"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/mssql_dba_stableinfo.collector.yml": {
+    "mtime": 1777268805.4275544,
+    "ast_hash": "daef6b52657c9bce3a19ec79d6b0eedc",
+    "semantic_hash": "daef6b52657c9bce3a19ec79d6b0eedc"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/mssql_dba_whoisactive.collector.yml": {
+    "mtime": 1775040767.1589108,
+    "ast_hash": "82277d9966064d07311313ec93166884",
+    "semantic_hash": "82277d9966064d07311313ec93166884"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/mssql_sqlagent_jobs.collector.yml": {
+    "mtime": 1777268805.4278686,
+    "ast_hash": "4647712504656bd0bee5d886bd1942b1",
+    "semantic_hash": "4647712504656bd0bee5d886bd1942b1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/mssql_standard.collector.yml": {
+    "mtime": 1774854425.416065,
+    "ast_hash": "8c57b9b87efac91ec751f0e24434ad9c",
+    "semantic_hash": "8c57b9b87efac91ec751f0e24434ad9c"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/mssql_xevent.collector.yml": {
+    "mtime": 1777268805.4281445,
+    "ast_hash": "ca8cd1dc44aa359a0fe23ce2142e8335",
+    "semantic_hash": "ca8cd1dc44aa359a0fe23ce2142e8335"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/sql_exporter.yml": {
+    "mtime": 1777268805.4286811,
+    "ast_hash": "676faa64559ec199b392f6e3b8a4aa29",
+    "semantic_hash": "676faa64559ec199b392f6e3b8a4aa29"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/sql_exporter/windows_exporter_config.yml": {
+    "mtime": 1774436069.9163446,
+    "ast_hash": "e79e2288ecee84bf0bf8a32b1ee41025",
+    "semantic_hash": "e79e2288ecee84bf0bf8a32b1ee41025"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/Python-Scripts/Slack-SQLMonitor-App-User-Token-Scopes.png": {
+    "mtime": 1771928099.9324996,
+    "ast_hash": "000ee1c165030922a57394555815c47e",
+    "semantic_hash": "000ee1c165030922a57394555815c47e"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/TSQLTextNormalizer/packages/Newtonsoft.Json.13.0.1/packageIcon.png": {
+    "mtime": 1771928099.9798617,
+    "ast_hash": "4867cb362a67fa746c49c9b6a4f61656",
+    "semantic_hash": "4867cb362a67fa746c49c9b6a4f61656"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/assets/favicon.svg": {
+    "mtime": 1777268805.4225576,
+    "ast_hash": "900b034496f7e7e8c6c38c3bc2b783b1",
+    "semantic_hash": "900b034496f7e7e8c6c38c3bc2b783b1"
+  },
+  "/Users/ajaydwivedi/Documents/Github/Personal/SQLMonitor/docs/assets/logo.svg": {
+    "mtime": 1777268805.4226484,
+    "ast_hash": "79bb0646e0fb10439f1a7588e11037b2",
+    "semantic_hash": "79bb0646e0fb10439f1a7588e11037b2"
+  }
+}
