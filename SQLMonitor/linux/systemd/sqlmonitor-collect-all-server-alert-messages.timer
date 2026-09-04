@@ -1,0 +1,14 @@
+# Was: "(dba) Collect-AllServerAlertMessages", daily every 10 seconds
+# (@freq_subday_type=2 => seconds).
+[Unit]
+Description=SQLMonitor - collect alert messages from every server
+
+[Timer]
+Unit=sqlmonitor@collect-all-server-alert-messages.service
+OnBootSec=1min
+OnUnitActiveSec=10s
+AccuracySec=1s
+Persistent=false
+
+[Install]
+WantedBy=timers.target

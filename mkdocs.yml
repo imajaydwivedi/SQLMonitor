@@ -114,6 +114,7 @@ nav:
       - deployment/index.md
       - Prerequisites: deployment/prerequisites.md
       - Install Walkthrough: deployment/install.md
+      - Linux Inventory Server: deployment/linux-inventory.md
       - Install-SQLMonitor Parameters: deployment/parameters.md
       - Install Steps: deployment/steps.md
       - Upgrade: deployment/upgrade.md

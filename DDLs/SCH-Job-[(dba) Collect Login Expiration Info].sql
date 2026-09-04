@@ -39,8 +39,9 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.usp_
 		@on_fail_step_id=0, 
 		@retry_attempts=0, 
 		@retry_interval=0, 
-		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -C -E -b -S localhost -H "(dba) Collect Login Expiration Info" -d DBA -Q "EXEC dbo.usp_collect_all_server_login_expiration_info @execute = 1, @verbose = 0;"', 
+		@os_run_priority=0, @subsystem=N'TSQL', 
+		@database_name=N'DBA', 
+		@command=N'SET CONCAT_NULL_YIELDS_NULL ON; EXEC dbo.usp_collect_all_server_login_expiration_info @execute = 1, @verbose = 0;', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1

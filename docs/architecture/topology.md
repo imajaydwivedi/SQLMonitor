@@ -45,7 +45,13 @@ flowchart LR
 | Role | Jobs it runs | Typical instance |
 |---|---|---|
 | **Monitored instance** | All `(dba) Collect-*`, `(dba) Run-*`, `(dba) Check-SQLAgentJobs`, `(dba) Partitions-Maintenance`, `(dba) Purge-Tables`, `(dba) Remove-XEventFiles` | Every SQL instance in scope |
-| **Inventory server** | All `(dba) Get-AllServer*`, `(dba) Check-InstanceAvailability`, `(dba) Update-SqlServerVersions`, `(dba) Populate Inventory Tables`, `(dba) Stop-StuckSQLMonitorJobs`, `(dba) Get-AllServerDashboardMail` | One dedicated instance |
+| **Inventory server** | All `(dba) Get-AllServer*` and `(dba) Get-AllServerDashboardMail` as SQL Agent `TSQL` jobs, plus `Check-InstanceAvailability`, `Update-SqlServerVersions`, `Populate Inventory Tables` and `Stop-StuckSQLMonitorJobs` as **systemd timers** | One dedicated SQL Server on **Linux** instance |
+
+!!! info "The inventory server runs on Linux"
+    SQL Server on Linux does not support the SQL Agent `CmdExec` or `PowerShell`
+    subsystems, so the inventory tasks that shell out are systemd timers rather
+    than SQL Agent jobs. Install it with `SQLMonitor/linux/install-inventory.sh`
+    &mdash; see [Linux Inventory Server](../deployment/linux-inventory.md).
 
 **When to choose it:** medium-to-large fleets where you want the collection load *on* each instance, each instance has a reliable SQL Agent, and you can accept a linked-server hop for aggregation.
 

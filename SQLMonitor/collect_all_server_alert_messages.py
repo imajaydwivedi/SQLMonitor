@@ -17,6 +17,42 @@ parser.add_argument("--threads", type=int, required=False, action="store", defau
 
 args=parser.parse_args()
 
+# --- connection settings ---------------------------------------------------
+# This script was written for Windows: "SQL Server Native Client 11.0" is a
+# Windows-only ODBC driver and Trusted_Connection is Windows integrated auth,
+# which SQL Server on Linux does not support. Both are now taken from the
+# environment so the same script runs on either platform, defaulting to the
+# driver the mssql-tools18 package installs.
+ODBC_DRIVER = os.environ.get("SQLMONITOR_ODBC_DRIVER", "ODBC Driver 18 for SQL Server")
+# Driver 18 defaults to Encrypt=yes and will refuse a self-signed certificate,
+# which is what SQL Server on Linux presents unless one was configured.
+TRUST_SERVER_CERT = os.environ.get("SQLMONITOR_TRUST_SERVER_CERT", "yes")
+
+INVENTORY_LOGIN = os.environ.get("INVENTORY_LOGIN", "")
+INVENTORY_PASSWORD = os.environ.get("INVENTORY_PASSWORD", "")
+# Login used to read alert history from each monitored instance.
+PROBE_LOGIN = os.environ.get("PROBE_LOGIN", "grafana")
+PROBE_PASSWORD = os.environ.get("PROBE_PASSWORD", "grafana")
+
+
+def build_connection_string(server, database, application, login="", password=""):
+    """ODBC connection string, SQL auth when a login is given, else integrated."""
+    parts = [
+        f"DRIVER={{{ODBC_DRIVER}}}",
+        f"SERVER={server}",
+        f"DATABASE={database}",
+        f"APP={application}",
+        f"TrustServerCertificate={TRUST_SERVER_CERT}",
+    ]
+    if login:
+        parts.append(f"UID={login}")
+        parts.append(f"PWD={password}")
+    else:
+        # Only reachable on Windows; SQL Server on Linux has no integrated auth.
+        parts.append("Trusted_Connection=yes")
+    return ";".join(parts) + ";"
+
+
 start_time = datetime.now()
 
 today = datetime.today()
@@ -27,11 +63,8 @@ app_name = args.app_name
 threads = args.threads
 
 # Get list of servers from Inventory
-invCon = pyodbc.connect("Driver={SQL Server Native Client 11.0};"
-                      f"Server={inventory_server};"
-                      f"Database={inventory_database};"
-                      f"App={app_name};"
-                      "Trusted_Connection=yes;")
+invCon = pyodbc.connect(build_connection_string(
+    inventory_server, inventory_database, app_name, INVENTORY_LOGIN, INVENTORY_PASSWORD))
 
 invCursor = invCon.cursor()
 
@@ -107,12 +140,9 @@ def query_server(server_row):
 
     #print(f"Working on [{server}].[{database}]..")
 
-    if port is None:
-      #connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};Trusted_Connection=yes;TrustServerCertificate=YES;App={app_name};UID=grafana;PWD=grafana;'
-      connectionString = f'DRIVER={{SQL Server Native Client 11.0}};SERVER={server};DATABASE={database};TrustServerCertificate=YES;App={app_name};UID=grafana;PWD=grafana;'
-    else:
-      #connectionString = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server},{port};DATABASE={database};Trusted_Connection=yes;TrustServerCertificate=YES;App={app_name};UID=grafana;PWD=grafana;'
-      connectionString = f'DRIVER={{SQL Server Native Client 11.0}};SERVER={server},{port};DATABASE={database};TrustServerCertificate=YES;App={app_name};UID=grafana;PWD=grafana;'
+    target = server if port is None else f"{server},{port}"
+    connectionString = build_connection_string(
+        target, database, app_name, PROBE_LOGIN, PROBE_PASSWORD)
     
     '''
     cnxn = pyodbc.connect("Driver={SQL Server Native Client 11.0};"
