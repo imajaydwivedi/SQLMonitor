@@ -23,6 +23,7 @@
 
 	*** Steps in this Script ****
 	-----------------------------
+	0) Ensure AUTO_CLOSE is OFF (SQLExpress defaults it ON, which blocks MemoryOptimized)
 	1) Alter inventory database with [MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT]
 	2) Alter inventory database with MemoryOptimized filegroup
 	3) Alter inventory database with MemoryOptimized filegroup file
@@ -111,6 +112,19 @@ IF DB_NAME() = 'master'
 	raiserror ('Kindly execute all queries in [DBA] database', 20, -1) with log;
 go
 
+/* ****** 0) Ensure AUTO_CLOSE is OFF ******* */
+/*	SQL Server Express creates new databases with AUTO_CLOSE = ON. That both
+	cripples a monitoring database (the DB is closed and reopened around every
+	connection) and hard-blocks the next step:
+	    "The operation 'AUTO_CLOSE' is not supported with databases that have
+	     a MEMORY_OPTIMIZED_DATA filegroup."
+	Verified on mcr.microsoft.com/mssql/server:2022-latest with MSSQL_PID=Express.	*/
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '0) Ensure AUTO_CLOSE is OFF on the inventory database';
+if exists (select * from sys.databases where database_id = DB_ID() and is_auto_close_on = 1)
+	EXEC ('ALTER DATABASE CURRENT SET AUTO_CLOSE OFF WITH NO_WAIT');
+go
+
 /* ****** 1) Alter inventory database with [MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT] ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 	print '1) Alter inventory database with [MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT]';
@@ -136,21 +150,31 @@ begin
 	/*	The path is derived, never hardcoded. A Linux inventory server has no
 		'E:\Data' - its default data directory is /var/opt/mssql/data. Asking
 		the instance where it puts data files keeps this correct on either
-		platform, and on instances whose data directory was relocated.	*/
-	declare @_separator nchar(1) = case when convert(varchar(20), SERVERPROPERTY('HostPlatform')) = 'Linux' then N'/' else N'\' end;
+		platform, and on instances whose data directory was relocated.
+
+		Note: there is NO SERVERPROPERTY('HostPlatform') - it returns NULL.
+		The separator is derived from the data path itself, which needs no
+		extra permission (sys.dm_os_host_info would need VIEW SERVER STATE).	*/
+	declare @_separator nchar(1);
 	declare @_data_path nvarchar(512) = convert(nvarchar(512), SERVERPROPERTY('InstanceDefaultDataPath'));
 	declare @_memory_optimized_file nvarchar(600);
 
 	/*	InstanceDefaultDataPath is NULL on some older/containerised builds.
-		Fall back to the directory of this database's primary data file.	*/
+		Fall back to this database's primary data file.	*/
 	if @_data_path is null
-		select top 1 @_data_path = left(df.physical_name, len(df.physical_name) - charindex(@_separator, reverse(df.physical_name)) + 1)
+		select top 1 @_data_path = df.physical_name
 		from sys.database_files df
 		where df.type_desc = 'ROWS'
 		order by df.file_id;
 
 	if @_data_path is null
 		raiserror ('Could not determine the default data path for the MemoryOptimized filegroup file.', 20, -1) with log;
+
+	set @_separator = case when charindex('/', @_data_path) > 0 then N'/' else N'\' end;
+
+	/*	If we fell back to a file name, trim it back to its directory.	*/
+	if right(@_data_path, 4) = N'.mdf' or right(@_data_path, 4) = N'.ndf'
+		set @_data_path = left(@_data_path, len(@_data_path) - charindex(@_separator, reverse(@_data_path)) + 1);
 
 	if right(@_data_path, 1) <> @_separator
 		set @_data_path = @_data_path + @_separator;

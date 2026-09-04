@@ -95,8 +95,16 @@ run() {
     "$@"
 }
 
+# apply_sql_file <file> [database] [stop_on_error]
+#
+# stop_on_error defaults to 1 (sqlcmd -b). Pass 0 for scripts that are NOT
+# idempotent: SCH-Create-Inventory-Specific-Objects.sql drops its tables and
+# recreates them with unguarded CREATEs, so on a re-run it raises
+# "Msg 2714 There is already an object named ..." partway through. With -b,
+# sqlcmd stops there - AFTER the drops and BEFORE the recreates - leaving the
+# inventory without its all_server_* tables. Verified against a live instance.
 apply_sql_file() {
-    local file="$1" database="${2:-$INVENTORY_DATABASE}"
+    local file="$1" database="${2:-$INVENTORY_DATABASE}" stop_on_error="${3:-1}"
     [ -r "$file" ] || sm_die "SQL file '$file' is not readable."
 
     if [ "$DRY_RUN" -eq 1 ]; then
@@ -105,15 +113,41 @@ apply_sql_file() {
     fi
 
     local -a args=(
-        -S "$INVENTORY_SERVER" -d "$database" -C -b
+        -S "$INVENTORY_SERVER" -d "$database" -C
         -l "$SQLMONITOR_LOGIN_TIMEOUT" -t "$SQLMONITOR_QUERY_TIMEOUT"
         -H "$APP_NAME" -i "$file"
     )
+    [ "$stop_on_error" = "1" ] && args+=(-b)
     if [ -n "$INVENTORY_LOGIN" ]; then args+=(-U "$INVENTORY_LOGIN"); else args+=(-E); fi
 
     sm_info "  apply $(basename "$file") -> [$database]"
     SQLCMDPASSWORD="$INVENTORY_PASSWORD" "$SQLCMD" "${args[@]}" \
         || sm_die "Applying '$file' failed."
+}
+
+# The tables the (dba) Get-AllServer* jobs write into. If any is missing the
+# jobs fail with "Invalid object name", so assert them rather than trusting a
+# script that is allowed to continue past errors.
+INVENTORY_REQUIRED_TABLES=(
+    all_server_stable_info all_server_volatile_info all_server_collection_latency_info
+    sql_agent_jobs_all_servers disk_space_all_servers log_space_consumers_all_servers
+    tempdb_space_usage_all_servers ag_health_state_all_servers services_all_servers
+    backups_all_servers alert_history_all_servers
+)
+
+assert_inventory_tables() {
+    local missing=() t
+    for t in "${INVENTORY_REQUIRED_TABLES[@]}"; do
+        if [ "$(sm_inv_scalar "$APP_NAME" "select case when object_id('dbo.${t}') is null then 0 else 1 end;")" != "1" ]; then
+            missing+=("$t")
+        fi
+    done
+    if [ "${#missing[@]}" -gt 0 ]; then
+        sm_error "  ${#missing[@]} inventory table(s) missing after applying the DDL:"
+        printf '    %s\n' "${missing[@]}" >&2
+        sm_die "SCH-Create-Inventory-Specific-Objects.sql did not complete. Re-run it in SSMS/sqlcmd without -b and check the output."
+    fi
+    sm_info "  all ${#INVENTORY_REQUIRED_TABLES[@]} inventory tables present."
 }
 
 # ---------------------------------------------------------------------------
@@ -127,10 +161,19 @@ if should_run preflight; then
         sm_die "bash 4.3 or newer is required (found ${BASH_VERSION})."
     fi
     [ "$(id -u)" -eq 0 ] || sm_die "Run this installer as root."
-    sm_require systemctl install id
+    sm_require install id
+
+    # Only the systemd step needs systemctl. Requiring it unconditionally would
+    # make "--skip systemd" impossible in a container, which is exactly how the
+    # test rig under test/ runs this installer.
+    if should_run systemd; then
+        sm_require systemctl
+    else
+        sm_verbose '  systemd step skipped; not requiring systemctl.'
+    fi
 
     platform="$(sm_inv_scalar "$APP_NAME" \
-        "select convert(varchar(50), SERVERPROPERTY('HostPlatform'));" master)" \
+        "select top 1 convert(varchar(50), host_platform) from sys.dm_os_host_info;" master)" \
         || sm_die "Cannot connect to [$INVENTORY_SERVER]. Check INVENTORY_LOGIN / INVENTORY_PASSWORD_FILE in '$SQLMONITOR_CONF'."
 
     sm_info "  inventory instance [$INVENTORY_SERVER] host platform: ${platform:-unknown}"
@@ -233,7 +276,9 @@ fi
 # ---------------------------------------------------------------------------
 if should_run inventory-objects; then
     sm_info '=== Step 5/9: inventory database objects ==='
-    apply_sql_file "${REPO_ROOT}/DDLs/SCH-Create-Inventory-Specific-Objects.sql" "$INVENTORY_DATABASE"
+    # stop_on_error=0: see the comment on apply_sql_file.
+    apply_sql_file "${REPO_ROOT}/DDLs/SCH-Create-Inventory-Specific-Objects.sql" "$INVENTORY_DATABASE" 0
+    [ "$DRY_RUN" -eq 1 ] || assert_inventory_tables
 fi
 
 # ---------------------------------------------------------------------------

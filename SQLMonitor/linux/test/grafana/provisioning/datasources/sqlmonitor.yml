@@ -1,0 +1,29 @@
+# Grafana datasource for the test rig's inventory instance.
+#
+# The SQLMonitor dashboards in ../../../../Grafana-Dashboards/*.json expect a
+# Microsoft SQL Server datasource named "SQLMonitor" pointing at the inventory's
+# DBA database. Import them from the Grafana UI after `make grafana`.
+apiVersion: 1
+
+datasources:
+  - name: SQLMonitor
+    type: mssql
+    access: proxy
+    # Container-to-container: the inventory service is reachable by name on the
+    # compose network, on the container port (1433), not the published host port.
+    url: inventory:1433
+    database: DBA
+    user: grafana
+    isDefault: true
+    editable: true
+    jsonData:
+      # SQL Server on Linux presents a self-signed certificate unless one has
+      # been configured, so the connection must be told to accept it.
+      encrypt: 'true'
+      tlsSkipVerify: true
+      maxOpenConns: 10
+      maxIdleConns: 2
+      connMaxLifetime: 14400
+    secureJsonData:
+      # Provided by the grafana service's environment (GRAFANA_PASSWORD in .env).
+      password: ${SQLMONITOR_DB_PASSWORD}

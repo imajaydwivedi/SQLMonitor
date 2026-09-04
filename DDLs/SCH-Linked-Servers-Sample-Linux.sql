@@ -8,7 +8,8 @@
 	  1) Provider. SQLNCLI is not registered on SQL Server on Linux, so
 	     @provider=N'SQLNCLI' fails there. The in-box OLE DB driver is
 	     MSOLEDBSQL. This script picks the provider from
-	     SERVERPROPERTY('HostPlatform') so the same file works either way.
+	     sys.dm_os_host_info.host_platform so the same file works either way.
+	     (There is no SERVERPROPERTY('HostPlatform') - it returns NULL.)
 
 	  2) Authentication. "Windows integrated authentication for linked servers"
 	     is explicitly unsupported on Linux, so @useself must stay 'False' with
@@ -37,7 +38,7 @@ DECLARE @_remote_login   sysname       = N'YourRemoteLoginHere';
 DECLARE @_remote_password nvarchar(256) = N'YourRemotePasswordHere';
 DECLARE @_catalog        sysname       = N'YourCatalogHere';
 
-DECLARE @_host_platform  nvarchar(50)  = CONVERT(nvarchar(50), SERVERPROPERTY('HostPlatform'));
+DECLARE @_host_platform  nvarchar(50)  = (SELECT TOP 1 CONVERT(nvarchar(50), host_platform) FROM sys.dm_os_host_info);
 DECLARE @_provider       sysname       = CASE WHEN @_host_platform = N'Linux' THEN N'MSOLEDBSQL' ELSE N'SQLNCLI' END;
 
 IF EXISTS (SELECT * FROM sys.servers WHERE name = @_linked_server AND is_linked = 1)
@@ -72,11 +73,16 @@ DECLARE @_remote_login  sysname = N'YourRemoteLoginHere';
 /*	Encrypt the hop and trust the certificate. SQL Server on Linux presents a
 	self-signed certificate unless one was configured, and the Get-AllServer*
 	jobs would otherwise fail the TLS handshake.	*/
+/*	T-SQL does not accept an expression as a stored-procedure argument, so the
+	provider string has to be built into a variable first.	*/
+DECLARE @_provider_string nvarchar(400) =
+    N'Encrypt=yes;TrustServerCertificate=yes;User ID=' + @_remote_login;
+
 IF (SELECT LEFT(CAST(SERVERPROPERTY('productversion') AS varchar),
                 CHARINDEX('.', CAST(SERVERPROPERTY('productversion') AS varchar)) - 1)) > 12
     EXEC master.dbo.sp_serveroption @server = @_linked_server,
-        @optname = 'provider string',
-        @optvalue = N'Encrypt=yes;TrustServerCertificate=yes;User ID=' + @_remote_login;
+        @optname  = 'provider string',
+        @optvalue = @_provider_string;
 
 EXEC master.dbo.sp_serveroption @server = @_linked_server, @optname = N'collation compatible',            @optvalue = N'false';
 EXEC master.dbo.sp_serveroption @server = @_linked_server, @optname = N'data access',                     @optvalue = N'true';
