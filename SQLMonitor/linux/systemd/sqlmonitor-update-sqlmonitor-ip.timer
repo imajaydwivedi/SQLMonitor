@@ -1,0 +1,14 @@
+# Was: "(dba) Update-SQLMonitorIP", daily every 5 minutes.
+# Only enable this if you actually front Grafana with No-IP dynamic DNS.
+[Unit]
+Description=SQLMonitor - refresh dynamic DNS when the public IP rotates
+
+[Timer]
+Unit=sqlmonitor@update-sqlmonitor-ip.service
+OnBootSec=5min
+OnUnitActiveSec=5min
+AccuracySec=30s
+Persistent=false
+
+[Install]
+WantedBy=timers.target

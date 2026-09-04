@@ -1,0 +1,12 @@
+# Was: "(dba) Populate Inventory Tables", daily at 09:00.
+[Unit]
+Description=SQLMonitor - resolve host IPs and populate the inventory tables
+
+[Timer]
+Unit=sqlmonitor@populate-inventory-tables.service
+OnCalendar=*-*-* 09:00:00
+AccuracySec=1min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

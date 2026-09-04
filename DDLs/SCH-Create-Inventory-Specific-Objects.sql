@@ -132,7 +132,35 @@ if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 	print '3) Alter inventory database with MemoryOptimized filegroup file';
 DECLARE @MemoryOptimizedObjectUsage bit = 1;
 if not exists (select * from sys.database_files where name = 'MemoryOptimized') and (@MemoryOptimizedObjectUsage = 1)
-	EXEC ('ALTER DATABASE CURRENT ADD FILE (name=''MemoryOptimized'', filename=''E:\Data\MemoryOptimized.ndf'') TO FILEGROUP MemoryOptimized');
+begin
+	/*	The path is derived, never hardcoded. A Linux inventory server has no
+		'E:\Data' - its default data directory is /var/opt/mssql/data. Asking
+		the instance where it puts data files keeps this correct on either
+		platform, and on instances whose data directory was relocated.	*/
+	declare @_separator nchar(1) = case when convert(varchar(20), SERVERPROPERTY('HostPlatform')) = 'Linux' then N'/' else N'\' end;
+	declare @_data_path nvarchar(512) = convert(nvarchar(512), SERVERPROPERTY('InstanceDefaultDataPath'));
+	declare @_memory_optimized_file nvarchar(600);
+
+	/*	InstanceDefaultDataPath is NULL on some older/containerised builds.
+		Fall back to the directory of this database's primary data file.	*/
+	if @_data_path is null
+		select top 1 @_data_path = left(df.physical_name, len(df.physical_name) - charindex(@_separator, reverse(df.physical_name)) + 1)
+		from sys.database_files df
+		where df.type_desc = 'ROWS'
+		order by df.file_id;
+
+	if @_data_path is null
+		raiserror ('Could not determine the default data path for the MemoryOptimized filegroup file.', 20, -1) with log;
+
+	if right(@_data_path, 1) <> @_separator
+		set @_data_path = @_data_path + @_separator;
+
+	set @_memory_optimized_file = @_data_path + N'MemoryOptimized.ndf';
+
+	print '   MemoryOptimized filegroup file => ' + @_memory_optimized_file;
+
+	EXEC ('ALTER DATABASE CURRENT ADD FILE (name=''MemoryOptimized'', filename=''' + @_memory_optimized_file + ''') TO FILEGROUP MemoryOptimized');
+end
 go
 
 /* ****** 4) Drop all self created tables ******* */
@@ -1177,7 +1205,9 @@ as
 begin
 	declare @action_type varchar(20);
 	declare @program_name nvarchar(255);
+	declare @workstation_name nvarchar(255);
 	set @program_name = PROGRAM_NAME();
+	set @workstation_name = HOST_NAME();
 
 	if exists (select * from deleted) and exists (select * from inserted)
 	begin
@@ -1195,7 +1225,11 @@ begin
 	-- Don't allow more than 5 rows in a single UPDATE/DELETE
 	if @action_type in ('update','delete')
 		and (select count(*) from deleted) > 5
-		and @program_name <> 'check-instance-availability.ps1'
+		/*	check-instance-availability.sh legitimately flips [is_available]
+			for the whole fleet in one statement. It connects through sqlcmd,
+			whose PROGRAM_NAME() is always 'SQLCMD', so it identifies itself
+			via the workstation name (sqlcmd -H) instead.	*/
+		and @workstation_name <> 'check-instance-availability.sh'
 	begin
 		RAISERROR ('More than 5 rows cannot be updated in a single transaction in table [dbo].[instance_details].', 16, 1);  
 		ROLLBACK TRANSACTION; 

@@ -64,6 +64,12 @@ eggs/
 .eggs/
 lib/
 lib64/
+
+# The Python-style "lib/" rule above is meant for virtualenvs. The Linux
+# inventory lane keeps its shared bash library at SQLMonitor/linux/lib/, so
+# re-include that directory. Negating the directory (not just the files inside
+# it) is required, because git will not descend into an excluded directory.
+!SQLMonitor/linux/lib/
 parts/
 sdist/
 var/

@@ -1,0 +1,41 @@
+# Templated runner for every SQLMonitor inventory task.
+#
+# %i is the basename of a script in /opt/sqlmonitor/bin, without ".sh".
+# Enable a task through its timer, not through this unit:
+#
+#     systemctl enable --now sqlmonitor-check-instance-availability.timer
+#
+# This exists because SQL Server Agent on Linux does not support the CmdExec or
+# PowerShell subsystems, so the inventory tasks that are not pure T-SQL cannot
+# live in SQL Agent at all.
+
+[Unit]
+Description=SQLMonitor inventory task %i
+Documentation=https://imajaydwivedi.github.io/SQLMonitor/
+After=network-online.target mssql-server.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=sqlmonitor
+Group=sqlmonitor
+Environment=SQLMONITOR_CONF=/etc/sqlmonitor/inventory.conf
+ExecStart=/opt/sqlmonitor/bin/%i.sh
+TimeoutStartSec=1800
+
+# The tasks only need to read their config and write their work/log dirs.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=/var/opt/sqlmonitor /var/log/sqlmonitor
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=sqlmonitor-%i
+
+[Install]
+WantedBy=multi-user.target

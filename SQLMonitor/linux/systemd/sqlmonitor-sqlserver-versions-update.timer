@@ -1,0 +1,13 @@
+# Was: "(dba) Update-SqlServerVersions", weekly on Wed and Fri at 00:00
+# (@freq_type=8, @freq_interval=40 => 8|32 => Wed|Fri).
+[Unit]
+Description=SQLMonitor - refresh dbo.SqlServerVersions from the First Responder Kit
+
+[Timer]
+Unit=sqlmonitor@sqlserver-versions-update.service
+OnCalendar=Wed,Fri *-*-* 00:00:00
+AccuracySec=5min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

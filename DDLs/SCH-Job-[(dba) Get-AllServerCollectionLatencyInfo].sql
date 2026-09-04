@@ -40,8 +40,9 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'dbo.all_
 		@on_fail_step_id=0, 
 		@retry_attempts=0, 
 		@retry_interval=0, 
-		@os_run_priority=0, @subsystem=N'CmdExec', 
-		@command=N'sqlcmd -C -E -b -S localhost -H "(dba) Get-AllServerCollectionLatencyInfo" -d DBA -Q "EXEC dbo.usp_wrapper_GetAllServerInfo @step_name = ''dbo.all_server_collection_latency_info'', @verbose = 0;"', 
+		@os_run_priority=0, @subsystem=N'TSQL', 
+		@database_name=N'DBA', 
+		@command=N'EXEC dbo.usp_wrapper_GetAllServerInfo @step_name = ''dbo.all_server_collection_latency_info'', @verbose = 0;', 
 		@flags=40
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1
