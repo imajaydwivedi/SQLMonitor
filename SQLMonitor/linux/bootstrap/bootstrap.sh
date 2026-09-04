@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
-# bootstrap.sh - bring the test rig's SQL Server instances up to the point where
+# bootstrap.sh - bring a SQL Server on Linux instance up to the point where
 # SQLMonitor/linux/install-inventory.sh can run.
 #
-# Runs INSIDE the tools container (`make bootstrap`). Idempotent: re-running it
-# re-applies the DDLs, which are all CREATE-OR-ALTER / guarded.
+# Used by both lanes:
+#   * the local test rig   (SQLMonitor/linux/test, `make bootstrap`)
+#   * the Kubernetes chart (kube-orchestration/helm-charts/sqlserver-inventory,
+#                           the post-install bootstrap Job)
+#
+# Everything is driven by environment variables, so there is nothing rig- or
+# cluster-specific in here. Idempotent: safe to re-run.
 #
 # Order matters and is not obvious, so it is spelled out here rather than
 # buried in a Makefile:
@@ -19,12 +24,17 @@
 set -uo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="${REPO_ROOT:-/repo}"
+# <root>/SQLMonitor/linux/bootstrap -> <root>. Overridable for odd layouts.
+REPO_ROOT="${REPO_ROOT:-$(cd -- "${SCRIPT_DIR}/../../.." && pwd)}"
 DDL_DIR="${REPO_ROOT}/DDLs"
 CM_DIR="${REPO_ROOT}/Credential-Manager"
 
 INVENTORY_SERVER="${INVENTORY_SERVER:-inventory}"
-MONITORED_SERVERS="${MONITORED_SERVERS:-monitored1}"
+# Space-separated. Empty is legitimate: an inventory with nothing else to
+# collect from yet. Deliberately NOT defaulted to a hostname - a default here
+# makes the bootstrap hang for five minutes waiting for a host that does not
+# exist.
+MONITORED_SERVERS="${MONITORED_SERVERS-}"
 INVENTORY_DATABASE="${INVENTORY_DATABASE:-DBA}"
 SA_PASSWORD="${SA_PASSWORD:?SA_PASSWORD is required}"
 GRAFANA_PASSWORD="${GRAFANA_PASSWORD:-grafana}"
@@ -40,6 +50,10 @@ DBA_EMAIL="${DBA_EMAIL:-sqlmonitor-test@example.invalid}"
 INSTALL_OPTIONAL_TOOLS="${INSTALL_OPTIONAL_TOOLS:-1}"
 
 SQLCMD="${SQLCMD:-/opt/mssql-tools18/bin/sqlcmd}"
+
+# INVENTORY_SERVER may carry a port ("host,1433") for sqlcmd. dbo.instance_details
+# and dbo.sma_servers want the bare instance name.
+INVENTORY_HOST_NAME="${INVENTORY_SERVER%%,*}"
 
 log()  { printf '%s %-9s %s\n' "$(date +%Y%b%d_%H%M%S)" 'INFO:' "$*"; }
 warn() { printf '%s %-9s %s\n' "$(date +%Y%b%d_%H%M%S)" 'WARNING:' "$*" >&2; }
@@ -351,14 +365,23 @@ apply_glob "$INVENTORY_SERVER" "$INVENTORY_DATABASE" \
     "inventory-only procs (${#INV_PROC_FILES[@]} files)" "${INV_PROC_FILES[@]}" \
     || die "inventory-only procs failed - the inventory jobs cannot work without them"
 
-log "  02-inventory-seed.sql"
-FIRST_MONITORED="$(printf '%s\n' $MONITORED_SERVERS | head -1)"
+log "  02-inventory-seed.sql (inventory)"
 sa "$INVENTORY_SERVER" "$INVENTORY_DATABASE" \
-    -v InventoryHost="$INVENTORY_SERVER" \
-       MonitoredHost="$FIRST_MONITORED" \
-       DbaEmail="$DBA_EMAIL" \
+    -v DbaEmail="$DBA_EMAIL" \
     -i "${SCRIPT_DIR}/02-inventory-seed.sql" \
     || die "02-inventory-seed.sql failed"
+
+if [ -z "$MONITORED_SERVERS" ]; then
+    log "  no monitored instances configured - the inventory will only collect from itself"
+else
+    for s in $MONITORED_SERVERS; do
+        log "  02b-seed-monitored.sql ($s)"
+        sa "$INVENTORY_SERVER" "$INVENTORY_DATABASE" \
+            -v MonitoredHost="$s" DbaEmail="$DBA_EMAIL" \
+            -i "${SCRIPT_DIR}/02b-seed-monitored.sql" \
+            || die "02b-seed-monitored.sql failed for [$s]"
+    done
+fi
 
 log "  03-linked-servers.sql"
 for s in $MONITORED_SERVERS; do

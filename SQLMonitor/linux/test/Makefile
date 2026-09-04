@@ -69,7 +69,7 @@ logs: ## Tail SQL Server error logs
 # ----------------------------------------------------------------- bootstrap --
 .PHONY: bootstrap
 bootstrap: ## Create DBA, apply DDLs, seed inventory, create linked servers
-	$(TOOLS) bash $(LINUX_DIR)/test/bootstrap/bootstrap.sh
+	$(TOOLS) bash $(LINUX_DIR)/bootstrap/bootstrap.sh
 
 .PHONY: install
 install: ## Run install-inventory.sh (systemd step skipped - no systemd in a container)
@@ -84,7 +84,7 @@ install: ## Run install-inventory.sh (systemd step skipped - no systemd in a con
 	$(TOOLS) bash $(LINUX_DIR)/install-inventory.sh --skip systemd --verbose
 	$(TOOLS) install -o root -g sqlmonitor -m 0750 $(LINUX_DIR)/test/tools/run-timers.sh /opt/sqlmonitor/bin/
 	@# The two Database Mail jobs cannot work here - see the file's header.
-	$(TOOLSH) '$(SQLCMD) -S "$$INVENTORY_SERVER" -U sa -P "$$SA_PASSWORD" -C -b -i $(LINUX_DIR)/test/bootstrap/04-disable-mail-jobs.sql'
+	$(TOOLSH) '$(SQLCMD) -S "$$INVENTORY_SERVER" -U sa -P "$$SA_PASSWORD" -C -b -i $(LINUX_DIR)/bootstrap/04-disable-mail-jobs.sql'
 
 .PHONY: dry-run
 dry-run: ## install-inventory.sh --dry-run (shows what it would do)

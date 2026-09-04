@@ -45,9 +45,20 @@ script="${SQLMONITOR_HOME}/collect_all_server_alert_messages.py"
 [ -f "$script" ] || script="${SCRIPT_DIR}/../../collect_all_server_alert_messages.py"
 [ -f "$script" ] || sm_die "collect_all_server_alert_messages.py not found under '$SQLMONITOR_HOME'."
 
-sm_info "Running '$script' with '$PYTHON_BIN'.."
+# The script defaults to --inventory_server localhost, which in a container or
+# on a separate inventory host means "connect to nothing". Pass the configured
+# target through. Credentials reach it via the environment (INVENTORY_LOGIN /
+# INVENTORY_PASSWORD, PROBE_LOGIN / PROBE_PASSWORD).
+py_args=(
+    --inventory_server "$INVENTORY_SERVER"
+    --inventory_database "$INVENTORY_DATABASE"
+    --app_name "$APP_NAME"
+    --threads "$SQLMONITOR_THREADS"
+)
 
-if "$PYTHON_BIN" -u "$script"; then
+sm_info "Running '$script' with '$PYTHON_BIN' against [$INVENTORY_SERVER].."
+
+if "$PYTHON_BIN" -u "$script" "${py_args[@]}"; then
     sm_info "Alert message collection completed."
 else
     rc=$?
