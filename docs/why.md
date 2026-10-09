@@ -52,7 +52,7 @@ The [Alert Engine](alerting.md) reads the same tables the dashboards read. If yo
 ## When NOT to use SQLMonitor
 
 - You only have one SQL instance and already pay for Redgate / Quest / Datadog and are happy with it &mdash; don't switch for the sake of it.
-- You are on Linux SQL Server with no Windows host anywhere in the picture &mdash; several collectors (Perfmon BLG ingestion, OS process capture) rely on Windows PowerShell. The SQL-only collectors still work, but some dashboards will be empty.
+- You are on Linux SQL Server with no Windows host anywhere in the picture &mdash; the **inventory server** is fully supported on Linux (see [Linux Inventory Server](deployment/linux-inventory.md)), but several *monitored-instance* collectors (Perfmon BLG ingestion, OS process capture) still rely on Windows PowerShell. The SQL-only collectors work everywhere, so a Linux-only fleet leaves a few per-instance dashboards empty.
 - You want **zero code on the monitored instance**. SQLMonitor installs objects into the `DBA` database on every instance.
 
 ## Feature summary

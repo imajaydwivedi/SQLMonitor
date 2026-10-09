@@ -1,0 +1,13 @@
+# Was: "(dba) Check-InstanceAvailability", daily every 2 minutes.
+[Unit]
+Description=SQLMonitor - probe every inventory instance every 2 minutes
+
+[Timer]
+Unit=sqlmonitor@check-instance-availability.service
+OnBootSec=2min
+OnUnitActiveSec=2min
+AccuracySec=15s
+Persistent=false
+
+[Install]
+WantedBy=timers.target

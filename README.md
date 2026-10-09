@@ -43,10 +43,31 @@
 
 ## Quick install
 
-Minimal happy-path (see the [full deployment guide](https://imajaydwivedi.github.io/SQLMonitor/deployment/) for prerequisites, parameters and troubleshooting):
+Minimal happy-path (see the [full deployment guide](https://imajaydwivedi.github.io/SQLMonitor/deployment/) for prerequisites, parameters and troubleshooting).
+
+### 1. Inventory server &mdash; SQL Server on Linux
+
+The inventory server runs on Linux, where SQL Agent has no `CmdExec` or
+`PowerShell` subsystem. Its jobs are either `TSQL` Agent jobs or systemd timers,
+and it is installed with bash, not PowerShell
+([full guide](https://imajaydwivedi.github.io/SQLMonitor/deployment/linux-inventory/)):
+
+```bash
+git clone https://github.com/imajaydwivedi/SQLMonitor.git /usr/local/src/SQLMonitor
+cd /usr/local/src/SQLMonitor/SQLMonitor/linux
+
+sudo install -d -m 0750 /etc/sqlmonitor
+sudo cp sqlmonitor-inventory.conf.sample /etc/sqlmonitor/inventory.conf
+sudo vi /etc/sqlmonitor/inventory.conf
+
+sudo ./install-inventory.sh --dry-run --verbose   # look first
+sudo ./install-inventory.sh
+```
+
+### 2. Monitored instances &mdash; Windows
 
 ```powershell
-# 1. Clone onto the inventory server
+# 1. Clone onto the deployer box
 git clone https://github.com/imajaydwivedi/SQLMonitor.git C:\SQLMonitor
 cd C:\SQLMonitor\SQLMonitor
 

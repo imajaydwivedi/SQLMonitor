@@ -6,7 +6,8 @@ Map of the repository. Every top-level folder has a single purpose &mdash; this 
 
 | Folder | Purpose | Representative files |
 |---|---|---|
-| **`SQLMonitor/`** | Deployment orchestration. The install/remove wrappers and all PowerShell collectors. | `Install-SQLMonitor.ps1`, `Remove-SQLMonitor.ps1`, `perfmon-collector-*.ps1`, `disk-space-collector.ps1`, `tasklist-push-to-sqlserver.ps1`, `check-instance-availability.py`, `collect_all_server_alert_messages.py` |
+| **`SQLMonitor/`** | Deployment orchestration for *monitored instances*. The install/remove wrappers and the Windows PowerShell collectors. | `Install-SQLMonitor.ps1`, `Remove-SQLMonitor.ps1`, `perfmon-collector-*.ps1`, `disk-space-collector.ps1`, `tasklist-push-to-sqlserver.ps1`, `check-instance-availability.py`, `collect_all_server_alert_messages.py` |
+| **`SQLMonitor/linux/`** | The whole *inventory server* lane, in bash. Installer, remover, one script per former inventory `.ps1`, and the systemd timers that replace the SQL Agent jobs Linux cannot run. | `install-inventory.sh`, `remove-inventory.sh`, `lib/sqlmonitor.sh`, `bin/*.sh`, `systemd/sqlmonitor@.service` |
 | **`DDLs/`** | All SQL objects: tables, views, procs, jobs, partition schemes. | `SCH-Create-All-Objects.sql`, `SCH-Create-Inventory-Specific-Objects.sql`, 60+ `SCH-Job-*.sql`, 40+ `SCH-usp_*.sql`, `*-Partitioning.sql` |
 | **`Grafana-Dashboards/`** | 17+ production-ready dashboard JSONs. | `Monitoring - Live - Distributed.json`, `WhoIsActive - SQL Server Queries - Workload.json`, `XEvent - Workload.json`, `t___*.json` |
 | **`Alerting/`** | Python alert engine (Flask + APScheduler). | `AlertEngineApp.py`, `SQLMonitorAlertEngineApp.py`, `SmaAlertPackage/`, `Dockerfile`, `requirements.txt`, `Deployment-Instructions/` |
@@ -29,6 +30,13 @@ Map of the repository. Every top-level folder has a single purpose &mdash; this 
 ### `SQLMonitor/Install-SQLMonitor.ps1`
 
 The single entry point for onboarding an instance. Accepts 40+ parameters, supports **59 named install steps** (each skippable via `SkipSteps`/`OnlySteps`/`StartAtStep`/`StopAtStep`). Full parameter reference in [Deployment &rarr; Parameters](../deployment/parameters.md); step list in [Install Steps](../deployment/steps.md).
+
+### `SQLMonitor/linux/install-inventory.sh`
+
+The single entry point for the **inventory server**, which runs on SQL Server on
+Linux. Nine named steps, each selectable with `--only` / `--skip`, plus
+`--dry-run`. It replaces steps 33&ndash;51 and 57 of `Install-SQLMonitor.ps1`.
+See [Linux Inventory Server](../deployment/linux-inventory.md).
 
 ### `SQLMonitor/Remove-SQLMonitor.ps1`
 

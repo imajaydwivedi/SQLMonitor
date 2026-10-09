@@ -1,0 +1,121 @@
+# SQLMonitor Linux inventory - local test workspace.
+#
+#   inventory   SQL Server on Linux, SQL Agent on. The instance install-inventory.sh targets.
+#   monitored1  a second instance for the inventory to collect from over a linked server.
+#   tools       Debian + mssql-tools18 + bash. Where the bootstrap and all bin/*.sh run.
+#   grafana     optional (profile: grafana), pointed at the inventory DBA database.
+#
+# On Apple Silicon the SQL Server images run under Rosetta. Microsoft does not
+# support emulation for these images - fine for a test rig, never for production.
+# See README.md.
+
+name: sqlmonitor-test
+
+x-mssql-common: &mssql-common
+  image: ${MSSQL_IMAGE:-mcr.microsoft.com/mssql/server:2022-latest}
+  platform: ${MSSQL_PLATFORM:-linux/amd64}
+  restart: unless-stopped
+  environment:
+    ACCEPT_EULA: "Y"
+    MSSQL_SA_PASSWORD: ${SA_PASSWORD:?set SA_PASSWORD in .env}
+    MSSQL_PID: ${MSSQL_PID:-Express}
+    MSSQL_AGENT_ENABLED: "true"
+    MSSQL_MEMORY_LIMIT_MB: ${MSSQL_MEMORY_LIMIT_MB:-1536}
+  healthcheck:
+    # SQL Server accepts TCP well before it accepts logins, so the check must be
+    # a real authenticated query, not a port probe.
+    test:
+      - CMD-SHELL
+      - /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -C -b -Q "SELECT 1" >/dev/null 2>&1 || exit 1
+    interval: 10s
+    timeout: 10s
+    retries: 40
+    start_period: 60s
+  networks: [sqlmonitor]
+
+services:
+  inventory:
+    <<: *mssql-common
+    container_name: sqlmonitor-inventory
+    hostname: inventory
+    ports:
+      - "${INVENTORY_PORT:-14330}:1433"
+    volumes:
+      # Named volumes, not bind mounts: bind-mounting /var/opt/mssql does not
+      # work on Docker for macOS.
+      - inventory-data:/var/opt/mssql
+    mem_limit: ${MSSQL_MEM_LIMIT:-2560m}
+
+  monitored1:
+    <<: *mssql-common
+    container_name: sqlmonitor-monitored1
+    hostname: monitored1
+    ports:
+      - "${MONITORED1_PORT:-14340}:1433"
+    volumes:
+      - monitored1-data:/var/opt/mssql
+    mem_limit: ${MSSQL_MEM_LIMIT:-2560m}
+
+  tools:
+    build:
+      context: ./tools
+      dockerfile: Dockerfile
+      args:
+        # Built FROM the SQL Server image, so sqlcmd matches the server and
+        # nothing extra has to be downloaded.
+        MSSQL_IMAGE: ${MSSQL_IMAGE:-mcr.microsoft.com/mssql/server:2022-latest}
+    image: sqlmonitor-tools:local
+    platform: ${MSSQL_PLATFORM:-linux/amd64}
+    container_name: sqlmonitor-tools
+    hostname: tools
+    depends_on:
+      inventory:
+        condition: service_healthy
+      monitored1:
+        condition: service_healthy
+    environment:
+      # Consumed by lib/sqlmonitor.sh via /etc/sqlmonitor/inventory.conf, which
+      # the bootstrap renders from these.
+      SA_PASSWORD: ${SA_PASSWORD:?set SA_PASSWORD in .env}
+      INVENTORY_SERVER: inventory
+      INVENTORY_DATABASE: DBA
+      MONITORED_SERVERS: monitored1
+      GRAFANA_PASSWORD: ${GRAFANA_PASSWORD:-grafana}
+      SQLMONITOR_VERBOSE: ${SQLMONITOR_VERBOSE:-0}
+    volumes:
+      # The repo, read-write so install-inventory.sh can lay files into
+      # /opt/sqlmonitor inside the container (which is container-local anyway).
+      - ../../..:/repo
+    working_dir: /repo/SQLMonitor/linux/test
+    # Stay alive so `make sh` / `make install` can exec into it.
+    command: ["sleep", "infinity"]
+    networks: [sqlmonitor]
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: sqlmonitor-grafana
+    profiles: [grafana]
+    depends_on:
+      inventory:
+        condition: service_healthy
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: ""
+      SQLMONITOR_DB_PASSWORD: ${GRAFANA_PASSWORD:-grafana}
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana-data:/var/lib/grafana
+    networks: [sqlmonitor]
+
+volumes:
+  inventory-data:
+  monitored1-data:
+  grafana-data:
+
+networks:
+  sqlmonitor:
+    driver: bridge

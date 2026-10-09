@@ -56,12 +56,24 @@
 | # | Step | What it does |
 |---|---|---|
 | 32 | `32__CreateSQLAgentAlerts` | Creates SQL Agent alerts for severities 17&ndash;25 and specific error numbers (deadlocks, &hellip;), routed to `(dba) Capture-AlertMessages`. |
-| 33 | `33__CreateJobUpdateSqlServerVersions` | `(dba) Update-SqlServerVersions` &mdash; keeps `dbo.sql_server_versions` fresh with CU metadata. |
-| 34 | `34__CreateJobCheckInstanceAvailability` | `(dba) Check-InstanceAvailability` &mdash; pings every instance in `dbo.sma_sql_instance` from the inventory server. |
+| 33 | `33__CreateJobUpdateSqlServerVersions` | *Inventory step.* Now `sqlmonitor-sqlserver-versions-update.timer` running `sqlserver-versions-update.sh`. |
+| 34 | `34__CreateJobCheckInstanceAvailability` | *Inventory step.* Now `sqlmonitor-check-instance-availability.timer` running `check-instance-availability.sh`. |
 
 ## Phase 5 &mdash; Inventory aggregation jobs (steps 35&ndash;51)
 
-These steps run on the **inventory** server. Skipped when `-SkipInventorySteps $true` or when `InstanceScopeFeaturesOnly $true`.
+!!! warning "Moved to the Linux installer"
+    The inventory server runs SQL Server on **Linux**, where SQL Agent has no
+    `CmdExec` or `PowerShell` subsystem. These steps, together with 33, 34 and
+    57, are now installed by
+    [`SQLMonitor/linux/install-inventory.sh`](https://github.com/imajaydwivedi/SQLMonitor/blob/dev/SQLMonitor/linux/install-inventory.sh)
+    &mdash; see [Linux Inventory Server](linux-inventory.md). Run
+    `Install-SQLMonitor.ps1` with `-SkipInventorySteps $true` against monitored
+    instances; the table below is kept as a map from the old step names to what
+    the bash installer now does.
+
+    Six of these jobs no longer exist in SQL Agent at all. `Check-InstanceAvailability`,
+    `Update-SqlServerVersions`, `Populate Inventory Tables`, `Stop-StuckSQLMonitorJobs`,
+    `Update-SQLMonitorIP` and `Collect-AllServerAlertMessages` are systemd timers.
 
 | # | Step | Creates job |
 |---|---|---|
@@ -97,7 +109,7 @@ These steps run on the **inventory** server. Skipped when `-SkipInventorySteps $
 | # | Step | What it does |
 |---|---|---|
 | 56 | `56__GrafanaLogin` | Creates the `grafana` login with a SID that matches across the fleet; grants `db_datareader` on `DBA`. |
-| 57 | `57__LinkedServerOnInventory` | Creates the linked server *from* inventory *to* the monitored instance (used by `Get-AllServer*` jobs). |
+| 57 | `57__LinkedServerOnInventory` | Creates the linked server *from* inventory *to* the monitored instance (used by `Get-AllServer*` jobs). On a Linux inventory server use `DDLs/SCH-Linked-Servers-Sample-Linux.sql`, which selects the `MSOLEDBSQL` provider &mdash; `SQLNCLI` is not registered on Linux. |
 | 58 | `58__LinkedServerForDataDestinationInstance` | Creates the linked server *from* the monitored instance *to* `SqlInstanceAsDataDestination` (only when they differ). |
 | 59 | `59__AlterViewsForDataDestinationInstance` | Re-creates `vw_*` / `all_server_*` views on the monitored instance so they transparently read from the data-destination instance via the linked server. |
 

@@ -23,6 +23,7 @@
 
 	*** Steps in this Script ****
 	-----------------------------
+	0) Ensure AUTO_CLOSE is OFF (SQLExpress defaults it ON, which blocks MemoryOptimized)
 	1) Alter inventory database with [MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT]
 	2) Alter inventory database with MemoryOptimized filegroup
 	3) Alter inventory database with MemoryOptimized filegroup file
@@ -111,6 +112,19 @@ IF DB_NAME() = 'master'
 	raiserror ('Kindly execute all queries in [DBA] database', 20, -1) with log;
 go
 
+/* ****** 0) Ensure AUTO_CLOSE is OFF ******* */
+/*	SQL Server Express creates new databases with AUTO_CLOSE = ON. That both
+	cripples a monitoring database (the DB is closed and reopened around every
+	connection) and hard-blocks the next step:
+	    "The operation 'AUTO_CLOSE' is not supported with databases that have
+	     a MEMORY_OPTIMIZED_DATA filegroup."
+	Verified on mcr.microsoft.com/mssql/server:2022-latest with MSSQL_PID=Express.	*/
+if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
+	print '0) Ensure AUTO_CLOSE is OFF on the inventory database';
+if exists (select * from sys.databases where database_id = DB_ID() and is_auto_close_on = 1)
+	EXEC ('ALTER DATABASE CURRENT SET AUTO_CLOSE OFF WITH NO_WAIT');
+go
+
 /* ****** 1) Alter inventory database with [MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT] ******* */
 if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 	print '1) Alter inventory database with [MEMORY_OPTIMIZED_ELEVATE_TO_SNAPSHOT]';
@@ -132,7 +146,45 @@ if (PROGRAM_NAME() <> 'Microsoft SQL Server Management Studio - Query')
 	print '3) Alter inventory database with MemoryOptimized filegroup file';
 DECLARE @MemoryOptimizedObjectUsage bit = 1;
 if not exists (select * from sys.database_files where name = 'MemoryOptimized') and (@MemoryOptimizedObjectUsage = 1)
-	EXEC ('ALTER DATABASE CURRENT ADD FILE (name=''MemoryOptimized'', filename=''E:\Data\MemoryOptimized.ndf'') TO FILEGROUP MemoryOptimized');
+begin
+	/*	The path is derived, never hardcoded. A Linux inventory server has no
+		'E:\Data' - its default data directory is /var/opt/mssql/data. Asking
+		the instance where it puts data files keeps this correct on either
+		platform, and on instances whose data directory was relocated.
+
+		Note: there is NO SERVERPROPERTY('HostPlatform') - it returns NULL.
+		The separator is derived from the data path itself, which needs no
+		extra permission (sys.dm_os_host_info would need VIEW SERVER STATE).	*/
+	declare @_separator nchar(1);
+	declare @_data_path nvarchar(512) = convert(nvarchar(512), SERVERPROPERTY('InstanceDefaultDataPath'));
+	declare @_memory_optimized_file nvarchar(600);
+
+	/*	InstanceDefaultDataPath is NULL on some older/containerised builds.
+		Fall back to this database's primary data file.	*/
+	if @_data_path is null
+		select top 1 @_data_path = df.physical_name
+		from sys.database_files df
+		where df.type_desc = 'ROWS'
+		order by df.file_id;
+
+	if @_data_path is null
+		raiserror ('Could not determine the default data path for the MemoryOptimized filegroup file.', 20, -1) with log;
+
+	set @_separator = case when charindex('/', @_data_path) > 0 then N'/' else N'\' end;
+
+	/*	If we fell back to a file name, trim it back to its directory.	*/
+	if right(@_data_path, 4) = N'.mdf' or right(@_data_path, 4) = N'.ndf'
+		set @_data_path = left(@_data_path, len(@_data_path) - charindex(@_separator, reverse(@_data_path)) + 1);
+
+	if right(@_data_path, 1) <> @_separator
+		set @_data_path = @_data_path + @_separator;
+
+	set @_memory_optimized_file = @_data_path + N'MemoryOptimized.ndf';
+
+	print '   MemoryOptimized filegroup file => ' + @_memory_optimized_file;
+
+	EXEC ('ALTER DATABASE CURRENT ADD FILE (name=''MemoryOptimized'', filename=''' + @_memory_optimized_file + ''') TO FILEGROUP MemoryOptimized');
+end
 go
 
 /* ****** 4) Drop all self created tables ******* */
@@ -1177,7 +1229,9 @@ as
 begin
 	declare @action_type varchar(20);
 	declare @program_name nvarchar(255);
+	declare @workstation_name nvarchar(255);
 	set @program_name = PROGRAM_NAME();
+	set @workstation_name = HOST_NAME();
 
 	if exists (select * from deleted) and exists (select * from inserted)
 	begin
@@ -1195,7 +1249,11 @@ begin
 	-- Don't allow more than 5 rows in a single UPDATE/DELETE
 	if @action_type in ('update','delete')
 		and (select count(*) from deleted) > 5
-		and @program_name <> 'check-instance-availability.ps1'
+		/*	check-instance-availability.sh legitimately flips [is_available]
+			for the whole fleet in one statement. It connects through sqlcmd,
+			whose PROGRAM_NAME() is always 'SQLCMD', so it identifies itself
+			via the workstation name (sqlcmd -H) instead.	*/
+		and @workstation_name <> 'check-instance-availability.sh'
 	begin
 		RAISERROR ('More than 5 rows cannot be updated in a single transaction in table [dbo].[instance_details].', 16, 1);  
 		ROLLBACK TRANSACTION; 

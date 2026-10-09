@@ -1,0 +1,13 @@
+# Was: "(dba) Stop-StuckSQLMonitorJobs", daily every 1 hour.
+[Unit]
+Description=SQLMonitor - stop stuck and restart stalled SQLMonitor jobs
+
+[Timer]
+Unit=sqlmonitor@stop-stuck-sqlmonitor-jobs.service
+OnBootSec=10min
+OnUnitActiveSec=1h
+AccuracySec=1min
+Persistent=false
+
+[Install]
+WantedBy=timers.target

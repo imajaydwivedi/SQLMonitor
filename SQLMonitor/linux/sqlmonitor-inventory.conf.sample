@@ -1,0 +1,61 @@
+# SQLMonitor Linux inventory server configuration.
+#
+# Install to /etc/sqlmonitor/inventory.conf and chmod 0640 it (root:mssql), or
+# point $SQLMONITOR_CONF somewhere else. This file is sourced by bash, so it is
+# shell syntax - no spaces around "=".
+
+# ---------------------------------------------------------------------------
+# Inventory instance
+# ---------------------------------------------------------------------------
+INVENTORY_SERVER=localhost
+INVENTORY_DATABASE=DBA
+CREDENTIAL_MANAGER_DATABASE=DBA
+
+# SQL login used to reach the inventory instance. Windows integrated auth (-E)
+# does not work on SQL Server on Linux, so a SQL login is required.
+INVENTORY_LOGIN=sqlmonitor_inventory
+
+# Supply the password EITHER inline (only if this file is 0600) or, preferably,
+# through a separate file readable by the service user alone.
+#INVENTORY_PASSWORD=
+INVENTORY_PASSWORD_FILE=/etc/sqlmonitor/inventory.password
+
+# ---------------------------------------------------------------------------
+# Fleet access
+#
+# Login used to reach every monitored instance. Its password is NOT stored
+# here: it is resolved at runtime from the Credential Manager on the inventory
+# server (dbo.usp_get_credential). Leave empty to reuse INVENTORY_LOGIN.
+# ---------------------------------------------------------------------------
+ALL_SERVER_LOGIN=sqlmonitor_fleet
+
+# ---------------------------------------------------------------------------
+# Paths
+# ---------------------------------------------------------------------------
+SQLMONITOR_HOME=/opt/sqlmonitor
+SQLMONITOR_WORK_DIR=/var/opt/sqlmonitor/work
+SQLMONITOR_LOG_DIR=/var/log/sqlmonitor
+
+# ---------------------------------------------------------------------------
+# Behaviour
+# ---------------------------------------------------------------------------
+SQLMONITOR_THREADS=4
+SQLMONITOR_QUERY_TIMEOUT=300
+SQLMONITOR_LOGIN_TIMEOUT=15
+SQLMONITOR_VERBOSE=0
+
+# Explicit sqlcmd path. Leave unset to auto-detect mssql-tools18, then
+# mssql-tools, then $PATH.
+#SQLCMD=/opt/mssql-tools18/bin/sqlcmd
+
+# ---------------------------------------------------------------------------
+# update-sqlmonitor-ip.sh (dynamic DNS) - only needed if you run that timer
+# ---------------------------------------------------------------------------
+#NOIP_USERNAME=your-noip-username
+#NOIP_HOSTNAME=sqlmonitor.example.com
+#NOIP_CHECK_PORT=3000
+
+# ---------------------------------------------------------------------------
+# sqlserver-versions-update.sh
+# ---------------------------------------------------------------------------
+#SQL_SERVER_VERSIONS_URL=https://raw.githubusercontent.com/BrentOzarULTD/SQL-Server-First-Responder-Kit/dev/SqlServerVersions.sql
